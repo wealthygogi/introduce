@@ -182,11 +182,11 @@ textarea.form-input{resize:vertical;min-height:70px;line-height:1.7;}
     <!-- mainSeries -->
     <div class="form-section">
       <label class="form-label" id="lbl-mainseries">주력 시리즈</label>
-      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#3a7acc;margin-bottom:4px;cursor:pointer;user-select:none;" id="lbl-series-old" onclick="toggleSeriesGroup('old')">── 구작</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#3a7acc;margin-bottom:4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('old')"><span id="lbl-series-old">── 구작</span> <span style="font-size:12px;color:#5090dd;">[+]</span></div>
       <div class="check-group" id="series-old-group"></div>
-      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#3a7acc;margin:6px 0 4px;cursor:pointer;user-select:none;" id="lbl-series-new" onclick="toggleSeriesGroup('new')">── 신작</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#3a7acc;margin:6px 0 4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('new')"><span id="lbl-series-new">── 신작</span> <span style="font-size:12px;color:#5090dd;">[+]</span></div>
       <div class="check-group" id="series-new-group"></div>
-      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#3a7acc;margin:6px 0 4px;cursor:pointer;user-select:none;" id="lbl-series-extra" onclick="toggleSeriesGroup('extra')">── 기타</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#3a7acc;margin:6px 0 4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('extra')"><span id="lbl-series-extra">── 기타</span> <span style="font-size:12px;color:#5090dd;">[+]</span></div>
       <div class="check-group" id="series-extra-group"></div>
     </div>
 
@@ -322,7 +322,7 @@ const SERIES=[
   {id:'th17',num:'17',ko:'귀형수',ja:'鬼形獣',en:'WBaWC',group:'new'},
   {id:'th18',num:'18',ko:'홍롱동',ja:'虹龍洞',en:'UM',group:'new'},
   {id:'th19',num:'19',ko:'수왕원',ja:'獣王園',en:'UDoaLG',group:'new'},
-  {id:'th20',num:'20',ko:'비상천',ja:'非想天則',en:'FW',group:'new'},
+  {id:'th20',num:'20',ko:'금성경',ja:'金城鏡',en:'FW',group:'new'},
   {id:'manga',num:'',ko:'서적작',ja:'書籍作',en:'Books/Manga',group:'extra'},
   {id:'music',num:'',ko:'음악작품',ja:'音楽作品',en:'Music',group:'extra'},
   {id:'spinoff',num:'',ko:'스핀오프',ja:'スピンオフ',en:'Spin-offs',group:'extra'},
@@ -336,9 +336,9 @@ const ACCT=[
   {id:'fan',ko:'앓이',ja:'推し活',en:'Fangirling'},
 ];
 const I18N={
-  ko:{title:'동방 트친소',nickname:'닉네임',callMe:'호칭',bestChar:'최애 캐릭터',mainSeries:'주력 시리즈',acctType:'계정 유형',fub:'FUB',parting:'이별은',otherGenre:'타장르 언급',dislike:'불호소재 / 지뢰',pairing:'커플링',freeText:'자유서술',oldWorks:'구작',newWorks:'신작',both:'양쪽',free:'FREE',r4r:'R4R',unfollow:'언팔',blockunfollow:'블언블',block:'블락',none:'없음',sometimes:'가끔',often:'많음',download:'📸 이미지로 저장',back:'← 목록으로',selectChar:'캐릭터 선택',ph_nick:'닉네임을 입력하세요',ph_call:'아무렇게나 / ○○야, ○○씨 OK',ph_dis:'없음',ph_pair:'○○×○○',ph_free:'자유롭게 적어주세요'},
-  ja:{title:'東方 自己紹介',nickname:'ニックネーム',callMe:'呼び方',bestChar:'推しキャラ',mainSeries:'主力シリーズ',acctType:'アカウントタイプ',fub:'FUB',parting:'別れは',otherGenre:'他ジャンル言及',dislike:'地雷・苦手',pairing:'カップリング',freeText:'自由記述',oldWorks:'旧作',newWorks:'新作',both:'両方',free:'FREE',r4r:'R4R',unfollow:'アンフォロー',blockunfollow:'B解',block:'ブロック',none:'なし',sometimes:'たまに',often:'多め',download:'📸 画像として保存',back:'← 一覧へ',selectChar:'キャラを選ぶ',ph_nick:'ニックネームを入力',ph_call:'なんでもOK',ph_dis:'なし',ph_pair:'○○×○○',ph_free:'自由に書いてください'},
-  en:{title:'Touhou Self-Intro',nickname:'Nickname',callMe:'What to call me',bestChar:'Favorite Character',mainSeries:'Main Series',acctType:'Account Type',fub:'FUB',parting:'Parting',otherGenre:'Other Genres',dislike:'Dislikes / Triggers',pairing:'Pairings',freeText:'Free Notes',oldWorks:'Old Works',newWorks:'New Works',both:'Both',free:'FREE',r4r:'R4R',unfollow:'Unfollow',blockunfollow:'Block+Unblock',block:'Block',none:'None',sometimes:'Sometimes',often:'Often',download:'📸 Save as Image',back:'← Back',selectChar:'Select Character',ph_nick:'Enter your nickname',ph_call:'Anything is fine',ph_dis:'None',ph_pair:'CharA × CharB',ph_free:'Write freely'},
+  ko:{title:'동방 트친소',nickname:'닉네임',callMe:'호칭',bestChar:'최애 캐릭터',mainSeries:'주력 시리즈',acctType:'계정 유형',fub:'FUB',parting:'이별은',otherGenre:'타장르 언급',dislike:'불호소재 / 지뢰',pairing:'커플링',freeText:'자유서술',oldWorks:'구작',newWorks:'신작',both:'양쪽',free:'FREE',r4r:'R4R',unfollow:'언팔',blockunfollow:'블언블',block:'블락',none:'없음',sometimes:'가끔',often:'많음',download:'📸 이미지로 저장',back:'← 목록으로',selectChar:'캐릭터 선택',ph_nick:'닉네임을 입력하세요',ph_call:'아무렇게나 / ○○야, ○○씨 OK',ph_dis:'없음',ph_pair:'○○×○○',ph_free:'자유롭게 적어주세요',seriesOld:'구작',seriesNew:'신작',seriesExtra:'기타'},
+  ja:{title:'東方 自己紹介',nickname:'ニックネーム',callMe:'呼び方',bestChar:'推しキャラ',mainSeries:'主力シリーズ',acctType:'アカウントタイプ',fub:'FUB',parting:'別れは',otherGenre:'他ジャンル言及',dislike:'地雷・苦手',pairing:'カップリング',freeText:'自由記述',oldWorks:'旧作',newWorks:'新作',both:'両方',free:'FREE',r4r:'R4R',unfollow:'アンフォロー',blockunfollow:'B解',block:'ブロック',none:'なし',sometimes:'たまに',often:'多め',download:'📸 画像として保存',back:'← 一覧へ',selectChar:'キャラを選ぶ',ph_nick:'ニックネームを入力',ph_call:'なんでもOK',ph_dis:'なし',ph_pair:'○○×○○',ph_free:'自由に書いてください',seriesOld:'旧作',seriesNew:'新作',seriesExtra:'その他'},
+  en:{title:'Touhou Self-Intro',nickname:'Nickname',callMe:'What to call me',bestChar:'Favorite Character',mainSeries:'Main Series',acctType:'Account Type',fub:'FUB',parting:'Parting',otherGenre:'Other Genres',dislike:'Dislikes / Triggers',pairing:'Pairings',freeText:'Free Notes',oldWorks:'Old Works',newWorks:'New Works',both:'Both',free:'FREE',r4r:'R4R',unfollow:'Unfollow',blockunfollow:'Block+Unblock',block:'Block',none:'None',sometimes:'Sometimes',often:'Often',download:'📸 Save as Image',back:'← Back',selectChar:'Select Character',ph_nick:'Enter your nickname',ph_call:'Anything is fine',ph_dis:'None',ph_pair:'CharA × CharB',ph_free:'Write freely',seriesOld:'Classic',seriesNew:'Modern',seriesExtra:'Other'},
 };
 
 /* ═══════════════════════════════════════
@@ -410,8 +410,9 @@ function buildAcctChips() {
 ═══════════════════════════════════════ */
 function setLang(l) {
   lang = l;
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  document.querySelectorAll('.lang-btn').forEach((b,i)=>{
+    b.classList.toggle('active', ['ko','ja','en'][i]===l);
+  });
   applyI18N();
   buildCharGrid();
   buildAcctChips();
@@ -447,6 +448,9 @@ function applyI18N() {
   document.getElementById('other-none').textContent = t.none;
   document.getElementById('other-sometimes').textContent = t.sometimes;
   document.getElementById('other-often').textContent = t.often;
+  document.getElementById('lbl-series-old').textContent = '── ' + t.seriesOld;
+  document.getElementById('lbl-series-new').textContent = '── ' + t.seriesNew;
+  document.getElementById('lbl-series-extra').textContent = '── ' + t.seriesExtra;
 }
 
 function selectChar(id) {
@@ -557,7 +561,7 @@ function renderCard() {
   const seriesChips = selectedSeriesItems.length > 0
     ? selectedSeriesItems.map(s => {
         const name = (s.num ? 'TH'+s.num+' ' : '') + (s[lang]||s.en);
-        return `<span style="display:inline-block;border:1px solid #1a3a5a;padding:2px 8px;margin:2px;font-size:12px;font-family:'Noto Serif JP',serif;color:#c8deff;">${name}</span>`;
+        return `<span style="display:inline-block;border:1px solid #1a3a5a;padding:2px 8px;margin:2px;font-size:14px;font-family:'Noto Serif JP',serif;color:#c8deff;">${name}</span>`;
       }).join('')
     : `<span style="color:#1a3a60;">${lang==='ko'?'미선택':lang==='ja'?'未選択':'None'}</span>`;
   const fubLabel = {free:t.free,r4r:t.r4r}[selectedFub];
@@ -575,7 +579,7 @@ function renderCard() {
     const label = a[lang] || a.ko;
     return `<span style="
       font-family:'Press Start 2P',monospace;
-      font-size:10px;
+      font-size:14px;
       color:${on?'#c8deff':'#0e2a48'};
       padding:4px 8px;
       border:1px solid ${on?'#1a3a5a':'#071828'};
@@ -607,7 +611,7 @@ function renderCard() {
   </div>
 
   <!-- Call me subtitle -->
-  <div style="position:relative;font-family:'Press Start 2P',monospace;font-size:8px;color:#4a90d0;letter-spacing:3px;margin-bottom:36px;text-align:center;">
+  <div style="position:relative;font-family:'Press Start 2P',monospace;font-size:14px;color:#4a90d0;letter-spacing:3px;margin-bottom:36px;text-align:center;">
     ${escHtml(callMe)}
   </div>
 
@@ -625,20 +629,20 @@ function renderCard() {
     <div style="grid-column:1/-1;border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;display:flex;align-items:center;gap:14px;">
       <img src="${charSrc}" alt="${escHtml(charName)}" style="width:36px;height:36px;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 0 6px rgba(70,140,255,.5));flex-shrink:0;">
       <div>
-        <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.bestChar)}</div>
+        <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.bestChar)}</div>
         <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#c8deff;font-weight:700;">${escHtml(charName)}</div>
       </div>
     </div>
 
     <!-- Main series -->
     <div style="border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;">
-      <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.mainSeries)}</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.mainSeries)}</div>
       <div style="display:flex;flex-wrap:wrap;margin-top:4px;">${seriesChips}</div>
     </div>
 
     <!-- FUB / Parting / Other -->
     <div style="border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;">
-      <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.fub)} / ${escHtml(t.parting)} / ${escHtml(t.otherGenre)}</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.fub)} / ${escHtml(t.parting)} / ${escHtml(t.otherGenre)}</div>
       <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#c8deff;line-height:1.8;">
         ${escHtml(fubLabel)} &nbsp;·&nbsp; ${escHtml(partingLabel)} &nbsp;·&nbsp; ${escHtml(otherLabel)}
       </div>
@@ -646,19 +650,19 @@ function renderCard() {
 
     <!-- Acct type (full width) -->
     <div style="grid-column:1/-1;border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;">
-      <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.acctType)}</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.acctType)}</div>
       <div style="display:flex;flex-wrap:wrap;">${acctChipsHtml}</div>
     </div>
 
     <!-- Dislike -->
     <div style="border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;">
-      <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.dislike)}</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.dislike)}</div>
       <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#c8deff;line-height:1.7;">${escHtml(dislike)}</div>
     </div>
 
     <!-- Pairing -->
     <div style="border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;">
-      <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.pairing)}</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.pairing)}</div>
       <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#c8deff;line-height:1.7;">${escHtml(pairing)}</div>
     </div>
 
@@ -670,11 +674,6 @@ function renderCard() {
     ${freeTextHtml}
   </div>
   ` : ''}
-
-  <!-- Blink text -->
-  <div style="position:relative;font-family:'Press Start 2P',monospace;font-size:9px;color:#182840;letter-spacing:3px;text-align:center;">
-    — SCROLL TO EXPLORE —
-  </div>
 
   <!-- Footer credit -->
   <div style="position:relative;margin-top:18px;font-family:'Press Start 2P',monospace;font-size:10px;color:#0d1e32;letter-spacing:1px;text-align:center;">
@@ -695,17 +694,23 @@ function updateCard() {
    DOWNLOAD
 ═══════════════════════════════════════ */
 async function downloadCard() {
-  const el = document.getElementById('preview');
-  const canvas = await html2canvas(el, {
-    backgroundColor: '#000814',
-    scale: 2,
-    useCORS: true,
-    allowTaint: true,
-  });
-  const a = document.createElement('a');
-  a.download = 'trchinsou-title.png';
-  a.href = canvas.toDataURL('image/png');
-  a.click();
+  try {
+    await document.fonts.ready;
+    const el = document.getElementById('preview');
+    const canvas = await html2canvas(el, {
+      backgroundColor: '#000814',
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+    });
+    const a = document.createElement('a');
+    a.download = 'trchinsou-title.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  } catch(e) {
+    const msg = lang==='ko' ? '저장 실패' : lang==='ja' ? '保存失敗' : 'Save failed';
+    alert(msg);
+  }
 }
 
 /* ═══════════════════════════════════════

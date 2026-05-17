@@ -186,11 +186,11 @@ textarea.form-input{resize:vertical;min-height:70px;line-height:1.7;}
     <!-- mainSeries -->
     <div class="form-section">
       <label class="form-label" id="lbl-mainseries">주력 시리즈</label>
-      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#cc4444;margin-bottom:4px;cursor:pointer;user-select:none;" id="lbl-series-old" onclick="toggleSeriesGroup('old')">── 구작</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#cc4444;margin-bottom:4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('old')"><span id="lbl-series-old">── 구작</span> <span style="font-size:12px;color:#cc4444;">[+]</span></div>
       <div class="check-group" id="series-old-group"></div>
-      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#cc4444;margin:6px 0 4px;cursor:pointer;user-select:none;" id="lbl-series-new" onclick="toggleSeriesGroup('new')">── 신작</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#cc4444;margin:6px 0 4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('new')"><span id="lbl-series-new">── 신작</span> <span style="font-size:12px;color:#cc4444;">[+]</span></div>
       <div class="check-group" id="series-new-group"></div>
-      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#cc4444;margin:6px 0 4px;cursor:pointer;user-select:none;" id="lbl-series-extra" onclick="toggleSeriesGroup('extra')">── 기타</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#cc4444;margin:6px 0 4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('extra')"><span id="lbl-series-extra">── 기타</span> <span style="font-size:12px;color:#cc4444;">[+]</span></div>
       <div class="check-group" id="series-extra-group"></div>
     </div>
 
@@ -326,7 +326,7 @@ const SERIES=[
   {id:'th17',num:'17',ko:'귀형수',ja:'鬼形獣',en:'WBaWC',group:'new'},
   {id:'th18',num:'18',ko:'홍롱동',ja:'虹龍洞',en:'UM',group:'new'},
   {id:'th19',num:'19',ko:'수왕원',ja:'獣王園',en:'UDoaLG',group:'new'},
-  {id:'th20',num:'20',ko:'비상천',ja:'非想天則',en:'FW',group:'new'},
+  {id:'th20',num:'20',ko:'금성경',ja:'金城鏡',en:'FW',group:'new'},
   {id:'manga',num:'',ko:'서적작',ja:'書籍作',en:'Books/Manga',group:'extra'},
   {id:'music',num:'',ko:'음악작품',ja:'音楽作品',en:'Music',group:'extra'},
   {id:'spinoff',num:'',ko:'스핀오프',ja:'スピンオフ',en:'Spin-offs',group:'extra'},
@@ -434,8 +434,9 @@ function toggleSeriesGroup(group) {
 ═══════════════════════════════════════ */
 function setLang(l) {
   lang = l;
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  document.querySelectorAll('.lang-btn').forEach((b,i)=>{
+    b.classList.toggle('active', ['ko','ja','en'][i]===l);
+  });
   applyI18N();
   buildCharGrid();
   buildAcctChips();
@@ -526,10 +527,6 @@ function getCharData(id) {
   return CHARS.find(c => c.id === id) || CHARS[0];
 }
 
-function getLabel(key) {
-  return I18N[lang][key] || I18N.ko[key];
-}
-
 function renderCard() {
   const t = I18N[lang];
   const char = getCharData(selectedChar);
@@ -561,7 +558,7 @@ function renderCard() {
   const seriesChips = selectedSeries.length > 0
     ? selectedSeries.map(s => {
         const name = (s.num ? 'TH'+s.num+' ' : '') + (s[lang]||s.en);
-        return `<span style="display:inline-block;border:1px solid #660000;padding:2px 8px;margin:2px;font-size:12px;font-family:'Noto Serif JP',serif;color:#ffaaaa;">${name}</span>`;
+        return `<span style="display:inline-block;border:1px solid #660000;padding:2px 8px;margin:2px;font-size:14px;font-family:'Noto Serif JP',serif;color:#ffaaaa;">${name}</span>`;
       }).join('')
     : `<span style="color:#662222;">${lang==='ko'?'미선택':lang==='ja'?'未選択':'None'}</span>`;
   const fubLabel = {free:t.free,r4r:t.r4r}[selectedFub];
@@ -574,7 +571,7 @@ function renderCard() {
     const label = a[lang] || a.ko;
     return `<span style="
       font-family:'Noto Serif JP',serif;
-      font-size:11px;
+      font-size:14px;
       color:${on?'#ffcccc':'#441818'};
       padding:3px 10px;
       border:1px solid ${on?'#881818':'#2a0000'};
@@ -589,7 +586,7 @@ function renderCard() {
     return `<div style="display:flex;align-items:center;gap:10px;border-left:3px solid #880000;padding-left:12px;margin-bottom:12px;">
       <img src="${iconSrc}" alt="" style="width:24px;height:24px;image-rendering:pixelated;image-rendering:crisp-edges;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 0 4px rgba(200,40,40,.4));">
       <span style="font-family:'Noto Serif JP',serif;font-size:14px;color:#ff9090;">${koText}</span>
-      <span style="font-family:'Noto Serif JP',serif;font-size:10px;color:#662222;margin-left:2px;">${jpText}</span>
+      <span style="font-family:'Noto Serif JP',serif;font-size:12px;color:#662222;margin-left:2px;">${jpText}</span>
     </div>`;
   }
 
@@ -668,15 +665,15 @@ function renderCard() {
       ${sectionHd(sakuyaSrc, lang==='ko'?'SNS 정책':lang==='ja'?'SNSポリシー':'SNS Policy', lang==='ko'?'SNSポリシー':lang==='ja'?'SNS Policy':'SNSポリシー')}
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding-left:4px;">
         <div>
-          <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#662020;margin-bottom:5px;">${t.fub}</div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#662020;margin-bottom:5px;">${t.fub}</div>
           <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#ffcccc;">${escHtml(fubLabel)}</div>
         </div>
         <div>
-          <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#662020;margin-bottom:5px;">${t.parting}</div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#662020;margin-bottom:5px;">${t.parting}</div>
           <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#ffcccc;">${escHtml(partingLabel)}</div>
         </div>
         <div>
-          <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#662020;margin-bottom:5px;">${t.otherGenre}</div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#662020;margin-bottom:5px;">${t.otherGenre}</div>
           <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#ffcccc;">${escHtml(otherLabel)}</div>
         </div>
       </div>
@@ -687,11 +684,11 @@ function renderCard() {
       ${sectionHd(youmuSrc, lang==='ko'?'기타':lang==='ja'?'その他':'Other', lang==='ko'?'その他':lang==='ja'?'Other':'その他')}
       <div style="display:flex;flex-direction:column;gap:8px;padding-left:4px;">
         <div style="border-left:2px solid #551010;padding:6px 14px;background:rgba(100,0,0,.05);">
-          <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#884040;margin-bottom:3px;">${t.dislike}</div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#884040;margin-bottom:3px;">${t.dislike}</div>
           <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#ffcccc;">${escHtml(dislike)}</div>
         </div>
         <div style="border-left:2px solid #551010;padding:6px 14px;background:rgba(100,0,0,.05);">
-          <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#884040;margin-bottom:3px;">${t.pairing}</div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#884040;margin-bottom:3px;">${t.pairing}</div>
           <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#ffcccc;">${escHtml(pairing)}</div>
         </div>
       </div>
@@ -717,9 +714,9 @@ function renderCard() {
     align-items:center;
     gap:10px;
   ">
-    <span style="font-family:'Press Start 2P',monospace;font-size:7px;color:#440000;letter-spacing:2px;">Touhou Project © ZUN</span>
+    <span style="font-family:'Press Start 2P',monospace;font-size:10px;color:#440000;letter-spacing:2px;">Touhou Project © ZUN</span>
     <span style="color:#330000;">·</span>
-    <span style="font-family:'Press Start 2P',monospace;font-size:7px;color:#440000;letter-spacing:2px;">Sprites © Touhou 16×16 Mini Pack</span>
+    <span style="font-family:'Press Start 2P',monospace;font-size:10px;color:#440000;letter-spacing:2px;">Sprites © Touhou 16×16 Mini Pack</span>
   </div>
 
 </div>
@@ -744,17 +741,22 @@ function updateCard() {
    DOWNLOAD
 ═══════════════════════════════════════ */
 async function downloadCard() {
-  const el = document.getElementById('preview');
-  const canvas = await html2canvas(el, {
-    backgroundColor: '#060002',
-    scale: 2,
-    useCORS: true,
-    allowTaint: true,
-  });
-  const a = document.createElement('a');
-  a.download = 'trchinsou-spellcard.png';
-  a.href = canvas.toDataURL('image/png');
-  a.click();
+  try {
+    await document.fonts.ready;
+    const el = document.getElementById('preview');
+    const canvas = await html2canvas(el, {
+      backgroundColor: '#060002',
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+    });
+    const a = document.createElement('a');
+    a.download = 'trchinsou-spellcard.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  } catch(e) {
+    alert('저장 실패 / 保存失敗 / Save failed');
+  }
 }
 
 /* ═══════════════════════════════════════

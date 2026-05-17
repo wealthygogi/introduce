@@ -62,12 +62,12 @@ img{display:block;}
 .form-section{margin-bottom:16px;}
 .form-label{
   font-family:'Noto Serif JP','Press Start 2P',monospace;
-  font-size:13px;color:#8070b8;
+  font-size:14px;color:#8070b8;
   display:block;margin-bottom:6px;letter-spacing:1px;
 }
 .form-input{
   background:#080618;border:1px solid #2a2050;color:#d8c8ff;
-  padding:8px;font-family:'Noto Serif JP',serif;font-size:13px;
+  padding:8px;font-family:'Noto Serif JP',serif;font-size:14px;
   width:100%;outline:none;
   transition:border-color .2s;
 }
@@ -77,7 +77,7 @@ textarea.form-input{resize:vertical;}
 /* radio / checkbox labels */
 .radio-group,.check-group{display:flex;flex-wrap:wrap;gap:6px 0;margin-top:2px;}
 .radio-label,.check-label{
-  font-family:'Noto Serif JP','Press Start 2P',monospace;font-size:13px;color:#a090d0;
+  font-family:'Noto Serif JP','Press Start 2P',monospace;font-size:14px;color:#a090d0;
   cursor:pointer;display:inline-flex;align-items:center;gap:5px;
   margin-right:12px;margin-bottom:4px;
   user-select:none;
@@ -102,7 +102,7 @@ textarea.form-input{resize:vertical;}
 .char-item.selected{border-color:#6a5acd;background:rgba(106,90,205,.2);}
 .char-item img{image-rendering:pixelated;image-rendering:crisp-edges;width:32px;height:32px;}
 .char-selected-name{
-  font-family:'Noto Serif JP','Press Start 2P',monospace;font-size:13px;color:#b0a0e0;
+  font-family:'Noto Serif JP','Press Start 2P',monospace;font-size:14px;color:#b0a0e0;
   margin-top:6px;text-align:center;min-height:18px;
 }
 
@@ -176,11 +176,12 @@ textarea.form-input{resize:vertical;}
     <!-- Main Series -->
     <div class="form-section">
       <label class="form-label" data-i18n="mainSeries">주력 시리즈</label>
-      <div class="radio-group">
-        <label class="radio-label"><input type="radio" name="series" value="old" onchange="update()"> <span data-i18n="oldWorks">구작</span></label>
-        <label class="radio-label"><input type="radio" name="series" value="new" checked onchange="update()"> <span data-i18n="newWorks">신작</span></label>
-        <label class="radio-label"><input type="radio" name="series" value="both" onchange="update()"> <span data-i18n="both">양쪽</span></label>
-      </div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:11px;color:#4a3888;margin-bottom:4px;" data-i18n="seriesOld">── 구작</div>
+      <div class="check-group" id="series-old-group"></div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:11px;color:#4a3888;margin:6px 0 4px;" data-i18n="seriesNew">── 신작</div>
+      <div class="check-group" id="series-new-group"></div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:11px;color:#4a3888;margin:6px 0 4px;" data-i18n="seriesExtra">── 기타</div>
+      <div class="check-group" id="series-extra-group"></div>
     </div>
 
     <!-- Account Type -->
@@ -291,6 +292,31 @@ const CHARS=[
   {id:'clownpiece',p:B+'1.%20Mainline%20Games/%5B15%5D%20Kanjuden%20~%20Legacy%20of%20Lunatic%20Kingdom/Clownpiece.png',ko:'클라운피스',ja:'クラウンピース',en:'Clownpiece'},
   {id:'okina',p:B+'1.%20Mainline%20Games/%5B16%5D%20Tenkuushou%20~%20Hidden%20Star%20in%20Four%20Seasons/Okina%20Matara.png',ko:'마타라 오키나',ja:'摩多羅隠岐奈',en:'Okina Matara'},
 ];
+const SERIES=[
+  {id:'th1',num:'01',ko:'영이전',ja:'靈異伝',en:'HRtP',group:'old'},
+  {id:'th2',num:'02',ko:'봉마록',ja:'封魔録',en:'SoEW',group:'old'},
+  {id:'th3',num:'03',ko:'몽시공',ja:'夢時空',en:'PoDD',group:'old'},
+  {id:'th4',num:'04',ko:'환상향',ja:'幻想郷',en:'LLS',group:'old'},
+  {id:'th5',num:'05',ko:'괴기담',ja:'怪綺談',en:'MS',group:'old'},
+  {id:'th6',num:'06',ko:'홍마향',ja:'紅魔郷',en:'EoSD',group:'new'},
+  {id:'th7',num:'07',ko:'요요몽',ja:'妖々夢',en:'PCB',group:'new'},
+  {id:'th8',num:'08',ko:'영야초',ja:'永夜抄',en:'IN',group:'new'},
+  {id:'th9',num:'09',ko:'화영총',ja:'花映塚',en:'PoFV',group:'new'},
+  {id:'th10',num:'10',ko:'풍신록',ja:'風神録',en:'MoF',group:'new'},
+  {id:'th11',num:'11',ko:'지령전',ja:'地霊殿',en:'SA',group:'new'},
+  {id:'th12',num:'12',ko:'성련선',ja:'星蓮船',en:'UFO',group:'new'},
+  {id:'th13',num:'13',ko:'신령묘',ja:'神霊廟',en:'TD',group:'new'},
+  {id:'th14',num:'14',ko:'휘침성',ja:'輝針城',en:'DDC',group:'new'},
+  {id:'th15',num:'15',ko:'감주전',ja:'感朱伝',en:'LoLK',group:'new'},
+  {id:'th16',num:'16',ko:'천공장',ja:'天空璋',en:'HSiFS',group:'new'},
+  {id:'th17',num:'17',ko:'귀형수',ja:'鬼形獣',en:'WBaWC',group:'new'},
+  {id:'th18',num:'18',ko:'홍롱동',ja:'虹龍洞',en:'UM',group:'new'},
+  {id:'th19',num:'19',ko:'수왕원',ja:'獣王園',en:'UDoaLG',group:'new'},
+  {id:'th20',num:'20',ko:'비상천',ja:'非想天則',en:'FW',group:'new'},
+  {id:'manga',num:'',ko:'서적작',ja:'書籍作',en:'Books/Manga',group:'extra'},
+  {id:'music',num:'',ko:'음악작품',ja:'音楽作品',en:'Music',group:'extra'},
+  {id:'spinoff',num:'',ko:'스핀오프',ja:'スピンオフ',en:'Spin-offs',group:'extra'},
+];
 const ACCT=[
   {id:'daily',ko:'일상',ja:'日常',en:'Daily'},{id:'drawing',ko:'그림',ja:'絵',en:'Drawing'},
   {id:'game',ko:'게임',ja:'ゲーム',en:'Gaming'},{id:'story',ko:'썰',ja:'ネタ',en:'Story'},
@@ -300,9 +326,9 @@ const ACCT=[
   {id:'fan',ko:'앓이',ja:'推し活',en:'Fangirling'},
 ];
 const I18N={
-  ko:{title:'동방 트친소',nickname:'닉네임',callMe:'호칭',bestChar:'최애 캐릭터',mainSeries:'주력 시리즈',acctType:'계정 유형',fub:'FUB',parting:'이별은',otherGenre:'타장르 언급',dislike:'불호소재 / 지뢰',pairing:'커플링',freeText:'자유서술',oldWorks:'구작',newWorks:'신작',both:'양쪽',free:'FREE',r4r:'R4R',unfollow:'언팔',blockunfollow:'블언블',block:'블락',none:'없음',sometimes:'가끔',often:'많음',download:'📸 이미지로 저장',back:'← 목록으로',selectChar:'캐릭터 선택',conceptTitle:'CONCEPT A: RPG 상태창',ph_nick:'닉네임을 입력하세요',ph_call:'아무렇게나 / ○○야, ○○씨 OK',ph_dis:'없음',ph_pair:'○○×○○',ph_free:'자유롭게 적어주세요'},
-  ja:{title:'東方 自己紹介',nickname:'ニックネーム',callMe:'呼び方',bestChar:'推しキャラ',mainSeries:'主力シリーズ',acctType:'アカウントタイプ',fub:'FUB',parting:'別れは',otherGenre:'他ジャンル言及',dislike:'地雷・苦手',pairing:'カップリング',freeText:'自由記述',oldWorks:'旧作',newWorks:'新作',both:'両方',free:'FREE',r4r:'R4R',unfollow:'アンフォロー',blockunfollow:'B解',block:'ブロック',none:'なし',sometimes:'たまに',often:'多め',download:'📸 画像として保存',back:'← 一覧へ',selectChar:'キャラを選ぶ',conceptTitle:'CONCEPT A: RPGステータス',ph_nick:'ニックネームを入力',ph_call:'なんでもOK',ph_dis:'なし',ph_pair:'○○×○○',ph_free:'自由に書いてください'},
-  en:{title:'Touhou Self-Intro',nickname:'Nickname',callMe:'What to call me',bestChar:'Favorite Character',mainSeries:'Main Series',acctType:'Account Type',fub:'FUB',parting:'Parting',otherGenre:'Other Genres',dislike:'Dislikes / Triggers',pairing:'Pairings',freeText:'Free Notes',oldWorks:'Old Works',newWorks:'New Works',both:'Both',free:'FREE',r4r:'R4R',unfollow:'Unfollow',blockunfollow:'Block+Unblock',block:'Block',none:'None',sometimes:'Sometimes',often:'Often',download:'📸 Save as Image',back:'← Back',selectChar:'Select Character',conceptTitle:'CONCEPT A: RPG Status',ph_nick:'Enter your nickname',ph_call:'Anything is fine',ph_dis:'None',ph_pair:'CharA × CharB',ph_free:'Write freely'},
+  ko:{title:'동방 트친소',nickname:'닉네임',callMe:'호칭',bestChar:'최애 캐릭터',mainSeries:'주력 시리즈',acctType:'계정 유형',fub:'FUB',parting:'이별은',otherGenre:'타장르 언급',dislike:'불호소재 / 지뢰',pairing:'커플링',freeText:'자유서술',seriesOld:'── 구작',seriesNew:'── 신작',seriesExtra:'── 기타',free:'FREE',r4r:'R4R',unfollow:'언팔',blockunfollow:'블언블',block:'블락',none:'없음',sometimes:'가끔',often:'많음',download:'📸 이미지로 저장',back:'← 목록으로',selectChar:'캐릭터 선택',conceptTitle:'CONCEPT A: RPG 상태창',ph_nick:'닉네임을 입력하세요',ph_call:'아무렇게나 / ○○야, ○○씨 OK',ph_dis:'없음',ph_pair:'○○×○○',ph_free:'자유롭게 적어주세요'},
+  ja:{title:'東方 自己紹介',nickname:'ニックネーム',callMe:'呼び方',bestChar:'推しキャラ',mainSeries:'主力シリーズ',acctType:'アカウントタイプ',fub:'FUB',parting:'別れは',otherGenre:'他ジャンル言及',dislike:'地雷・苦手',pairing:'カップリング',freeText:'自由記述',seriesOld:'── 旧作',seriesNew:'── 新作',seriesExtra:'── その他',free:'FREE',r4r:'R4R',unfollow:'アンフォロー',blockunfollow:'B解',block:'ブロック',none:'なし',sometimes:'たまに',often:'多め',download:'📸 画像として保存',back:'← 一覧へ',selectChar:'キャラを選ぶ',conceptTitle:'CONCEPT A: RPGステータス',ph_nick:'ニックネームを入力',ph_call:'なんでもOK',ph_dis:'なし',ph_pair:'○○×○○',ph_free:'自由に書いてください'},
+  en:{title:'Touhou Self-Intro',nickname:'Nickname',callMe:'What to call me',bestChar:'Favorite Character',mainSeries:'Main Series',acctType:'Account Type',fub:'FUB',parting:'Parting',otherGenre:'Other Genres',dislike:'Dislikes / Triggers',pairing:'Pairings',freeText:'Free Notes',seriesOld:'── Old Works',seriesNew:'── New Works',seriesExtra:'── Extra',free:'FREE',r4r:'R4R',unfollow:'Unfollow',blockunfollow:'Block+Unblock',block:'Block',none:'None',sometimes:'Sometimes',often:'Often',download:'📸 Save as Image',back:'← Back',selectChar:'Select Character',conceptTitle:'CONCEPT A: RPG Status',ph_nick:'Enter your nickname',ph_call:'Anything is fine',ph_dis:'None',ph_pair:'CharA × CharB',ph_free:'Write freely'},
 };
 
 /* ═══════════════════════════════════
@@ -311,6 +337,7 @@ const I18N={
 let lang = 'ko';
 let selectedChar = 'reimu';
 let checkedAcct = new Set(['daily','chat','fan','rt','like']);
+let checkedSeries = new Set(['th6']);
 
 /* ═══════════════════════════════════
    INIT CHAR GRID
@@ -370,6 +397,26 @@ function initAcctChecks() {
 }
 
 /* ═══════════════════════════════════
+   SERIES CHECKBOXES
+═══════════════════════════════════ */
+function buildSeriesGrid(lang) {
+  ['old','new','extra'].forEach(group => {
+    const el = document.getElementById('series-'+group+'-group');
+    if (!el) return;
+    el.innerHTML = SERIES.filter(s=>s.group===group).map(s => {
+      const label = (s.num ? 'TH'+s.num+' ' : '') + (s[lang]||s.en);
+      const on = checkedSeries.has(s.id);
+      return `<label class="check-label"><input type="checkbox" ${on?'checked':''} onchange="toggleSeries('${s.id}',this.checked)"> <span>${label}</span></label>`;
+    }).join('');
+  });
+}
+
+function toggleSeries(id, on) {
+  if (on) checkedSeries.add(id); else checkedSeries.delete(id);
+  update();
+}
+
+/* ═══════════════════════════════════
    HELPERS
 ═══════════════════════════════════ */
 function getRadio(name) {
@@ -389,15 +436,18 @@ function nlToBr(s) {
 function collectData() {
   const t = I18N[lang];
   const char = CHARS.find(c => c.id === selectedChar) || CHARS[0];
-  const series = getRadio('series');
   const fub = getRadio('fub');
   const parting = getRadio('parting');
   const other = getRadio('other');
+  const selectedSeries = SERIES.filter(s => checkedSeries.has(s.id));
+  const seriesLabel = selectedSeries.length > 0
+    ? selectedSeries.map(s => (s.num ? 'TH'+s.num : '') + ' ' + (s[lang]||s.en)).join(' / ')
+    : (lang==='ko'?'미선택':lang==='ja'?'未選択':'None');
   return {
     nick: document.getElementById('f-nick').value.trim() || t.ph_nick,
     call: document.getElementById('f-call').value.trim() || t.ph_call,
     char,
-    seriesLabel: t[series === 'old' ? 'oldWorks' : series === 'new' ? 'newWorks' : 'both'],
+    seriesLabel,
     fubLabel: t[fub === 'free' ? 'free' : 'r4r'],
     partingLabel: t[parting === 'unfollow' ? 'unfollow' : parting === 'blockunfollow' ? 'blockunfollow' : 'block'],
     otherLabel: t[other === 'none' ? 'none' : other === 'sometimes' ? 'sometimes' : 'often'],
@@ -421,8 +471,8 @@ function renderCard(data, language) {
     const on = data.checkedAcct.has(a.id);
     const label = a[language] || a.en;
     const style = on
-      ? 'font-family:\'Noto Serif JP\',serif;font-size:12px;color:#c8b8f0;padding:4px 8px;border:1px solid #4a3898;display:inline-block;margin:2px;'
-      : 'font-family:\'Noto Serif JP\',serif;font-size:12px;color:#302060;padding:4px 8px;border:1px solid #1a1040;display:inline-block;margin:2px;';
+      ? 'font-family:\'Noto Serif JP\',serif;font-size:14px;color:#c8b8f0;padding:4px 8px;border:1px solid #4a3898;display:inline-block;margin:2px;'
+      : 'font-family:\'Noto Serif JP\',serif;font-size:14px;color:#302060;padding:4px 8px;border:1px solid #1a1040;display:inline-block;margin:2px;';
     const prefix = on ? '[&#9632;] ' : '[&#9633;] ';
     return `<span style="${style}">${prefix}${esc(label)}</span>`;
   }).join('');
@@ -507,15 +557,15 @@ function renderCard(data, language) {
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
           <div style="min-width:0;">
             <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#6050a8;margin-bottom:5px;word-break:break-word;">${esc(t.fub)}</div>
-            <div style="font-family:'Noto Serif JP',serif;font-size:13px;color:#c0b0e8;word-break:break-word;">${esc(fubLabel)}</div>
+            <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#c0b0e8;word-break:break-word;">${esc(fubLabel)}</div>
           </div>
           <div style="min-width:0;">
             <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#6050a8;margin-bottom:5px;word-break:break-word;">${esc(t.parting)}</div>
-            <div style="font-family:'Noto Serif JP',serif;font-size:13px;color:#c0b0e8;word-break:break-word;">${esc(partingLabel)}</div>
+            <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#c0b0e8;word-break:break-word;">${esc(partingLabel)}</div>
           </div>
           <div style="min-width:0;">
             <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#6050a8;margin-bottom:5px;word-break:break-word;">${esc(t.otherGenre)}</div>
-            <div style="font-family:'Noto Serif JP',serif;font-size:13px;color:#c0b0e8;word-break:break-word;">${esc(otherLabel)}</div>
+            <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#c0b0e8;word-break:break-word;">${esc(otherLabel)}</div>
           </div>
         </div>
 
@@ -524,19 +574,19 @@ function renderCard(data, language) {
         <!-- DISLIKE -->
         <div>
           <div style="font-family:'Press Start 2P',monospace;font-size:9px;color:#7050a8;margin-bottom:5px;">${esc(t.dislike)}</div>
-          <div style="font-size:13px;color:#ccc;line-height:1.8;padding:6px 10px;border:1px solid #1a1640;background:rgba(106,90,205,0.04);">${esc(dis)}</div>
+          <div style="font-size:14px;color:#ccc;line-height:1.8;padding:6px 10px;border:1px solid #1a1640;background:rgba(106,90,205,0.04);">${esc(dis)}</div>
         </div>
 
         <!-- PAIRING -->
         <div>
           <div style="font-family:'Press Start 2P',monospace;font-size:9px;color:#7050a8;margin-bottom:5px;">${esc(t.pairing)}</div>
-          <div style="font-size:13px;color:#ccc;line-height:1.8;padding:6px 10px;border:1px solid #1a1640;background:rgba(106,90,205,0.04);">${esc(pair)}</div>
+          <div style="font-size:14px;color:#ccc;line-height:1.8;padding:6px 10px;border:1px solid #1a1640;background:rgba(106,90,205,0.04);">${esc(pair)}</div>
         </div>
 
         <!-- FREE TEXT -->
         <div>
           <div style="font-family:'Press Start 2P',monospace;font-size:9px;color:#7050a8;margin-bottom:5px;">${esc(t.freeText)}</div>
-          <div style="font-size:13px;color:#ccc;line-height:1.8;padding:6px 10px;border:1px solid #1a1640;background:rgba(106,90,205,0.04);">${nlToBr(free)}</div>
+          <div style="font-size:14px;color:#ccc;line-height:1.8;padding:6px 10px;border:1px solid #1a1640;background:rgba(106,90,205,0.04);">${nlToBr(free)}</div>
         </div>
 
       </div><!-- /info col -->
@@ -598,14 +648,10 @@ function setLang(l) {
   });
   updateCharName();
 
+  // Re-render series checkboxes for new language
+  buildSeriesGrid(l);
+
   // Re-render radio span labels
-  document.querySelectorAll('input[name="series"]').forEach(r => {
-    const span = r.nextElementSibling;
-    if (span) {
-      const map = {old:'oldWorks',new:'newWorks',both:'both'};
-      span.textContent = t[map[r.value]] || r.value;
-    }
-  });
   document.querySelectorAll('input[name="fub"]').forEach(r => {
     const span = r.nextElementSibling;
     if (span) {
@@ -653,6 +699,7 @@ async function downloadCard() {
 ═══════════════════════════════════ */
 initCharGrid();
 initAcctChecks();
+buildSeriesGrid('ko');
 update();
 </script>
 </body>

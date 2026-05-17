@@ -60,8 +60,8 @@ img{display:block;}
 
 .form-section{display:flex;flex-direction:column;gap:6px;}
 .form-label{
-  font-family:'Press Start 2P',monospace;font-size:9px;color:#3a7acc;
-  letter-spacing:1px;
+  font-family:'Noto Serif JP','Press Start 2P',monospace;font-size:13px;color:#3a7acc;
+  letter-spacing:0;
 }
 .form-input{
   background:#000d1f;border:1px solid #0a2040;color:#c8deff;
@@ -92,7 +92,7 @@ textarea.form-input{resize:vertical;min-height:70px;line-height:1.7;}
 /* radio group */
 .radio-group{display:flex;flex-wrap:wrap;gap:6px;}
 .radio-opt{
-  font-family:'Press Start 2P',monospace;font-size:9px;color:#1a3a60;
+  font-family:'Noto Serif JP','Press Start 2P',monospace;font-size:13px;color:#1a3a60;
   padding:5px 10px;border:1px solid #0a2040;cursor:pointer;
   transition:all .15s;user-select:none;
 }
@@ -102,7 +102,7 @@ textarea.form-input{resize:vertical;min-height:70px;line-height:1.7;}
 /* checkbox chips */
 .check-group{display:flex;flex-wrap:wrap;gap:5px;}
 .check-chip{
-  font-family:'Press Start 2P',monospace;font-size:7px;color:#122040;
+  font-family:'Noto Serif JP','Press Start 2P',monospace;font-size:12px;color:#122040;
   padding:4px 8px;border:1px solid #071828;cursor:pointer;
   transition:all .15s;user-select:none;
 }
@@ -571,20 +571,20 @@ function renderCard() {
     <div style="grid-column:1/-1;border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;display:flex;align-items:center;gap:14px;">
       <img src="${charSrc}" alt="${escHtml(charName)}" style="width:36px;height:36px;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 0 6px rgba(70,140,255,.5));flex-shrink:0;">
       <div>
-        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#3a7acc;letter-spacing:2px;margin-bottom:8px;">${escHtml(t.bestChar)}</div>
+        <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.bestChar)}</div>
         <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#c8deff;font-weight:700;">${escHtml(charName)}</div>
       </div>
     </div>
 
     <!-- Main series -->
     <div style="border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;">
-      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#3a7acc;letter-spacing:2px;margin-bottom:8px;">${escHtml(t.mainSeries)}</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.mainSeries)}</div>
       <div style="font-family:'Noto Serif JP',serif;font-size:13px;color:#c8deff;">${escHtml(seriesLabel)}</div>
     </div>
 
     <!-- FUB / Parting / Other -->
     <div style="border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;">
-      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#3a7acc;letter-spacing:2px;margin-bottom:8px;">${escHtml(t.fub)} / ${escHtml(t.parting)} / ${escHtml(t.otherGenre)}</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.fub)} / ${escHtml(t.parting)} / ${escHtml(t.otherGenre)}</div>
       <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#c8deff;line-height:1.8;">
         ${escHtml(fubLabel)} &nbsp;·&nbsp; ${escHtml(partingLabel)} &nbsp;·&nbsp; ${escHtml(otherLabel)}
       </div>
@@ -592,19 +592,19 @@ function renderCard() {
 
     <!-- Acct type (full width) -->
     <div style="grid-column:1/-1;border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;">
-      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#3a7acc;letter-spacing:2px;margin-bottom:8px;">${escHtml(t.acctType)}</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.acctType)}</div>
       <div style="display:flex;flex-wrap:wrap;">${acctChipsHtml}</div>
     </div>
 
     <!-- Dislike -->
     <div style="border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;">
-      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#3a7acc;letter-spacing:2px;margin-bottom:8px;">${escHtml(t.dislike)}</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.dislike)}</div>
       <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#c8deff;line-height:1.7;">${escHtml(dislike)}</div>
     </div>
 
     <!-- Pairing -->
     <div style="border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;">
-      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#3a7acc;letter-spacing:2px;margin-bottom:8px;">${escHtml(t.pairing)}</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#3a7acc;letter-spacing:1px;margin-bottom:8px;">${escHtml(t.pairing)}</div>
       <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#c8deff;line-height:1.7;">${escHtml(pairing)}</div>
     </div>
 

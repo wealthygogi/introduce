@@ -61,8 +61,8 @@ img{display:block;}
 }
 .form-section{margin-bottom:16px;}
 .form-label{
-  font-family:'Press Start 2P',monospace;
-  font-size:9px;color:#8070b8;
+  font-family:'Noto Serif JP','Press Start 2P',monospace;
+  font-size:13px;color:#8070b8;
   display:block;margin-bottom:6px;letter-spacing:1px;
 }
 .form-input{
@@ -77,7 +77,7 @@ textarea.form-input{resize:vertical;}
 /* radio / checkbox labels */
 .radio-group,.check-group{display:flex;flex-wrap:wrap;gap:6px 0;margin-top:2px;}
 .radio-label,.check-label{
-  font-family:'Press Start 2P',monospace;font-size:9px;color:#a090d0;
+  font-family:'Noto Serif JP','Press Start 2P',monospace;font-size:13px;color:#a090d0;
   cursor:pointer;display:inline-flex;align-items:center;gap:5px;
   margin-right:12px;margin-bottom:4px;
   user-select:none;
@@ -102,8 +102,8 @@ textarea.form-input{resize:vertical;}
 .char-item.selected{border-color:#6a5acd;background:rgba(106,90,205,.2);}
 .char-item img{image-rendering:pixelated;image-rendering:crisp-edges;width:32px;height:32px;}
 .char-selected-name{
-  font-family:'Press Start 2P',monospace;font-size:9px;color:#b0a0e0;
-  margin-top:6px;text-align:center;min-height:14px;
+  font-family:'Noto Serif JP','Press Start 2P',monospace;font-size:13px;color:#b0a0e0;
+  margin-top:6px;text-align:center;min-height:18px;
 }
 
 /* download btn */
@@ -421,8 +421,8 @@ function renderCard(data, language) {
     const on = data.checkedAcct.has(a.id);
     const label = a[language] || a.en;
     const style = on
-      ? 'font-family:\'Press Start 2P\',monospace;font-size:7px;color:#c8b8f0;padding:4px 8px;border:1px solid #4a3898;display:inline-block;margin:2px;'
-      : 'font-family:\'Press Start 2P\',monospace;font-size:7px;color:#302060;padding:4px 8px;border:1px solid #1a1040;display:inline-block;margin:2px;';
+      ? 'font-family:\'Noto Serif JP\',serif;font-size:12px;color:#c8b8f0;padding:4px 8px;border:1px solid #4a3898;display:inline-block;margin:2px;'
+      : 'font-family:\'Noto Serif JP\',serif;font-size:12px;color:#302060;padding:4px 8px;border:1px solid #1a1040;display:inline-block;margin:2px;';
     const prefix = on ? '[&#9632;] ' : '[&#9633;] ';
     return `<span style="${style}">${prefix}${esc(label)}</span>`;
   }).join('');
@@ -505,17 +505,17 @@ function renderCard(data, language) {
 
         <!-- META ROW -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
-          <div>
-            <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#6050a8;margin-bottom:5px;">${esc(t.fub)}</div>
-            <div style="font-family:'Press Start 2P',monospace;font-size:10px;color:#c0b0e8;">${esc(fubLabel)}</div>
+          <div style="min-width:0;">
+            <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#6050a8;margin-bottom:5px;word-break:break-word;">${esc(t.fub)}</div>
+            <div style="font-family:'Noto Serif JP',serif;font-size:13px;color:#c0b0e8;word-break:break-word;">${esc(fubLabel)}</div>
           </div>
-          <div>
-            <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#6050a8;margin-bottom:5px;">${esc(t.parting)}</div>
-            <div style="font-family:'Press Start 2P',monospace;font-size:10px;color:#c0b0e8;">${esc(partingLabel)}</div>
+          <div style="min-width:0;">
+            <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#6050a8;margin-bottom:5px;word-break:break-word;">${esc(t.parting)}</div>
+            <div style="font-family:'Noto Serif JP',serif;font-size:13px;color:#c0b0e8;word-break:break-word;">${esc(partingLabel)}</div>
           </div>
-          <div>
-            <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#6050a8;margin-bottom:5px;">${esc(t.otherGenre)}</div>
-            <div style="font-family:'Press Start 2P',monospace;font-size:10px;color:#c0b0e8;">${esc(otherLabel)}</div>
+          <div style="min-width:0;">
+            <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#6050a8;margin-bottom:5px;word-break:break-word;">${esc(t.otherGenre)}</div>
+            <div style="font-family:'Noto Serif JP',serif;font-size:13px;color:#c0b0e8;word-break:break-word;">${esc(otherLabel)}</div>
           </div>
         </div>
 

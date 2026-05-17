@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>東方 트친소 メーカー</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Serif+JP:wght@400;700&family=DotGothic16&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:#09080f;color:#fff;
+  font-family:'Noto Serif JP',serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+img{display:block;image-rendering:pixelated;image-rendering:crisp-edges;}
+
+/* ── scanline overlay ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:repeating-linear-gradient(
+    0deg,
+    rgba(0,0,0,.08) 0px,rgba(0,0,0,.08) 1px,
+    transparent 1px,transparent 3px
+  );
+}
+
+/* ── nav ── */
+.top-nav{
+  position:sticky;top:0;z-index:100;
+  height:52px;
+  background:rgba(4,3,12,.97);
+  border-bottom:1px solid #1e1e30;
+  padding:0 24px;
+  display:flex;align-items:center;gap:12px;
+}
+.nav-logo{
+  font-family:'Press Start 2P',monospace;font-size:8px;
+  color:#e06060;margin-right:auto;letter-spacing:1px;
+  text-shadow:0 0 12px rgba(224,96,96,.5);
+}
+.lang-btns{display:flex;gap:4px;}
+.lang-btn{
+  font-family:'Press Start 2P',monospace;font-size:5px;
+  background:none;border:1px solid #2a2050;color:#5a4a80;
+  padding:5px 9px;cursor:pointer;transition:all .2s;
+}
+.lang-btn:hover,.lang-btn.active{
+  color:#e0d0ff;border-color:#8060c0;background:rgba(100,80,180,.15);
+}
+
+/* ── hero ── */
+.hero{
+  position:relative;z-index:1;
+  text-align:center;
+  padding:64px 24px 48px;
+}
+.hero-sprites{
+  display:flex;justify-content:center;align-items:flex-end;gap:0;
+  margin-bottom:24px;
+}
+.hero-sprites img{
+  width:96px;height:96px;
+  filter:drop-shadow(0 0 8px rgba(255,200,180,.3));
+}
+.hero-sprites img.mid{
+  width:128px;height:128px;
+  filter:drop-shadow(0 0 16px rgba(255,160,120,.5));
+}
+.hero-title{
+  font-family:'Press Start 2P',monospace;
+  font-size:clamp(10px,3vw,18px);
+  color:#fff;
+  letter-spacing:4px;
+  text-shadow:0 0 24px rgba(200,120,120,.6),0 0 48px rgba(180,80,80,.3);
+  margin-bottom:12px;
+  line-height:1.8;
+}
+.hero-sub{
+  font-family:'DotGothic16',monospace;
+  font-size:14px;color:#8070a0;
+  letter-spacing:2px;
+}
+.hero-desc{
+  margin-top:16px;
+  font-size:12px;color:#5a5070;
+  font-family:'Press Start 2P',monospace;
+  line-height:2;
+}
+
+/* ── divider ── */
+.divider{
+  text-align:center;
+  font-family:'Press Start 2P',monospace;
+  font-size:7px;color:#1e1830;
+  letter-spacing:8px;
+  padding:8px 24px 24px;
+  position:relative;z-index:1;
+}
+
+/* ── concept grid ── */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;
+  padding:0 24px 64px;
+  max-width:1400px;
+  margin:0 auto;
+  position:relative;z-index:1;
+}
+
+/* ── concept card ── */
+.card{
+  border:1px solid #1e1830;
+  background:#0c0b18;
+  padding:0;
+  overflow:hidden;
+  transition:transform .2s,border-color .2s,box-shadow .2s;
+  cursor:pointer;
+  text-decoration:none;
+  color:inherit;
+  display:flex;flex-direction:column;
+}
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 8px 32px rgba(0,0,0,.6);
+}
+
+/* card accent bar at top */
+.card-bar{height:3px;flex-shrink:0;}
+
+.card-inner{padding:24px;}
+
+.card-badge{
+  font-family:'Press Start 2P',monospace;font-size:6px;
+  letter-spacing:1px;
+  display:inline-block;
+  padding:4px 10px;
+  margin-bottom:16px;
+  border:1px solid currentColor;
+}
+
+.card-preview{
+  height:80px;
+  display:flex;align-items:center;justify-content:center;
+  gap:8px;
+  margin-bottom:16px;
+  overflow:hidden;
+  border-radius:2px;
+  flex-shrink:0;
+  position:relative;
+}
+.card-preview img{
+  position:absolute;
+  width:64px;height:64px;
+}
+
+.card-name{
+  font-family:'Press Start 2P',monospace;
+  font-size:9px;
+  margin-bottom:8px;
+  line-height:1.6;
+}
+.card-desc{
+  font-size:12px;
+  color:#6a6080;
+  line-height:1.8;
+  flex:1;
+}
+
+.card-footer{
+  padding:14px 24px;
+  border-top:1px solid #1a1828;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card-start{
+  font-family:'Press Start 2P',monospace;font-size:6px;
+  transition:letter-spacing .2s;
+}
+.card:hover .card-start{letter-spacing:3px;}
+.card-arrow{
+  font-family:'Press Start 2P',monospace;font-size:8px;
+  transition:transform .2s;
+}
+.card:hover .card-arrow{transform:translateX(4px);}
+
+/* ── per-concept colors ── */
+/* A: RPG */
+.ca{--acc:#6a5acd;--acc2:#c0a8f8;--bg-prev:#1a1640;}
+/* B: SpellCard */
+.cb{--acc:#c04040;--acc2:#f8a0a0;--bg-prev:#200808;}
+/* C: TitleScreen */
+.cc{--acc:#2060c0;--acc2:#80c0ff;--bg-prev:#000814;}
+/* D: Dialogue */
+.cd{--acc:#20a080;--acc2:#80ffd0;--bg-prev:#030c10;}
+/* E: Config */
+.ce{--acc:#d0c040;--acc2:#ffffa0;--bg-prev:#0c0c08;}
+
+.card.ca:hover{border-color:#6a5acd;box-shadow:0 8px 32px rgba(106,90,205,.2);}
+.card.cb:hover{border-color:#c04040;box-shadow:0 8px 32px rgba(192,64,64,.2);}
+.card.cc:hover{border-color:#2060c0;box-shadow:0 8px 32px rgba(32,96,192,.2);}
+.card.cd:hover{border-color:#20a080;box-shadow:0 8px 32px rgba(32,160,128,.2);}
+.card.ce:hover{border-color:#d0c040;box-shadow:0 8px 32px rgba(208,192,64,.2);}
+
+.card-bar{background:var(--acc);}
+.card-badge{color:var(--acc2);border-color:var(--acc);}
+.card-preview{background:var(--bg-prev);}
+.card-name{color:var(--acc2);}
+.card-start{color:var(--acc2);}
+.card-arrow{color:var(--acc);}
+
+/* ── footer ── */
+.site-footer{
+  text-align:center;
+  padding:32px;
+  font-family:'Press Start 2P',monospace;font-size:6px;
+  color:#1e1830;
+  letter-spacing:2px;
+  position:relative;z-index:1;
+  border-top:1px solid #0e0d18;
+}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <span class="nav-logo">東方 트친소</span>
+  <div class="lang-btns">
+    <button class="lang-btn active" onclick="setLang('ko')">한국어</button>
+    <button class="lang-btn" onclick="setLang('ja')">日本語</button>
+    <button class="lang-btn" onclick="setLang('en')">English</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-sprites">
+    <img src="Touhou%2016x16%20Mini%20Pack%20Full/1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Remilia%20Scarlet.png" alt="">
+    <img src="Touhou%2016x16%20Mini%20Pack%20Full/4.%20Other/%5B1%5D%20Main%20Characters/Reimu%20Hakurei.png" alt="" class="mid">
+    <img src="Touhou%2016x16%20Mini%20Pack%20Full/4.%20Other/%5B1%5D%20Main%20Characters/Marisa%20Kirisame.png" alt="">
+  </div>
+  <h1 class="hero-title" data-i18n="title">東方 트친소 メーカー</h1>
+  <p class="hero-sub" data-i18n="subtitle">동방프로젝트 트위터 친구 소개서</p>
+  <p class="hero-desc" data-i18n="desc">5가지 컨셉 중 마음에 드는 것을 골라보세요</p>
+</section>
+
+<div class="divider">✦ ── SELECT YOUR CONCEPT ── ✦</div>
+
+<div class="grid">
+
+  <!-- CONCEPT A: RPG -->
+  <a class="card ca" href="concept-a.html">
+    <div class="card-bar"></div>
+    <div class="card-inner">
+      <span class="card-badge">CONCEPT A</span>
+      <div class="card-preview">
+        <img src="Touhou%2016x16%20Mini%20Pack%20Full/4.%20Other/%5B1%5D%20Main%20Characters/Reimu%20Hakurei.png" style="left:12px;top:8px;" alt="">
+        <img src="Touhou%2016x16%20Mini%20Pack%20Full/1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Youmu%20Konpaku.png" style="left:52px;top:12px;opacity:.7;" alt="">
+        <img src="Touhou%2016x16%20Mini%20Pack%20Full/1.%20Mainline%20Games/%5B8%5D%20Eiyashou%20~%20Imperishable%20Night/Reisen%20Udongein%20Inaba.png" style="right:12px;top:8px;opacity:.5;" alt="">
+        <span style="font-family:'Press Start 2P',monospace;font-size:7px;color:#8060c0;letter-spacing:2px;z-index:1;position:relative;margin-top:28px;">[ PLAYER PROFILE ]</span>
+      </div>
+      <h2 class="card-name" data-i18n="a_name">RPG 상태창</h2>
+      <p class="card-desc" data-i18n="a_desc">RPG 게임의 캐릭터 상태창 스타일. 보라색 테마로 능력치처럼 정보를 표시합니다.</p>
+    </div>
+    <div class="card-footer">
+      <span class="card-start" data-i18n="start">→ 시작하기</span>
+      <span class="card-arrow">▶</span>
+    </div>
+  </a>
+
+  <!-- CONCEPT B: SpellCard -->
+  <a class="card cb" href="concept-b.html">
+    <div class="card-bar"></div>
+    <div class="card-inner">
+      <span class="card-badge">CONCEPT B</span>
+      <div class="card-preview">
+        <img src="Touhou%2016x16%20Mini%20Pack%20Full/1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Remilia%20Scarlet.png" style="left:10px;top:6px;" alt="">
+        <img src="Touhou%2016x16%20Mini%20Pack%20Full/1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Flandre%20Scarlet.png" style="right:10px;top:6px;" alt="">
+        <img src="Touhou%2016x16%20Mini%20Pack%20Full/1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Patchouli%20Knowledge.png" style="left:50%;transform:translateX(-50%);top:4px;" alt="">
+        <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:#f06060;letter-spacing:1px;z-index:1;position:relative;margin-top:30px;">✦ SPELL CARD ✦</span>
+      </div>
+      <h2 class="card-name" data-i18n="b_name">스펠 카드 선언</h2>
+      <p class="card-desc" data-i18n="b_desc">탄막 게임의 스펠 카드 선언 연출 스타일. 붉은 테마로 강렬한 인상을 줍니다.</p>
+    </div>
+    <div class="card-footer">
+      <span class="card-start" data-i18n="start">→ 시작하기</span>
+      <span class="card-arrow">▶</span>
+    </div>
+  </a>
+
+  <!-- CONCEPT C: Title Screen -->
+  <a class="card cc" href="concept-c.html">
+    <div class="card-bar"></div>
+    <div class="card-inner">
+      <span class="card-badge">CONCEPT C</span>
+      <div class="card-preview" style="overflow:hidden;">
+        <img src="Touhou%2016x16%20Mini%20Pack%20Full/4.%20Other/%5B1%5D%20Main%20Characters/Marisa%20Kirisame.png" style="left:10px;top:6px;" alt="">
+        <img src="Touhou%2016x16%20Mini%20Pack%20Full/1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Cirno.png" style="right:10px;top:6px;" alt="">
+        <span style="font-family:'Press Start 2P',monospace;font-size:8px;color:#60a0ff;letter-spacing:3px;z-index:1;position:relative;text-shadow:0 0 12px #2060c0;margin-top:16px;">★ TITLE ★</span>
+      </div>
+      <h2 class="card-name" data-i18n="c_name">타이틀 화면</h2>
+      <p class="card-desc" data-i18n="c_desc">동방 게임의 타이틀 화면 스타일. 별이 흐르는 밤하늘과 빛나는 닉네임이 특징입니다.</p>
+    </div>
+    <div class="card-footer">
+      <span class="card-start" data-i18n="start">→ 시작하기</span>
+      <span class="card-arrow">▶</span>
+    </div>
+  </a>
+
+  <!-- CONCEPT D: Dialogue -->
+  <a class="card cd" href="concept-d.html">
+    <div class="card-bar"></div>
+    <div class="card-inner">
+      <span class="card-badge">CONCEPT D</span>
+      <div class="card-preview">
+        <img src="Touhou%2016x16%20Mini%20Pack%20Full/1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Satori%20Komeiji.png" style="left:12px;top:4px;" alt="">
+        <span style="font-family:'DotGothic16',monospace;font-size:11px;color:#60f0c0;z-index:1;position:relative;margin-left:16px;margin-top:8px;text-shadow:0 0 8px #20a080;">「…はじめまして」</span>
+      </div>
+      <h2 class="card-name" data-i18n="d_name">대화창</h2>
+      <p class="card-desc" data-i18n="d_desc">동방 게임의 스토리 대화창 스타일. 캐릭터가 직접 당신을 소개하는 연출입니다.</p>
+    </div>
+    <div class="card-footer">
+      <span class="card-start" data-i18n="start">→ 시작하기</span>
+      <span class="card-arrow">▶</span>
+    </div>
+  </a>
+
+  <!-- CONCEPT E: Config -->
+  <a class="card ce" href="concept-e.html">
+    <div class="card-bar"></div>
+    <div class="card-inner">
+      <span class="card-badge">CONCEPT E</span>
+      <div class="card-preview">
+        <img src="Touhou%2016x16%20Mini%20Pack%20Full/1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20Faith/Sanae%20Kochiya.png" style="left:12px;top:4px;" alt="">
+        <div style="z-index:1;position:relative;margin-left:12px;font-family:'DotGothic16',monospace;font-size:10px;color:#e0d860;line-height:1.8;text-align:left;">
+          <div>▶ FUB FREE ○</div>
+          <div style="color:#4a4830;">　イベント　●</div>
+          <div style="color:#4a4830;">　設定完了</div>
+        </div>
+      </div>
+      <h2 class="card-name" data-i18n="e_name">설정 화면</h2>
+      <p class="card-desc" data-i18n="e_desc">게임 설정 메뉴 스타일. 각 항목을 선택지처럼 표시하는 독특한 구성입니다.</p>
+    </div>
+    <div class="card-footer">
+      <span class="card-start" data-i18n="start">→ 시작하기</span>
+      <span class="card-arrow">▶</span>
+    </div>
+  </a>
+
+</div>
+
+<footer class="site-footer">
+  東方Project FAN SITE &nbsp;·&nbsp; NOT AFFILIATED WITH TEAM SHANGHAI ALICE
+</footer>
+
+<script>
+const I18N={
+  ko:{
+    title:'東方 트친소 メーカー',
+    subtitle:'동방프로젝트 트위터 친구 소개서',
+    desc:'5가지 컨셉 중 마음에 드는 것을 골라보세요',
+    a_name:'RPG 상태창',
+    a_desc:'RPG 게임의 캐릭터 상태창 스타일. 보라색 테마로 능력치처럼 정보를 표시합니다.',
+    b_name:'스펠 카드 선언',
+    b_desc:'탄막 게임의 스펠 카드 선언 연출 스타일. 붉은 테마로 강렬한 인상을 줍니다.',
+    c_name:'타이틀 화면',
+    c_desc:'동방 게임의 타이틀 화면 스타일. 별이 흐르는 밤하늘과 빛나는 닉네임이 특징입니다.',
+    d_name:'대화창',
+    d_desc:'동방 게임의 스토리 대화창 스타일. 캐릭터가 직접 당신을 소개하는 연출입니다.',
+    e_name:'설정 화면',
+    e_desc:'게임 설정 메뉴 스타일. 각 항목을 선택지처럼 표시하는 독특한 구성입니다.',
+    start:'→ 시작하기',
+  },
+  ja:{
+    title:'東方 트친소 メーカー',
+    subtitle:'東方Project ツイッター友達紹介書',
+    desc:'5つのコンセプトからお好みのものを選んでください',
+    a_name:'RPGステータス画面',
+    a_desc:'RPGゲームのキャラクターステータス画面スタイル。紫テーマでスキルのように情報を表示します。',
+    b_name:'スペルカード宣言',
+    b_desc:'弾幕ゲームのスペルカード宣言演出スタイル。赤テーマで強烈な印象を与えます。',
+    c_name:'タイトル画面',
+    c_desc:'東方ゲームのタイトル画面スタイル。星が流れる夜空と輝くニックネームが特徴です。',
+    d_name:'会話ウィンドウ',
+    d_desc:'東方ゲームのストーリー会話ウィンドウスタイル。キャラクターが直接あなたを紹介する演出です。',
+    e_name:'設定画面',
+    e_desc:'ゲームの設定メニュースタイル。各項目を選択肢のように表示する独特な構成です。',
+    start:'→ はじめる',
+  },
+  en:{
+    title:'Touhou Friend Intro Maker',
+    subtitle:'Touhou Project Twitter Friend Introduction',
+    desc:'Choose one of 5 concepts that suits you best',
+    a_name:'RPG Status Window',
+    a_desc:'Character status window style from RPG games. Displays info like stats with a purple theme.',
+    b_name:'Spell Card Declaration',
+    b_desc:'Spell card declaration style from bullet hell games. A bold, striking red theme.',
+    c_name:'Title Screen',
+    c_desc:'Touhou game title screen style. Featuring a starry night sky and a glowing nickname.',
+    d_name:'Dialogue Window',
+    d_desc:'Story dialogue window style from Touhou games. A character introduces you directly.',
+    e_name:'Config Screen',
+    e_desc:'Game settings menu style. A unique layout displaying each item like selectable options.',
+    start:'→ Start',
+  },
+};
+
+let curLang='ko';
+
+function setLang(lang){
+  curLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    b.classList.toggle('active',b.textContent.trim()==={ko:'한국어',ja:'日本語',en:'English'}[lang]);
+  });
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.dataset.i18n;
+    if(I18N[lang][key]) el.textContent=I18N[lang][key];
+  });
+  document.documentElement.lang=lang==='ko'?'ko':lang==='ja'?'ja':'en';
+}
+
+// detect browser language on load
+(function(){
+  const nav=navigator.language||'ko';
+  if(nav.startsWith('ja')) setLang('ja');
+  else if(nav.startsWith('en')) setLang('en');
+  else setLang('ko');
+})();
+</script>
+</body>
+</html>

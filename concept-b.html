@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONCEPT B: 스펠카드 — 동방 트친소</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+/* ── reset ── */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:#060002;color:#fff;font-family:'Noto Serif JP',serif;overflow-x:hidden;min-height:100vh;}
+img{display:block;}
+.px{image-rendering:pixelated;image-rendering:crisp-edges;}
+
+/* ── top nav ── */
+.top-nav{
+  position:sticky;top:0;z-index:999;
+  background:rgba(3,0,0,.97);border-bottom:1px solid #440000;
+  padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.nav-back{
+  font-family:'Press Start 2P',monospace;font-size:7px;color:#aa4444;
+  text-decoration:none;padding:6px 12px;border:1px solid #550000;
+  transition:all .2s;white-space:nowrap;
+}
+.nav-back:hover{color:#ff9090;border-color:#880000;background:rgba(136,0,0,.15);}
+.nav-title{
+  font-family:'Press Start 2P',monospace;font-size:8px;color:#ff4040;
+  margin-right:auto;letter-spacing:2px;
+}
+.lang-btns{display:flex;gap:4px;}
+.lang-btn{
+  font-family:'Press Start 2P',monospace;font-size:6px;color:#662222;
+  background:none;border:1px solid #330000;padding:5px 10px;cursor:pointer;
+  transition:all .2s;
+}
+.lang-btn.active,.lang-btn:hover{color:#ff9090;border-color:#880000;background:rgba(136,0,0,.12);}
+
+/* ── main layout ── */
+.main-wrap{
+  display:grid;grid-template-columns:380px 1fr;
+  min-height:calc(100vh - 48px);
+}
+@media(max-width:820px){
+  .main-wrap{grid-template-columns:1fr;}
+}
+
+/* ── LEFT: form panel ── */
+.form-panel{
+  background:#0a0002;border-right:1px solid #330000;
+  overflow-y:auto;max-height:calc(100vh - 48px);
+  position:sticky;top:48px;
+  padding:20px;display:flex;flex-direction:column;gap:14px;
+}
+@media(max-width:820px){
+  .form-panel{position:static;max-height:none;}
+}
+
+.form-section{display:flex;flex-direction:column;gap:6px;}
+.form-label{
+  font-family:'Press Start 2P',monospace;font-size:6px;color:#884040;
+  letter-spacing:1px;
+}
+.form-input{
+  background:#0e0002;border:1px solid #550000;color:#ffcccc;
+  padding:8px 10px;font-family:'Noto Serif JP',serif;font-size:13px;
+  outline:none;width:100%;transition:border-color .2s;
+}
+.form-input:focus{border-color:#880000;}
+.form-input::placeholder{color:#441818;}
+textarea.form-input{resize:vertical;min-height:70px;line-height:1.7;}
+
+.form-hr{border:none;border-top:1px solid #1e0005;margin:2px 0;}
+
+/* char picker grid */
+.char-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,40px);
+  gap:4px;
+}
+.char-thumb{
+  width:40px;height:40px;cursor:pointer;
+  border:2px solid transparent;padding:2px;
+  background:#0e0002;transition:border-color .15s,background .15s;
+  display:flex;align-items:center;justify-content:center;
+}
+.char-thumb:hover{border-color:#550000;background:#150006;}
+.char-thumb.selected{border-color:#880000;background:#1a0008;box-shadow:0 0 8px rgba(136,0,0,.5);}
+.char-thumb img{width:32px;height:32px;}
+
+/* radio group */
+.radio-group{display:flex;flex-wrap:wrap;gap:6px;}
+.radio-opt{
+  font-family:'Press Start 2P',monospace;font-size:6px;color:#552020;
+  padding:5px 10px;border:1px solid #330000;cursor:pointer;
+  transition:all .15s;user-select:none;
+}
+.radio-opt:hover{border-color:#660000;color:#aa5050;}
+.radio-opt.selected{border-color:#880000;color:#ffaaaa;background:rgba(136,0,0,.12);}
+
+/* checkbox chips */
+.check-group{display:flex;flex-wrap:wrap;gap:5px;}
+.check-chip{
+  font-family:'Press Start 2P',monospace;font-size:5.5px;color:#441818;
+  padding:4px 8px;border:1px solid #2a0000;cursor:pointer;
+  transition:all .15s;user-select:none;
+}
+.check-chip:hover{border-color:#550000;color:#884444;}
+.check-chip.checked{border-color:#880000;color:#ffaaaa;background:rgba(136,0,0,.15);}
+
+/* download button */
+.dl-btn{
+  font-family:'Press Start 2P',monospace;font-size:7px;
+  color:#ffaaaa;padding:12px 20px;
+  background:linear-gradient(135deg,#5a0000,#880000);
+  border:1px solid #aa2020;cursor:pointer;
+  transition:all .2s;width:100%;margin-top:4px;
+  text-align:center;letter-spacing:1px;
+}
+.dl-btn:hover{background:linear-gradient(135deg,#880000,#aa0000);border-color:#cc3030;color:#fff;}
+.dl-btn:active{transform:scale(.98);}
+
+/* ── RIGHT: preview panel ── */
+.preview-panel{
+  background:#060002;display:flex;align-items:flex-start;
+  justify-content:center;padding:30px 24px;
+  overflow-y:auto;
+}
+@media(max-width:820px){
+  .preview-panel{padding:20px 16px;}
+}
+
+/* ── CARD ── */
+#preview{
+  width:600px;max-width:100%;
+  font-family:'Noto Serif JP',serif;
+}
+
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes float2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes float3{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <a href="index.html" class="nav-back" id="nav-back">← 목록으로</a>
+  <span class="nav-title" id="nav-title">CONCEPT B: 스펠카드</span>
+  <div class="lang-btns">
+    <button class="lang-btn active" onclick="setLang('ko')">한국어</button>
+    <button class="lang-btn" onclick="setLang('ja')">日本語</button>
+    <button class="lang-btn" onclick="setLang('en')">English</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- LEFT: FORM -->
+  <div class="form-panel">
+
+    <!-- nickname -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-nickname">닉네임</label>
+      <input class="form-input" id="inp-nickname" type="text" placeholder="닉네임을 입력하세요" oninput="updateCard()">
+    </div>
+
+    <!-- callMe -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-callme">호칭</label>
+      <input class="form-input" id="inp-callme" type="text" placeholder="아무렇게나 / ○○야, ○○씨 OK" oninput="updateCard()">
+    </div>
+
+    <hr class="form-hr">
+
+    <!-- character picker -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-bestchar">최애 캐릭터</label>
+      <div class="char-grid" id="char-grid"></div>
+    </div>
+
+    <hr class="form-hr">
+
+    <!-- mainSeries -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-mainseries">주력 시리즈</label>
+      <div class="radio-group" id="series-group">
+        <div class="radio-opt" data-val="old" onclick="selectSeries('old')" id="series-old">구작</div>
+        <div class="radio-opt selected" data-val="new" onclick="selectSeries('new')" id="series-new">신작</div>
+        <div class="radio-opt" data-val="both" onclick="selectSeries('both')" id="series-both">양쪽</div>
+      </div>
+    </div>
+
+    <hr class="form-hr">
+
+    <!-- acctType -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-accttype">계정 유형</label>
+      <div class="check-group" id="acct-group"></div>
+    </div>
+
+    <hr class="form-hr">
+
+    <!-- fub -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-fub">FUB</label>
+      <div class="radio-group" id="fub-group">
+        <div class="radio-opt selected" data-val="free" onclick="selectFub('free')" id="fub-free">FREE</div>
+        <div class="radio-opt" data-val="r4r" onclick="selectFub('r4r')" id="fub-r4r">R4R</div>
+      </div>
+    </div>
+
+    <!-- parting -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-parting">이별은</label>
+      <div class="radio-group" id="parting-group">
+        <div class="radio-opt selected" data-val="unfollow" onclick="selectParting('unfollow')" id="parting-unfollow">언팔</div>
+        <div class="radio-opt" data-val="blockunfollow" onclick="selectParting('blockunfollow')" id="parting-blockunfollow">블언블</div>
+        <div class="radio-opt" data-val="block" onclick="selectParting('block')" id="parting-block">블락</div>
+      </div>
+    </div>
+
+    <!-- otherGenre -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-othergenre">타장르 언급</label>
+      <div class="radio-group" id="other-group">
+        <div class="radio-opt" data-val="none" onclick="selectOther('none')" id="other-none">없음</div>
+        <div class="radio-opt selected" data-val="sometimes" onclick="selectOther('sometimes')" id="other-sometimes">가끔</div>
+        <div class="radio-opt" data-val="often" onclick="selectOther('often')" id="other-often">많음</div>
+      </div>
+    </div>
+
+    <hr class="form-hr">
+
+    <!-- dislike -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-dislike">불호소재 / 지뢰</label>
+      <input class="form-input" id="inp-dislike" type="text" placeholder="없음" oninput="updateCard()">
+    </div>
+
+    <!-- pairing -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-pairing">커플링</label>
+      <input class="form-input" id="inp-pairing" type="text" placeholder="○○×○○" oninput="updateCard()">
+    </div>
+
+    <!-- freeText -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-freetext">자유서술</label>
+      <textarea class="form-input" id="inp-freetext" placeholder="자유롭게 적어주세요" oninput="updateCard()"></textarea>
+    </div>
+
+    <!-- download -->
+    <button class="dl-btn" id="dl-btn" onclick="downloadCard()">📸 이미지로 저장</button>
+
+  </div>
+
+  <!-- RIGHT: PREVIEW -->
+  <div class="preview-panel">
+    <div id="preview"></div>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   DATA
+═══════════════════════════════════════ */
+const B='Touhou%2016x16%20Mini%20Pack%20Full/';
+const CHARS=[
+  {id:'reimu',p:B+'4.%20Other/%5B1%5D%20Main%20Characters/Reimu%20Hakurei.png',ko:'하쿠레이 레이무',ja:'博麗霊夢',en:'Reimu Hakurei'},
+  {id:'marisa',p:B+'4.%20Other/%5B1%5D%20Main%20Characters/Marisa%20Kirisame.png',ko:'키리사메 마리사',ja:'霧雨魔理沙',en:'Marisa Kirisame'},
+  {id:'cirno',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Cirno.png',ko:'치르노',ja:'チルノ',en:'Cirno'},
+  {id:'rumia',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Rumia.png',ko:'루미아',ja:'ルーミア',en:'Rumia'},
+  {id:'meiling',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Hong%20Meiling.png',ko:'홍 메이링',ja:'紅美鈴',en:'Hong Meiling'},
+  {id:'patchouli',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Patchouli%20Knowledge.png',ko:'파츄리 노렛지',ja:'パチュリー',en:'Patchouli Knowledge'},
+  {id:'sakuya',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Sakuya%20Izayoi.png',ko:'이자요이 사쿠야',ja:'十六夜咲夜',en:'Sakuya Izayoi'},
+  {id:'remilia',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Remilia%20Scarlet.png',ko:'레밀리아 스칼렛',ja:'レミリア',en:'Remilia Scarlet'},
+  {id:'flandre',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Flandre%20Scarlet.png',ko:'플란드르 스칼렛',ja:'フランドール',en:'Flandre Scarlet'},
+  {id:'alice',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Alice%20Margatroid.png',ko:'앨리스',ja:'アリス',en:'Alice Margatroid'},
+  {id:'youmu',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Youmu%20Konpaku.png',ko:'코메이 요우무',ja:'魂魄妖夢',en:'Youmu Konpaku'},
+  {id:'yuyuko',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Yuyuko%20Saigyouji.png',ko:'사이교우지 유유코',ja:'西行寺幽々子',en:'Yuyuko Saigyouji'},
+  {id:'yukari',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Yukari%20Yakumo.png',ko:'야쿠모 유카리',ja:'八雲紫',en:'Yukari Yakumo'},
+  {id:'ran',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Ran%20Yakumo.png',ko:'야쿠모 란',ja:'八雲藍',en:'Ran Yakumo'},
+  {id:'chen',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Chen.png',ko:'첸',ja:'橙',en:'Chen'},
+  {id:'reisen',p:B+'1.%20Mainline%20Games/%5B8%5D%20Eiyashou%20~%20Imperishable%20Night/Reisen%20Udonge%20Inaba.png',ko:'레이센 우동게',ja:'鈴仙',en:'Reisen Udonge Inaba'},
+  {id:'kaguya',p:B+'1.%20Mainline%20Games/%5B8%5D%20Eiyashou%20~%20Imperishable%20Night/Kaguya%20Houraisan.png',ko:'호우라이산 카구야',ja:'蓬莱山輝夜',en:'Kaguya Houraisan'},
+  {id:'mokou',p:B+'1.%20Mainline%20Games/%5B8%5D%20Eiyashou%20~%20Imperishable%20Night/Fujiwara%20no%20Mokou.png',ko:'후지와라노 모코우',ja:'藤原妹紅',en:'Fujiwara no Mokou'},
+  {id:'aya',p:B+'1.%20Mainline%20Games/%5B9%5D%20Kaeizuka%20~%20Phantasmagoria%20of%20Flower%20View/Aya%20Shameimaru.png',ko:'샤메이마루 아야',ja:'射命丸文',en:'Aya Shameimaru'},
+  {id:'komachi',p:B+'1.%20Mainline%20Games/%5B9%5D%20Kaeizuka%20~%20Phantasmagoria%20of%20Flower%20View/Komachi%20Onozuka.png',ko:'오노즈카 코마치',ja:'小野塚小町',en:'Komachi Onozuka'},
+  {id:'sanae',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Sanae%20Kochiya.png',ko:'코치야 사나에',ja:'東風谷早苗',en:'Sanae Kochiya'},
+  {id:'kanako',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Kanako%20Yasaka.png',ko:'야사카 카나코',ja:'八坂神奈子',en:'Kanako Yasaka'},
+  {id:'suwako',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Suwako%20Moriya.png',ko:'모리야 스와코',ja:'洩矢諏訪子',en:'Suwako Moriya'},
+  {id:'nitori',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Nitori%20Kawashiro.png',ko:'카와시로 니토리',ja:'河城にとり',en:'Nitori Kawashiro'},
+  {id:'satori',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Satori%20Komeiji.png',ko:'코메이지 사토리',ja:'古明地さとり',en:'Satori Komeiji'},
+  {id:'koishi',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Koishi%20Komeiji.png',ko:'코메이지 코이시',ja:'古明地こいし',en:'Koishi Komeiji'},
+  {id:'orin',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Rin%20Kaenbyou.png',ko:'카엔뵤우 린',ja:'火焔猫燐',en:'Rin Kaenbyou'},
+  {id:'okuu',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Utsuho%20Reiuji.png',ko:'레이우지 우츠호',ja:'霊烏路空',en:'Utsuho Reiuji'},
+  {id:'byakuren',p:B+'1.%20Mainline%20Games/%5B12%5D%20Seirensen%20~%20Undefined%20Fantastic%20Object/Byakuren%20Hijiri.png',ko:'히지리 뱌쿠렌',ja:'聖白蓮',en:'Byakuren Hijiri'},
+  {id:'miko',p:B+'1.%20Mainline%20Games/%5B13%5D%20Shinreibyou%20~%20Ten%20Desires/Toyosatomimi%20no%20Miko.png',ko:'토요사토미미노 미코',ja:'豊聡耳神子',en:'Toyosatomimi no Miko'},
+  {id:'seija',p:B+'1.%20Mainline%20Games/%5B14%5D%20Kishinjou%20~%20Double%20Dealing%20Character/Seija%20Kijin.png',ko:'키진 세이자',ja:'鬼人正邪',en:'Seija Kijin'},
+  {id:'sukuna',p:B+'1.%20Mainline%20Games/%5B14%5D%20Kishinjou%20~%20Double%20Dealing%20Character/Shinmyoumaru%20Sukuna.png',ko:'스쿠나 신묘우마루',ja:'少名針妙丸',en:'Shinmyoumaru Sukuna'},
+  {id:'clownpiece',p:B+'1.%20Mainline%20Games/%5B15%5D%20Kanjuden%20~%20Legacy%20of%20Lunatic%20Kingdom/Clownpiece.png',ko:'클라운피스',ja:'クラウンピース',en:'Clownpiece'},
+  {id:'okina',p:B+'1.%20Mainline%20Games/%5B16%5D%20Tenkuushou%20~%20Hidden%20Star%20in%20Four%20Seasons/Okina%20Matara.png',ko:'마타라 오키나',ja:'摩多羅隠岐奈',en:'Okina Matara'},
+];
+const ACCT=[
+  {id:'daily',ko:'일상',ja:'日常',en:'Daily'},{id:'drawing',ko:'그림',ja:'絵',en:'Drawing'},
+  {id:'game',ko:'게임',ja:'ゲーム',en:'Gaming'},{id:'story',ko:'썰',ja:'ネタ',en:'Story'},
+  {id:'consume',ko:'소비',ja:'消費',en:'Shopping'},{id:'sub',ko:'구독',ja:'購読',en:'Following'},
+  {id:'cos',ko:'코스',ja:'コスプレ',en:'Cosplay'},{id:'rt',ko:'RT',ja:'RT',en:'RT'},
+  {id:'like',ko:'마음',ja:'いいね',en:'Likes'},{id:'chat',ko:'탐라대화',ja:'TL会話',en:'TL Chat'},
+  {id:'fan',ko:'앓이',ja:'推し活',en:'Fangirling'},
+];
+const I18N={
+  ko:{title:'동방 트친소',nickname:'닉네임',callMe:'호칭',bestChar:'최애 캐릭터',mainSeries:'주력 시리즈',acctType:'계정 유형',fub:'FUB',parting:'이별은',otherGenre:'타장르 언급',dislike:'불호소재 / 지뢰',pairing:'커플링',freeText:'자유서술',oldWorks:'구작',newWorks:'신작',both:'양쪽',free:'FREE',r4r:'R4R',unfollow:'언팔',blockunfollow:'블언블',block:'블락',none:'없음',sometimes:'가끔',often:'많음',download:'📸 이미지로 저장',back:'← 목록으로',selectChar:'캐릭터 선택',ph_nick:'닉네임을 입력하세요',ph_call:'아무렇게나 / ○○야, ○○씨 OK',ph_dis:'없음',ph_pair:'○○×○○',ph_free:'자유롭게 적어주세요'},
+  ja:{title:'東方 自己紹介',nickname:'ニックネーム',callMe:'呼び方',bestChar:'推しキャラ',mainSeries:'主力シリーズ',acctType:'アカウントタイプ',fub:'FUB',parting:'別れは',otherGenre:'他ジャンル言及',dislike:'地雷・苦手',pairing:'カップリング',freeText:'自由記述',oldWorks:'旧作',newWorks:'新作',both:'両方',free:'FREE',r4r:'R4R',unfollow:'アンフォロー',blockunfollow:'B解',block:'ブロック',none:'なし',sometimes:'たまに',often:'多め',download:'📸 画像として保存',back:'← 一覧へ',selectChar:'キャラを選ぶ',ph_nick:'ニックネームを入力',ph_call:'なんでもOK',ph_dis:'なし',ph_pair:'○○×○○',ph_free:'自由に書いてください'},
+  en:{title:'Touhou Self-Intro',nickname:'Nickname',callMe:'What to call me',bestChar:'Favorite Character',mainSeries:'Main Series',acctType:'Account Type',fub:'FUB',parting:'Parting',otherGenre:'Other Genres',dislike:'Dislikes / Triggers',pairing:'Pairings',freeText:'Free Notes',oldWorks:'Old Works',newWorks:'New Works',both:'Both',free:'FREE',r4r:'R4R',unfollow:'Unfollow',blockunfollow:'Block+Unblock',block:'Block',none:'None',sometimes:'Sometimes',often:'Often',download:'📸 Save as Image',back:'← Back',selectChar:'Select Character',ph_nick:'Enter your nickname',ph_call:'Anything is fine',ph_dis:'None',ph_pair:'CharA × CharB',ph_free:'Write freely'},
+};
+
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+let lang = 'ko';
+let selectedChar = 'reimu';
+let selectedSeries = 'new';
+let selectedFub = 'free';
+let selectedParting = 'unfollow';
+let selectedOther = 'sometimes';
+let checkedAcct = new Set(['daily','chat','fan','rt','like']);
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+function init() {
+  buildCharGrid();
+  buildAcctChips();
+  applyI18N();
+  updateCard();
+}
+
+function buildCharGrid() {
+  const grid = document.getElementById('char-grid');
+  grid.innerHTML = '';
+  CHARS.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'char-thumb' + (c.id === selectedChar ? ' selected' : '');
+    div.title = c[lang] || c.ko;
+    div.onclick = () => selectChar(c.id);
+    div.id = 'ct-' + c.id;
+    const img = document.createElement('img');
+    img.className = 'px';
+    img.src = decodeURIComponent(c.p);
+    img.alt = c.en;
+    img.style.cssText = 'width:32px;height:32px;image-rendering:pixelated;image-rendering:crisp-edges;';
+    div.appendChild(img);
+    grid.appendChild(div);
+  });
+}
+
+function buildAcctChips() {
+  const grp = document.getElementById('acct-group');
+  grp.innerHTML = '';
+  ACCT.forEach(a => {
+    const div = document.createElement('div');
+    div.className = 'check-chip' + (checkedAcct.has(a.id) ? ' checked' : '');
+    div.id = 'ac-' + a.id;
+    div.textContent = a[lang] || a.ko;
+    div.onclick = () => toggleAcct(a.id);
+    grp.appendChild(div);
+  });
+}
+
+/* ═══════════════════════════════════════
+   CONTROLS
+═══════════════════════════════════════ */
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  applyI18N();
+  buildCharGrid();
+  buildAcctChips();
+  updateCard();
+}
+
+function applyI18N() {
+  const t = I18N[lang];
+  document.getElementById('nav-back').textContent = t.back;
+  document.getElementById('lbl-nickname').textContent = t.nickname;
+  document.getElementById('lbl-callme').textContent = t.callMe;
+  document.getElementById('lbl-bestchar').textContent = t.bestChar;
+  document.getElementById('lbl-mainseries').textContent = t.mainSeries;
+  document.getElementById('lbl-accttype').textContent = t.acctType;
+  document.getElementById('lbl-fub').textContent = t.fub;
+  document.getElementById('lbl-parting').textContent = t.parting;
+  document.getElementById('lbl-othergenre').textContent = t.otherGenre;
+  document.getElementById('lbl-dislike').textContent = t.dislike;
+  document.getElementById('lbl-pairing').textContent = t.pairing;
+  document.getElementById('lbl-freetext').textContent = t.freeText;
+  document.getElementById('inp-nickname').placeholder = t.ph_nick;
+  document.getElementById('inp-callme').placeholder = t.ph_call;
+  document.getElementById('inp-dislike').placeholder = t.ph_dis;
+  document.getElementById('inp-pairing').placeholder = t.ph_pair;
+  document.getElementById('inp-freetext').placeholder = t.ph_free;
+  document.getElementById('dl-btn').textContent = t.download;
+  document.getElementById('series-old').textContent = t.oldWorks;
+  document.getElementById('series-new').textContent = t.newWorks;
+  document.getElementById('series-both').textContent = t.both;
+  document.getElementById('fub-free').textContent = t.free;
+  document.getElementById('fub-r4r').textContent = t.r4r;
+  document.getElementById('parting-unfollow').textContent = t.unfollow;
+  document.getElementById('parting-blockunfollow').textContent = t.blockunfollow;
+  document.getElementById('parting-block').textContent = t.block;
+  document.getElementById('other-none').textContent = t.none;
+  document.getElementById('other-sometimes').textContent = t.sometimes;
+  document.getElementById('other-often').textContent = t.often;
+}
+
+function selectChar(id) {
+  document.querySelectorAll('.char-thumb').forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById('ct-' + id);
+  if (el) el.classList.add('selected');
+  selectedChar = id;
+  updateCard();
+}
+
+function selectSeries(val) {
+  document.querySelectorAll('#series-group .radio-opt').forEach(el => el.classList.remove('selected'));
+  document.getElementById('series-' + val).classList.add('selected');
+  selectedSeries = val;
+  updateCard();
+}
+
+function selectFub(val) {
+  document.querySelectorAll('#fub-group .radio-opt').forEach(el => el.classList.remove('selected'));
+  document.getElementById('fub-' + val).classList.add('selected');
+  selectedFub = val;
+  updateCard();
+}
+
+function selectParting(val) {
+  document.querySelectorAll('#parting-group .radio-opt').forEach(el => el.classList.remove('selected'));
+  document.getElementById('parting-' + val).classList.add('selected');
+  selectedParting = val;
+  updateCard();
+}
+
+function selectOther(val) {
+  document.querySelectorAll('#other-group .radio-opt').forEach(el => el.classList.remove('selected'));
+  document.getElementById('other-' + val).classList.add('selected');
+  selectedOther = val;
+  updateCard();
+}
+
+function toggleAcct(id) {
+  if (checkedAcct.has(id)) {
+    checkedAcct.delete(id);
+    document.getElementById('ac-' + id).classList.remove('checked');
+  } else {
+    checkedAcct.add(id);
+    document.getElementById('ac-' + id).classList.add('checked');
+  }
+  updateCard();
+}
+
+/* ═══════════════════════════════════════
+   CARD RENDER
+═══════════════════════════════════════ */
+function getCharData(id) {
+  return CHARS.find(c => c.id === id) || CHARS[0];
+}
+
+function getLabel(key) {
+  return I18N[lang][key] || I18N.ko[key];
+}
+
+function renderCard() {
+  const t = I18N[lang];
+  const char = getCharData(selectedChar);
+  const charName = char[lang] || char.ko;
+  const charSrc = decodeURIComponent(char.p);
+
+  // floater chars: selected + remilia + patchouli
+  const remilia = getCharData('remilia');
+  const patchouli = getCharData('patchouli');
+  const floaterSrcs = [
+    decodeURIComponent(remilia.p),
+    charSrc,
+    decodeURIComponent(patchouli.p),
+  ];
+
+  // section icon chars
+  const reimuSrc = decodeURIComponent(getCharData('reimu').p);
+  const sakuyaSrc = decodeURIComponent(getCharData('sakuya').p);
+  const youmuSrc = decodeURIComponent(getCharData('youmu').p);
+  const marisaSrc = decodeURIComponent(getCharData('marisa').p);
+
+  const nickname = document.getElementById('inp-nickname').value || (lang==='ko'?'닉네임':lang==='ja'?'ニックネーム':'Nickname');
+  const callMe = document.getElementById('inp-callme').value || t.ph_call;
+  const dislike = document.getElementById('inp-dislike').value || t.ph_dis;
+  const pairing = document.getElementById('inp-pairing').value || t.ph_pair;
+  const freeText = document.getElementById('inp-freetext').value || '';
+
+  const seriesLabel = {old:t.oldWorks,new:t.newWorks,both:t.both}[selectedSeries];
+  const fubLabel = {free:t.free,r4r:t.r4r}[selectedFub];
+  const partingLabel = {unfollow:t.unfollow,blockunfollow:t.blockunfollow,block:t.block}[selectedParting];
+  const otherLabel = {none:t.none,sometimes:t.sometimes,often:t.often}[selectedOther];
+
+  // acct chips html
+  const acctChipsHtml = ACCT.map(a => {
+    const on = checkedAcct.has(a.id);
+    const label = a[lang] || a.ko;
+    return `<span style="
+      font-family:'Noto Serif JP',serif;
+      font-size:11px;
+      color:${on?'#ffcccc':'#441818'};
+      padding:3px 10px;
+      border:1px solid ${on?'#881818':'#2a0000'};
+      background:${on?'rgba(139,0,0,.15)':'rgba(100,0,0,.04)'};
+      display:inline-block;
+      margin:0 2px 2px 0;
+    ">${on?'◆':'·'}${label}</span>`;
+  }).join('');
+
+  // section header builder
+  function sectionHd(iconSrc, koText, jpText) {
+    return `<div style="display:flex;align-items:center;gap:10px;border-left:3px solid #880000;padding-left:12px;margin-bottom:12px;">
+      <img src="${iconSrc}" alt="" style="width:24px;height:24px;image-rendering:pixelated;image-rendering:crisp-edges;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 0 4px rgba(200,40,40,.4));">
+      <span style="font-family:'Noto Serif JP',serif;font-size:13px;color:#ff9090;">${koText}</span>
+      <span style="font-family:'Noto Serif JP',serif;font-size:10px;color:#662222;margin-left:2px;">${jpText}</span>
+    </div>`;
+  }
+
+  const freeTextHtml = freeText
+    ? freeText.replace(/\n/g,'<br>')
+    : '';
+
+  const html = `
+<div style="
+  width:600px;
+  font-family:'Noto Serif JP',serif;
+  background:rgba(3,0,0,.94);
+  border:2px solid #880000;
+  position:relative;
+  box-shadow:0 0 40px rgba(136,0,0,.3),0 0 80px rgba(80,0,0,.15);
+">
+
+  <!-- floating sprites -->
+  <div style="position:absolute;top:-50px;right:16px;display:flex;align-items:flex-end;gap:10px;z-index:10;pointer-events:none;">
+    <img src="${floaterSrcs[0]}" alt="" style="width:40px;height:40px;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 0 10px rgba(200,40,40,.6));animation:float 2.5s ease-in-out infinite;animation-delay:0s;">
+    <img src="${floaterSrcs[1]}" alt="" style="width:56px;height:56px;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 0 14px rgba(200,40,40,.7));animation:float2 2.5s ease-in-out infinite;animation-delay:.8s;">
+    <img src="${floaterSrcs[2]}" alt="" style="width:40px;height:40px;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 0 10px rgba(200,40,40,.6));animation:float3 2.5s ease-in-out infinite;animation-delay:1.6s;">
+  </div>
+
+  <!-- header -->
+  <div style="
+    background:linear-gradient(90deg,#600000,#3c0000,#600000);
+    border-bottom:2px solid #880000;
+    padding:18px 30px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  ">
+    <div style="position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 14px,rgba(255,255,255,.012) 14px,rgba(255,255,255,.012) 28px);pointer-events:none;"></div>
+    <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#ff7070;letter-spacing:4px;margin-bottom:10px;position:relative;">TOUHOU TWITTER SHOKAI</div>
+    <div style="font-family:'Noto Serif JP',serif;font-size:26px;font-weight:700;color:#fff;text-shadow:0 0 28px rgba(255,50,50,.5);position:relative;">
+      <span style="color:#ff3030;font-size:20px;">「</span>${t.title}<span style="color:#ff3030;font-size:20px;">」</span>
+    </div>
+  </div>
+
+  <!-- body -->
+  <div style="padding:28px 30px;display:flex;flex-direction:column;gap:24px;">
+
+    <!-- 이름 section -->
+    <div>
+      ${sectionHd(reimuSrc, lang==='ko'?'이름':lang==='ja'?'名前':'Name', lang==='ko'?'名前':lang==='ja'?'Name':'名前')}
+      <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;padding-left:4px;">
+        <span style="font-family:'Noto Serif JP',serif;font-size:22px;font-weight:700;color:#ffdddd;">${escHtml(nickname)}</span>
+        <span style="font-family:'Noto Serif JP',serif;font-size:13px;color:#aa6666;">${lang==='ko'?'호칭':lang==='ja'?'呼び方':'Call me'}: ${escHtml(callMe)}</span>
+      </div>
+    </div>
+
+    <!-- 최애 section -->
+    <div>
+      ${sectionHd(charSrc, lang==='ko'?'최애 캐릭터':lang==='ja'?'推しキャラ':'Fav Char', lang==='ko'?'推しキャラ':lang==='ja'?'Fav Char':'推しキャラ')}
+      <div style="display:flex;align-items:center;gap:14px;padding-left:4px;">
+        <img src="${charSrc}" alt="${charName}" style="width:48px;height:48px;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 0 8px rgba(200,40,40,.5));animation:float 3s ease-in-out infinite;">
+        <div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;color:#ffcccc;">${escHtml(charName)}</div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#886060;margin-top:4px;">${lang==='ko'?'주력':lang==='ja'?'主力':'Series'}: ${escHtml(seriesLabel)}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 계정 유형 section -->
+    <div>
+      ${sectionHd(sakuyaSrc, lang==='ko'?'계정 유형':lang==='ja'?'アカウントタイプ':'Account Type', lang==='ko'?'アカウントタイプ':lang==='ja'?'Account Type':'アカウントタイプ')}
+      <div style="padding-left:4px;line-height:2;">
+        ${acctChipsHtml}
+      </div>
+    </div>
+
+    <!-- SNS 정책 section -->
+    <div>
+      ${sectionHd(sakuyaSrc, lang==='ko'?'SNS 정책':lang==='ja'?'SNSポリシー':'SNS Policy', lang==='ko'?'SNSポリシー':lang==='ja'?'SNS Policy':'SNSポリシー')}
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding-left:4px;">
+        <div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#662020;margin-bottom:5px;">${t.fub}</div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:13px;color:#ffcccc;">${escHtml(fubLabel)}</div>
+        </div>
+        <div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#662020;margin-bottom:5px;">${t.parting}</div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:13px;color:#ffcccc;">${escHtml(partingLabel)}</div>
+        </div>
+        <div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#662020;margin-bottom:5px;">${t.otherGenre}</div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:13px;color:#ffcccc;">${escHtml(otherLabel)}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 기타 section -->
+    <div>
+      ${sectionHd(youmuSrc, lang==='ko'?'기타':lang==='ja'?'その他':'Other', lang==='ko'?'その他':lang==='ja'?'Other':'その他')}
+      <div style="display:flex;flex-direction:column;gap:8px;padding-left:4px;">
+        <div style="border-left:2px solid #551010;padding:6px 14px;background:rgba(100,0,0,.05);">
+          <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#884040;margin-bottom:3px;">${t.dislike}</div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:13px;color:#ffcccc;">${escHtml(dislike)}</div>
+        </div>
+        <div style="border-left:2px solid #551010;padding:6px 14px;background:rgba(100,0,0,.05);">
+          <div style="font-family:'Noto Serif JP',serif;font-size:10px;color:#884040;margin-bottom:3px;">${t.pairing}</div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:13px;color:#ffcccc;">${escHtml(pairing)}</div>
+        </div>
+      </div>
+    </div>
+
+    ${freeText ? `
+    <!-- 자유서술 section -->
+    <div>
+      ${sectionHd(marisaSrc, lang==='ko'?'자유서술':lang==='ja'?'自由記述':'Free Notes', lang==='ko'?'自由記述':lang==='ja'?'Free Notes':'自由記述')}
+      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#ddd;line-height:2;padding-left:4px;">${freeTextHtml}</div>
+    </div>
+    ` : ''}
+
+  </div>
+
+  <!-- footer -->
+  <div style="
+    border-top:1px solid #3a0000;
+    background:rgba(8,0,0,.96);
+    padding:12px 30px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+  ">
+    <span style="font-family:'Press Start 2P',monospace;font-size:5px;color:#440000;letter-spacing:2px;">Touhou Project © ZUN</span>
+    <span style="color:#330000;">·</span>
+    <span style="font-family:'Press Start 2P',monospace;font-size:5px;color:#440000;letter-spacing:2px;">Sprites © Touhou 16×16 Mini Pack</span>
+  </div>
+
+</div>
+  `;
+
+  document.getElementById('preview').innerHTML = html;
+}
+
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function updateCard() {
+  renderCard();
+}
+
+/* ═══════════════════════════════════════
+   DOWNLOAD
+═══════════════════════════════════════ */
+async function downloadCard() {
+  const el = document.getElementById('preview');
+  const canvas = await html2canvas(el, {
+    backgroundColor: '#060002',
+    scale: 2,
+    useCORS: true,
+    allowTaint: true,
+  });
+  const a = document.createElement('a');
+  a.download = 'trchinsou-spellcard.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+/* ═══════════════════════════════════════
+   BOOT
+═══════════════════════════════════════ */
+init();
+</script>
+</body>
+</html>

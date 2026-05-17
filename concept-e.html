@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONCEPT E: 설정화면 — 동방 트친소</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #060608;
+    color: #c8c8c8;
+    font-family: 'DotGothic16', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* NAV */
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    border-bottom: 1px solid #1e1e28;
+    background: #08080c;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .back-link {
+    color: #606068;
+    text-decoration: none;
+    font-size: 12px;
+    font-family: 'DotGothic16', monospace;
+    letter-spacing: 1px;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: #c8c8c8; }
+  .nav-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    color: #888890;
+    letter-spacing: 2px;
+  }
+  .lang-buttons {
+    display: flex;
+    gap: 4px;
+  }
+  .lang-btn {
+    background: none;
+    border: 1px solid #282830;
+    color: #606068;
+    font-family: 'DotGothic16', monospace;
+    font-size: 12px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .lang-btn:hover { border-color: #484850; color: #c8c8c8; }
+  .lang-btn.active { border-color: #808088; color: #e0e0e0; background: #141418; }
+
+  /* BODY */
+  .main-body {
+    display: flex;
+    flex: 1;
+    gap: 0;
+    min-height: 0;
+  }
+
+  /* FORM PANEL */
+  .form-panel {
+    width: 380px;
+    flex-shrink: 0;
+    border-right: 1px solid #1e1e28;
+    overflow-y: auto;
+    padding: 20px 18px 32px;
+    background: #07070b;
+  }
+
+  .form-section-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: #484850;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 14px 0 8px;
+    border-bottom: 1px solid #141420;
+    margin-bottom: 14px;
+  }
+  .form-section-title:first-child { padding-top: 0; }
+
+  .form-row {
+    margin-bottom: 12px;
+  }
+  .form-label {
+    font-size: 11px;
+    color: #606068;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+  }
+
+  input[type="text"], textarea {
+    width: 100%;
+    background: #0c0c10;
+    border: 1px solid #282830;
+    color: #d0d0d8;
+    font-family: 'DotGothic16', monospace;
+    font-size: 13px;
+    padding: 7px 10px;
+    outline: none;
+    transition: border-color 0.15s;
+    resize: vertical;
+  }
+  input[type="text"]:focus, textarea:focus { border-color: #484850; }
+  input[type="text"]::placeholder, textarea::placeholder { color: #383840; }
+  textarea { min-height: 70px; }
+
+  /* RADIO + CHECKBOX */
+  .radio-group, .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .radio-option, .checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #1e1e28;
+    background: #0c0c10;
+    font-size: 12px;
+    color: #808088;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .radio-option:hover, .checkbox-option:hover {
+    border-color: #383840;
+    color: #c0c0c8;
+  }
+  .radio-option.active, .checkbox-option.active {
+    border-color: #484850;
+    color: #e0e0e0;
+    background: #111118;
+  }
+  .radio-option input, .checkbox-option input { display: none; }
+  .sym { font-size: 13px; margin-right: 2px; }
+
+  /* CHAR SELECTOR */
+  .char-selector-btn {
+    width: 100%;
+    background: #0c0c10;
+    border: 1px solid #282830;
+    color: #d0d0d8;
+    font-family: 'DotGothic16', monospace;
+    font-size: 13px;
+    padding: 8px 12px;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: border-color 0.15s;
+  }
+  .char-selector-btn:hover { border-color: #484850; }
+  .char-selector-btn img {
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+  }
+
+  /* CHAR MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: #0a0a0e;
+    border: 1px solid #303038;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'DotGothic16', monospace;
+  }
+  .modal-header {
+    padding: 12px 20px;
+    background: #141418;
+    border-bottom: 1px solid #282830;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: #c8c8c8;
+    letter-spacing: 2px;
+  }
+  .modal-close {
+    background: none;
+    border: 1px solid #383840;
+    color: #888890;
+    font-family: 'DotGothic16', monospace;
+    font-size: 12px;
+    padding: 3px 10px;
+    cursor: pointer;
+  }
+  .modal-close:hover { color: #e0e0e0; border-color: #606068; }
+  .modal-body {
+    overflow-y: auto;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+    gap: 8px;
+  }
+  .char-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 4px;
+    border: 1px solid #1e1e28;
+    background: #0c0c10;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .char-item:hover { border-color: #484850; background: #111118; }
+  .char-item.selected { border-color: #808088; background: #141420; }
+  .char-item img {
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+  }
+  .char-item span {
+    font-size: 9px;
+    color: #808088;
+    text-align: center;
+    line-height: 1.2;
+    word-break: break-all;
+  }
+  .char-item.selected span { color: #c8c8c8; }
+
+  /* PREVIEW PANEL */
+  .preview-panel {
+    flex: 1;
+    min-width: 0;
+    padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .download-btn {
+    background: #0c0c10;
+    border: 1px solid #383840;
+    color: #c0c0c8;
+    font-family: 'DotGothic16', monospace;
+    font-size: 13px;
+    padding: 10px 28px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.15s;
+  }
+  .download-btn:hover { border-color: #606068; color: #e0e0e0; background: #141418; }
+
+  /* CARD */
+  #preview {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  /* MOBILE */
+  @media (max-width: 700px) {
+    .main-body { flex-direction: column; }
+    .form-panel { width: 100%; border-right: none; border-bottom: 1px solid #1e1e28; }
+    .preview-panel { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top-nav">
+  <div class="nav-left">
+    <a href="index.html" class="back-link" id="nav-back">← 목록으로</a>
+    <span class="nav-title">CONCEPT E: 설정화면</span>
+  </div>
+  <div class="lang-buttons">
+    <button class="lang-btn active" onclick="setLang('ko')">한국어</button>
+    <button class="lang-btn" onclick="setLang('ja')">日本語</button>
+    <button class="lang-btn" onclick="setLang('en')">English</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main-body">
+
+  <!-- FORM -->
+  <div class="form-panel" id="form-panel">
+
+    <div class="form-section-title" id="sec-char">캐릭터 설정</div>
+
+    <div class="form-row">
+      <div class="form-label" id="lbl-nick">닉네임</div>
+      <input type="text" id="inp-nick" placeholder="닉네임을 입력하세요" oninput="updatePreview()">
+    </div>
+    <div class="form-row">
+      <div class="form-label" id="lbl-call">호칭</div>
+      <input type="text" id="inp-call" placeholder="아무렇게나 / ○○야, ○○씨 OK" oninput="updatePreview()">
+    </div>
+    <div class="form-row">
+      <div class="form-label" id="lbl-char">최애 캐릭터</div>
+      <button class="char-selector-btn" id="char-btn" onclick="openModal()">
+        <img id="char-btn-img" src="" alt="">
+        <span id="char-btn-name">하쿠레이 레이무</span>
+      </button>
+    </div>
+
+    <div class="form-section-title" id="sec-series">주력 시리즈</div>
+    <div class="form-row">
+      <div class="radio-group" id="series-group">
+        <label class="radio-option active" data-val="old" onclick="setRadio('series','old',this)">
+          <input type="radio" name="series" value="old">
+          <span class="sym" id="sym-series-old">●</span><span id="lbl-old">구작</span>
+        </label>
+        <label class="radio-option" data-val="new" onclick="setRadio('series','new',this)">
+          <input type="radio" name="series" value="new">
+          <span class="sym" id="sym-series-new">○</span><span id="lbl-new">신작</span>
+        </label>
+        <label class="radio-option" data-val="both" onclick="setRadio('series','both',this)">
+          <input type="radio" name="series" value="both">
+          <span class="sym" id="sym-series-both">○</span><span id="lbl-both">양쪽</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-section-title" id="sec-acct">계정 유형</div>
+    <div class="form-row">
+      <div class="checkbox-group" id="acct-group"></div>
+    </div>
+
+    <div class="form-section-title" id="sec-sns">SNS 정책</div>
+    <div class="form-row">
+      <div class="form-label" id="lbl-fub">FUB</div>
+      <div class="radio-group" id="fub-group">
+        <label class="radio-option active" data-val="free" onclick="setRadio('fub','free',this)">
+          <input type="radio" name="fub" value="free">
+          <span class="sym">●</span><span id="lbl-fub-free">FREE</span>
+        </label>
+        <label class="radio-option" data-val="r4r" onclick="setRadio('fub','r4r',this)">
+          <input type="radio" name="fub" value="r4r">
+          <span class="sym">○</span><span id="lbl-r4r">R4R</span>
+        </label>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-label" id="lbl-parting">이별은</div>
+      <div class="radio-group" id="parting-group">
+        <label class="radio-option active" data-val="unfollow" onclick="setRadio('parting','unfollow',this)">
+          <input type="radio" name="parting" value="unfollow">
+          <span class="sym">●</span><span id="lbl-unfollow">언팔</span>
+        </label>
+        <label class="radio-option" data-val="blockunfollow" onclick="setRadio('parting','blockunfollow',this)">
+          <input type="radio" name="parting" value="blockunfollow">
+          <span class="sym">○</span><span id="lbl-blockunfollow">블언블</span>
+        </label>
+        <label class="radio-option" data-val="block" onclick="setRadio('parting','block',this)">
+          <input type="radio" name="parting" value="block">
+          <span class="sym">○</span><span id="lbl-block">블락</span>
+        </label>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-label" id="lbl-other">타장르 언급</div>
+      <div class="radio-group" id="other-group">
+        <label class="radio-option" data-val="none" onclick="setRadio('other','none',this)">
+          <input type="radio" name="other" value="none">
+          <span class="sym">○</span><span id="lbl-none">없음</span>
+        </label>
+        <label class="radio-option active" data-val="sometimes" onclick="setRadio('other','sometimes',this)">
+          <input type="radio" name="other" value="sometimes">
+          <span class="sym">●</span><span id="lbl-sometimes">가끔</span>
+        </label>
+        <label class="radio-option" data-val="often" onclick="setRadio('other','often',this)">
+          <input type="radio" name="other" value="often">
+          <span class="sym">○</span><span id="lbl-often">많음</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-section-title" id="sec-etc">기타</div>
+    <div class="form-row">
+      <div class="form-label" id="lbl-dis">불호소재 / 지뢰</div>
+      <input type="text" id="inp-dis" placeholder="없음" oninput="updatePreview()">
+    </div>
+    <div class="form-row">
+      <div class="form-label" id="lbl-pair">커플링</div>
+      <input type="text" id="inp-pair" placeholder="○○×○○" oninput="updatePreview()">
+    </div>
+    <div class="form-row">
+      <div class="form-label" id="lbl-freetext">자유서술</div>
+      <textarea id="inp-free" placeholder="자유롭게 적어주세요" oninput="updatePreview()"></textarea>
+    </div>
+
+  </div><!-- /form-panel -->
+
+  <!-- PREVIEW -->
+  <div class="preview-panel">
+    <div id="preview"></div>
+    <button class="download-btn" id="dl-btn" onclick="downloadCard()">📸 이미지로 저장</button>
+  </div>
+
+</div><!-- /main-body -->
+
+<!-- CHAR MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span id="modal-title">캐릭터 선택</span>
+      <button class="modal-close" onclick="closeModal()">✕ 닫기</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const B='Touhou%2016x16%20Mini%20Pack%20Full/';
+const CHARS=[
+  {id:'reimu',p:B+'4.%20Other/%5B1%5D%20Main%20Characters/Reimu%20Hakurei.png',ko:'하쿠레이 레이무',ja:'博麗霊夢',en:'Reimu Hakurei'},
+  {id:'marisa',p:B+'4.%20Other/%5B1%5D%20Main%20Characters/Marisa%20Kirisame.png',ko:'키리사메 마리사',ja:'霧雨魔理沙',en:'Marisa Kirisame'},
+  {id:'cirno',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Cirno.png',ko:'치르노',ja:'チルノ',en:'Cirno'},
+  {id:'rumia',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Rumia.png',ko:'루미아',ja:'ルーミア',en:'Rumia'},
+  {id:'meiling',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Hong%20Meiling.png',ko:'홍 메이링',ja:'紅美鈴',en:'Hong Meiling'},
+  {id:'patchouli',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Patchouli%20Knowledge.png',ko:'파츄리 노렛지',ja:'パチュリー',en:'Patchouli Knowledge'},
+  {id:'sakuya',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Sakuya%20Izayoi.png',ko:'이자요이 사쿠야',ja:'十六夜咲夜',en:'Sakuya Izayoi'},
+  {id:'remilia',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Remilia%20Scarlet.png',ko:'레밀리아 스칼렛',ja:'レミリア',en:'Remilia Scarlet'},
+  {id:'flandre',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Flandre%20Scarlet.png',ko:'플란드르 스칼렛',ja:'フランドール',en:'Flandre Scarlet'},
+  {id:'alice',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Alice%20Margatroid.png',ko:'앨리스',ja:'アリス',en:'Alice Margatroid'},
+  {id:'youmu',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Youmu%20Konpaku.png',ko:'코메이 요우무',ja:'魂魄妖夢',en:'Youmu Konpaku'},
+  {id:'yuyuko',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Yuyuko%20Saigyouji.png',ko:'사이교우지 유유코',ja:'西行寺幽々子',en:'Yuyuko Saigyouji'},
+  {id:'yukari',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Yukari%20Yakumo.png',ko:'야쿠모 유카리',ja:'八雲紫',en:'Yukari Yakumo'},
+  {id:'ran',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Ran%20Yakumo.png',ko:'야쿠모 란',ja:'八雲藍',en:'Ran Yakumo'},
+  {id:'chen',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Chen.png',ko:'첸',ja:'橙',en:'Chen'},
+  {id:'reisen',p:B+'1.%20Mainline%20Games/%5B8%5D%20Eiyashou%20~%20Imperishable%20Night/Reisen%20Udonge%20Inaba.png',ko:'레이센 우동게',ja:'鈴仙',en:'Reisen Udonge Inaba'},
+  {id:'kaguya',p:B+'1.%20Mainline%20Games/%5B8%5D%20Eiyashou%20~%20Imperishable%20Night/Kaguya%20Houraisan.png',ko:'호우라이산 카구야',ja:'蓬莱山輝夜',en:'Kaguya Houraisan'},
+  {id:'mokou',p:B+'1.%20Mainline%20Games/%5B8%5D%20Eiyashou%20~%20Imperishable%20Night/Fujiwara%20no%20Mokou.png',ko:'후지와라노 모코우',ja:'藤原妹紅',en:'Fujiwara no Mokou'},
+  {id:'aya',p:B+'1.%20Mainline%20Games/%5B9%5D%20Kaeizuka%20~%20Phantasmagoria%20of%20Flower%20View/Aya%20Shameimaru.png',ko:'샤메이마루 아야',ja:'射命丸文',en:'Aya Shameimaru'},
+  {id:'komachi',p:B+'1.%20Mainline%20Games/%5B9%5D%20Kaeizuka%20~%20Phantasmagoria%20of%20Flower%20View/Komachi%20Onozuka.png',ko:'오노즈카 코마치',ja:'小野塚小町',en:'Komachi Onozuka'},
+  {id:'sanae',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Sanae%20Kochiya.png',ko:'코치야 사나에',ja:'東風谷早苗',en:'Sanae Kochiya'},
+  {id:'kanako',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Kanako%20Yasaka.png',ko:'야사카 카나코',ja:'八坂神奈子',en:'Kanako Yasaka'},
+  {id:'suwako',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Suwako%20Moriya.png',ko:'모리야 스와코',ja:'洩矢諏訪子',en:'Suwako Moriya'},
+  {id:'nitori',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Nitori%20Kawashiro.png',ko:'카와시로 니토리',ja:'河城にとり',en:'Nitori Kawashiro'},
+  {id:'satori',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Satori%20Komeiji.png',ko:'코메이지 사토리',ja:'古明地さとり',en:'Satori Komeiji'},
+  {id:'koishi',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Koishi%20Komeiji.png',ko:'코메이지 코이시',ja:'古明地こいし',en:'Koishi Komeiji'},
+  {id:'orin',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Rin%20Kaenbyou.png',ko:'카엔뵤우 린',ja:'火焔猫燐',en:'Rin Kaenbyou'},
+  {id:'okuu',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Utsuho%20Reiuji.png',ko:'레이우지 우츠호',ja:'霊烏路空',en:'Utsuho Reiuji'},
+  {id:'byakuren',p:B+'1.%20Mainline%20Games/%5B12%5D%20Seirensen%20~%20Undefined%20Fantastic%20Object/Byakuren%20Hijiri.png',ko:'히지리 뱌쿠렌',ja:'聖白蓮',en:'Byakuren Hijiri'},
+  {id:'miko',p:B+'1.%20Mainline%20Games/%5B13%5D%20Shinreibyou%20~%20Ten%20Desires/Toyosatomimi%20no%20Miko.png',ko:'토요사토미미노 미코',ja:'豊聡耳神子',en:'Toyosatomimi no Miko'},
+  {id:'seija',p:B+'1.%20Mainline%20Games/%5B14%5D%20Kishinjou%20~%20Double%20Dealing%20Character/Seija%20Kijin.png',ko:'키진 세이자',ja:'鬼人正邪',en:'Seija Kijin'},
+  {id:'sukuna',p:B+'1.%20Mainline%20Games/%5B14%5D%20Kishinjou%20~%20Double%20Dealing%20Character/Shinmyoumaru%20Sukuna.png',ko:'스쿠나 신묘우마루',ja:'少名針妙丸',en:'Shinmyoumaru Sukuna'},
+  {id:'clownpiece',p:B+'1.%20Mainline%20Games/%5B15%5D%20Kanjuden%20~%20Legacy%20of%20Lunatic%20Kingdom/Clownpiece.png',ko:'클라운피스',ja:'クラウンピース',en:'Clownpiece'},
+  {id:'okina',p:B+'1.%20Mainline%20Games/%5B16%5D%20Tenkuushou%20~%20Hidden%20Star%20in%20Four%20Seasons/Okina%20Matara.png',ko:'마타라 오키나',ja:'摩多羅隠岐奈',en:'Okina Matara'},
+];
+const ACCT=[
+  {id:'daily',ko:'일상',ja:'日常',en:'Daily'},{id:'drawing',ko:'그림',ja:'絵',en:'Drawing'},
+  {id:'game',ko:'게임',ja:'ゲーム',en:'Gaming'},{id:'story',ko:'썰',ja:'ネタ',en:'Story'},
+  {id:'consume',ko:'소비',ja:'消費',en:'Shopping'},{id:'sub',ko:'구독',ja:'購読',en:'Following'},
+  {id:'cos',ko:'코스',ja:'コスプレ',en:'Cosplay'},{id:'rt',ko:'RT',ja:'RT',en:'RT'},
+  {id:'like',ko:'마음',ja:'いいね',en:'Likes'},{id:'chat',ko:'탐라대화',ja:'TL会話',en:'TL Chat'},
+  {id:'fan',ko:'앓이',ja:'推し活',en:'Fangirling'},
+];
+const I18N={
+  ko:{title:'동방 트친소',nickname:'닉네임',callMe:'호칭',bestChar:'최애 캐릭터',mainSeries:'주력 시리즈',acctType:'계정 유형',fub:'FUB',parting:'이별은',otherGenre:'타장르 언급',dislike:'불호소재 / 지뢰',pairing:'커플링',freeText:'자유서술',oldWorks:'구작',newWorks:'신작',both:'양쪽',free:'FREE',r4r:'R4R',unfollow:'언팔',blockunfollow:'블언블',block:'블락',none:'없음',sometimes:'가끔',often:'많음',download:'📸 이미지로 저장',back:'← 목록으로',selectChar:'캐릭터 선택',ph_nick:'닉네임을 입력하세요',ph_call:'아무렇게나 / ○○야, ○○씨 OK',ph_dis:'없음',ph_pair:'○○×○○',ph_free:'자유롭게 적어주세요',
+    sec_char:'캐릭터 설정',sec_series:'주력 시리즈',sec_acct:'계정 유형',sec_sns:'SNS 정책',sec_etc:'기타'},
+  ja:{title:'東方 自己紹介',nickname:'ニックネーム',callMe:'呼び方',bestChar:'推しキャラ',mainSeries:'主力シリーズ',acctType:'アカウントタイプ',fub:'FUB',parting:'別れは',otherGenre:'他ジャンル言及',dislike:'地雷・苦手',pairing:'カップリング',freeText:'自由記述',oldWorks:'旧作',newWorks:'新作',both:'両方',free:'FREE',r4r:'R4R',unfollow:'アンフォロー',blockunfollow:'B解',block:'ブロック',none:'なし',sometimes:'たまに',often:'多め',download:'📸 画像として保存',back:'← 一覧へ',selectChar:'キャラを選ぶ',ph_nick:'ニックネームを入力',ph_call:'なんでもOK',ph_dis:'なし',ph_pair:'○○×○○',ph_free:'自由に書いてください',
+    sec_char:'キャラクター設定',sec_series:'主力シリーズ',sec_acct:'アカウント種別',sec_sns:'SNSポリシー',sec_etc:'その他'},
+  en:{title:'Touhou Self-Intro',nickname:'Nickname',callMe:'What to call me',bestChar:'Favorite Character',mainSeries:'Main Series',acctType:'Account Type',fub:'FUB',parting:'Parting',otherGenre:'Other Genres',dislike:'Dislikes / Triggers',pairing:'Pairings',freeText:'Free Notes',oldWorks:'Old Works',newWorks:'New Works',both:'Both',free:'FREE',r4r:'R4R',unfollow:'Unfollow',blockunfollow:'Block+Unblock',block:'Block',none:'None',sometimes:'Sometimes',often:'Often',download:'📸 Save as Image',back:'← Back',selectChar:'Select Character',ph_nick:'Enter your nickname',ph_call:'Anything is fine',ph_dis:'None',ph_pair:'CharA × CharB',ph_free:'Write freely',
+    sec_char:'Character Settings',sec_series:'Main Series',sec_acct:'Account Type',sec_sns:'SNS Policy',sec_etc:'Others'},
+};
+
+// State
+let lang = 'ko';
+let selectedChar = 'reimu';
+let checkedAcct = new Set(['daily','chat','fan','rt','like']);
+const radioState = { series:'old', fub:'free', parting:'unfollow', other:'sometimes' };
+
+function getChar(id) { return CHARS.find(c=>c.id===id); }
+function charName(c) { return c[lang]; }
+function charPath(c) { return decodeURIComponent(c.p); }
+
+// --- Lang ---
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach((b,i)=>{
+    b.classList.toggle('active', ['ko','ja','en'][i]===l);
+  });
+  applyI18N();
+  rebuildAcctGroup();
+  updatePreview();
+}
+
+function applyI18N() {
+  const t = I18N[lang];
+  document.getElementById('nav-back').textContent = t.back;
+  document.getElementById('lbl-nick').textContent = t.nickname;
+  document.getElementById('lbl-call').textContent = t.callMe;
+  document.getElementById('lbl-char').textContent = t.bestChar;
+  document.getElementById('lbl-old').textContent = t.oldWorks;
+  document.getElementById('lbl-new').textContent = t.newWorks;
+  document.getElementById('lbl-both').textContent = t.both;
+  document.getElementById('lbl-fub').textContent = t.fub;
+  document.getElementById('lbl-fub-free').textContent = t.free;
+  document.getElementById('lbl-r4r').textContent = t.r4r;
+  document.getElementById('lbl-parting').textContent = t.parting;
+  document.getElementById('lbl-unfollow').textContent = t.unfollow;
+  document.getElementById('lbl-blockunfollow').textContent = t.blockunfollow;
+  document.getElementById('lbl-block').textContent = t.block;
+  document.getElementById('lbl-other').textContent = t.otherGenre;
+  document.getElementById('lbl-none').textContent = t.none;
+  document.getElementById('lbl-sometimes').textContent = t.sometimes;
+  document.getElementById('lbl-often').textContent = t.often;
+  document.getElementById('lbl-dis').textContent = t.dislike;
+  document.getElementById('lbl-pair').textContent = t.pairing;
+  document.getElementById('lbl-freetext').textContent = t.freeText;
+  document.getElementById('sec-char').textContent = t.sec_char;
+  document.getElementById('sec-series').textContent = t.sec_series;
+  document.getElementById('sec-acct').textContent = t.sec_acct;
+  document.getElementById('sec-sns').textContent = t.sec_sns;
+  document.getElementById('sec-etc').textContent = t.sec_etc;
+  document.getElementById('dl-btn').textContent = t.download;
+  document.getElementById('modal-title').textContent = t.selectChar;
+  document.getElementById('inp-nick').placeholder = t.ph_nick;
+  document.getElementById('inp-call').placeholder = t.ph_call;
+  document.getElementById('inp-dis').placeholder = t.ph_dis;
+  document.getElementById('inp-pair').placeholder = t.ph_pair;
+  document.getElementById('inp-free').placeholder = t.ph_free;
+  // char btn name
+  const c = getChar(selectedChar);
+  if(c) document.getElementById('char-btn-name').textContent = charName(c);
+}
+
+// --- Radio ---
+function setRadio(group, val, el) {
+  radioState[group] = val;
+  const grpEl = document.getElementById(group+'-group');
+  grpEl.querySelectorAll('.radio-option').forEach(opt=>{
+    const on = opt.dataset.val === val;
+    opt.classList.toggle('active', on);
+    opt.querySelector('.sym').textContent = on ? '●' : '○';
+  });
+  updatePreview();
+}
+
+// --- Acct checkboxes ---
+function rebuildAcctGroup() {
+  const t = I18N[lang];
+  const grp = document.getElementById('acct-group');
+  grp.innerHTML = '';
+  ACCT.forEach(a=>{
+    const on = checkedAcct.has(a.id);
+    const label = document.createElement('label');
+    label.className = 'checkbox-option' + (on?' active':'');
+    label.dataset.id = a.id;
+    label.innerHTML = `<span class="sym">${on?'■':'□'}</span>${a[lang]}`;
+    label.onclick = () => toggleAcct(a.id, label);
+    grp.appendChild(label);
+  });
+}
+
+function toggleAcct(id, el) {
+  if(checkedAcct.has(id)) {
+    checkedAcct.delete(id);
+    el.classList.remove('active');
+    el.querySelector('.sym').textContent = '□';
+  } else {
+    checkedAcct.add(id);
+    el.classList.add('active');
+    el.querySelector('.sym').textContent = '■';
+  }
+  updatePreview();
+}
+
+// --- Modal ---
+function buildModal() {
+  const body = document.getElementById('modal-body');
+  body.innerHTML = '';
+  CHARS.forEach(c=>{
+    const div = document.createElement('div');
+    div.className = 'char-item' + (c.id===selectedChar?' selected':'');
+    div.innerHTML = `<img src="${charPath(c)}" alt="${c[lang]}" onerror="this.style.opacity=0.3"><span>${c[lang]}</span>`;
+    div.onclick = () => selectChar(c.id);
+    body.appendChild(div);
+  });
+}
+
+function openModal() {
+  buildModal();
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+function closeModalOutside(e) {
+  if(e.target===document.getElementById('modal')) closeModal();
+}
+function selectChar(id) {
+  selectedChar = id;
+  const c = getChar(id);
+  document.getElementById('char-btn-img').src = charPath(c);
+  document.getElementById('char-btn-name').textContent = charName(c);
+  // update modal selection highlight
+  document.querySelectorAll('.char-item').forEach(el=>{
+    // find by char name match
+  });
+  closeModal();
+  updatePreview();
+}
+
+// --- Card rendering ---
+function renderCard() {
+  const t = I18N[lang];
+  const c = getChar(selectedChar);
+  const nick = document.getElementById('inp-nick').value || '???';
+  const call = document.getElementById('inp-call').value;
+  const dis  = document.getElementById('inp-dis').value;
+  const pair = document.getElementById('inp-pair').value;
+  const free = document.getElementById('inp-free').value;
+
+  // series
+  const seriesMap = { old: t.oldWorks, new: t.newWorks, both: t.both };
+  // fub
+  const fubMap = { free: t.free, r4r: t.r4r };
+  // parting
+  const partingMap = { unfollow: t.unfollow, blockunfollow: t.blockunfollow, block: t.block };
+  // other
+  const otherMap = { none: t.none, sometimes: t.sometimes, often: t.often };
+
+  // acct checked list
+  const acctChecked = ACCT.filter(a=>checkedAcct.has(a.id));
+
+  // build acct display in rows of 4
+  const acctRows = [];
+  for(let i=0;i<acctChecked.length;i+=4){
+    acctRows.push(acctChecked.slice(i,i+4));
+  }
+
+  const ROW = (keyHtml, valHtml, highlight=false) => `
+    <div style="display:flex;align-items:flex-start;padding:9px 24px;border-bottom:1px solid #0e0e14;background:${highlight?'#101018':'transparent'}">
+      <div style="font-size:13px;color:${highlight?'#e0e0e0':'#888890'};width:160px;flex-shrink:0;padding-top:2px;font-family:'DotGothic16',monospace;letter-spacing:1px">${keyHtml}</div>
+      <div style="font-size:13px;color:#e0e0e0;flex:1;font-family:'DotGothic16',monospace;line-height:1.6">${valHtml}</div>
+    </div>`;
+
+  const SEP = (label) => `
+    <div style="font-size:11px;color:#505058;padding:7px 24px;background:#0c0c10;border-bottom:1px solid #181820;letter-spacing:2px;font-family:'DotGothic16',monospace">── ${label} ──────────────────────────────────────────</div>`;
+
+  const RADIO = (val, cur, label) => `<span style="color:${val===cur?'#e0e0e0':'#303038'};margin-right:12px">${val===cur?'●':'○'} ${label}</span>`;
+  const CHECK = (on, label) => `<span style="color:${on?'#e0e0e0':'#303038'};margin-right:12px">${on?'■':'□'} ${label}</span>`;
+
+  // acct rows html
+  let acctRowsHtml = '';
+  if(acctChecked.length===0){
+    acctRowsHtml = ROW(t.acctType, `<span style="color:#404048">—</span>`);
+  } else {
+    // first row has the key label, subsequent rows have empty key
+    for(let i=0;i<acctRows.length;i++){
+      const key = i===0 ? t.acctType : '';
+      const val = acctRows[i].map(a=>CHECK(true,a[lang])).join('');
+      acctRowsHtml += ROW(key, val);
+    }
+  }
+
+  // series radio
+  const seriesHtml = RADIO('old',radioState.series,t.oldWorks) + RADIO('new',radioState.series,t.newWorks) + RADIO('both',radioState.series,t.both);
+  // fub radio
+  const fubHtml = RADIO('free',radioState.fub,t.free) + RADIO('r4r',radioState.fub,t.r4r);
+  // parting radio
+  const partingHtml = RADIO('unfollow',radioState.parting,t.unfollow) + RADIO('blockunfollow',radioState.parting,t.blockunfollow) + RADIO('block',radioState.parting,t.block);
+  // other radio
+  const otherHtml = RADIO('none',radioState.other,t.none) + RADIO('sometimes',radioState.other,t.sometimes) + RADIO('often',radioState.other,t.often);
+
+  // free text — preserve newlines
+  const freeHtml = free ? free.replace(/\n/g,'<br>') : `<span style="color:#404048">—</span>`;
+
+  const html = `
+<div style="background:#0a0a0e;border:1px solid #303038;max-width:720px;margin:0 auto;font-family:'DotGothic16',monospace">
+
+  <!-- Titlebar -->
+  <div style="background:#141418;border-bottom:1px solid #303038;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#c8c8c8;letter-spacing:2px;font-family:'DotGothic16',monospace">
+    <span>東方Project  自己紹介 — 동방 트친소</span>
+    <span style="font-size:11px;color:#505058;letter-spacing:1px">ver.2024</span>
+  </div>
+
+  <!-- Header -->
+  <div style="border-bottom:1px solid #202028;padding:14px 24px;display:flex;align-items:center;gap:16px;background:#0e0e12">
+    <img src="${charPath(c)}" alt="${charName(c)}" style="image-rendering:pixelated;width:64px;height:64px;border:1px solid #303038">
+    <div>
+      <div style="font-size:20px;color:#e8e8e8;font-family:'DotGothic16',monospace;letter-spacing:1px">${nick}</div>
+      ${call ? `<div style="font-size:11px;color:#606060;margin-top:4px;font-family:'DotGothic16',monospace">${call}</div>` : ''}
+    </div>
+  </div>
+
+  ${SEP(t.sec_char)}
+
+  <!-- 최애 캐릭터 -->
+  <div style="display:flex;align-items:center;padding:9px 24px;border-bottom:1px solid #0e0e14;background:#101018">
+    <div style="font-size:13px;color:#e0e0e0;width:160px;flex-shrink:0;font-family:'DotGothic16',monospace;letter-spacing:1px">▶ ${t.bestChar}</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <img src="${charPath(c)}" alt="${charName(c)}" style="image-rendering:pixelated;width:20px;height:20px;border:1px solid #303038">
+      <span style="font-size:13px;color:#e0e0e0;font-family:'DotGothic16',monospace">${charName(c)}</span>
+    </div>
+  </div>
+
+  ${ROW(t.mainSeries, seriesHtml)}
+
+  ${SEP(t.sec_acct)}
+  ${acctRowsHtml}
+
+  ${SEP(t.sec_sns)}
+  ${ROW(t.fub, fubHtml)}
+  ${ROW(t.parting, partingHtml)}
+  ${ROW(t.otherGenre, otherHtml)}
+
+  ${SEP(t.sec_etc)}
+  ${ROW(t.dislike, dis || `<span style="color:#404048">—</span>`)}
+  ${ROW(t.pairing, pair || `<span style="color:#404048">—</span>`)}
+  ${ROW(t.freeText, freeHtml)}
+
+  <!-- Footer -->
+  <div style="border-top:1px solid #202028;padding:14px 24px;display:flex;justify-content:flex-end;gap:12px;background:#0e0e12">
+    <button style="font-size:13px;color:#c8c8c8;border:1px solid #484848;padding:6px 24px;background:none;font-family:'DotGothic16',monospace;cursor:default">[ 결정 ]</button>
+    <button style="font-size:13px;color:#606068;border:1px solid #303038;padding:6px 24px;background:none;font-family:'DotGothic16',monospace;cursor:default">[ 취소 ]</button>
+  </div>
+
+</div>`;
+
+  return html;
+}
+
+function updatePreview() {
+  document.getElementById('preview').innerHTML = renderCard();
+}
+
+// --- Download ---
+async function downloadCard() {
+  const el = document.getElementById('preview');
+  const canvas = await html2canvas(el, { backgroundColor:'#060608', scale:2, useCORS:true, allowTaint:true });
+  const a = document.createElement('a');
+  a.download = 'trchinsou-config.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+// --- Init ---
+(function init(){
+  // set char btn initial image
+  const c = getChar(selectedChar);
+  document.getElementById('char-btn-img').src = charPath(c);
+  document.getElementById('char-btn-name').textContent = charName(c);
+  rebuildAcctGroup();
+  applyI18N();
+  updatePreview();
+})();
+</script>
+</body>
+</html>

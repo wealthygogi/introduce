@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONCEPT C: 타이틀화면 — 동방 트친소</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+/* ── reset ── */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:#000a18;color:#fff;font-family:'Noto Serif JP',serif;overflow-x:hidden;min-height:100vh;}
+img{display:block;}
+.px{image-rendering:pixelated;image-rendering:crisp-edges;}
+
+/* ── top nav ── */
+.top-nav{
+  position:sticky;top:0;z-index:999;
+  background:rgba(0,8,20,.97);border-bottom:1px solid #0a2040;
+  padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.nav-back{
+  font-family:'Press Start 2P',monospace;font-size:7px;color:#3a7acc;
+  text-decoration:none;padding:6px 12px;border:1px solid #0a2040;
+  transition:all .2s;white-space:nowrap;
+}
+.nav-back:hover{color:#7ab4ff;border-color:#2a5a9a;background:rgba(42,90,154,.15);}
+.nav-title{
+  font-family:'Press Start 2P',monospace;font-size:8px;color:#4a90ee;
+  margin-right:auto;letter-spacing:2px;
+}
+.lang-btns{display:flex;gap:4px;}
+.lang-btn{
+  font-family:'Press Start 2P',monospace;font-size:6px;color:#1a4a70;
+  background:none;border:1px solid #0a2040;padding:5px 10px;cursor:pointer;
+  transition:all .2s;
+}
+.lang-btn.active,.lang-btn:hover{color:#7ab4ff;border-color:#2a5a9a;background:rgba(42,90,154,.12);}
+
+/* ── main layout ── */
+.main-wrap{
+  display:grid;grid-template-columns:380px 1fr;
+  min-height:calc(100vh - 48px);
+}
+@media(max-width:820px){
+  .main-wrap{grid-template-columns:1fr;}
+}
+
+/* ── LEFT: form panel ── */
+.form-panel{
+  background:#000d1f;border-right:1px solid #0a2040;
+  overflow-y:auto;max-height:calc(100vh - 48px);
+  position:sticky;top:48px;
+  padding:20px;display:flex;flex-direction:column;gap:14px;
+}
+@media(max-width:820px){
+  .form-panel{position:static;max-height:none;}
+}
+
+.form-section{display:flex;flex-direction:column;gap:6px;}
+.form-label{
+  font-family:'Press Start 2P',monospace;font-size:6px;color:#3a7acc;
+  letter-spacing:1px;
+}
+.form-input{
+  background:#000d1f;border:1px solid #0a2040;color:#c8deff;
+  padding:8px 10px;font-family:'Noto Serif JP',serif;font-size:13px;
+  outline:none;width:100%;transition:border-color .2s;
+}
+.form-input:focus{border-color:#2a5a9a;}
+.form-input::placeholder{color:#122040;}
+textarea.form-input{resize:vertical;min-height:70px;line-height:1.7;}
+
+.form-hr{border:none;border-top:1px solid #071828;margin:2px 0;}
+
+/* char picker grid */
+.char-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,40px);
+  gap:4px;
+}
+.char-thumb{
+  width:40px;height:40px;cursor:pointer;
+  border:2px solid transparent;padding:2px;
+  background:#000d1f;transition:border-color .15s,background .15s;
+  display:flex;align-items:center;justify-content:center;
+}
+.char-thumb:hover{border-color:#0a2a50;background:#011525;}
+.char-thumb.selected{border-color:#2a5a9a;background:#051a35;box-shadow:0 0 8px rgba(42,90,154,.5);}
+.char-thumb img{width:32px;height:32px;}
+
+/* radio group */
+.radio-group{display:flex;flex-wrap:wrap;gap:6px;}
+.radio-opt{
+  font-family:'Press Start 2P',monospace;font-size:6px;color:#1a3a60;
+  padding:5px 10px;border:1px solid #0a2040;cursor:pointer;
+  transition:all .15s;user-select:none;
+}
+.radio-opt:hover{border-color:#1a4070;color:#3a70b0;}
+.radio-opt.selected{border-color:#2a5a9a;color:#7ab4ff;background:rgba(42,90,154,.12);}
+
+/* checkbox chips */
+.check-group{display:flex;flex-wrap:wrap;gap:5px;}
+.check-chip{
+  font-family:'Press Start 2P',monospace;font-size:5.5px;color:#122040;
+  padding:4px 8px;border:1px solid #071828;cursor:pointer;
+  transition:all .15s;user-select:none;
+}
+.check-chip:hover{border-color:#0a2a50;color:#2a5a80;}
+.check-chip.checked{border-color:#2a5a9a;color:#7ab4ff;background:rgba(42,90,154,.15);}
+
+/* download button */
+.dl-btn{
+  font-family:'Press Start 2P',monospace;font-size:7px;
+  color:#7ab4ff;padding:12px 20px;
+  background:linear-gradient(135deg,#051a35,#0a3060);
+  border:1px solid #2a5a9a;cursor:pointer;
+  transition:all .2s;width:100%;margin-top:4px;
+  text-align:center;letter-spacing:1px;
+}
+.dl-btn:hover{background:linear-gradient(135deg,#0a3060,#104080);border-color:#4a7acc;color:#c8deff;}
+.dl-btn:active{transform:scale(.98);}
+
+/* ── RIGHT: preview panel ── */
+.preview-panel{
+  background:#000a18;display:flex;align-items:flex-start;
+  justify-content:center;padding:30px 24px;
+  overflow-y:auto;
+}
+@media(max-width:820px){
+  .preview-panel{padding:20px 16px;}
+}
+
+/* ── CARD ── */
+#preview{
+  width:620px;max-width:100%;
+  font-family:'Noto Serif JP',serif;
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <a href="index.html" class="nav-back" id="nav-back">&#8592; 목록으로</a>
+  <span class="nav-title" id="nav-title">CONCEPT C: 타이틀화면</span>
+  <div class="lang-btns">
+    <button class="lang-btn active" onclick="setLang('ko')">한국어</button>
+    <button class="lang-btn" onclick="setLang('ja')">日本語</button>
+    <button class="lang-btn" onclick="setLang('en')">English</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- LEFT: FORM -->
+  <div class="form-panel">
+
+    <!-- nickname -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-nickname">닉네임</label>
+      <input class="form-input" id="inp-nickname" type="text" placeholder="닉네임을 입력하세요" oninput="updateCard()">
+    </div>
+
+    <!-- callMe -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-callme">호칭</label>
+      <input class="form-input" id="inp-callme" type="text" placeholder="아무렇게나 / ○○야, ○○씨 OK" oninput="updateCard()">
+    </div>
+
+    <hr class="form-hr">
+
+    <!-- character picker -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-bestchar">최애 캐릭터</label>
+      <div class="char-grid" id="char-grid"></div>
+    </div>
+
+    <hr class="form-hr">
+
+    <!-- mainSeries -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-mainseries">주력 시리즈</label>
+      <div class="radio-group" id="series-group">
+        <div class="radio-opt" data-val="old" onclick="selectSeries('old')" id="series-old">구작</div>
+        <div class="radio-opt selected" data-val="new" onclick="selectSeries('new')" id="series-new">신작</div>
+        <div class="radio-opt" data-val="both" onclick="selectSeries('both')" id="series-both">양쪽</div>
+      </div>
+    </div>
+
+    <hr class="form-hr">
+
+    <!-- acctType -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-accttype">계정 유형</label>
+      <div class="check-group" id="acct-group"></div>
+    </div>
+
+    <hr class="form-hr">
+
+    <!-- fub -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-fub">FUB</label>
+      <div class="radio-group" id="fub-group">
+        <div class="radio-opt selected" data-val="free" onclick="selectFub('free')" id="fub-free">FREE</div>
+        <div class="radio-opt" data-val="r4r" onclick="selectFub('r4r')" id="fub-r4r">R4R</div>
+      </div>
+    </div>
+
+    <!-- parting -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-parting">이별은</label>
+      <div class="radio-group" id="parting-group">
+        <div class="radio-opt selected" data-val="unfollow" onclick="selectParting('unfollow')" id="parting-unfollow">언팔</div>
+        <div class="radio-opt" data-val="blockunfollow" onclick="selectParting('blockunfollow')" id="parting-blockunfollow">블언블</div>
+        <div class="radio-opt" data-val="block" onclick="selectParting('block')" id="parting-block">블락</div>
+      </div>
+    </div>
+
+    <!-- otherGenre -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-othergenre">타장르 언급</label>
+      <div class="radio-group" id="other-group">
+        <div class="radio-opt" data-val="none" onclick="selectOther('none')" id="other-none">없음</div>
+        <div class="radio-opt selected" data-val="sometimes" onclick="selectOther('sometimes')" id="other-sometimes">가끔</div>
+        <div class="radio-opt" data-val="often" onclick="selectOther('often')" id="other-often">많음</div>
+      </div>
+    </div>
+
+    <hr class="form-hr">
+
+    <!-- dislike -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-dislike">불호소재 / 지뢰</label>
+      <input class="form-input" id="inp-dislike" type="text" placeholder="없음" oninput="updateCard()">
+    </div>
+
+    <!-- pairing -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-pairing">커플링</label>
+      <input class="form-input" id="inp-pairing" type="text" placeholder="○○×○○" oninput="updateCard()">
+    </div>
+
+    <!-- freeText -->
+    <div class="form-section">
+      <label class="form-label" id="lbl-freetext">자유서술</label>
+      <textarea class="form-input" id="inp-freetext" placeholder="자유롭게 적어주세요" oninput="updateCard()"></textarea>
+    </div>
+
+    <!-- download -->
+    <button class="dl-btn" id="dl-btn" onclick="downloadCard()">&#128248; 이미지로 저장</button>
+
+  </div>
+
+  <!-- RIGHT: PREVIEW -->
+  <div class="preview-panel">
+    <div id="preview"></div>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   DATA
+═══════════════════════════════════════ */
+const B='Touhou%2016x16%20Mini%20Pack%20Full/';
+const CHARS=[
+  {id:'reimu',p:B+'4.%20Other/%5B1%5D%20Main%20Characters/Reimu%20Hakurei.png',ko:'하쿠레이 레이무',ja:'博麗霊夢',en:'Reimu Hakurei'},
+  {id:'marisa',p:B+'4.%20Other/%5B1%5D%20Main%20Characters/Marisa%20Kirisame.png',ko:'키리사메 마리사',ja:'霧雨魔理沙',en:'Marisa Kirisame'},
+  {id:'cirno',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Cirno.png',ko:'치르노',ja:'チルノ',en:'Cirno'},
+  {id:'rumia',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Rumia.png',ko:'루미아',ja:'ルーミア',en:'Rumia'},
+  {id:'meiling',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Hong%20Meiling.png',ko:'홍 메이링',ja:'紅美鈴',en:'Hong Meiling'},
+  {id:'patchouli',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Patchouli%20Knowledge.png',ko:'파츄리 노렛지',ja:'パチュリー',en:'Patchouli Knowledge'},
+  {id:'sakuya',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Sakuya%20Izayoi.png',ko:'이자요이 사쿠야',ja:'十六夜咲夜',en:'Sakuya Izayoi'},
+  {id:'remilia',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Remilia%20Scarlet.png',ko:'레밀리아 스칼렛',ja:'レミリア',en:'Remilia Scarlet'},
+  {id:'flandre',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Flandre%20Scarlet.png',ko:'플란드르 스칼렛',ja:'フランドール',en:'Flandre Scarlet'},
+  {id:'alice',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Alice%20Margatroid.png',ko:'앨리스',ja:'アリス',en:'Alice Margatroid'},
+  {id:'youmu',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Youmu%20Konpaku.png',ko:'코메이 요우무',ja:'魂魄妖夢',en:'Youmu Konpaku'},
+  {id:'yuyuko',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Yuyuko%20Saigyouji.png',ko:'사이교우지 유유코',ja:'西行寺幽々子',en:'Yuyuko Saigyouji'},
+  {id:'yukari',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Yukari%20Yakumo.png',ko:'야쿠모 유카리',ja:'八雲紫',en:'Yukari Yakumo'},
+  {id:'ran',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Ran%20Yakumo.png',ko:'야쿠모 란',ja:'八雲藍',en:'Ran Yakumo'},
+  {id:'chen',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Chen.png',ko:'첸',ja:'橙',en:'Chen'},
+  {id:'reisen',p:B+'1.%20Mainline%20Games/%5B8%5D%20Eiyashou%20~%20Imperishable%20Night/Reisen%20Udonge%20Inaba.png',ko:'레이센 우동게',ja:'鈴仙',en:'Reisen Udonge Inaba'},
+  {id:'kaguya',p:B+'1.%20Mainline%20Games/%5B8%5D%20Eiyashou%20~%20Imperishable%20Night/Kaguya%20Houraisan.png',ko:'호우라이산 카구야',ja:'蓬莱山輝夜',en:'Kaguya Houraisan'},
+  {id:'mokou',p:B+'1.%20Mainline%20Games/%5B8%5D%20Eiyashou%20~%20Imperishable%20Night/Fujiwara%20no%20Mokou.png',ko:'후지와라노 모코우',ja:'藤原妹紅',en:'Fujiwara no Mokou'},
+  {id:'aya',p:B+'1.%20Mainline%20Games/%5B9%5D%20Kaeizuka%20~%20Phantasmagoria%20of%20Flower%20View/Aya%20Shameimaru.png',ko:'샤메이마루 아야',ja:'射命丸文',en:'Aya Shameimaru'},
+  {id:'komachi',p:B+'1.%20Mainline%20Games/%5B9%5D%20Kaeizuka%20~%20Phantasmagoria%20of%20Flower%20View/Komachi%20Onozuka.png',ko:'오노즈카 코마치',ja:'小野塚小町',en:'Komachi Onozuka'},
+  {id:'sanae',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Sanae%20Kochiya.png',ko:'코치야 사나에',ja:'東風谷早苗',en:'Sanae Kochiya'},
+  {id:'kanako',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Kanako%20Yasaka.png',ko:'야사카 카나코',ja:'八坂神奈子',en:'Kanako Yasaka'},
+  {id:'suwako',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Suwako%20Moriya.png',ko:'모리야 스와코',ja:'洩矢諏訪子',en:'Suwako Moriya'},
+  {id:'nitori',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Nitori%20Kawashiro.png',ko:'카와시로 니토리',ja:'河城にとり',en:'Nitori Kawashiro'},
+  {id:'satori',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Satori%20Komeiji.png',ko:'코메이지 사토리',ja:'古明地さとり',en:'Satori Komeiji'},
+  {id:'koishi',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Koishi%20Komeiji.png',ko:'코메이지 코이시',ja:'古明地こいし',en:'Koishi Komeiji'},
+  {id:'orin',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Rin%20Kaenbyou.png',ko:'카엔뵤우 린',ja:'火焔猫燐',en:'Rin Kaenbyou'},
+  {id:'okuu',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Utsuho%20Reiuji.png',ko:'레이우지 우츠호',ja:'霊烏路空',en:'Utsuho Reiuji'},
+  {id:'byakuren',p:B+'1.%20Mainline%20Games/%5B12%5D%20Seirensen%20~%20Undefined%20Fantastic%20Object/Byakuren%20Hijiri.png',ko:'히지리 뱌쿠렌',ja:'聖白蓮',en:'Byakuren Hijiri'},
+  {id:'miko',p:B+'1.%20Mainline%20Games/%5B13%5D%20Shinreibyou%20~%20Ten%20Desires/Toyosatomimi%20no%20Miko.png',ko:'토요사토미미노 미코',ja:'豊聡耳神子',en:'Toyosatomimi no Miko'},
+  {id:'seija',p:B+'1.%20Mainline%20Games/%5B14%5D%20Kishinjou%20~%20Double%20Dealing%20Character/Seija%20Kijin.png',ko:'키진 세이자',ja:'鬼人正邪',en:'Seija Kijin'},
+  {id:'sukuna',p:B+'1.%20Mainline%20Games/%5B14%5D%20Kishinjou%20~%20Double%20Dealing%20Character/Shinmyoumaru%20Sukuna.png',ko:'스쿠나 신묘우마루',ja:'少名針妙丸',en:'Shinmyoumaru Sukuna'},
+  {id:'clownpiece',p:B+'1.%20Mainline%20Games/%5B15%5D%20Kanjuden%20~%20Legacy%20of%20Lunatic%20Kingdom/Clownpiece.png',ko:'클라운피스',ja:'クラウンピース',en:'Clownpiece'},
+  {id:'okina',p:B+'1.%20Mainline%20Games/%5B16%5D%20Tenkuushou%20~%20Hidden%20Star%20in%20Four%20Seasons/Okina%20Matara.png',ko:'마타라 오키나',ja:'摩多羅隠岐奈',en:'Okina Matara'},
+];
+const ACCT=[
+  {id:'daily',ko:'일상',ja:'日常',en:'Daily'},{id:'drawing',ko:'그림',ja:'絵',en:'Drawing'},
+  {id:'game',ko:'게임',ja:'ゲーム',en:'Gaming'},{id:'story',ko:'썰',ja:'ネタ',en:'Story'},
+  {id:'consume',ko:'소비',ja:'消費',en:'Shopping'},{id:'sub',ko:'구독',ja:'購読',en:'Following'},
+  {id:'cos',ko:'코스',ja:'コスプレ',en:'Cosplay'},{id:'rt',ko:'RT',ja:'RT',en:'RT'},
+  {id:'like',ko:'마음',ja:'いいね',en:'Likes'},{id:'chat',ko:'탐라대화',ja:'TL会話',en:'TL Chat'},
+  {id:'fan',ko:'앓이',ja:'推し活',en:'Fangirling'},
+];
+const I18N={
+  ko:{title:'동방 트친소',nickname:'닉네임',callMe:'호칭',bestChar:'최애 캐릭터',mainSeries:'주력 시리즈',acctType:'계정 유형',fub:'FUB',parting:'이별은',otherGenre:'타장르 언급',dislike:'불호소재 / 지뢰',pairing:'커플링',freeText:'자유서술',oldWorks:'구작',newWorks:'신작',both:'양쪽',free:'FREE',r4r:'R4R',unfollow:'언팔',blockunfollow:'블언블',block:'블락',none:'없음',sometimes:'가끔',often:'많음',download:'📸 이미지로 저장',back:'← 목록으로',selectChar:'캐릭터 선택',ph_nick:'닉네임을 입력하세요',ph_call:'아무렇게나 / ○○야, ○○씨 OK',ph_dis:'없음',ph_pair:'○○×○○',ph_free:'자유롭게 적어주세요'},
+  ja:{title:'東方 自己紹介',nickname:'ニックネーム',callMe:'呼び方',bestChar:'推しキャラ',mainSeries:'主力シリーズ',acctType:'アカウントタイプ',fub:'FUB',parting:'別れは',otherGenre:'他ジャンル言及',dislike:'地雷・苦手',pairing:'カップリング',freeText:'自由記述',oldWorks:'旧作',newWorks:'新作',both:'両方',free:'FREE',r4r:'R4R',unfollow:'アンフォロー',blockunfollow:'B解',block:'ブロック',none:'なし',sometimes:'たまに',often:'多め',download:'📸 画像として保存',back:'← 一覧へ',selectChar:'キャラを選ぶ',ph_nick:'ニックネームを入力',ph_call:'なんでもOK',ph_dis:'なし',ph_pair:'○○×○○',ph_free:'自由に書いてください'},
+  en:{title:'Touhou Self-Intro',nickname:'Nickname',callMe:'What to call me',bestChar:'Favorite Character',mainSeries:'Main Series',acctType:'Account Type',fub:'FUB',parting:'Parting',otherGenre:'Other Genres',dislike:'Dislikes / Triggers',pairing:'Pairings',freeText:'Free Notes',oldWorks:'Old Works',newWorks:'New Works',both:'Both',free:'FREE',r4r:'R4R',unfollow:'Unfollow',blockunfollow:'Block+Unblock',block:'Block',none:'None',sometimes:'Sometimes',often:'Often',download:'📸 Save as Image',back:'← Back',selectChar:'Select Character',ph_nick:'Enter your nickname',ph_call:'Anything is fine',ph_dis:'None',ph_pair:'CharA × CharB',ph_free:'Write freely'},
+};
+
+/* ═══════════════════════════════════════
+   STARS — generated once, deterministic
+═══════════════════════════════════════ */
+const STARS = Array.from({length:60}, (_,i) => ({
+  x: (i*137.5)%100,
+  y: (i*97.3)%100,
+  s: 0.5 + (i%3)*0.6,
+  o: 0.05 + (i%5)*0.06,
+}));
+
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+let lang = 'ko';
+let selectedChar = 'reimu';
+let selectedSeries = 'new';
+let selectedFub = 'free';
+let selectedParting = 'unfollow';
+let selectedOther = 'sometimes';
+let checkedAcct = new Set(['daily','chat','fan','rt','like']);
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+function init() {
+  buildCharGrid();
+  buildAcctChips();
+  applyI18N();
+  updateCard();
+}
+
+function buildCharGrid() {
+  const grid = document.getElementById('char-grid');
+  grid.innerHTML = '';
+  CHARS.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'char-thumb' + (c.id === selectedChar ? ' selected' : '');
+    div.title = c[lang] || c.ko;
+    div.onclick = () => selectChar(c.id);
+    div.id = 'ct-' + c.id;
+    const img = document.createElement('img');
+    img.className = 'px';
+    img.src = decodeURIComponent(c.p);
+    img.alt = c.en;
+    img.style.cssText = 'width:32px;height:32px;image-rendering:pixelated;image-rendering:crisp-edges;';
+    div.appendChild(img);
+    grid.appendChild(div);
+  });
+}
+
+function buildAcctChips() {
+  const grp = document.getElementById('acct-group');
+  grp.innerHTML = '';
+  ACCT.forEach(a => {
+    const div = document.createElement('div');
+    div.className = 'check-chip' + (checkedAcct.has(a.id) ? ' checked' : '');
+    div.id = 'ac-' + a.id;
+    div.textContent = a[lang] || a.ko;
+    div.onclick = () => toggleAcct(a.id);
+    grp.appendChild(div);
+  });
+}
+
+/* ═══════════════════════════════════════
+   CONTROLS
+═══════════════════════════════════════ */
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  applyI18N();
+  buildCharGrid();
+  buildAcctChips();
+  updateCard();
+}
+
+function applyI18N() {
+  const t = I18N[lang];
+  document.getElementById('nav-back').textContent = t.back;
+  document.getElementById('lbl-nickname').textContent = t.nickname;
+  document.getElementById('lbl-callme').textContent = t.callMe;
+  document.getElementById('lbl-bestchar').textContent = t.bestChar;
+  document.getElementById('lbl-mainseries').textContent = t.mainSeries;
+  document.getElementById('lbl-accttype').textContent = t.acctType;
+  document.getElementById('lbl-fub').textContent = t.fub;
+  document.getElementById('lbl-parting').textContent = t.parting;
+  document.getElementById('lbl-othergenre').textContent = t.otherGenre;
+  document.getElementById('lbl-dislike').textContent = t.dislike;
+  document.getElementById('lbl-pairing').textContent = t.pairing;
+  document.getElementById('lbl-freetext').textContent = t.freeText;
+  document.getElementById('inp-nickname').placeholder = t.ph_nick;
+  document.getElementById('inp-callme').placeholder = t.ph_call;
+  document.getElementById('inp-dislike').placeholder = t.ph_dis;
+  document.getElementById('inp-pairing').placeholder = t.ph_pair;
+  document.getElementById('inp-freetext').placeholder = t.ph_free;
+  document.getElementById('dl-btn').textContent = t.download;
+  document.getElementById('series-old').textContent = t.oldWorks;
+  document.getElementById('series-new').textContent = t.newWorks;
+  document.getElementById('series-both').textContent = t.both;
+  document.getElementById('fub-free').textContent = t.free;
+  document.getElementById('fub-r4r').textContent = t.r4r;
+  document.getElementById('parting-unfollow').textContent = t.unfollow;
+  document.getElementById('parting-blockunfollow').textContent = t.blockunfollow;
+  document.getElementById('parting-block').textContent = t.block;
+  document.getElementById('other-none').textContent = t.none;
+  document.getElementById('other-sometimes').textContent = t.sometimes;
+  document.getElementById('other-often').textContent = t.often;
+}
+
+function selectChar(id) {
+  document.querySelectorAll('.char-thumb').forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById('ct-' + id);
+  if (el) el.classList.add('selected');
+  selectedChar = id;
+  updateCard();
+}
+
+function selectSeries(val) {
+  document.querySelectorAll('#series-group .radio-opt').forEach(el => el.classList.remove('selected'));
+  document.getElementById('series-' + val).classList.add('selected');
+  selectedSeries = val;
+  updateCard();
+}
+
+function selectFub(val) {
+  document.querySelectorAll('#fub-group .radio-opt').forEach(el => el.classList.remove('selected'));
+  document.getElementById('fub-' + val).classList.add('selected');
+  selectedFub = val;
+  updateCard();
+}
+
+function selectParting(val) {
+  document.querySelectorAll('#parting-group .radio-opt').forEach(el => el.classList.remove('selected'));
+  document.getElementById('parting-' + val).classList.add('selected');
+  selectedParting = val;
+  updateCard();
+}
+
+function selectOther(val) {
+  document.querySelectorAll('#other-group .radio-opt').forEach(el => el.classList.remove('selected'));
+  document.getElementById('other-' + val).classList.add('selected');
+  selectedOther = val;
+  updateCard();
+}
+
+function toggleAcct(id) {
+  if (checkedAcct.has(id)) {
+    checkedAcct.delete(id);
+    document.getElementById('ac-' + id).classList.remove('checked');
+  } else {
+    checkedAcct.add(id);
+    document.getElementById('ac-' + id).classList.add('checked');
+  }
+  updateCard();
+}
+
+/* ═══════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════ */
+function getCharData(id) {
+  return CHARS.find(c => c.id === id) || CHARS[0];
+}
+
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+/* ═══════════════════════════════════════
+   CARD RENDER
+═══════════════════════════════════════ */
+function renderCard() {
+  const t = I18N[lang];
+  const char = getCharData(selectedChar);
+  const charName = char[lang] || char.ko;
+  const charSrc = decodeURIComponent(char.p);
+
+  // Floater sprites: marisa left, selected center, cirno right
+  const marisaSrc = decodeURIComponent(getCharData('marisa').p);
+  const cirnoSrc = decodeURIComponent(getCharData('cirno').p);
+
+  const nickname = document.getElementById('inp-nickname').value || t.ph_nick;
+  const callMe = document.getElementById('inp-callme').value || t.ph_call;
+  const dislike = document.getElementById('inp-dislike').value || t.ph_dis;
+  const pairing = document.getElementById('inp-pairing').value || t.ph_pair;
+  const freeText = document.getElementById('inp-freetext').value || '';
+
+  const seriesLabel = {old:t.oldWorks,new:t.newWorks,both:t.both}[selectedSeries];
+  const fubLabel = {free:t.free,r4r:t.r4r}[selectedFub];
+  const partingLabel = {unfollow:t.unfollow,blockunfollow:t.blockunfollow,block:t.block}[selectedParting];
+  const otherLabel = {none:t.none,sometimes:t.sometimes,often:t.often}[selectedOther];
+
+  // Star divs
+  const starsHtml = STARS.map(s =>
+    `<div style="position:absolute;left:${s.x}%;top:${s.y}%;width:${s.s}px;height:${s.s}px;background:#fff;border-radius:50%;opacity:${s.o};pointer-events:none;"></div>`
+  ).join('');
+
+  // Acct chips
+  const acctChipsHtml = ACCT.map(a => {
+    const on = checkedAcct.has(a.id);
+    const label = a[lang] || a.ko;
+    return `<span style="
+      font-family:'Press Start 2P',monospace;
+      font-size:5.5px;
+      color:${on?'#c8deff':'#0e2a48'};
+      padding:4px 8px;
+      border:1px solid ${on?'#1a3a5a':'#071828'};
+      background:${on?'rgba(42,90,154,.18)':'rgba(0,10,30,.3)'};
+      display:inline-block;
+      margin:2px;
+    ">${on?'&#9632;':'&#9633;'} ${escHtml(label)}</span>`;
+  }).join('');
+
+  // Free text html
+  const freeTextHtml = freeText ? freeText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>') : '';
+
+  const eyebrow = lang === 'ko' ? '東方Project トウィッター 自己紹介' : lang === 'ja' ? '東方Project Twitter 自己紹介' : 'Touhou Project Twitter Self-Intro';
+
+  const html = `
+<div style="background:#000814;padding:40px 30px;min-height:500px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;font-family:'Noto Serif JP',serif;">
+
+  <!-- Stars -->
+  ${starsHtml}
+
+  <!-- Eyebrow -->
+  <div style="position:relative;font-family:'Press Start 2P',monospace;font-size:7px;color:#2a7aee;letter-spacing:5px;margin-bottom:14px;opacity:0.8;text-align:center;">
+    ${escHtml(eyebrow)}
+  </div>
+
+  <!-- Nickname title -->
+  <div style="position:relative;font-family:'Noto Serif JP',serif;font-size:48px;font-weight:700;color:#fff;letter-spacing:10px;text-shadow:0 0 30px rgba(70,140,255,.6),0 0 80px rgba(70,140,255,.18);margin-bottom:6px;text-align:center;">
+    ${escHtml(nickname)}
+  </div>
+
+  <!-- Call me subtitle -->
+  <div style="position:relative;font-family:'Press Start 2P',monospace;font-size:8px;color:#4a90d0;letter-spacing:3px;margin-bottom:36px;text-align:center;">
+    ${escHtml(callMe)}
+  </div>
+
+  <!-- Floating sprites row -->
+  <div style="position:relative;display:flex;justify-content:center;align-items:flex-end;gap:20px;margin-bottom:40px;">
+    <img src="${marisaSrc}" alt="marisa" style="width:72px;height:72px;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 0 10px rgba(70,140,255,.55));">
+    <img src="${charSrc}" alt="${escHtml(charName)}" style="width:96px;height:96px;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 0 14px rgba(70,140,255,.7));">
+    <img src="${cirnoSrc}" alt="cirno" style="width:72px;height:72px;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 0 10px rgba(70,140,255,.55));">
+  </div>
+
+  <!-- Info grid -->
+  <div style="position:relative;display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:560px;margin-bottom:28px;">
+
+    <!-- Best char (full width) -->
+    <div style="grid-column:1/-1;border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;display:flex;align-items:center;gap:14px;">
+      <img src="${charSrc}" alt="${escHtml(charName)}" style="width:36px;height:36px;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 0 6px rgba(70,140,255,.5));flex-shrink:0;">
+      <div>
+        <div style="font-family:'Press Start 2P',monospace;font-size:5.5px;color:#3a7acc;letter-spacing:2px;margin-bottom:8px;">${escHtml(t.bestChar)}</div>
+        <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#c8deff;font-weight:700;">${escHtml(charName)}</div>
+      </div>
+    </div>
+
+    <!-- Main series -->
+    <div style="border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;">
+      <div style="font-family:'Press Start 2P',monospace;font-size:5.5px;color:#3a7acc;letter-spacing:2px;margin-bottom:8px;">${escHtml(t.mainSeries)}</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:13px;color:#c8deff;">${escHtml(seriesLabel)}</div>
+    </div>
+
+    <!-- FUB / Parting / Other -->
+    <div style="border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;">
+      <div style="font-family:'Press Start 2P',monospace;font-size:5.5px;color:#3a7acc;letter-spacing:2px;margin-bottom:8px;">${escHtml(t.fub)} / ${escHtml(t.parting)} / ${escHtml(t.otherGenre)}</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#c8deff;line-height:1.8;">
+        ${escHtml(fubLabel)} &nbsp;·&nbsp; ${escHtml(partingLabel)} &nbsp;·&nbsp; ${escHtml(otherLabel)}
+      </div>
+    </div>
+
+    <!-- Acct type (full width) -->
+    <div style="grid-column:1/-1;border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;">
+      <div style="font-family:'Press Start 2P',monospace;font-size:5.5px;color:#3a7acc;letter-spacing:2px;margin-bottom:8px;">${escHtml(t.acctType)}</div>
+      <div style="display:flex;flex-wrap:wrap;">${acctChipsHtml}</div>
+    </div>
+
+    <!-- Dislike -->
+    <div style="border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;">
+      <div style="font-family:'Press Start 2P',monospace;font-size:5.5px;color:#3a7acc;letter-spacing:2px;margin-bottom:8px;">${escHtml(t.dislike)}</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#c8deff;line-height:1.7;">${escHtml(dislike)}</div>
+    </div>
+
+    <!-- Pairing -->
+    <div style="border:1px solid #1a3a5a;background:rgba(0,20,50,.5);padding:14px 16px;">
+      <div style="font-family:'Press Start 2P',monospace;font-size:5.5px;color:#3a7acc;letter-spacing:2px;margin-bottom:8px;">${escHtml(t.pairing)}</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#c8deff;line-height:1.7;">${escHtml(pairing)}</div>
+    </div>
+
+  </div>
+
+  <!-- Free text -->
+  ${freeText ? `
+  <div style="position:relative;font-family:'Noto Serif JP',serif;font-size:13px;color:#c8deff;line-height:1.9;max-width:560px;text-align:center;margin-bottom:16px;">
+    ${freeTextHtml}
+  </div>
+  ` : ''}
+
+  <!-- Blink text -->
+  <div style="position:relative;font-family:'Press Start 2P',monospace;font-size:6px;color:#182840;letter-spacing:3px;text-align:center;">
+    — SCROLL TO EXPLORE —
+  </div>
+
+  <!-- Footer credit -->
+  <div style="position:relative;margin-top:18px;font-family:'Press Start 2P',monospace;font-size:5px;color:#0d1e32;letter-spacing:1px;text-align:center;">
+    Touhou Project © ZUN &nbsp;·&nbsp; Sprites © Touhou 16×16 Mini Pack
+  </div>
+
+</div>
+  `;
+
+  document.getElementById('preview').innerHTML = html;
+}
+
+function updateCard() {
+  renderCard();
+}
+
+/* ═══════════════════════════════════════
+   DOWNLOAD
+═══════════════════════════════════════ */
+async function downloadCard() {
+  const el = document.getElementById('preview');
+  const canvas = await html2canvas(el, {
+    backgroundColor: '#000814',
+    scale: 2,
+    useCORS: true,
+    allowTaint: true,
+  });
+  const a = document.createElement('a');
+  a.download = 'trchinsou-title.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+/* ═══════════════════════════════════════
+   BOOT
+═══════════════════════════════════════ */
+init();
+</script>
+</body>
+</html>

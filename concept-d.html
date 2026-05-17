@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONCEPT D: 대화창 — 동방 트친소</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+/* ── reset ── */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:#030c10;color:#c8e8e0;font-family:'DotGothic16',monospace;overflow-x:hidden;min-height:100vh;}
+img{display:block;}
+
+/* ── nav ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  background:rgba(2,8,14,.97);border-bottom:1px solid #0c2828;
+  padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.nav-back{
+  font-family:'Press Start 2P',monospace;font-size:7px;color:#2a7868;
+  text-decoration:none;padding:6px 12px;border:1px solid #0c2828;
+  transition:all .2s;white-space:nowrap;
+}
+.nav-back:hover{color:#50d0c0;border-color:#1a6060;}
+.nav-title{
+  font-family:'Press Start 2P',monospace;font-size:8px;color:#50d0c0;
+  margin-right:auto;letter-spacing:2px;
+}
+.lang-btns{display:flex;gap:4px;}
+.lang-btn{
+  font-family:'Press Start 2P',monospace;font-size:6px;color:#2a7868;
+  background:none;border:1px solid #0c2828;padding:5px 10px;cursor:pointer;
+  transition:all .2s;
+}
+.lang-btn:hover,.lang-btn.active{color:#50d0c0;border-color:#1a6060;background:rgba(20,100,90,.1);}
+
+/* ── main layout ── */
+.main-wrap{
+  margin-top:52px;
+  display:grid;
+  grid-template-columns:380px 1fr;
+  min-height:calc(100vh - 52px);
+}
+
+/* ── LEFT: form panel ── */
+.form-panel{
+  border-right:1px solid #0c2828;
+  background:rgba(2,10,16,.95);
+  overflow-y:auto;
+  padding:28px 24px;
+  display:flex;flex-direction:column;gap:20px;
+}
+
+.form-section{display:flex;flex-direction:column;gap:8px;}
+.form-label{
+  font-family:'Press Start 2P',monospace;font-size:6px;color:#2a7868;
+  letter-spacing:2px;padding-bottom:4px;border-bottom:1px solid #0c2828;
+}
+.form-input{
+  background:#020c14;border:1px solid #0c2828;color:#c8e8e0;
+  font-family:'DotGothic16',monospace;font-size:13px;
+  padding:8px 12px;width:100%;outline:none;
+  transition:border-color .2s;
+}
+.form-input:focus{border-color:#1a6060;}
+.form-input::placeholder{color:#1a4838;}
+textarea.form-input{resize:vertical;min-height:72px;line-height:1.7;}
+
+/* character grid */
+.char-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));
+  gap:6px;max-height:260px;overflow-y:auto;
+  padding:4px;border:1px solid #0c2828;background:#010a10;
+}
+.char-item{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:6px 4px;cursor:pointer;border:1px solid transparent;
+  transition:all .2s;
+}
+.char-item:hover{border-color:#1a6060;background:rgba(20,100,90,.1);}
+.char-item.active{border-color:#50d0c0;background:rgba(30,150,130,.15);}
+.char-item img{image-rendering:pixelated;width:32px;height:32px;}
+.char-item-name{font-size:9px;color:#2a7868;text-align:center;line-height:1.3;}
+.char-item.active .char-item-name{color:#80e8d0;}
+
+/* radio + check rows */
+.radio-group,.check-group{display:flex;flex-wrap:wrap;gap:6px;}
+.radio-opt,.check-opt{
+  font-family:'DotGothic16',monospace;font-size:12px;
+  color:#1a4838;padding:4px 10px;border:1px solid #081c1c;
+  cursor:pointer;transition:all .2s;user-select:none;
+}
+.radio-opt::before{content:'○ ';}
+.check-opt::before{content:'□ ';}
+.radio-opt:hover,.check-opt:hover{color:#50d0c0;border-color:#1a6060;}
+.radio-opt.on{color:#80e8d0;border-color:#2a7868;background:rgba(20,100,90,.12);}
+.radio-opt.on::before{content:'● ';}
+.check-opt.on{color:#80e8d0;border-color:#2a7868;background:rgba(20,100,90,.12);}
+.check-opt.on::before{content:'■ ';}
+
+/* download btn */
+.dl-btn{
+  font-family:'Press Start 2P',monospace;font-size:8px;
+  color:#030c10;background:linear-gradient(135deg,#1a8070,#50d0c0);
+  border:none;padding:14px 20px;cursor:pointer;
+  transition:opacity .2s;letter-spacing:1px;width:100%;
+}
+.dl-btn:hover{opacity:.85;}
+.dl-btn:active{opacity:.7;}
+
+/* form divider */
+.form-divider{border:none;border-top:1px solid #0c2828;}
+
+/* ── RIGHT: preview panel ── */
+.preview-panel{
+  background:radial-gradient(ellipse at 50% 30%,#071820 0%,#030c10 60%);
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;
+  padding:32px 24px;
+  overflow-y:auto;
+  position:relative;
+}
+.preview-panel::before{
+  content:'';position:fixed;
+  pointer-events:none;
+  inset:52px 0 0 380px;
+  background-image:radial-gradient(rgba(30,100,120,.07) 1px,transparent 1px);
+  background-size:40px 40px;
+  z-index:0;
+}
+.preview-label{
+  font-family:'Press Start 2P',monospace;font-size:6px;color:#1a5048;
+  letter-spacing:3px;margin-bottom:20px;z-index:1;
+}
+
+/* ── THE CARD (#preview) ── */
+#preview{
+  width:100%;max-width:700px;
+  border:2px solid #1a6060;
+  background:rgba(2,12,18,.96);
+  box-shadow:0 0 40px rgba(20,100,100,.2);
+  position:relative;z-index:1;
+}
+
+/* card top bar */
+.card-topbar{
+  border-bottom:1px solid #0c2020;
+  padding:8px 18px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(1,8,14,.7);
+}
+.card-chapter{
+  font-family:'Press Start 2P',monospace;font-size:6px;
+  color:#2a8070;letter-spacing:2px;
+}
+.card-tag{
+  font-family:'Press Start 2P',monospace;font-size:5px;
+  color:#1a5048;letter-spacing:1px;
+}
+
+/* card scene */
+.card-scene{
+  display:grid;
+  grid-template-columns:160px 1fr;
+}
+
+/* portrait */
+.card-portrait{
+  border-right:1px solid #0c2020;
+  background:linear-gradient(180deg,#040f18,#020a12);
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-end;
+  padding:20px 16px;gap:8px;
+}
+.card-portrait-img{
+  image-rendering:pixelated;
+  width:96px;height:96px;
+  filter:drop-shadow(0 0 16px rgba(30,180,160,.5));
+}
+.card-portrait-name{
+  font-family:'DotGothic16',monospace;font-size:13px;
+  color:#50d0c0;text-align:center;letter-spacing:1px;
+}
+.card-portrait-sub{
+  font-family:'DotGothic16',monospace;font-size:11px;
+  color:#2a7868;text-align:center;
+}
+
+/* content area */
+.card-content{
+  padding:22px 26px;
+  display:flex;flex-direction:column;gap:18px;
+}
+
+/* speaker bar */
+.card-speaker{
+  font-family:'DotGothic16',monospace;font-size:15px;
+  color:#50d0c0;border-bottom:1px solid #0c2020;
+  padding-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.card-speaker-img{
+  image-rendering:pixelated;width:24px;height:24px;
+}
+
+/* section separator */
+.card-sep{border:none;border-top:1px solid #0c2020;margin:2px 0;}
+
+/* dialogue paragraph */
+.card-para{
+  font-family:'DotGothic16',monospace;font-size:14px;
+  color:#c8e8e0;line-height:2.2;
+}
+.card-para .hi{color:#ffe080;}
+.card-para .em{color:#80e8d0;font-weight:bold;}
+
+/* section heading inside content */
+.card-section-lbl{
+  font-family:'Press Start 2P',monospace;font-size:5.5px;
+  color:#2a7868;letter-spacing:2px;margin-bottom:6px;
+}
+
+/* chips inside card */
+.card-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;}
+.card-chip{
+  font-family:'DotGothic16',monospace;font-size:12px;
+  color:#80e8d0;border:1px solid #2a7868;
+  background:rgba(20,100,90,.15);padding:2px 8px;
+  display:inline-block;
+}
+
+/* best char row */
+.card-best-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.card-best-img{image-rendering:pixelated;width:32px;height:32px;}
+.card-best-name{font-family:'DotGothic16',monospace;font-size:14px;color:#ffe080;}
+
+/* policy row */
+.card-policy-row{
+  font-family:'DotGothic16',monospace;font-size:13px;
+  color:#c8e8e0;margin-bottom:4px;
+}
+.card-policy-row .lbl{color:#2a8070;margin-right:6px;}
+.card-policy-row .val{color:#80e8d0;}
+
+/* free text box */
+.card-free-box{
+  border:1px solid #0c2828;background:rgba(1,8,14,.5);
+  padding:10px 14px;
+  font-family:'DotGothic16',monospace;font-size:13px;
+  color:#a8d8d0;line-height:1.9;
+  margin-top:4px;white-space:pre-wrap;
+}
+
+/* ── mobile ── */
+@media(max-width:760px){
+  .main-wrap{grid-template-columns:1fr;}
+  .preview-panel::before{inset:52px 0 0 0;}
+  .card-scene{grid-template-columns:1fr;}
+  .card-portrait{flex-direction:row;justify-content:center;padding:14px 16px;}
+  nav{gap:6px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-back" id="nav-back">← 목록으로</a>
+  <span class="nav-title">CONCEPT D: 대화창</span>
+  <div class="lang-btns">
+    <button class="lang-btn active" onclick="setLang('ko')">한국어</button>
+    <button class="lang-btn" onclick="setLang('ja')">日本語</button>
+    <button class="lang-btn" onclick="setLang('en')">English</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- LEFT: FORM -->
+  <div class="form-panel" id="form-panel">
+
+    <!-- Nickname -->
+    <div class="form-section">
+      <div class="form-label" id="lbl-nickname">닉네임</div>
+      <input class="form-input" id="f-nick" type="text" placeholder="닉네임을 입력하세요" oninput="updateCard()">
+    </div>
+
+    <!-- Call me -->
+    <div class="form-section">
+      <div class="form-label" id="lbl-callme">호칭</div>
+      <input class="form-input" id="f-call" type="text" placeholder="아무렇게나 / ○○야, ○○씨 OK" oninput="updateCard()">
+    </div>
+
+    <hr class="form-divider">
+
+    <!-- Character select -->
+    <div class="form-section">
+      <div class="form-label" id="lbl-char">최애 캐릭터</div>
+      <div class="char-grid" id="char-grid"></div>
+    </div>
+
+    <hr class="form-divider">
+
+    <!-- Main series -->
+    <div class="form-section">
+      <div class="form-label" id="lbl-series">주력 시리즈</div>
+      <div class="radio-group" id="series-group">
+        <span class="radio-opt" data-val="old" onclick="pickSeries(this)" id="sr-old">구작</span>
+        <span class="radio-opt on" data-val="new" onclick="pickSeries(this)" id="sr-new">신작</span>
+        <span class="radio-opt" data-val="both" onclick="pickSeries(this)" id="sr-both">양쪽</span>
+      </div>
+    </div>
+
+    <hr class="form-divider">
+
+    <!-- Account type -->
+    <div class="form-section">
+      <div class="form-label" id="lbl-acct">계정 유형</div>
+      <div class="check-group" id="acct-group"></div>
+    </div>
+
+    <hr class="form-divider">
+
+    <!-- FUB -->
+    <div class="form-section">
+      <div class="form-label" id="lbl-fub">FUB</div>
+      <div class="radio-group" id="fub-group">
+        <span class="radio-opt on" data-val="free" onclick="pickRadio('fub',this)" id="fub-free">FREE</span>
+        <span class="radio-opt" data-val="r4r" onclick="pickRadio('fub',this)" id="fub-r4r">R4R</span>
+      </div>
+    </div>
+
+    <!-- Parting -->
+    <div class="form-section">
+      <div class="form-label" id="lbl-parting">이별은</div>
+      <div class="radio-group" id="parting-group">
+        <span class="radio-opt on" data-val="unfollow" onclick="pickRadio('parting',this)" id="part-unfollow">언팔</span>
+        <span class="radio-opt" data-val="blockunfollow" onclick="pickRadio('parting',this)" id="part-bu">블언블</span>
+        <span class="radio-opt" data-val="block" onclick="pickRadio('parting',this)" id="part-block">블락</span>
+      </div>
+    </div>
+
+    <!-- Other genre -->
+    <div class="form-section">
+      <div class="form-label" id="lbl-other">타장르 언급</div>
+      <div class="radio-group" id="other-group">
+        <span class="radio-opt" data-val="none" onclick="pickRadio('other',this)" id="oth-none">없음</span>
+        <span class="radio-opt on" data-val="sometimes" onclick="pickRadio('other',this)" id="oth-sometimes">가끔</span>
+        <span class="radio-opt" data-val="often" onclick="pickRadio('other',this)" id="oth-often">많음</span>
+      </div>
+    </div>
+
+    <hr class="form-divider">
+
+    <!-- Dislike -->
+    <div class="form-section">
+      <div class="form-label" id="lbl-dislike">불호소재 / 지뢰</div>
+      <input class="form-input" id="f-dislike" type="text" placeholder="없음" oninput="updateCard()">
+    </div>
+
+    <!-- Pairing -->
+    <div class="form-section">
+      <div class="form-label" id="lbl-pairing">커플링</div>
+      <input class="form-input" id="f-pair" type="text" placeholder="○○×○○" oninput="updateCard()">
+    </div>
+
+    <!-- Free text -->
+    <div class="form-section">
+      <div class="form-label" id="lbl-free">자유서술</div>
+      <textarea class="form-input" id="f-free" placeholder="자유롭게 적어주세요" oninput="updateCard()"></textarea>
+    </div>
+
+    <hr class="form-divider">
+
+    <!-- Download -->
+    <button class="dl-btn" id="dl-btn" onclick="downloadCard()">📸 이미지로 저장</button>
+
+  </div><!-- /form-panel -->
+
+  <!-- RIGHT: PREVIEW -->
+  <div class="preview-panel">
+    <div class="preview-label">LIVE PREVIEW</div>
+
+    <!-- THE CARD -->
+    <div id="preview">
+
+      <!-- top bar -->
+      <div class="card-topbar">
+        <span class="card-chapter" id="card-chapter">CHAPTER 1 — 自己紹介</span>
+        <span class="card-tag">東方 트친소</span>
+      </div>
+
+      <!-- scene -->
+      <div class="card-scene">
+
+        <!-- portrait -->
+        <div class="card-portrait">
+          <img class="card-portrait-img" id="card-portrait-img" src="" alt="">
+          <div class="card-portrait-name" id="card-portrait-name"></div>
+          <div class="card-portrait-sub" id="card-portrait-sub"></div>
+        </div>
+
+        <!-- content -->
+        <div class="card-content">
+
+          <!-- speaker -->
+          <div class="card-speaker">
+            <img class="card-speaker-img" id="card-speaker-img" src="" alt="">
+            <span id="card-speaker-name"></span>
+          </div>
+
+          <!-- SECTION 1: greeting -->
+          <div id="card-sec1">
+            <div class="card-para" id="card-greeting"></div>
+          </div>
+
+          <hr class="card-sep">
+
+          <!-- SECTION 2: char + series + acct -->
+          <div id="card-sec2">
+            <div class="card-section-lbl" id="card-lbl-char">최애 캐릭터</div>
+            <div class="card-best-row">
+              <img class="card-best-img" id="card-best-img" src="" alt="">
+              <span class="card-best-name" id="card-best-name"></span>
+            </div>
+            <div class="card-para" id="card-series-line"></div>
+            <div class="card-section-lbl" id="card-lbl-acct" style="margin-top:10px;">계정 유형</div>
+            <div class="card-chips" id="card-acct-chips"></div>
+          </div>
+
+          <hr class="card-sep">
+
+          <!-- SECTION 3: policy + extras -->
+          <div id="card-sec3">
+            <div id="card-policy-lines"></div>
+            <div id="card-dislike-wrap" style="display:none;">
+              <div class="card-policy-row">
+                <span class="lbl" id="card-lbl-dis">불호:</span>
+                <span class="val" id="card-dislike-val"></span>
+              </div>
+            </div>
+            <div id="card-pair-wrap" style="display:none;">
+              <div class="card-policy-row">
+                <span class="lbl" id="card-lbl-pair">커플링:</span>
+                <span class="val" id="card-pair-val"></span>
+              </div>
+            </div>
+            <div id="card-free-wrap" style="display:none;">
+              <div class="card-section-lbl" id="card-lbl-free" style="margin-top:10px;">자유서술</div>
+              <div class="card-free-box" id="card-free-val"></div>
+            </div>
+          </div>
+
+        </div><!-- /card-content -->
+      </div><!-- /card-scene -->
+
+    </div><!-- /#preview -->
+
+  </div><!-- /preview-panel -->
+</div><!-- /main-wrap -->
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+const B='Touhou%2016x16%20Mini%20Pack%20Full/';
+const CHARS=[
+  {id:'reimu',p:B+'4.%20Other/%5B1%5D%20Main%20Characters/Reimu%20Hakurei.png',ko:'하쿠레이 레이무',ja:'博麗霊夢',en:'Reimu Hakurei'},
+  {id:'marisa',p:B+'4.%20Other/%5B1%5D%20Main%20Characters/Marisa%20Kirisame.png',ko:'키리사메 마리사',ja:'霧雨魔理沙',en:'Marisa Kirisame'},
+  {id:'cirno',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Cirno.png',ko:'치르노',ja:'チルノ',en:'Cirno'},
+  {id:'rumia',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Rumia.png',ko:'루미아',ja:'ルーミア',en:'Rumia'},
+  {id:'meiling',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Hong%20Meiling.png',ko:'홍 메이링',ja:'紅美鈴',en:'Hong Meiling'},
+  {id:'patchouli',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Patchouli%20Knowledge.png',ko:'파츄리 노렛지',ja:'パチュリー',en:'Patchouli Knowledge'},
+  {id:'sakuya',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Sakuya%20Izayoi.png',ko:'이자요이 사쿠야',ja:'十六夜咲夜',en:'Sakuya Izayoi'},
+  {id:'remilia',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Remilia%20Scarlet.png',ko:'레밀리아 스칼렛',ja:'レミリア',en:'Remilia Scarlet'},
+  {id:'flandre',p:B+'1.%20Mainline%20Games/%5B6%5D%20Koumakyou%20~%20Embodiment%20of%20Scarlet%20Devil/Flandre%20Scarlet.png',ko:'플란드르 스칼렛',ja:'フランドール',en:'Flandre Scarlet'},
+  {id:'alice',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Alice%20Margatroid.png',ko:'앨리스',ja:'アリス',en:'Alice Margatroid'},
+  {id:'youmu',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Youmu%20Konpaku.png',ko:'코메이 요우무',ja:'魂魄妖夢',en:'Youmu Konpaku'},
+  {id:'yuyuko',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Yuyuko%20Saigyouji.png',ko:'사이교우지 유유코',ja:'西行寺幽々子',en:'Yuyuko Saigyouji'},
+  {id:'yukari',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Yukari%20Yakumo.png',ko:'야쿠모 유카리',ja:'八雲紫',en:'Yukari Yakumo'},
+  {id:'ran',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Ran%20Yakumo.png',ko:'야쿠모 란',ja:'八雲藍',en:'Ran Yakumo'},
+  {id:'chen',p:B+'1.%20Mainline%20Games/%5B7%5D%20Youyoumu%20~%20Perfect%20Cherry%20Blossom/Chen.png',ko:'첸',ja:'橙',en:'Chen'},
+  {id:'reisen',p:B+'1.%20Mainline%20Games/%5B8%5D%20Eiyashou%20~%20Imperishable%20Night/Reisen%20Udonge%20Inaba.png',ko:'레이센 우동게',ja:'鈴仙',en:'Reisen Udonge Inaba'},
+  {id:'kaguya',p:B+'1.%20Mainline%20Games/%5B8%5D%20Eiyashou%20~%20Imperishable%20Night/Kaguya%20Houraisan.png',ko:'호우라이산 카구야',ja:'蓬莱山輝夜',en:'Kaguya Houraisan'},
+  {id:'mokou',p:B+'1.%20Mainline%20Games/%5B8%5D%20Eiyashou%20~%20Imperishable%20Night/Fujiwara%20no%20Mokou.png',ko:'후지와라노 모코우',ja:'藤原妹紅',en:'Fujiwara no Mokou'},
+  {id:'aya',p:B+'1.%20Mainline%20Games/%5B9%5D%20Kaeizuka%20~%20Phantasmagoria%20of%20Flower%20View/Aya%20Shameimaru.png',ko:'샤메이마루 아야',ja:'射命丸文',en:'Aya Shameimaru'},
+  {id:'komachi',p:B+'1.%20Mainline%20Games/%5B9%5D%20Kaeizuka%20~%20Phantasmagoria%20of%20Flower%20View/Komachi%20Onozuka.png',ko:'오노즈카 코마치',ja:'小野塚小町',en:'Komachi Onozuka'},
+  {id:'sanae',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Sanae%20Kochiya.png',ko:'코치야 사나에',ja:'東風谷早苗',en:'Sanae Kochiya'},
+  {id:'kanako',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Kanako%20Yasaka.png',ko:'야사카 카나코',ja:'八坂神奈子',en:'Kanako Yasaka'},
+  {id:'suwako',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Suwako%20Moriya.png',ko:'모리야 스와코',ja:'洩矢諏訪子',en:'Suwako Moriya'},
+  {id:'nitori',p:B+'1.%20Mainline%20Games/%5B10%5D%20Fuujinroku%20~%20Mountain%20of%20faith/Nitori%20Kawashiro.png',ko:'카와시로 니토리',ja:'河城にとり',en:'Nitori Kawashiro'},
+  {id:'satori',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Satori%20Komeiji.png',ko:'코메이지 사토리',ja:'古明地さとり',en:'Satori Komeiji'},
+  {id:'koishi',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Koishi%20Komeiji.png',ko:'코메이지 코이시',ja:'古明地こいし',en:'Koishi Komeiji'},
+  {id:'orin',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Rin%20Kaenbyou.png',ko:'카엔뵤우 린',ja:'火焔猫燐',en:'Rin Kaenbyou'},
+  {id:'okuu',p:B+'1.%20Mainline%20Games/%5B11%5D%20Chireiden%20~%20Subterranean%20Animism/Utsuho%20Reiuji.png',ko:'레이우지 우츠호',ja:'霊烏路空',en:'Utsuho Reiuji'},
+  {id:'byakuren',p:B+'1.%20Mainline%20Games/%5B12%5D%20Seirensen%20~%20Undefined%20Fantastic%20Object/Byakuren%20Hijiri.png',ko:'히지리 뱌쿠렌',ja:'聖白蓮',en:'Byakuren Hijiri'},
+  {id:'miko',p:B+'1.%20Mainline%20Games/%5B13%5D%20Shinreibyou%20~%20Ten%20Desires/Toyosatomimi%20no%20Miko.png',ko:'토요사토미미노 미코',ja:'豊聡耳神子',en:'Toyosatomimi no Miko'},
+  {id:'seija',p:B+'1.%20Mainline%20Games/%5B14%5D%20Kishinjou%20~%20Double%20Dealing%20Character/Seija%20Kijin.png',ko:'키진 세이자',ja:'鬼人正邪',en:'Seija Kijin'},
+  {id:'sukuna',p:B+'1.%20Mainline%20Games/%5B14%5D%20Kishinjou%20~%20Double%20Dealing%20Character/Shinmyoumaru%20Sukuna.png',ko:'스쿠나 신묘우마루',ja:'少名針妙丸',en:'Shinmyoumaru Sukuna'},
+  {id:'clownpiece',p:B+'1.%20Mainline%20Games/%5B15%5D%20Kanjuden%20~%20Legacy%20of%20Lunatic%20Kingdom/Clownpiece.png',ko:'클라운피스',ja:'クラウンピース',en:'Clownpiece'},
+  {id:'okina',p:B+'1.%20Mainline%20Games/%5B16%5D%20Tenkuushou%20~%20Hidden%20Star%20in%20Four%20Seasons/Okina%20Matara.png',ko:'마타라 오키나',ja:'摩多羅隠岐奈',en:'Okina Matara'},
+];
+const ACCT=[
+  {id:'daily',ko:'일상',ja:'日常',en:'Daily'},{id:'drawing',ko:'그림',ja:'絵',en:'Drawing'},
+  {id:'game',ko:'게임',ja:'ゲーム',en:'Gaming'},{id:'story',ko:'썰',ja:'ネタ',en:'Story'},
+  {id:'consume',ko:'소비',ja:'消費',en:'Shopping'},{id:'sub',ko:'구독',ja:'購読',en:'Following'},
+  {id:'cos',ko:'코스',ja:'コスプレ',en:'Cosplay'},{id:'rt',ko:'RT',ja:'RT',en:'RT'},
+  {id:'like',ko:'마음',ja:'いいね',en:'Likes'},{id:'chat',ko:'탐라대화',ja:'TL会話',en:'TL Chat'},
+  {id:'fan',ko:'앓이',ja:'推し活',en:'Fangirling'},
+];
+const I18N={
+  ko:{
+    title:'동방 트친소',nickname:'닉네임',callMe:'호칭',bestChar:'최애 캐릭터',
+    mainSeries:'주력 시리즈',acctType:'계정 유형',fub:'FUB',parting:'이별은',
+    otherGenre:'타장르 언급',dislike:'불호소재 / 지뢰',pairing:'커플링',freeText:'자유서술',
+    oldWorks:'구작',newWorks:'신작',both:'양쪽',free:'FREE',r4r:'R4R',
+    unfollow:'언팔',blockunfollow:'블언블',block:'블락',none:'없음',sometimes:'가끔',often:'많음',
+    download:'📸 이미지로 저장',back:'← 목록으로',selectChar:'캐릭터 선택',
+    ph_nick:'닉네임을 입력하세요',ph_call:'아무렇게나 / ○○야, ○○씨 OK',
+    ph_dis:'없음',ph_pair:'○○×○○',ph_free:'자유롭게 적어주세요',
+    chapter:'CHAPTER 1 — 自己紹介',
+    g1_a:'안녕. 나 잠깐 소개해줄게.',
+    g1_b:'닉네임은',g1_c:'이고, 호칭은',g1_d:'야.',
+    g2_series:'주력 시리즈',
+    g3_fub:'FUB',g3_part:'이별',g3_other:'타장르',
+    g3_dis:'불호',g3_pair:'커플링',g3_lbl_free:'자유서술',
+    lbl_char:'최애 캐릭터',lbl_acct:'계정 유형',
+  },
+  ja:{
+    title:'東方 自己紹介',nickname:'ニックネーム',callMe:'呼び方',bestChar:'推しキャラ',
+    mainSeries:'主力シリーズ',acctType:'アカウントタイプ',fub:'FUB',parting:'別れは',
+    otherGenre:'他ジャンル言及',dislike:'地雷・苦手',pairing:'カップリング',freeText:'自由記述',
+    oldWorks:'旧作',newWorks:'新作',both:'両方',free:'FREE',r4r:'R4R',
+    unfollow:'アンフォロー',blockunfollow:'B解',block:'ブロック',none:'なし',sometimes:'たまに',often:'多め',
+    download:'📸 画像として保存',back:'← 一覧へ',selectChar:'キャラを選ぶ',
+    ph_nick:'ニックネームを入力',ph_call:'なんでもOK',
+    ph_dis:'なし',ph_pair:'○○×○○',ph_free:'自由に書いてください',
+    chapter:'CHAPTER 1 — 自己紹介',
+    g1_a:'やあ。ちょっと紹介するよ。',
+    g1_b:'ニックネームは',g1_c:'、呼び方は',g1_d:'だ。',
+    g2_series:'主力シリーズ',
+    g3_fub:'FUB',g3_part:'別れ方',g3_other:'他ジャンル',
+    g3_dis:'苦手',g3_pair:'カップリング',g3_lbl_free:'自由記述',
+    lbl_char:'推しキャラ',lbl_acct:'アカウントタイプ',
+  },
+  en:{
+    title:'Touhou Self-Intro',nickname:'Nickname',callMe:'What to call me',bestChar:'Favorite Character',
+    mainSeries:'Main Series',acctType:'Account Type',fub:'FUB',parting:'Parting',
+    otherGenre:'Other Genres',dislike:'Dislikes / Triggers',pairing:'Pairings',freeText:'Free Notes',
+    oldWorks:'Old Works',newWorks:'New Works',both:'Both',free:'FREE',r4r:'R4R',
+    unfollow:'Unfollow',blockunfollow:'Block+Unblock',block:'Block',none:'None',sometimes:'Sometimes',often:'Often',
+    download:'📸 Save as Image',back:'← Back',selectChar:'Select Character',
+    ph_nick:'Enter your nickname',ph_call:'Anything is fine',
+    ph_dis:'None',ph_pair:'CharA × CharB',ph_free:'Write freely',
+    chapter:'CHAPTER 1 — Self Introduction',
+    g1_a:'Hey. Let me introduce myself.',
+    g1_b:'Nickname is',g1_c:'and you can call me',g1_d:'.',
+    g2_series:'Main Series',
+    g3_fub:'FUB',g3_part:'Parting',g3_other:'Other genres',
+    g3_dis:'Dislikes',g3_pair:'Pairings',g3_lbl_free:'Free Notes',
+    lbl_char:'Favorite Character',lbl_acct:'Account Type',
+  },
+};
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let lang = 'ko';
+let selectedChar = 'reimu';
+let checkedAcct = new Set(['daily','chat','fan','rt','like']);
+let selectedSeries = 'new';
+let selectedFub = 'free';
+let selectedParting = 'unfollow';
+let selectedOther = 'sometimes';
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+function buildCharGrid() {
+  const grid = document.getElementById('char-grid');
+  grid.innerHTML = '';
+  CHARS.forEach(c => {
+    const item = document.createElement('div');
+    item.className = 'char-item' + (c.id === selectedChar ? ' active' : '');
+    item.dataset.id = c.id;
+    item.innerHTML = `<img src="${c.p}" alt="${c[lang]}"><div class="char-item-name">${c[lang]}</div>`;
+    item.onclick = () => {
+      selectedChar = c.id;
+      document.querySelectorAll('.char-item').forEach(el => el.classList.remove('active'));
+      item.classList.add('active');
+      updateCard();
+    };
+    grid.appendChild(item);
+  });
+}
+
+function buildAcctGroup() {
+  const grp = document.getElementById('acct-group');
+  grp.innerHTML = '';
+  ACCT.forEach(a => {
+    const span = document.createElement('span');
+    span.className = 'check-opt' + (checkedAcct.has(a.id) ? ' on' : '');
+    span.dataset.id = a.id;
+    span.textContent = a[lang];
+    // override before content via class
+    span.onclick = () => {
+      if (checkedAcct.has(a.id)) checkedAcct.delete(a.id);
+      else checkedAcct.add(a.id);
+      span.classList.toggle('on');
+      updateCard();
+    };
+    grp.appendChild(span);
+  });
+}
+
+function pickSeries(el) {
+  selectedSeries = el.dataset.val;
+  document.querySelectorAll('#series-group .radio-opt').forEach(e => e.classList.remove('on'));
+  el.classList.add('on');
+  updateCard();
+}
+
+function pickRadio(group, el) {
+  if (group === 'fub') selectedFub = el.dataset.val;
+  else if (group === 'parting') selectedParting = el.dataset.val;
+  else if (group === 'other') selectedOther = el.dataset.val;
+  const grpEl = document.getElementById(group + '-group');
+  grpEl.querySelectorAll('.radio-opt').forEach(e => e.classList.remove('on'));
+  el.classList.add('on');
+  updateCard();
+}
+
+// ─── I18N ────────────────────────────────────────────────────────────────────
+function applyI18N() {
+  const t = I18N[lang];
+  document.title = 'CONCEPT D: 대화창 — ' + t.title;
+  document.getElementById('nav-back').textContent = t.back;
+  document.getElementById('lbl-nickname').textContent = t.nickname;
+  document.getElementById('lbl-callme').textContent = t.callMe;
+  document.getElementById('lbl-char').textContent = t.bestChar;
+  document.getElementById('lbl-series').textContent = t.mainSeries;
+  document.getElementById('lbl-acct').textContent = t.acctType;
+  document.getElementById('lbl-fub').textContent = t.fub;
+  document.getElementById('lbl-parting').textContent = t.parting;
+  document.getElementById('lbl-other').textContent = t.otherGenre;
+  document.getElementById('lbl-dislike').textContent = t.dislike;
+  document.getElementById('lbl-pairing').textContent = t.pairing;
+  document.getElementById('lbl-free').textContent = t.freeText;
+  document.getElementById('dl-btn').textContent = t.download;
+  document.getElementById('f-nick').placeholder = t.ph_nick;
+  document.getElementById('f-call').placeholder = t.ph_call;
+  document.getElementById('f-dislike').placeholder = t.ph_dis;
+  document.getElementById('f-pair').placeholder = t.ph_pair;
+  document.getElementById('f-free').placeholder = t.ph_free;
+
+  // series radio labels
+  document.getElementById('sr-old').textContent = t.oldWorks;
+  document.getElementById('sr-new').textContent = t.newWorks;
+  document.getElementById('sr-both').textContent = t.both;
+
+  // fub labels
+  document.getElementById('fub-free').textContent = t.free;
+  document.getElementById('fub-r4r').textContent = t.r4r;
+
+  // parting labels
+  document.getElementById('part-unfollow').textContent = t.unfollow;
+  document.getElementById('part-bu').textContent = t.blockunfollow;
+  document.getElementById('part-block').textContent = t.block;
+
+  // other labels
+  document.getElementById('oth-none').textContent = t.none;
+  document.getElementById('oth-sometimes').textContent = t.sometimes;
+  document.getElementById('oth-often').textContent = t.often;
+
+  // rebuild char grid names + acct group names
+  document.querySelectorAll('.char-item').forEach(item => {
+    const c = CHARS.find(x => x.id === item.dataset.id);
+    if (c) item.querySelector('.char-item-name').textContent = c[lang];
+  });
+  document.querySelectorAll('#acct-group .check-opt').forEach(span => {
+    const a = ACCT.find(x => x.id === span.dataset.id);
+    if (a) span.textContent = a[lang];
+  });
+
+  // lang buttons
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('onclick').includes("'" + lang + "'"));
+  });
+}
+
+function setLang(l) {
+  lang = l;
+  applyI18N();
+  updateCard();
+}
+
+// ─── RENDER CARD ─────────────────────────────────────────────────────────────
+function updateCard() {
+  const t = I18N[lang];
+  const char = CHARS.find(c => c.id === selectedChar) || CHARS[0];
+  const nick = document.getElementById('f-nick').value.trim() || '???';
+  const call = document.getElementById('f-call').value.trim() || '???';
+  const dislike = document.getElementById('f-dislike').value.trim();
+  const pair = document.getElementById('f-pair').value.trim();
+  const free = document.getElementById('f-free').value.trim();
+
+  // portrait
+  document.getElementById('card-portrait-img').src = char.p;
+  document.getElementById('card-portrait-img').alt = char[lang];
+  document.getElementById('card-portrait-name').textContent = char[lang];
+  document.getElementById('card-portrait-sub').textContent = char.ja;
+
+  // speaker
+  document.getElementById('card-speaker-img').src = char.p;
+  document.getElementById('card-speaker-name').textContent = char[lang];
+
+  // chapter
+  document.getElementById('card-chapter').textContent = t.chapter;
+
+  // SECTION 1: greeting
+  let greetLine = '';
+  if (lang === 'ko') {
+    greetLine = `${t.g1_a}<br>${t.g1_b} <span class="hi">${esc(nick)}</span>${t.g1_c} <span class="hi">${esc(call)}</span>${t.g1_d}`;
+  } else if (lang === 'ja') {
+    greetLine = `${t.g1_a}<br>${t.g1_b}<span class="hi">${esc(nick)}</span>${t.g1_c}<span class="hi">${esc(call)}</span>${t.g1_d}`;
+  } else {
+    greetLine = `${t.g1_a}<br>${t.g1_b} <span class="hi">${esc(nick)}</span>, ${t.g1_c} <span class="hi">${esc(call)}</span>${t.g1_d}`;
+  }
+  document.getElementById('card-greeting').innerHTML = greetLine;
+
+  // SECTION 2: char + series + acct
+  document.getElementById('card-lbl-char').textContent = t.lbl_char;
+  document.getElementById('card-lbl-acct').textContent = t.acctType;
+  document.getElementById('card-best-img').src = char.p;
+  document.getElementById('card-best-img').alt = char[lang];
+  document.getElementById('card-best-name').textContent = char[lang];
+
+  const seriesLabel = selectedSeries === 'old' ? t.oldWorks
+                    : selectedSeries === 'new' ? t.newWorks
+                    : t.both;
+  document.getElementById('card-series-line').innerHTML =
+    `<span class="em">${esc(seriesLabel)}</span>`;
+
+  // acct chips
+  const chipsEl = document.getElementById('card-acct-chips');
+  chipsEl.innerHTML = '';
+  ACCT.forEach(a => {
+    if (checkedAcct.has(a.id)) {
+      const chip = document.createElement('span');
+      chip.className = 'card-chip';
+      chip.textContent = a[lang];
+      chipsEl.appendChild(chip);
+    }
+  });
+
+  // SECTION 3: policy
+  const fubLabel   = selectedFub     === 'free'        ? t.free        : t.r4r;
+  const partLabel  = selectedParting === 'unfollow'    ? t.unfollow
+                   : selectedParting === 'blockunfollow'? t.blockunfollow : t.block;
+  const otherLabel = selectedOther   === 'none'        ? t.none
+                   : selectedOther   === 'sometimes'   ? t.sometimes    : t.often;
+
+  const policyHtml =
+    `<div class="card-policy-row"><span class="lbl">${t.g3_fub}:</span> <span class="val">${esc(fubLabel)}</span></div>` +
+    `<div class="card-policy-row"><span class="lbl">${t.g3_part}:</span> <span class="val">${esc(partLabel)}</span></div>` +
+    `<div class="card-policy-row"><span class="lbl">${t.g3_other}:</span> <span class="val">${esc(otherLabel)}</span></div>`;
+  document.getElementById('card-policy-lines').innerHTML = policyHtml;
+
+  // dislike
+  const disWrap = document.getElementById('card-dislike-wrap');
+  if (dislike) {
+    disWrap.style.display = '';
+    document.getElementById('card-lbl-dis').textContent = t.g3_dis + ':';
+    document.getElementById('card-dislike-val').textContent = dislike;
+  } else {
+    disWrap.style.display = 'none';
+  }
+
+  // pairing
+  const pairWrap = document.getElementById('card-pair-wrap');
+  if (pair) {
+    pairWrap.style.display = '';
+    document.getElementById('card-lbl-pair').textContent = t.g3_pair + ':';
+    document.getElementById('card-pair-val').textContent = pair;
+  } else {
+    pairWrap.style.display = 'none';
+  }
+
+  // free text
+  const freeWrap = document.getElementById('card-free-wrap');
+  if (free) {
+    freeWrap.style.display = '';
+    document.getElementById('card-lbl-free').textContent = t.g3_lbl_free;
+    document.getElementById('card-free-val').textContent = free;
+  } else {
+    freeWrap.style.display = 'none';
+  }
+}
+
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── DOWNLOAD ─────────────────────────────────────────────────────────────────
+async function downloadCard() {
+  const el = document.getElementById('preview');
+  const canvas = await html2canvas(el, {
+    backgroundColor: '#030c10',
+    scale: 2,
+    useCORS: true,
+    allowTaint: true,
+  });
+  const a = document.createElement('a');
+  a.download = 'trchinsou-dialogue.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+buildCharGrid();
+buildAcctGroup();
+applyI18N();
+updateCard();
+</script>
+</body>
+</html>

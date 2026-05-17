@@ -157,7 +157,7 @@ textarea.form-input{resize:vertical;min-height:72px;line-height:1.7;}
   color:#2a8070;letter-spacing:2px;
 }
 .card-tag{
-  font-family:'Press Start 2P',monospace;font-size:7px;
+  font-family:'Press Start 2P',monospace;font-size:10px;
   color:#1a5048;letter-spacing:1px;
 }
 
@@ -218,7 +218,7 @@ textarea.form-input{resize:vertical;min-height:72px;line-height:1.7;}
 
 /* section heading inside content */
 .card-section-lbl{
-  font-family:'Press Start 2P',monospace;font-size:7px;
+  font-family:'Press Start 2P',monospace;font-size:10px;
   color:#2a7868;letter-spacing:2px;margin-bottom:6px;
 }
 
@@ -307,11 +307,11 @@ textarea.form-input{resize:vertical;min-height:72px;line-height:1.7;}
     <!-- Main series -->
     <div class="form-section">
       <div class="form-label" id="lbl-series">주력 시리즈</div>
-      <div style="font-family:'DotGothic16',monospace;font-size:11px;color:#1a5048;margin-bottom:4px;" id="lbl-series-old">── 구작</div>
+      <div style="font-family:'DotGothic16',monospace;font-size:14px;color:#2a8070;margin-bottom:4px;cursor:pointer;user-select:none;" id="lbl-series-old" onclick="toggleSeriesGroup('old')">── 구작</div>
       <div class="check-group" id="series-old-group"></div>
-      <div style="font-family:'DotGothic16',monospace;font-size:11px;color:#1a5048;margin:6px 0 4px;" id="lbl-series-new">── 신작</div>
+      <div style="font-family:'DotGothic16',monospace;font-size:14px;color:#2a8070;margin:6px 0 4px;cursor:pointer;user-select:none;" id="lbl-series-new" onclick="toggleSeriesGroup('new')">── 신작</div>
       <div class="check-group" id="series-new-group"></div>
-      <div style="font-family:'DotGothic16',monospace;font-size:11px;color:#1a5048;margin:6px 0 4px;" id="lbl-series-extra">── 기타</div>
+      <div style="font-family:'DotGothic16',monospace;font-size:14px;color:#2a8070;margin:6px 0 4px;cursor:pointer;user-select:none;" id="lbl-series-extra" onclick="toggleSeriesGroup('extra')">── 기타</div>
       <div class="check-group" id="series-extra-group"></div>
     </div>
 
@@ -654,6 +654,18 @@ function toggleSeries(id, el) {
   updateCard();
 }
 
+function toggleSeriesGroup(group) {
+  const inGroup = SERIES.filter(s => s.group === group);
+  const allChecked = inGroup.every(s => checkedSeries.has(s.id));
+  if (allChecked) {
+    inGroup.forEach(s => checkedSeries.delete(s.id));
+  } else {
+    inGroup.forEach(s => checkedSeries.add(s.id));
+  }
+  buildSeriesGrid(lang);
+  updateCard();
+}
+
 function pickRadio(group, el) {
   if (group === 'fub') selectedFub = el.dataset.val;
   else if (group === 'parting') selectedParting = el.dataset.val;
@@ -768,11 +780,13 @@ function updateCard() {
   document.getElementById('card-best-name').textContent = char[lang];
 
   const selectedSeriesList = SERIES.filter(s => checkedSeries.has(s.id));
-  const seriesLabel = selectedSeriesList.length > 0
-    ? selectedSeriesList.map(s => (s.num?'TH'+s.num+' ':'')+( s[lang]||s.en)).join(' · ')
-    : (lang==='ko'?'미선택':lang==='ja'?'未選択':'None');
-  document.getElementById('card-series-line').innerHTML =
-    `<span class="em">${esc(seriesLabel)}</span>`;
+  const seriesChipsHtml = selectedSeriesList.length > 0
+    ? `<div class="card-chips">${selectedSeriesList.map(s => {
+        const name = (s.num ? 'TH'+s.num+' ' : '') + (s[lang]||s.en);
+        return `<span class="card-chip">${esc(name)}</span>`;
+      }).join('')}</div>`
+    : `<span style="color:#2a5048;font-family:'DotGothic16',monospace;">${lang==='ko'?'미선택':lang==='ja'?'未選択':'None'}</span>`;
+  document.getElementById('card-series-line').innerHTML = seriesChipsHtml;
 
   // acct chips
   const chipsEl = document.getElementById('card-acct-chips');

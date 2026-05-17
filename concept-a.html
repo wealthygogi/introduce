@@ -36,7 +36,7 @@ img{display:block;}
 }
 .lang-btns{display:flex;gap:4px;}
 .lang-btn{
-  font-family:'Press Start 2P',monospace;font-size:7px;
+  font-family:'Press Start 2P',monospace;font-size:10px;
   background:none;border:1px solid #2a2050;color:#5848a0;
   padding:5px 8px;cursor:pointer;transition:all .2s;
 }
@@ -176,11 +176,11 @@ textarea.form-input{resize:vertical;}
     <!-- Main Series -->
     <div class="form-section">
       <label class="form-label" data-i18n="mainSeries">주력 시리즈</label>
-      <div style="font-family:'Noto Serif JP',serif;font-size:11px;color:#4a3888;margin-bottom:4px;" data-i18n="seriesOld">── 구작</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#8060c0;margin-bottom:4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('old')" id="lbl-series-old" data-i18n="seriesOld">── 구작</div>
       <div class="check-group" id="series-old-group"></div>
-      <div style="font-family:'Noto Serif JP',serif;font-size:11px;color:#4a3888;margin:6px 0 4px;" data-i18n="seriesNew">── 신작</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#8060c0;margin:6px 0 4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('new')" id="lbl-series-new" data-i18n="seriesNew">── 신작</div>
       <div class="check-group" id="series-new-group"></div>
-      <div style="font-family:'Noto Serif JP',serif;font-size:11px;color:#4a3888;margin:6px 0 4px;" data-i18n="seriesExtra">── 기타</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#8060c0;margin:6px 0 4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('extra')" id="lbl-series-extra" data-i18n="seriesExtra">── 기타</div>
       <div class="check-group" id="series-extra-group"></div>
     </div>
 
@@ -416,6 +416,18 @@ function toggleSeries(id, on) {
   update();
 }
 
+function toggleSeriesGroup(group) {
+  const inGroup = SERIES.filter(s => s.group === group);
+  const allChecked = inGroup.every(s => checkedSeries.has(s.id));
+  if (allChecked) {
+    inGroup.forEach(s => checkedSeries.delete(s.id));
+  } else {
+    inGroup.forEach(s => checkedSeries.add(s.id));
+  }
+  buildSeriesGrid(lang);
+  update();
+}
+
 /* ═══════════════════════════════════
    HELPERS
 ═══════════════════════════════════ */
@@ -447,6 +459,7 @@ function collectData() {
     nick: document.getElementById('f-nick').value.trim() || t.ph_nick,
     call: document.getElementById('f-call').value.trim() || t.ph_call,
     char,
+    selectedSeries,
     seriesLabel,
     fubLabel: t[fub === 'free' ? 'free' : 'r4r'],
     partingLabel: t[parting === 'unfollow' ? 'unfollow' : parting === 'blockunfollow' ? 'blockunfollow' : 'block'],
@@ -463,8 +476,16 @@ function collectData() {
    RENDER CARD
 ═══════════════════════════════════ */
 function renderCard(data, language) {
-  const {nick, call, char, seriesLabel, fubLabel, partingLabel, otherLabel, dis, pair, free, t} = data;
+  const {nick, call, char, selectedSeries, seriesLabel, fubLabel, partingLabel, otherLabel, dis, pair, free, t} = data;
   const charName = char[language] || char.en;
+
+  // Build series chips
+  const seriesChips = selectedSeries.length > 0
+    ? selectedSeries.map(s => {
+        const name = (s.num ? 'TH'+s.num+' ' : '') + (s[language]||s.en);
+        return `<span style="display:inline-block;border:1px solid #4a3898;padding:2px 8px;margin:2px;font-size:12px;font-family:'Noto Serif JP',serif;color:#c8b8f8;">${name}</span>`;
+      }).join('')
+    : `<span style="color:#4a3070;">${language==='ko'?'미선택':language==='ja'?'未選択':'None'}</span>`;
 
   // Build acct chips
   const chips = ACCT.map(a => {
@@ -518,7 +539,7 @@ function renderCard(data, language) {
             image-rendering:pixelated;image-rendering:crisp-edges;
           ">
         </div>
-        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#6848a8;text-align:center;line-height:2.2;">
+        <div style="font-family:'Press Start 2P',monospace;font-size:10px;color:#6848a8;text-align:center;line-height:2.2;">
           ${esc(charName)}<br>◆ ${esc(t.bestChar)} ◆
         </div>
       </div>
@@ -539,7 +560,8 @@ function renderCard(data, language) {
           <img src="${char.p}" alt="" style="width:32px;height:32px;image-rendering:pixelated;image-rendering:crisp-edges;flex-shrink:0;">
           <div>
             <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:#d0b8ff;">${esc(charName)}</div>
-            <div style="font-family:'Press Start 2P',monospace;font-size:9px;color:#7858b8;margin-top:4px;">${esc(t.mainSeries)}: ${esc(seriesLabel)}</div>
+            <div style="font-family:'Press Start 2P',monospace;font-size:9px;color:#7858b8;margin-top:4px;">${esc(t.mainSeries)}</div>
+            <div style="display:flex;flex-wrap:wrap;margin-top:4px;">${seriesChips}</div>
           </div>
         </div>
 

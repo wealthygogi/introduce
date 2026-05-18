@@ -54,7 +54,11 @@ export default function ConceptE() {
             {d.acctList.length === 0 ? (
               <span className="ce-radio off">—</span>
             ) : (
-              d.acctList.map((a) => <Radio key={a.id} on label={a.label} />)
+              d.acctList.map((a) => (
+                <span key={a.id} className="concept-pill">
+                  {a.label}
+                </span>
+              ))
             )}
           </span>
         </div>

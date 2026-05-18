@@ -597,6 +597,18 @@
   color: var(--accent-strong);
   font-weight: 700;
 }
+.cd-chip-block {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cd-chip-label {
+  font-size: 13px;
+  color: var(--accent-strong);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
 .cd-meta {
   margin-top: 20px;
   display: grid;

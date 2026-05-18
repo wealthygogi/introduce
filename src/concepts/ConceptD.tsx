@@ -21,11 +21,35 @@ export default function ConceptD() {
               : d.lang === 'ja'
               ? 'よろしくお願いします。'
               : 'Nice to meet you.'}
-            {'\n'}
-            {d.t.mainSeries}: {d.seriesList.length === 0 ? d.t.notSelected : d.seriesList.map((s) => s.label).join(', ')}
-            {'\n'}
-            {d.t.acctType}: {d.acctList.length === 0 ? d.t.notSelected : d.acctList.map((a) => a.label).join(', ')}
             {d.freeText ? `\n\n${d.freeText}` : ''}
+          </div>
+          <div className="cd-chip-block">
+            <div className="cd-chip-label">{d.t.mainSeries}</div>
+            <div className="concept-chip-row">
+              {d.seriesList.length === 0 ? (
+                <span className="concept-meta">{d.t.notSelected}</span>
+              ) : (
+                d.seriesList.map((s) => (
+                  <span className="concept-chip" key={s.id}>
+                    {s.label}
+                  </span>
+                ))
+              )}
+            </div>
+          </div>
+          <div className="cd-chip-block">
+            <div className="cd-chip-label">{d.t.acctType}</div>
+            <div className="concept-chip-row">
+              {d.acctList.length === 0 ? (
+                <span className="concept-meta">{d.t.notSelected}</span>
+              ) : (
+                d.acctList.map((a) => (
+                  <span className="concept-pill" key={a.id}>
+                    {a.label}
+                  </span>
+                ))
+              )}
+            </div>
           </div>
           <div className="cd-meta">
             <div className="cd-meta-item">

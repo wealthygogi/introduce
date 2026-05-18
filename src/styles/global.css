@@ -367,6 +367,7 @@ a {
   gap: 14px;
   overflow-y: auto;
   max-height: calc(100vh - 64px);
+  max-height: calc(100dvh - 64px);
   position: sticky;
   top: 64px;
 }
@@ -376,6 +377,8 @@ a {
     max-height: none;
     border-right: none;
     border-bottom: 1px solid var(--border);
+    padding: 14px 16px;
+    gap: 10px;
   }
 }
 .preview-panel {
@@ -415,7 +418,7 @@ a {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   color: var(--fg);
-  font-size: 14px;
+  font-size: 16px;
   padding: 10px 12px;
   border-radius: 10px;
   outline: none;
@@ -658,9 +661,54 @@ a {
   overflow: visible;
   position: relative;
 }
+
+/* card scaler — transparent on desktop, transform-scaled on mobile */
+.card-scaler {
+  display: block;
+}
+
 @media (max-width: 880px) {
   .card-frame {
+    /* Force 640px DOM so PNG capture stays consistent across viewports */
+    width: 640px !important;
     border-radius: 14px;
+    transform: none !important;
+  }
+  /* Entire preview panel (tools + wrap) sticks together so download button stays visible */
+  .preview-panel {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--bg);
+    padding: 12px 16px 8px;
+    gap: 8px;
+    align-items: stretch;
+    overflow-x: hidden;
+  }
+  /* Release sticky while user is typing — keyboard shouldn't fight the preview */
+  .page-shell:focus-within .preview-panel {
+    position: static;
+  }
+  .preview-tools {
+    justify-content: flex-end;
+    margin-bottom: 0;
+  }
+  .preview-wrap {
+    overflow: hidden;
+    /* height set dynamically by useCardScale */
+  }
+  .card-scaler {
+    transform-origin: top center;
+    transform: scale(var(--card-scale, 1));
+    width: 640px;
+    margin: 0 auto;
+  }
+  .btn {
+    min-height: 44px;
+  }
+  .switcher .btn {
+    min-height: 44px;
+    padding: 10px 14px;
   }
 }
 

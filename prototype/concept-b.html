@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CONCEPT B: 스펠카드 — 동방 트친소</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Serif+KR:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 /* ── reset ── */
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:#060002;color:#fff;font-family:'Noto Serif JP',serif;overflow-x:hidden;min-height:100vh;}
+body{background:#060002;color:#fff;font-family:'Noto Serif KR','Noto Serif JP',serif;overflow-x:hidden;min-height:100vh;}
 img{display:block;}
 .px{image-rendering:pixelated;image-rendering:crisp-edges;}
 
@@ -27,7 +27,7 @@ img{display:block;}
 }
 .nav-back:hover{color:#ff9090;border-color:#880000;background:rgba(136,0,0,.15);}
 .nav-title{
-  font-family:'Press Start 2P',monospace;font-size:8px;color:#ff4040;
+  font-family:'Press Start 2P',monospace;font-size:9px;color:#ff4040;
   margin-right:auto;letter-spacing:2px;
 }
 .lang-btns{display:flex;gap:4px;}
@@ -60,12 +60,12 @@ img{display:block;}
 
 .form-section{display:flex;flex-direction:column;gap:6px;}
 .form-label{
-  font-family:'Noto Serif JP','Press Start 2P',monospace;font-size:14px;color:#884040;
+  font-family:'Noto Serif KR','Noto Serif JP','Press Start 2P',monospace;font-size:14px;color:#884040;
   letter-spacing:0;
 }
 .form-input{
   background:#0e0002;border:1px solid #550000;color:#ffcccc;
-  padding:8px 10px;font-family:'Noto Serif JP',serif;font-size:14px;
+  padding:8px 10px;font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:14px;
   outline:none;width:100%;transition:border-color .2s;
 }
 .form-input:focus{border-color:#880000;}
@@ -92,7 +92,7 @@ textarea.form-input{resize:vertical;min-height:70px;line-height:1.7;}
 /* radio group */
 .radio-group{display:flex;flex-wrap:wrap;gap:6px;}
 .radio-opt{
-  font-family:'Noto Serif JP','Press Start 2P',monospace;font-size:14px;color:#552020;
+  font-family:'Noto Serif KR','Noto Serif JP','Press Start 2P',monospace;font-size:14px;color:#552020;
   padding:5px 10px;border:1px solid #330000;cursor:pointer;
   transition:all .15s;user-select:none;
 }
@@ -102,7 +102,7 @@ textarea.form-input{resize:vertical;min-height:70px;line-height:1.7;}
 /* checkbox chips */
 .check-group{display:flex;flex-wrap:wrap;gap:5px;}
 .check-chip{
-  font-family:'Noto Serif JP','Press Start 2P',monospace;font-size:14px;color:#441818;
+  font-family:'Noto Serif KR','Noto Serif JP','Press Start 2P',monospace;font-size:14px;color:#441818;
   padding:4px 8px;border:1px solid #2a0000;cursor:pointer;
   transition:all .15s;user-select:none;
 }
@@ -124,22 +124,34 @@ textarea.form-input{resize:vertical;min-height:70px;line-height:1.7;}
 /* ── RIGHT: preview panel ── */
 .preview-panel{
   background:#060002;display:flex;align-items:flex-start;
-  justify-content:center;padding:30px 24px;
+  justify-content:center;padding:80px 24px 40px;
   overflow-y:auto;
 }
 @media(max-width:820px){
-  .preview-panel{padding:20px 16px;}
+  .preview-panel{padding:70px 16px 30px;}
 }
 
 /* ── CARD ── */
 #preview{
   width:600px;max-width:100%;
-  font-family:'Noto Serif JP',serif;
+  font-family:'Noto Serif KR','Noto Serif JP',serif;
 }
 
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 @keyframes float2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes float3{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@media(max-width:600px){
+  .nav-title{font-size:8px;letter-spacing:1px;}
+  .nav-back{font-size:9px;padding:5px 8px;}
+  .lang-btn{font-size:9px;padding:4px 7px;}
+  .top-nav{padding:8px 12px;gap:6px;}
+  .form-panel{padding:14px;}
+  .form-label{font-size:14px;}
+  .form-input{font-size:14px;}
+  .radio-opt,.check-chip{font-size:14px;padding:4px 8px;}
+  .dl-btn{font-size:9px;padding:10px 16px;}
+  /* Preview card width override — search for the inline style width:600px and rely on max-width:100% */
+}
 </style>
 </head>
 <body>
@@ -186,11 +198,11 @@ textarea.form-input{resize:vertical;min-height:70px;line-height:1.7;}
     <!-- mainSeries -->
     <div class="form-section">
       <label class="form-label" id="lbl-mainseries">주력 시리즈</label>
-      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#cc4444;margin-bottom:4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('old')"><span id="lbl-series-old">── 구작</span> <span style="font-size:12px;color:#cc4444;">[+]</span></div>
+      <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:14px;color:#cc4444;margin-bottom:4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('old')"><span id="lbl-series-old">── 구작</span> <span style="font-size:12px;color:#cc4444;">[+]</span></div>
       <div class="check-group" id="series-old-group"></div>
-      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#cc4444;margin:6px 0 4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('new')"><span id="lbl-series-new">── 신작</span> <span style="font-size:12px;color:#cc4444;">[+]</span></div>
+      <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:14px;color:#cc4444;margin:6px 0 4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('new')"><span id="lbl-series-new">── 신작</span> <span style="font-size:12px;color:#cc4444;">[+]</span></div>
       <div class="check-group" id="series-new-group"></div>
-      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#cc4444;margin:6px 0 4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('extra')"><span id="lbl-series-extra">── 기타</span> <span style="font-size:12px;color:#cc4444;">[+]</span></div>
+      <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:14px;color:#cc4444;margin:6px 0 4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('extra')"><span id="lbl-series-extra">── 기타</span> <span style="font-size:12px;color:#cc4444;">[+]</span></div>
       <div class="check-group" id="series-extra-group"></div>
     </div>
 
@@ -321,12 +333,12 @@ const SERIES=[
   {id:'th12',num:'12',ko:'성련선',ja:'星蓮船',en:'UFO',group:'new'},
   {id:'th13',num:'13',ko:'신령묘',ja:'神霊廟',en:'TD',group:'new'},
   {id:'th14',num:'14',ko:'휘침성',ja:'輝針城',en:'DDC',group:'new'},
-  {id:'th15',num:'15',ko:'감주전',ja:'感朱伝',en:'LoLK',group:'new'},
+  {id:'th15',num:'15',ko:'감주전',ja:'紺珠伝',en:'LoLK',group:'new'},
   {id:'th16',num:'16',ko:'천공장',ja:'天空璋',en:'HSiFS',group:'new'},
   {id:'th17',num:'17',ko:'귀형수',ja:'鬼形獣',en:'WBaWC',group:'new'},
-  {id:'th18',num:'18',ko:'홍롱동',ja:'虹龍洞',en:'UM',group:'new'},
+  {id:'th18',num:'18',ko:'홍룡동',ja:'虹龍洞',en:'UM',group:'new'},
   {id:'th19',num:'19',ko:'수왕원',ja:'獣王園',en:'UDoaLG',group:'new'},
-  {id:'th20',num:'20',ko:'금성경',ja:'金城鏡',en:'FW',group:'new'},
+  {id:'th20',num:'20',ko:'금상경',ja:'錦上京',en:'FW',group:'new'},
   {id:'manga',num:'',ko:'서적작',ja:'書籍作',en:'Books/Manga',group:'extra'},
   {id:'music',num:'',ko:'음악작품',ja:'音楽作品',en:'Music',group:'extra'},
   {id:'spinoff',num:'',ko:'스핀오프',ja:'スピンオフ',en:'Spin-offs',group:'extra'},
@@ -558,7 +570,7 @@ function renderCard() {
   const seriesChips = selectedSeries.length > 0
     ? selectedSeries.map(s => {
         const name = (s.num ? 'TH'+s.num+' ' : '') + (s[lang]||s.en);
-        return `<span style="display:inline-block;border:1px solid #660000;padding:2px 8px;margin:2px;font-size:14px;font-family:'Noto Serif JP',serif;color:#ffaaaa;">${name}</span>`;
+        return `<span style="display:inline-block;border:1px solid #660000;padding:2px 8px;margin:2px;font-size:14px;font-family:'Noto Serif KR','Noto Serif JP',serif;color:#ffaaaa;">${name}</span>`;
       }).join('')
     : `<span style="color:#662222;">${lang==='ko'?'미선택':lang==='ja'?'未選択':'None'}</span>`;
   const fubLabel = {free:t.free,r4r:t.r4r}[selectedFub];
@@ -570,7 +582,7 @@ function renderCard() {
     const on = checkedAcct.has(a.id);
     const label = a[lang] || a.ko;
     return `<span style="
-      font-family:'Noto Serif JP',serif;
+      font-family:'Noto Serif KR','Noto Serif JP',serif;
       font-size:14px;
       color:${on?'#ffcccc':'#441818'};
       padding:3px 10px;
@@ -585,8 +597,8 @@ function renderCard() {
   function sectionHd(iconSrc, koText, jpText) {
     return `<div style="display:flex;align-items:center;gap:10px;border-left:3px solid #880000;padding-left:12px;margin-bottom:12px;">
       <img src="${iconSrc}" alt="" style="width:24px;height:24px;image-rendering:pixelated;image-rendering:crisp-edges;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 0 4px rgba(200,40,40,.4));">
-      <span style="font-family:'Noto Serif JP',serif;font-size:14px;color:#ff9090;">${koText}</span>
-      <span style="font-family:'Noto Serif JP',serif;font-size:12px;color:#662222;margin-left:2px;">${jpText}</span>
+      <span style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:14px;color:#ff9090;">${koText}</span>
+      <span style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:12px;color:#662222;margin-left:2px;">${jpText}</span>
     </div>`;
   }
 
@@ -596,8 +608,8 @@ function renderCard() {
 
   const html = `
 <div style="
-  width:600px;
-  font-family:'Noto Serif JP',serif;
+  width:600px;max-width:calc(100vw - 28px);
+  font-family:'Noto Serif KR','Noto Serif JP',serif;
   background:rgba(3,0,0,.94);
   border:2px solid #880000;
   position:relative;
@@ -622,7 +634,7 @@ function renderCard() {
   ">
     <div style="position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 14px,rgba(255,255,255,.012) 14px,rgba(255,255,255,.012) 28px);pointer-events:none;"></div>
     <div style="font-family:'Press Start 2P',monospace;font-size:10px;color:#ff7070;letter-spacing:4px;margin-bottom:10px;position:relative;">TOUHOU TWITTER SHOKAI</div>
-    <div style="font-family:'Noto Serif JP',serif;font-size:26px;font-weight:700;color:#fff;text-shadow:0 0 28px rgba(255,50,50,.5);position:relative;">
+    <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:26px;font-weight:700;color:#fff;text-shadow:0 0 28px rgba(255,50,50,.5);position:relative;">
       <span style="color:#ff3030;font-size:20px;">「</span>${t.title}<span style="color:#ff3030;font-size:20px;">」</span>
     </div>
   </div>
@@ -634,8 +646,8 @@ function renderCard() {
     <div>
       ${sectionHd(reimuSrc, lang==='ko'?'이름':lang==='ja'?'名前':'Name', lang==='ko'?'名前':lang==='ja'?'Name':'名前')}
       <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;padding-left:4px;">
-        <span style="font-family:'Noto Serif JP',serif;font-size:22px;font-weight:700;color:#ffdddd;">${escHtml(nickname)}</span>
-        <span style="font-family:'Noto Serif JP',serif;font-size:14px;color:#aa6666;">${lang==='ko'?'호칭':lang==='ja'?'呼び方':'Call me'}: ${escHtml(callMe)}</span>
+        <span style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:22px;font-weight:700;color:#ffdddd;">${escHtml(nickname)}</span>
+        <span style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:14px;color:#aa6666;">${lang==='ko'?'호칭':lang==='ja'?'呼び方':'Call me'}: ${escHtml(callMe)}</span>
       </div>
     </div>
 
@@ -645,8 +657,8 @@ function renderCard() {
       <div style="display:flex;align-items:center;gap:14px;padding-left:4px;">
         <img src="${charSrc}" alt="${charName}" style="width:48px;height:48px;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 0 8px rgba(200,40,40,.5));animation:float 3s ease-in-out infinite;">
         <div>
-          <div style="font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;color:#ffcccc;">${escHtml(charName)}</div>
-          <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#886060;margin-top:4px;">${lang==='ko'?'주력':lang==='ja'?'主力':'Series'}:</div>
+          <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:16px;font-weight:700;color:#ffcccc;">${escHtml(charName)}</div>
+          <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:14px;color:#886060;margin-top:4px;">${lang==='ko'?'주력':lang==='ja'?'主力':'Series'}:</div>
           <div style="display:flex;flex-wrap:wrap;margin-top:4px;">${seriesChips}</div>
         </div>
       </div>
@@ -663,18 +675,18 @@ function renderCard() {
     <!-- SNS 정책 section -->
     <div>
       ${sectionHd(sakuyaSrc, lang==='ko'?'SNS 정책':lang==='ja'?'SNSポリシー':'SNS Policy', lang==='ko'?'SNSポリシー':lang==='ja'?'SNS Policy':'SNSポリシー')}
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding-left:4px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;padding-left:4px;">
         <div>
-          <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#662020;margin-bottom:5px;">${t.fub}</div>
-          <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#ffcccc;">${escHtml(fubLabel)}</div>
+          <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:12px;color:#662020;margin-bottom:5px;">${t.fub}</div>
+          <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:14px;color:#ffcccc;">${escHtml(fubLabel)}</div>
         </div>
         <div>
-          <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#662020;margin-bottom:5px;">${t.parting}</div>
-          <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#ffcccc;">${escHtml(partingLabel)}</div>
+          <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:12px;color:#662020;margin-bottom:5px;">${t.parting}</div>
+          <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:14px;color:#ffcccc;">${escHtml(partingLabel)}</div>
         </div>
         <div>
-          <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#662020;margin-bottom:5px;">${t.otherGenre}</div>
-          <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#ffcccc;">${escHtml(otherLabel)}</div>
+          <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:12px;color:#662020;margin-bottom:5px;">${t.otherGenre}</div>
+          <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:14px;color:#ffcccc;">${escHtml(otherLabel)}</div>
         </div>
       </div>
     </div>
@@ -684,12 +696,12 @@ function renderCard() {
       ${sectionHd(youmuSrc, lang==='ko'?'기타':lang==='ja'?'その他':'Other', lang==='ko'?'その他':lang==='ja'?'Other':'その他')}
       <div style="display:flex;flex-direction:column;gap:8px;padding-left:4px;">
         <div style="border-left:2px solid #551010;padding:6px 14px;background:rgba(100,0,0,.05);">
-          <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#884040;margin-bottom:3px;">${t.dislike}</div>
-          <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#ffcccc;">${escHtml(dislike)}</div>
+          <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:12px;color:#884040;margin-bottom:3px;">${t.dislike}</div>
+          <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:14px;color:#ffcccc;">${escHtml(dislike)}</div>
         </div>
         <div style="border-left:2px solid #551010;padding:6px 14px;background:rgba(100,0,0,.05);">
-          <div style="font-family:'Noto Serif JP',serif;font-size:12px;color:#884040;margin-bottom:3px;">${t.pairing}</div>
-          <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#ffcccc;">${escHtml(pairing)}</div>
+          <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:12px;color:#884040;margin-bottom:3px;">${t.pairing}</div>
+          <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:14px;color:#ffcccc;">${escHtml(pairing)}</div>
         </div>
       </div>
     </div>
@@ -698,7 +710,7 @@ function renderCard() {
     <!-- 자유서술 section -->
     <div>
       ${sectionHd(marisaSrc, lang==='ko'?'자유서술':lang==='ja'?'自由記述':'Free Notes', lang==='ko'?'自由記述':lang==='ja'?'Free Notes':'自由記述')}
-      <div style="font-family:'Noto Serif JP',serif;font-size:14px;color:#ddd;line-height:2;padding-left:4px;">${freeTextHtml}</div>
+      <div style="font-family:'Noto Serif KR','Noto Serif JP',serif;font-size:14px;color:#ddd;line-height:2;padding-left:4px;">${freeTextHtml}</div>
     </div>
     ` : ''}
 
@@ -716,7 +728,7 @@ function renderCard() {
   ">
     <span style="font-family:'Press Start 2P',monospace;font-size:10px;color:#440000;letter-spacing:2px;">Touhou Project © ZUN</span>
     <span style="color:#330000;">·</span>
-    <span style="font-family:'Press Start 2P',monospace;font-size:10px;color:#440000;letter-spacing:2px;">Sprites © Touhou 16×16 Mini Pack</span>
+    <span style="font-family:'Press Start 2P',monospace;font-size:10px;color:#440000;letter-spacing:2px;">Sprites by Majstek</span>
   </div>
 
 </div>
@@ -742,7 +754,7 @@ function updateCard() {
 ═══════════════════════════════════════ */
 async function downloadCard() {
   try {
-    await document.fonts.ready;
+    try { await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 2500))]); } catch(_) {}
     const el = document.getElementById('preview');
     const canvas = await html2canvas(el, {
       backgroundColor: '#060002',

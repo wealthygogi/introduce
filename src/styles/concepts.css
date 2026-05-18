@@ -1,0 +1,776 @@
+/* shared concept utilities */
+
+.concept-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-strong);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+}
+.concept-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 8px 0;
+}
+.concept-meta {
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+.concept-emph {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--fg-strong);
+  letter-spacing: -0.01em;
+}
+.concept-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.concept-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 14px;
+  font-weight: 500;
+}
+.concept-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  color: var(--fg);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ──────────────── Concept A: RPG status ──────────────── */
+.ca-card {
+  padding: 24px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--bg-card);
+  border-radius: 18px;
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft), var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+.ca-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--accent), var(--season-accent));
+}
+.ca-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 4px;
+}
+.ca-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  border: 2px solid var(--accent);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.ca-avatar img {
+  width: 56px;
+  height: 56px;
+}
+.ca-avatar.photo {
+  overflow: hidden;
+}
+.ca-avatar.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+.ca-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--fg-strong);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.ca-callme {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-top: 2px;
+}
+.ca-job {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  color: var(--accent-strong);
+  letter-spacing: 1.5px;
+  margin-top: 8px;
+}
+.ca-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.ca-stat {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.ca-stat-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: var(--accent-strong);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.ca-stat-value {
+  font-size: 15px;
+  color: var(--fg-strong);
+  line-height: 1.55;
+  font-weight: 500;
+}
+.ca-notes {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.ca-notes-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: var(--accent-strong);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.ca-credits {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: var(--fg-subtle);
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+/* ──────────────── Concept B: Spell card ──────────────── */
+.cb-card {
+  background: var(--bg-card);
+  border: 2px solid var(--accent);
+  border-radius: 18px;
+  position: relative;
+  overflow: visible;
+  box-shadow: 0 0 40px var(--season-glow), var(--shadow-lg);
+}
+.cb-sprites {
+  position: absolute;
+  top: -42px;
+  right: 20px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  z-index: 2;
+}
+.cb-sprite {
+  width: 40px;
+  height: 40px;
+  filter: drop-shadow(0 4px 12px var(--season-glow));
+}
+.cb-sprite.mid {
+  width: 54px;
+  height: 54px;
+}
+.cb-sprite.mid.photo {
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+  filter: drop-shadow(0 4px 12px var(--season-glow));
+}
+.cb-header {
+  background: linear-gradient(90deg, var(--accent-strong), var(--accent), var(--accent-strong));
+  color: var(--accent-fg);
+  padding: 20px 28px;
+  text-align: center;
+  border-bottom: 2px solid var(--accent);
+  border-radius: 16px 16px 0 0;
+  position: relative;
+  overflow: hidden;
+}
+.cb-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 12px,
+    rgba(255, 255, 255, 0.05) 12px,
+    rgba(255, 255, 255, 0.05) 24px
+  );
+  pointer-events: none;
+}
+.cb-header-tag {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
+.cb-header-title {
+  font-family: 'Noto Serif KR', 'Noto Serif JP', serif;
+  font-size: 26px;
+  font-weight: 700;
+}
+.cb-body {
+  padding: 26px 28px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.cb-section h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent-strong);
+  border-left: 3px solid var(--accent);
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+.cb-name-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-left: 13px;
+}
+.cb-avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  border: 2px solid var(--accent);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.cb-avatar img {
+  width: 100%;
+  height: 100%;
+}
+.cb-avatar:not(.photo) img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+.cb-avatar.photo img {
+  object-fit: cover;
+}
+.cb-nick {
+  font-family: 'Noto Serif KR', 'Noto Serif JP', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--fg-strong);
+}
+.cb-callme {
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+.cb-fav-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-left: 13px;
+}
+.cb-fav-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fg-strong);
+  margin-bottom: 6px;
+}
+.cb-fav-series-label {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 6px;
+}
+.cb-grid3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  padding-left: 13px;
+}
+.cb-grid3 .label {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 6px;
+}
+.cb-grid3 .value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fg-strong);
+}
+.cb-misc {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 13px;
+}
+.cb-misc-row {
+  background: var(--bg-elevated);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  padding: 10px 14px;
+}
+.cb-misc-row .label {
+  font-size: 13px;
+  color: var(--accent-strong);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.cb-misc-row .value {
+  font-size: 15px;
+  color: var(--fg-strong);
+  white-space: pre-wrap;
+}
+.cb-footer {
+  border-top: 1px solid var(--border);
+  padding: 12px 28px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: var(--fg-subtle);
+  letter-spacing: 1px;
+  border-radius: 0 0 16px 16px;
+}
+
+/* ──────────────── Concept C: Title screen ──────────────── */
+.cc-card {
+  background: linear-gradient(180deg, var(--bg-card), var(--accent-soft));
+  border: 1px solid var(--accent);
+  border-radius: 18px;
+  padding: 56px 28px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.cc-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, var(--season-glow) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, var(--accent-soft) 0%, transparent 50%);
+  pointer-events: none;
+}
+.cc-sprites {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 8px;
+}
+.cc-sprites img {
+  width: 44px;
+  height: 44px;
+  filter: drop-shadow(0 4px 10px var(--season-glow));
+}
+.cc-pre {
+  position: relative;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  color: var(--accent-strong);
+  letter-spacing: 5px;
+  opacity: 0.9;
+}
+.cc-title {
+  position: relative;
+  font-family: 'Noto Serif KR', 'Noto Serif JP', serif;
+  font-size: clamp(26px, 4.6vw, 38px);
+  font-weight: 700;
+  color: var(--fg-strong);
+  letter-spacing: 4px;
+  text-shadow: 0 4px 24px var(--season-glow);
+  margin: 8px 0 10px;
+  line-height: 1.1;
+}
+.cc-photo {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--accent);
+  box-shadow: 0 6px 20px var(--season-glow);
+  margin-bottom: 6px;
+}
+.cc-subtitle {
+  position: relative;
+  font-family: 'Noto Sans KR', 'Noto Sans JP', sans-serif;
+  font-size: 15px;
+  color: var(--accent-strong);
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+.cc-menu {
+  position: relative;
+  margin: 24px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(420px, 100%);
+}
+.cc-menu-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.cc-menu-item .value {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* multi-value block: label header + chip row */
+.cc-menu-block {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+}
+.cc-block-label {
+  font-size: 13px;
+  color: var(--accent-strong);
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+.cc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.cc-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.cc-meta {
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+.cc-menu-item .label {
+  font-size: 13px;
+  color: var(--accent-strong);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.cc-menu-item .value {
+  font-size: 16px;
+  color: var(--fg-strong);
+  font-weight: 600;
+  text-align: right;
+  flex: 1;
+}
+.cc-free {
+  position: relative;
+  font-size: 15px;
+  color: var(--fg);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 16px;
+  white-space: pre-wrap;
+  text-align: left;
+  width: min(420px, 100%);
+  line-height: 1.7;
+}
+.cc-credit {
+  position: relative;
+  margin-top: auto;
+  padding-top: 24px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: var(--fg-subtle);
+  letter-spacing: 1px;
+}
+
+/* ──────────────── Concept D: Dialogue ──────────────── */
+.cd-card {
+  background: var(--bg-card);
+  border: 1px solid var(--accent);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+.cd-scene {
+  position: relative;
+  background: linear-gradient(180deg, var(--accent-soft), var(--bg-elevated));
+  padding: 40px 20px 16px;
+  min-height: 180px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  border-bottom: 1px solid var(--accent);
+}
+.cd-user-photo {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--accent);
+  box-shadow: var(--shadow-md);
+  z-index: 2;
+}
+.cd-portrait {
+  width: 128px;
+  height: 128px;
+  filter: drop-shadow(0 8px 24px var(--season-glow));
+}
+.cd-portrait.photo {
+  border-radius: 18px;
+  object-fit: cover;
+  border: 3px solid var(--accent);
+}
+.cd-dialogue {
+  position: relative;
+  padding: 22px 24px 18px;
+  font-family: 'DotGothic16', 'Noto Sans KR', monospace;
+}
+.cd-speaker {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.cd-text {
+  font-size: 16px;
+  color: var(--fg-strong);
+  line-height: 1.9;
+  white-space: pre-wrap;
+}
+.cd-text strong {
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+.cd-meta {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+.cd-meta-item {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+.cd-meta-label {
+  font-size: 13px;
+  color: var(--accent-strong);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.cd-meta-value {
+  font-size: 15px;
+  color: var(--fg-strong);
+}
+.cd-footer {
+  padding: 10px 24px;
+  border-top: 1px solid var(--border);
+  text-align: right;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: var(--fg-subtle);
+  letter-spacing: 1px;
+}
+
+/* ──────────────── Concept E: Config menu ──────────────── */
+.ce-card {
+  background: var(--bg-card);
+  border: 1px solid var(--accent);
+  border-radius: 14px;
+  overflow: hidden;
+  font-family: 'DotGothic16', 'Noto Sans KR', monospace;
+  box-shadow: var(--shadow-md);
+}
+.ce-titlebar {
+  background: var(--accent-strong);
+  color: var(--accent-fg);
+  padding: 11px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+.ce-ver {
+  font-size: 12px;
+  opacity: 0.78;
+  letter-spacing: 1px;
+  font-weight: 400;
+}
+.ce-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+}
+.ce-portrait {
+  width: 60px;
+  height: 60px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent-soft);
+  display: grid;
+  place-items: center;
+}
+.ce-portrait img {
+  width: 48px;
+  height: 48px;
+}
+.ce-portrait.photo {
+  overflow: hidden;
+}
+.ce-portrait.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ce-nick {
+  font-size: 22px;
+  color: var(--fg-strong);
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+.ce-callme {
+  font-size: 14px;
+  color: var(--accent-strong);
+  margin-top: 4px;
+  font-weight: 600;
+}
+.ce-sep {
+  font-size: 12px;
+  color: var(--fg-subtle);
+  padding: 9px 20px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+.ce-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+}
+.ce-row.alt {
+  background: var(--bg-elevated);
+}
+.ce-key {
+  font-size: 15px;
+  color: var(--accent-strong);
+  width: 150px;
+  flex-shrink: 0;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+.ce-val {
+  font-size: 15px;
+  color: var(--fg-strong);
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  line-height: 1.7;
+}
+.ce-radio {
+  margin-right: 4px;
+}
+.ce-radio.on {
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+.ce-radio.off {
+  color: var(--fg-subtle);
+}
+.ce-actions {
+  border-top: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  background: var(--bg-elevated);
+}
+.ce-button {
+  font-size: 14px;
+  padding: 7px 20px;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent-strong);
+  border-radius: 6px;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+.ce-button.primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+.ce-credit {
+  padding: 10px 20px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 12px;
+  color: var(--fg-subtle);
+}

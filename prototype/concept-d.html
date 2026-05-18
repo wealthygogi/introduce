@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CONCEPT D: 대화창 — 동방 트친소</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 /* ── reset ── */
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:#030c10;color:#c8e8e0;font-family:'DotGothic16',monospace;overflow-x:hidden;min-height:100vh;}
+body{background:#030c10;color:#c8e8e0;font-family:'DotGothic16','Noto Sans KR',monospace;overflow-x:hidden;min-height:100vh;}
 img{display:block;}
 
 /* ── nav ── */
@@ -26,7 +26,7 @@ nav{
 }
 .nav-back:hover{color:#50d0c0;border-color:#1a6060;}
 .nav-title{
-  font-family:'Press Start 2P',monospace;font-size:8px;color:#50d0c0;
+  font-family:'Press Start 2P',monospace;font-size:9px;color:#50d0c0;
   margin-right:auto;letter-spacing:2px;
 }
 .lang-btns{display:flex;gap:4px;}
@@ -56,12 +56,12 @@ nav{
 
 .form-section{display:flex;flex-direction:column;gap:8px;}
 .form-label{
-  font-family:'DotGothic16','Noto Serif JP',monospace;font-size:14px;color:#2a7868;
+  font-family:'DotGothic16','Noto Sans KR','Noto Serif KR','Noto Serif JP',monospace;font-size:14px;color:#2a7868;
   letter-spacing:1px;padding-bottom:4px;border-bottom:1px solid #0c2828;
 }
 .form-input{
   background:#020c14;border:1px solid #0c2828;color:#c8e8e0;
-  font-family:'DotGothic16',monospace;font-size:14px;
+  font-family:'DotGothic16','Noto Sans KR',monospace;font-size:14px;
   padding:8px 12px;width:100%;outline:none;
   transition:border-color .2s;
 }
@@ -89,7 +89,7 @@ textarea.form-input{resize:vertical;min-height:72px;line-height:1.7;}
 /* radio + check rows */
 .radio-group,.check-group{display:flex;flex-wrap:wrap;gap:6px;}
 .radio-opt,.check-opt{
-  font-family:'DotGothic16',monospace;font-size:14px;
+  font-family:'DotGothic16','Noto Sans KR',monospace;font-size:14px;
   color:#1a4838;padding:4px 10px;border:1px solid #081c1c;
   cursor:pointer;transition:all .2s;user-select:none;
 }
@@ -181,11 +181,11 @@ textarea.form-input{resize:vertical;min-height:72px;line-height:1.7;}
   filter:drop-shadow(0 0 16px rgba(30,180,160,.5));
 }
 .card-portrait-name{
-  font-family:'DotGothic16',monospace;font-size:14px;
+  font-family:'DotGothic16','Noto Sans KR',monospace;font-size:14px;
   color:#50d0c0;text-align:center;letter-spacing:1px;
 }
 .card-portrait-sub{
-  font-family:'DotGothic16',monospace;font-size:14px;
+  font-family:'DotGothic16','Noto Sans KR',monospace;font-size:14px;
   color:#2a7868;text-align:center;
 }
 
@@ -197,7 +197,7 @@ textarea.form-input{resize:vertical;min-height:72px;line-height:1.7;}
 
 /* speaker bar */
 .card-speaker{
-  font-family:'DotGothic16',monospace;font-size:15px;
+  font-family:'DotGothic16','Noto Sans KR',monospace;font-size:14px;
   color:#50d0c0;border-bottom:1px solid #0c2020;
   padding-bottom:10px;display:flex;align-items:center;gap:8px;
 }
@@ -210,7 +210,7 @@ textarea.form-input{resize:vertical;min-height:72px;line-height:1.7;}
 
 /* dialogue paragraph */
 .card-para{
-  font-family:'DotGothic16',monospace;font-size:14px;
+  font-family:'DotGothic16','Noto Sans KR',monospace;font-size:14px;
   color:#c8e8e0;line-height:2.2;
 }
 .card-para .hi{color:#ffe080;}
@@ -225,7 +225,7 @@ textarea.form-input{resize:vertical;min-height:72px;line-height:1.7;}
 /* chips inside card */
 .card-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;}
 .card-chip{
-  font-family:'DotGothic16',monospace;font-size:14px;
+  font-family:'DotGothic16','Noto Sans KR',monospace;font-size:14px;
   color:#80e8d0;border:1px solid #2a7868;
   background:rgba(20,100,90,.15);padding:2px 8px;
   display:inline-block;
@@ -234,11 +234,11 @@ textarea.form-input{resize:vertical;min-height:72px;line-height:1.7;}
 /* best char row */
 .card-best-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
 .card-best-img{image-rendering:pixelated;width:32px;height:32px;}
-.card-best-name{font-family:'DotGothic16',monospace;font-size:14px;color:#ffe080;}
+.card-best-name{font-family:'DotGothic16','Noto Sans KR',monospace;font-size:14px;color:#ffe080;}
 
 /* policy row */
 .card-policy-row{
-  font-family:'DotGothic16',monospace;font-size:14px;
+  font-family:'DotGothic16','Noto Sans KR',monospace;font-size:14px;
   color:#c8e8e0;margin-bottom:4px;
 }
 .card-policy-row .lbl{color:#2a8070;margin-right:6px;}
@@ -248,7 +248,7 @@ textarea.form-input{resize:vertical;min-height:72px;line-height:1.7;}
 .card-free-box{
   border:1px solid #0c2828;background:rgba(1,8,14,.5);
   padding:10px 14px;
-  font-family:'DotGothic16',monospace;font-size:14px;
+  font-family:'DotGothic16','Noto Sans KR',monospace;font-size:14px;
   color:#a8d8d0;line-height:1.9;
   margin-top:4px;white-space:pre-wrap;
 }
@@ -260,6 +260,19 @@ textarea.form-input{resize:vertical;min-height:72px;line-height:1.7;}
   .card-scene{grid-template-columns:1fr;}
   .card-portrait{flex-direction:row;justify-content:center;padding:14px 16px;}
   nav{gap:6px;}
+}
+@media(max-width:600px){
+  .nav-title{font-size:8px;letter-spacing:1px;}
+  .nav-back{font-size:9px;padding:5px 8px;}
+  .lang-btn{font-size:9px;padding:4px 7px;}
+  .top-nav{padding:8px 12px;gap:6px;flex-wrap:wrap;}
+  .form-panel{padding:14px;}
+  .form-label{font-size:14px;}
+  .form-input{font-size:14px;}
+  .radio-opt,.check-chip{font-size:14px;padding:4px 8px;}
+  .dl-btn{font-size:13px;padding:10px 16px;}
+  .char-thumb{width:36px;height:36px;}
+  .char-thumb img{width:28px;height:28px;}
 }
 </style>
 </head>
@@ -307,11 +320,11 @@ textarea.form-input{resize:vertical;min-height:72px;line-height:1.7;}
     <!-- Main series -->
     <div class="form-section">
       <div class="form-label" id="lbl-series">주력 시리즈</div>
-      <div style="font-family:'DotGothic16',monospace;font-size:14px;color:#2a8070;margin-bottom:4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('old')"><span id="lbl-series-old">── 구작</span> <span style="font-size:12px;color:#3a9080;">[+]</span></div>
+      <div style="font-family:'DotGothic16','Noto Sans KR',monospace;font-size:14px;color:#2a8070;margin-bottom:4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('old')"><span id="lbl-series-old">── 구작</span> <span style="font-size:12px;color:#3a9080;">[+]</span></div>
       <div class="check-group" id="series-old-group"></div>
-      <div style="font-family:'DotGothic16',monospace;font-size:14px;color:#2a8070;margin:6px 0 4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('new')"><span id="lbl-series-new">── 신작</span> <span style="font-size:12px;color:#3a9080;">[+]</span></div>
+      <div style="font-family:'DotGothic16','Noto Sans KR',monospace;font-size:14px;color:#2a8070;margin:6px 0 4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('new')"><span id="lbl-series-new">── 신작</span> <span style="font-size:12px;color:#3a9080;">[+]</span></div>
       <div class="check-group" id="series-new-group"></div>
-      <div style="font-family:'DotGothic16',monospace;font-size:14px;color:#2a8070;margin:6px 0 4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('extra')"><span id="lbl-series-extra">── 기타</span> <span style="font-size:12px;color:#3a9080;">[+]</span></div>
+      <div style="font-family:'DotGothic16','Noto Sans KR',monospace;font-size:14px;color:#2a8070;margin:6px 0 4px;cursor:pointer;user-select:none;" onclick="toggleSeriesGroup('extra')"><span id="lbl-series-extra">── 기타</span> <span style="font-size:12px;color:#3a9080;">[+]</span></div>
       <div class="check-group" id="series-extra-group"></div>
     </div>
 
@@ -458,6 +471,12 @@ textarea.form-input{resize:vertical;min-height:72px;line-height:1.7;}
         </div><!-- /card-content -->
       </div><!-- /card-scene -->
 
+      <!-- credits -->
+      <div style="margin-top:14px;text-align:right;padding:0 4px;">
+        <span style="font-family:'Press Start 2P',monospace;font-size:10px;color:#1a5048;letter-spacing:1px;">Touhou Project &copy; ZUN</span>
+        <span style="font-family:'Press Start 2P',monospace;font-size:10px;color:#1a5048;letter-spacing:1px;"> &middot; Sprites by Majstek</span>
+      </div>
+
     </div><!-- /#preview -->
 
   </div><!-- /preview-panel -->
@@ -517,12 +536,12 @@ const SERIES=[
   {id:'th12',num:'12',ko:'성련선',ja:'星蓮船',en:'UFO',group:'new'},
   {id:'th13',num:'13',ko:'신령묘',ja:'神霊廟',en:'TD',group:'new'},
   {id:'th14',num:'14',ko:'휘침성',ja:'輝針城',en:'DDC',group:'new'},
-  {id:'th15',num:'15',ko:'감주전',ja:'感朱伝',en:'LoLK',group:'new'},
+  {id:'th15',num:'15',ko:'감주전',ja:'紺珠伝',en:'LoLK',group:'new'},
   {id:'th16',num:'16',ko:'천공장',ja:'天空璋',en:'HSiFS',group:'new'},
   {id:'th17',num:'17',ko:'귀형수',ja:'鬼形獣',en:'WBaWC',group:'new'},
-  {id:'th18',num:'18',ko:'홍롱동',ja:'虹龍洞',en:'UM',group:'new'},
+  {id:'th18',num:'18',ko:'홍룡동',ja:'虹龍洞',en:'UM',group:'new'},
   {id:'th19',num:'19',ko:'수왕원',ja:'獣王園',en:'UDoaLG',group:'new'},
-  {id:'th20',num:'20',ko:'금성경',ja:'金城鏡',en:'FW',group:'new'},
+  {id:'th20',num:'20',ko:'금상경',ja:'錦上京',en:'FW',group:'new'},
   {id:'manga',num:'',ko:'서적작',ja:'書籍作',en:'Books/Manga',group:'extra'},
   {id:'music',num:'',ko:'음악작품',ja:'音楽作品',en:'Music',group:'extra'},
   {id:'spinoff',num:'',ko:'스핀오프',ja:'スピンオフ',en:'Spin-offs',group:'extra'},
@@ -790,7 +809,7 @@ function updateCard() {
         const name = (s.num ? 'TH'+s.num+' ' : '') + (s[lang]||s.en);
         return `<span class="card-chip">${esc(name)}</span>`;
       }).join('')}</div>`
-    : `<span style="color:#2a5048;font-family:'DotGothic16',monospace;">${lang==='ko'?'미선택':lang==='ja'?'未選択':'None'}</span>`;
+    : `<span style="color:#2a5048;font-family:'DotGothic16','Noto Sans KR',monospace;">${lang==='ko'?'미선택':lang==='ja'?'未選択':'None'}</span>`;
   document.getElementById('card-series-line').innerHTML = seriesChipsHtml;
 
   // acct chips
@@ -858,7 +877,7 @@ function esc(str) {
 // ─── DOWNLOAD ─────────────────────────────────────────────────────────────────
 async function downloadCard() {
   try {
-    await document.fonts.ready;
+    try { await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 2500))]); } catch(_) {}
     const el = document.getElementById('preview');
     const canvas = await html2canvas(el, {
       backgroundColor: '#030c10',

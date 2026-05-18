@@ -38,6 +38,7 @@
   color: var(--accent-strong);
   font-size: 14px;
   font-weight: 500;
+  white-space: nowrap;
 }
 .concept-pill {
   display: inline-flex;
@@ -48,6 +49,7 @@
   color: var(--fg);
   font-size: 14px;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 /* ──────────────── Concept A: RPG status ──────────────── */
@@ -108,7 +110,6 @@
   letter-spacing: -0.01em;
   line-height: 1.2;
   word-break: keep-all;
-  overflow-wrap: break-word;
 }
 .ca-callme {
   font-size: 14px;
@@ -285,7 +286,6 @@
   font-weight: 700;
   color: var(--fg-strong);
   word-break: keep-all;
-  overflow-wrap: break-word;
 }
 .cb-callme {
   font-size: 14px;
@@ -416,7 +416,6 @@
   margin: 8px 0 10px;
   line-height: 1.1;
   word-break: keep-all;
-  overflow-wrap: break-word;
 }
 .cc-photo {
   position: relative;
@@ -708,7 +707,6 @@
   letter-spacing: 1px;
   font-weight: 700;
   word-break: keep-all;
-  overflow-wrap: break-word;
 }
 .ce-callme {
   font-size: 14px;

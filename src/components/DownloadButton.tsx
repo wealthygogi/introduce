@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toPng, getFontEmbedCSS } from 'html-to-image';
 import { useLang } from '../contexts/LangContext';
 
@@ -15,9 +15,28 @@ function getCachedFontEmbedCSS(el: HTMLElement) {
   return fontEmbedCache;
 }
 
+function whenIdle(cb: () => void) {
+  const ric = (window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number })
+    .requestIdleCallback;
+  if (typeof ric === 'function') {
+    ric(cb, { timeout: 2000 });
+  } else {
+    setTimeout(cb, 300);
+  }
+}
+
 export default function DownloadButton({ targetId, filename }: Props) {
   const { t } = useLang();
   const [busy, setBusy] = useState(false);
+
+  // Pre-warm the font embed CSS while the user is filling out the form,
+  // so the first download click doesn't pay the 2-3s @font-face fetch cost.
+  useEffect(() => {
+    whenIdle(() => {
+      const el = document.getElementById(targetId);
+      if (el) void getCachedFontEmbedCSS(el);
+    });
+  }, [targetId]);
 
   const run = async () => {
     const el = document.getElementById(targetId);
@@ -27,7 +46,7 @@ export default function DownloadButton({ targetId, filename }: Props) {
       try {
         await Promise.race([
           document.fonts.ready,
-          new Promise((r) => setTimeout(r, 1500)),
+          new Promise((r) => setTimeout(r, 1000)),
         ]);
       } catch {
         // ignore
@@ -38,7 +57,7 @@ export default function DownloadButton({ targetId, filename }: Props) {
       const dataUrl = await toPng(el, {
         pixelRatio: 1.5,
         cacheBust: false,
-        skipFonts: true,
+        skipFonts: false,
         fontEmbedCSS,
         backgroundColor: getComputedStyle(document.body).backgroundColor || '#ffffff',
       });

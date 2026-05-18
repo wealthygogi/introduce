@@ -28,6 +28,8 @@ export default function DownloadButton({ targetId, filename }: Props) {
       const blob = await domToBlob(el, {
         scale: 2,
         type: 'image/png',
+        width: el.offsetWidth,
+        height: el.offsetHeight,
         backgroundColor: getComputedStyle(document.body).backgroundColor || '#ffffff',
       });
       if (!blob) throw new Error('blob is null');

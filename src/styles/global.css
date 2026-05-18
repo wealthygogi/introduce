@@ -705,6 +705,15 @@ a {
     width: 100%;
     /* height set dynamically by useCardScale */
   }
+  .preview-panel.is-collapsed .preview-wrap {
+    max-height: 0;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+  }
+  .preview-panel.is-collapsed {
+    padding-bottom: 8px;
+  }
   .card-scaler {
     transform-origin: top center;
     transform: scale(var(--card-scale, 1));
@@ -759,4 +768,28 @@ a {
 .download-btn:disabled {
   opacity: 0.6;
   cursor: wait;
+}
+
+/* preview collapse toggle (mobile only) */
+.preview-toggle {
+  display: none;
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.preview-toggle:hover {
+  background: var(--bg-elevated);
+}
+@media (max-width: 880px) {
+  .preview-toggle {
+    display: inline-flex;
+  }
 }

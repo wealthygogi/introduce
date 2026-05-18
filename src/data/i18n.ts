@@ -30,6 +30,8 @@ export interface Messages {
   searchChar: string;
   collapse: string;
   expand: string;
+  previewHide: string;
+  previewShow: string;
   mainSeries: string;
   acctType: string;
   fub: string;
@@ -109,6 +111,8 @@ export const messages: Record<Lang, Messages> = {
     searchChar: '캐릭터 검색',
     collapse: '접기',
     expand: '펼치기',
+    previewHide: '미리보기 접기',
+    previewShow: '미리보기 펼치기',
     mainSeries: '주력 시리즈',
     acctType: '계정 유형',
     fub: 'FUB',
@@ -180,6 +184,8 @@ export const messages: Record<Lang, Messages> = {
     searchChar: 'キャラ検索',
     collapse: '閉じる',
     expand: '開く',
+    previewHide: 'プレビューを閉じる',
+    previewShow: 'プレビューを開く',
     mainSeries: '主力シリーズ',
     acctType: 'アカウントタイプ',
     fub: 'FUB',
@@ -251,6 +257,8 @@ export const messages: Record<Lang, Messages> = {
     searchChar: 'Search character',
     collapse: 'Collapse',
     expand: 'Expand',
+    previewHide: 'Hide preview',
+    previewShow: 'Show preview',
     mainSeries: 'Main Series',
     acctType: 'Account Type',
     fub: 'FUB',

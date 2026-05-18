@@ -376,9 +376,10 @@ a {
     position: static;
     max-height: none;
     border-right: none;
-    border-bottom: 1px solid var(--border);
+    border-top: 1px solid var(--border);
     padding: 14px 16px;
     gap: 10px;
+    order: 2;
   }
 }
 .preview-panel {
@@ -689,26 +690,48 @@ a {
   .page-shell:focus-within .preview-panel {
     position: static;
   }
+  .top-nav {
+    position: static;
+  }
   .preview-tools {
-    justify-content: flex-end;
+    justify-content: center;
     margin-bottom: 0;
   }
   .preview-wrap {
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
     /* height set dynamically by useCardScale */
   }
   .card-scaler {
     transform-origin: top center;
     transform: scale(var(--card-scale, 1));
     width: 640px;
-    margin: 0 auto;
+    flex: 0 0 640px;
   }
   .btn {
     min-height: 44px;
   }
+  .nav-row {
+    width: 100%;
+    min-width: 0;
+  }
+  .switcher {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .switcher::-webkit-scrollbar {
+    display: none;
+  }
   .switcher .btn {
     min-height: 44px;
     padding: 10px 14px;
+    flex-shrink: 0;
   }
 }
 

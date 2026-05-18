@@ -6,6 +6,22 @@ import AccountTypePicker from './AccountTypePicker';
 import RadioGroup from './RadioGroup';
 import PhotoUpload from './PhotoUpload';
 
+const LIMITS = {
+  nickname: 10,
+  dislike: 100,
+  pairing: 100,
+  freeText: 300,
+} as const;
+
+function CharCount({ value, max }: { value: string; max: number }) {
+  const len = [...value].length;
+  return (
+    <div className={`form-charcount${len >= max ? ' full' : ''}`}>
+      {len}/{max}
+    </div>
+  );
+}
+
 export default function FormPanel() {
   const { state, set } = useFormState();
   const { t } = useLang();
@@ -19,9 +35,11 @@ export default function FormPanel() {
           id="inp-nickname"
           className="form-input"
           value={state.nickname}
-          onChange={(e) => set('nickname', e.target.value)}
+          maxLength={LIMITS.nickname}
+          onChange={(e) => set('nickname', e.target.value.slice(0, LIMITS.nickname))}
           placeholder={t.phNick}
         />
+        <CharCount value={state.nickname} max={LIMITS.nickname} />
       </div>
 
       <hr className="form-hr" />
@@ -76,9 +94,11 @@ export default function FormPanel() {
           id="inp-dislike"
           className="form-input"
           value={state.dislike}
-          onChange={(e) => set('dislike', e.target.value)}
+          maxLength={LIMITS.dislike}
+          onChange={(e) => set('dislike', e.target.value.slice(0, LIMITS.dislike))}
           placeholder={t.phDis}
         />
+        <CharCount value={state.dislike} max={LIMITS.dislike} />
       </div>
       <div className="form-section">
         <label className="form-label" htmlFor="inp-pairing">
@@ -88,9 +108,11 @@ export default function FormPanel() {
           id="inp-pairing"
           className="form-input"
           value={state.pairing}
-          onChange={(e) => set('pairing', e.target.value)}
+          maxLength={LIMITS.pairing}
+          onChange={(e) => set('pairing', e.target.value.slice(0, LIMITS.pairing))}
           placeholder={t.phPair}
         />
+        <CharCount value={state.pairing} max={LIMITS.pairing} />
       </div>
       <div className="form-section">
         <label className="form-label" htmlFor="inp-free">
@@ -100,9 +122,11 @@ export default function FormPanel() {
           id="inp-free"
           className="form-textarea"
           value={state.freeText}
-          onChange={(e) => set('freeText', e.target.value)}
+          maxLength={LIMITS.freeText}
+          onChange={(e) => set('freeText', e.target.value.slice(0, LIMITS.freeText))}
           placeholder={t.phFree}
         />
+        <CharCount value={state.freeText} max={LIMITS.freeText} />
       </div>
     </aside>
   );

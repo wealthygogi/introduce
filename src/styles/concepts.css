@@ -107,6 +107,8 @@
   color: var(--fg-strong);
   letter-spacing: -0.01em;
   line-height: 1.2;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 .ca-callme {
   font-size: 14px;
@@ -282,6 +284,8 @@
   font-size: 26px;
   font-weight: 700;
   color: var(--fg-strong);
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 .cb-callme {
   font-size: 14px;
@@ -411,6 +415,8 @@
   text-shadow: 0 4px 24px var(--season-glow);
   margin: 8px 0 10px;
   line-height: 1.1;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 .cc-photo {
   position: relative;
@@ -701,6 +707,8 @@
   color: var(--fg-strong);
   letter-spacing: 1px;
   font-weight: 700;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 .ce-callme {
   font-size: 14px;

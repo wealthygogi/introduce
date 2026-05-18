@@ -53,6 +53,7 @@ export interface Messages {
   often: string;
   // placeholders
   phNick: string;
+  nickFallback: string;
   phCall: string;
   phDis: string;
   phPair: string;
@@ -128,6 +129,7 @@ export const messages: Record<Lang, Messages> = {
     sometimes: '가끔',
     often: '많음',
     phNick: '닉네임을 입력하세요',
+    nickFallback: '닉네임',
     phCall: '○○야 / ○○씨 등',
     phDis: '없음',
     phPair: '○○ × ○○',
@@ -198,6 +200,7 @@ export const messages: Record<Lang, Messages> = {
     sometimes: 'たまに',
     often: '多め',
     phNick: 'ニックネームを入力',
+    nickFallback: 'ニックネーム',
     phCall: '〇〇さん / 〇〇ちゃん など',
     phDis: 'なし',
     phPair: '〇〇 × 〇〇',
@@ -268,6 +271,7 @@ export const messages: Record<Lang, Messages> = {
     sometimes: 'Sometimes',
     often: 'Often',
     phNick: 'Enter nickname',
+    nickFallback: 'Nickname',
     phCall: 'Anything is fine',
     phDis: 'None',
     phPair: 'CharA × CharB',

@@ -52,7 +52,7 @@ export function useDerived(): Derived {
     state.otherGenre === 'none' ? t.none : state.otherGenre === 'sometimes' ? t.sometimes : t.often;
 
   return {
-    nickname: state.nickname.trim() || t.phNick,
+    nickname: state.nickname.trim() || t.nickFallback,
     profileImage: state.profileImage,
     charName: tr(char, lang),
     charSrc: spriteUrl(char.rel),

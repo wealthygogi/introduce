@@ -17,14 +17,14 @@
 - **3개 언어**: 한국어 / 日本語 / English (UI + 캐릭터/시리즈명 동시 전환)
 - **최애 캐릭터 선택**: 75명 (touhouwiki-kr 표준명 검증). 검색·접기 가능
 - **프로필 사진 업로드**: 클라이언트에서 1024px로 리사이즈, 4MB 캡
-- **PNG 다운로드**: `html-to-image`로 모던 CSS(변수·그라디언트·`color-mix`) 충실히 캡처
+- **PNG 다운로드**: `modern-screenshot`으로 모던 CSS(변수·그라디언트·`color-mix`) 충실히 캡처
 
 ## 기술 스택
 
 - **Vite 5** + **React 18** + **TypeScript** (strict)
 - **React Router** (`basename: /introduce/`로 GitHub Pages SPA 라우팅)
 - **CSS Variables** 기반 테마 (`:root[data-theme="..."]`)
-- **html-to-image** (SVG `foreignObject` → canvas → PNG)
+- **modern-screenshot** (SVG `foreignObject` → canvas → PNG)
 - **Noto Sans/Serif KR + JP** 폰트 스택 (unicode-range로 글자별 언어 매칭)
 
 ## 로컬 개발

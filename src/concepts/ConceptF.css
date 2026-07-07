@@ -1,8 +1,17 @@
-/* ──────────────── Concept F: Bunbunmaru Newspaper ──────────────── */
+/* ──────────────── Concept F: Bunbunmaru Newspaper ────────────────
+   Fixed beige-paper print by design (light is the "true" edition), themed
+   via local --cf-* custom properties so [data-theme] only needs to
+   override the handful of values below instead of every declaration. */
 .cf-card {
   --cf-ink: #1a1a1a;
   --cf-paper: #f3efe4;
+  --cf-paper-2: #e9e2d0;
   --cf-rule: #999;
+  --cf-muted: #4a4a4a;
+  --cf-muted-2: #6a6a6a;
+  --cf-muted-3: #8a8a8a;
+  --cf-agate: #3a3a3a;
+  --cf-accent: #a3241c;
   background: var(--cf-paper);
   color: var(--cf-ink);
   font-family: 'Noto Serif KR', 'Noto Serif JP', serif;
@@ -11,6 +20,36 @@
   position: relative;
   box-shadow: var(--shadow-lg);
   animation: cf-print-in 380ms ease-out both;
+}
+
+/* dark edition: night print run — dark newsprint, bright ink, lavender stamp */
+[data-theme='dark'] .cf-card {
+  --cf-ink: #ede6d6;
+  --cf-paper: #1a1712;
+  --cf-paper-2: #2a2419;
+  --cf-rule: #6f6656;
+  --cf-muted: #b7ac93;
+  --cf-muted-2: #9c9179;
+  --cf-muted-3: #7c7360;
+  --cf-agate: #c9bfa9;
+  --cf-accent: var(--season-accent);
+}
+[data-theme='dark'] .cf-card .cf-photo-real {
+  filter: grayscale(1) contrast(1.05) brightness(1.15);
+}
+
+/* seasonal editions: tint the masthead stamp, column divider, and section badges */
+:is([data-theme='spring'], [data-theme='summer'], [data-theme='autumn'], [data-theme='winter']) .cf-card {
+  --cf-rule: var(--season-accent);
+}
+:is([data-theme='spring'], [data-theme='summer'], [data-theme='autumn'], [data-theme='winter']) .cf-card .cf-masthead-meta span:first-child {
+  background: var(--season-accent);
+  color: var(--cf-ink);
+  padding: 1px 7px;
+  border-radius: 3px;
+}
+:is([data-theme='spring'], [data-theme='summer'], [data-theme='autumn'], [data-theme='winter']) .cf-card .cf-subhead {
+  color: var(--season-accent);
 }
 
 .cf-masthead {
@@ -45,7 +84,7 @@
 }
 .cf-masthead-meta span:first-child {
   font-weight: 700;
-  color: #a3241c;
+  color: var(--cf-accent);
   animation: cf-stamp-in 420ms 200ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
@@ -67,7 +106,7 @@
   gap: 8px;
   font-size: 12px;
   font-style: italic;
-  color: #4a4a4a;
+  color: var(--cf-muted);
   margin-bottom: 16px;
   word-break: keep-all;
   overflow-wrap: anywhere;
@@ -92,7 +131,7 @@
   width: 100%;
   height: 150px;
   border: 3px solid var(--cf-ink);
-  background: #e9e2d0;
+  background: var(--cf-paper-2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -112,7 +151,7 @@
 .cf-photo-caption {
   font-size: 11px;
   text-align: center;
-  color: #4a4a4a;
+  color: var(--cf-muted);
   margin-top: 6px;
   font-style: italic;
   word-break: keep-all;
@@ -141,7 +180,7 @@
 .cf-index-group-label {
   font-size: 10px;
   letter-spacing: 1px;
-  color: #6a6a6a;
+  color: var(--cf-muted-2);
   text-transform: uppercase;
   margin-bottom: 3px;
   word-break: keep-all;
@@ -156,7 +195,7 @@
   overflow-wrap: anywhere;
 }
 .cf-index-line.muted {
-  color: #8a8a8a;
+  color: var(--cf-muted-3);
   font-style: italic;
 }
 .cf-index-name {
@@ -167,7 +206,7 @@
 }
 .cf-index-leader {
   flex: 1;
-  border-bottom: 1px dotted #8a8a8a;
+  border-bottom: 1px dotted var(--cf-muted-3);
   margin-bottom: 3px;
 }
 .cf-index-page {
@@ -196,13 +235,21 @@
 .cf-lede-text,
 .cf-agate,
 .cf-para {
-  break-inside: avoid;
   font-size: 13.5px;
   line-height: 1.7;
   margin-bottom: 14px;
   word-break: keep-all;
   overflow-wrap: anywhere;
   text-align: left;
+}
+.cf-lede-text,
+.cf-agate {
+  break-inside: avoid;
+}
+.cf-lede-text {
+  /* contains the floated portrait icon so the next subhead badge clears it
+     instead of riding up beside its tail on short lede text */
+  overflow: hidden;
 }
 .cf-lede-icon {
   float: left;
@@ -212,11 +259,11 @@
   margin: 2px 10px 6px 0;
   padding: 3px;
   border: 2px solid var(--cf-ink);
-  background: #e9e2d0;
+  background: var(--cf-paper-2);
 }
 .cf-agate {
   font-size: 11.5px;
-  color: #3a3a3a;
+  color: var(--cf-agate);
   letter-spacing: 0.2px;
 }
 .cf-para::first-letter {
@@ -227,6 +274,9 @@
   padding: 2px 4px 0 0;
 }
 .cf-pullquote {
+  /* breaks out across both columns like a print pull-quote — also keeps a
+     long free-text quote from forcing one column much taller than the other */
+  column-span: all;
   break-inside: avoid;
   border-top: 2px solid var(--cf-ink);
   border-bottom: 2px solid var(--cf-ink);
@@ -244,7 +294,7 @@
   font-size: 22px;
   font-style: normal;
   margin-right: 2px;
-  color: #a3241c;
+  color: var(--cf-accent);
 }
 
 .cf-bottom {
@@ -260,16 +310,16 @@
   flex: 1;
   min-width: 0;
   font-size: 10px;
-  border: 1px dashed #8a8a8a;
+  border: 1px dashed var(--cf-muted-3);
   padding: 5px 8px;
-  color: #4a4a4a;
+  color: var(--cf-muted);
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
 .cf-issue {
   flex-shrink: 0;
   font-size: 10px;
-  color: #4a4a4a;
+  color: var(--cf-muted);
   white-space: nowrap;
 }
 
@@ -280,8 +330,11 @@
   text-align: center;
   font-size: 10px;
   letter-spacing: 1px;
-  color: #4a4a4a;
+  color: var(--cf-muted);
   font-family: 'Press Start 2P', monospace;
+}
+.cf-credit-part {
+  white-space: nowrap;
 }
 
 @keyframes cf-print-in {

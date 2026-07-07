@@ -10,16 +10,7 @@ export default function ConceptC() {
   const version = d.getCustom('version', '1.00');
 
   return (
-    <div
-      id="preview-card"
-      className="card-frame"
-      style={{
-        background: 'linear-gradient(180deg, #14131c 0%, #07070b 75%)',
-        border: '1px solid rgba(232, 201, 136, 0.35)',
-        boxShadow: 'none',
-        overflow: 'hidden',
-      }}
-    >
+    <div id="preview-card" className="card-frame tsc-frame">
       <div className="tsc-card">
         <span className="tsc-corner tl" aria-hidden="true" />
         <span className="tsc-corner tr" aria-hidden="true" />
@@ -84,7 +75,9 @@ export default function ConceptC() {
           )}
         </nav>
 
-        <div className="tsc-footer font-dot">Touhou Project © ZUN · Sprites by Majstek</div>
+        <div className="tsc-footer font-dot">
+          <span className="tsc-footer-part">Touhou Project © ZUN</span> · <span className="tsc-footer-part">Sprites by Majstek</span>
+        </div>
       </div>
     </div>
   );

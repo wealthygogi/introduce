@@ -191,7 +191,10 @@ export default function ConceptE() {
           </div>
         </div>
 
-        <div className="eopt-credit">Touhou Project © ZUN · Sprites by Majstek</div>
+        <div className="eopt-credit">
+          <span className="eopt-credit-part">Touhou Project © ZUN</span>{' '}
+          <span className="eopt-credit-part">· Sprites by Majstek</span>
+        </div>
       </div>
     </div>
   );

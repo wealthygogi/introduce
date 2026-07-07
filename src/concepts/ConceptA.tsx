@@ -18,16 +18,7 @@ export default function ConceptA() {
   const lv = d.getCustom('level', String(rolledLv));
 
   return (
-    <div
-      id="preview-card"
-      className="card-frame"
-      style={{
-        background: 'linear-gradient(150deg, #1c2033 0%, #0a0b13 100%)',
-        border: '2px solid #48507a',
-        boxShadow: 'none',
-        overflow: 'hidden',
-      }}
-    >
+    <div id="preview-card" className="card-frame rpgs-frame">
       <div className="rpgs-card">
         <div className="rpgs-titlebar">
           <span className="rpgs-titlebar-text font-dot">STATUS WINDOW</span>
@@ -133,7 +124,9 @@ export default function ConceptA() {
           </div>
         </div>
 
-        <div className="rpgs-footer font-dot">Touhou Project © ZUN · Sprites by Majstek</div>
+        <div className="rpgs-footer font-dot">
+          <span className="rpgs-footer-part">Touhou Project © ZUN</span> · <span className="rpgs-footer-part">Sprites by Majstek</span>
+        </div>
       </div>
     </div>
   );

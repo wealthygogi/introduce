@@ -1,11 +1,23 @@
 /* ──────────────── Concept O: TCG 대전 카드 (Trading Card Game — Battle Card) ──────────────── */
+
+/* the rainbow foil trim stays vivid in every theme — only its ambient glow and one
+   stop lean toward --season-accent. dark is the fixed default "holo battle card";
+   [data-theme='light'] swaps the card face for a fixed bright "reverse holo" variant. */
 .co-frame {
   padding: 5px;
   border-radius: 26px;
-  background: linear-gradient(120deg, #ffd76a, #ff8ad1, #7ad9ff, #b98bff, #6ee7d8, #ffd76a);
+  background: linear-gradient(
+    120deg,
+    #ffd76a,
+    #ff8ad1,
+    #7ad9ff,
+    color-mix(in srgb, var(--season-accent) 45%, #b98bff 55%),
+    #6ee7d8,
+    #ffd76a
+  );
   background-size: 220% 220%;
   animation: co-foil-shift 9s ease-in-out infinite;
-  box-shadow: var(--shadow-lg), 0 0 30px rgba(185, 139, 255, 0.25);
+  box-shadow: var(--shadow-lg), 0 0 30px var(--season-glow);
 }
 @keyframes co-foil-shift {
   0%,
@@ -23,15 +35,51 @@
 }
 
 .co-card {
+  --co-ink-rgb: 243, 238, 252; /* #f3eefc */
+  --co-ink: #f3eefc;
+  --co-ink-strong: #ffffff;
+  --co-bg-1: #1a1625;
+  --co-bg-2: #0d0b14;
+  --co-text-glow: rgba(0, 0, 0, 0.5);
+  --co-hp: #ff5a6e;
+  --co-hp-label: #ff8a97;
+  --co-gold: #ffd76a;
+  --co-ring: rgba(255, 255, 255, 0.25);
+
   position: relative;
   border-radius: 22px;
   overflow: hidden;
-  background: linear-gradient(165deg, #1a1625 0%, #0d0b14 100%);
+  background: linear-gradient(165deg, var(--co-bg-1) 0%, var(--co-bg-2) 100%);
   padding: 18px 20px 14px;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  color: #f3eefc;
+  color: var(--co-ink);
+}
+
+/* reverse holo — bright prism-white card stock; the art window stays a cosmic
+   dark frame in both themes (it's a self-contained "shadow box" for the sprite) */
+[data-theme='light'] .co-card {
+  --co-ink-rgb: 31, 26, 46;
+  --co-ink: #1f1a2e;
+  --co-ink-strong: #14101f;
+  --co-bg-1: #fbf8ff;
+  --co-bg-2: #efe8ff;
+  --co-text-glow: rgba(255, 255, 255, 0.7);
+  --co-hp: #d81b46;
+  --co-hp-label: #b3435a;
+  --co-gold: #8a6414;
+  --co-ring: rgba(20, 16, 30, 0.18);
+}
+
+/* seasonal foil/point-accent tint — layers on top of the dark default card face
+   (spring/summer/autumn/winter don't touch the light/dark switch, only the accent) */
+[data-theme='spring'] .co-card,
+[data-theme='summer'] .co-card,
+[data-theme='autumn'] .co-card,
+[data-theme='winter'] .co-card {
+  --co-gold: color-mix(in srgb, var(--season-accent) 45%, #ffd76a 55%);
+  --co-ring: color-mix(in srgb, var(--season-accent) 35%, rgba(255, 255, 255, 0.25) 65%);
 }
 
 .co-holo {
@@ -45,6 +93,19 @@
     rgba(255, 255, 255, 0.05) 0 3px,
     transparent 3px 9px,
     rgba(185, 139, 255, 0.07) 9px 12px,
+    transparent 12px 18px
+  );
+}
+/* "screen" blend brightens on dark; on a light face it would vanish, so the
+   reverse-holo sheen switches to a soft "multiply" prism instead */
+[data-theme='light'] .co-holo {
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background: repeating-linear-gradient(
+    115deg,
+    rgba(120, 70, 190, 0.05) 0 3px,
+    transparent 3px 9px,
+    rgba(255, 138, 209, 0.07) 9px 12px,
     transparent 12px 18px
   );
 }
@@ -72,18 +133,20 @@
   place-items: center;
   font-size: 13px;
   font-weight: 700;
+  line-height: 1;
   color: #14131c;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25), 0 2px 6px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 2px var(--co-ring), 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 .co-name {
   font-size: 21px;
   font-weight: 800;
   letter-spacing: -0.01em;
-  color: #fff;
+  line-height: 1.2;
+  color: var(--co-ink-strong);
   min-width: 0;
   word-break: keep-all;
   overflow-wrap: anywhere;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 3px var(--co-text-glow);
 }
 .co-hp {
   display: flex;
@@ -94,14 +157,18 @@
 .co-hp-num {
   font-size: 27px;
   font-weight: 800;
-  color: #ff5a6e;
+  line-height: 1;
+  color: var(--co-hp);
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 3px var(--co-text-glow);
 }
 .co-hp-label {
   font-size: 12px;
-  color: #ff8a97;
+  line-height: 1;
+  color: var(--co-hp-label);
   letter-spacing: 1px;
+  position: relative;
+  top: -0.5px;
 }
 
 /* ── illustration, holo-framed ── */
@@ -186,7 +253,8 @@
 .co-move-name {
   font-size: 14px;
   font-weight: 600;
-  color: #f3eefc;
+  line-height: 1.3;
+  color: var(--co-ink);
   flex-shrink: 0;
   max-width: 60%;
   word-break: keep-all;
@@ -196,21 +264,26 @@
   flex: 1;
   min-width: 12px;
   height: 0;
-  border-bottom: 2px dotted rgba(243, 238, 252, 0.28);
+  border-bottom: 2px dotted rgba(var(--co-ink-rgb), 0.28);
   transform: translateY(-4px);
 }
 .co-move-dmg {
+  /* Press Start 2P ships one weight only (400) — bolding it here would fake-bold
+     the pixel grid and blur it, so size + color carry the emphasis instead */
   font-size: 15px;
-  font-weight: 700;
-  color: #ffd76a;
+  font-weight: 400;
+  line-height: 1;
+  position: relative;
+  top: -1px;
+  color: var(--co-gold);
   flex-shrink: 0;
   font-variant-numeric: tabular-nums;
 }
 .co-move-empty .co-move-name {
-  color: rgba(243, 238, 252, 0.5);
+  color: rgba(var(--co-ink-rgb), 0.5);
 }
 .co-move-empty .co-move-dmg {
-  color: rgba(243, 238, 252, 0.4);
+  color: rgba(var(--co-ink-rgb), 0.4);
 }
 
 /* ── weakness/resistance/retreat-style ministat row ── */
@@ -220,25 +293,25 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   padding-top: 11px;
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  border-top: 1px solid rgba(var(--co-ink-rgb), 0.14);
 }
 .co-substat {
   text-align: center;
 }
 .co-substat + .co-substat {
-  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  border-left: 1px solid rgba(var(--co-ink-rgb), 0.12);
 }
 .co-substat-label {
   font-size: 9.5px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: rgba(243, 238, 252, 0.5);
+  color: rgba(var(--co-ink-rgb), 0.5);
   margin-bottom: 3px;
 }
 .co-substat-value {
   font-size: 12.5px;
   font-weight: 700;
-  color: #f3eefc;
+  color: var(--co-ink);
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
@@ -248,7 +321,7 @@
   position: relative;
   font-size: 12.5px;
   font-style: italic;
-  color: rgba(243, 238, 252, 0.78);
+  color: rgba(var(--co-ink-rgb), 0.78);
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: keep-all;
@@ -264,7 +337,7 @@
 }
 .co-notes {
   font-size: 9.5px;
-  color: rgba(243, 238, 252, 0.4);
+  color: rgba(var(--co-ink-rgb), 0.4);
   line-height: 1.5;
   word-break: keep-all;
   overflow-wrap: anywhere;
@@ -280,8 +353,9 @@
 }
 .co-rarity {
   font-size: 13px;
+  line-height: 1;
   letter-spacing: 2px;
-  color: #ffd76a;
+  color: var(--co-gold);
 }
 .co-set-symbols {
   display: flex;
@@ -303,23 +377,38 @@
   transform: rotate(-45deg);
   font-size: 7.5px;
   font-weight: 700;
+  line-height: 1;
   color: #14131c;
 }
 .co-set-overflow {
   font-size: 10px;
-  color: rgba(243, 238, 252, 0.6);
+  color: rgba(var(--co-ink-rgb), 0.6);
 }
 
 /* ── footer ── */
 .co-footer {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 8px;
+  gap: 10px;
   padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(var(--co-ink-rgb), 0.1);
   font-size: 9px;
   letter-spacing: 0.5px;
-  color: rgba(243, 238, 252, 0.35);
+  color: rgba(var(--co-ink-rgb), 0.35);
+}
+.co-footer-credit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 8px;
+  min-width: 0;
+  flex: 1;
+}
+.co-footer-credit span {
+  white-space: nowrap;
+}
+.co-footer .font-pixel {
+  flex-shrink: 0;
+  line-height: 1;
 }

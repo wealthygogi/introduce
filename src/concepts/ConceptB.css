@@ -1,7 +1,19 @@
 /* ──────────────── Concept B: Spell Card Declaration (danmaku) ────────────────
-   Center-dominant, fixed crimson/black radial burst — independent of site
-   theme so the "declaration" flash always reads the same. Most fields are
-   shrunk to symbols (star count) or single caption lines; nothing is chip. */
+   Center-dominant crimson/black radial burst, dark by default so the
+   "declaration" flash keeps its mood.
+   Theme handling:
+   - default/dark: hardcoded crimson/black burst below (the "canon" look).
+   - [data-theme='light']: bright cream/crimson variant (light burst, ink
+     text) layered on top, same layout/mood.
+   - spring/summer/autumn/winter: keep the dark burst, swap only the frame
+     border / kicker / star-fill accent to var(--season-accent). */
+
+.card-frame.dmk-frame {
+  background: radial-gradient(ellipse at 50% 34%, #6b0f24 0%, #290611 55%, #070204 100%);
+  border: 1px solid rgba(255, 205, 140, 0.4);
+  box-shadow: none;
+  overflow: hidden;
+}
 
 .dmk-card {
   position: relative;
@@ -220,4 +232,105 @@
   font-size: 9px;
   letter-spacing: 1px;
   color: #8a6a68;
+}
+/* two credit parts never split mid-phrase: whole line if it fits,
+   otherwise wraps cleanly between "© ZUN" and "Sprites by Majstek" */
+.dmk-footer-part {
+  white-space: nowrap;
+}
+
+/* ──────────────── light theme: bright cream/crimson variant ────────────────
+   Mood stays (crimson/gold declaration) but the burst flips to a warm
+   cream surface with deep crimson ink for contrast. */
+[data-theme='light'] .card-frame.dmk-frame {
+  background: radial-gradient(ellipse at 50% 30%, #fff3e6 0%, #ffe3d6 55%, #ffd9cb 100%);
+  border-color: rgba(122, 20, 38, 0.35);
+}
+[data-theme='light'] .dmk-card {
+  color: #3a0f14;
+}
+[data-theme='light'] .dmk-rings {
+  background: repeating-radial-gradient(
+    circle at 50% 50%,
+    transparent 0px,
+    transparent 34px,
+    rgba(122, 20, 38, 0.07) 34px,
+    rgba(122, 20, 38, 0.07) 36px
+  );
+}
+[data-theme='light'] .dmk-dots {
+  background-image: radial-gradient(rgba(58, 15, 20, 0.14) 1px, transparent 1.4px);
+}
+[data-theme='light'] .dmk-kicker {
+  color: #8a5a12;
+}
+[data-theme='light'] .dmk-sprite-photo {
+  border-color: #3a0f14;
+}
+[data-theme='light'] .dmk-title {
+  color: #7a1626;
+  text-shadow: 0 0 20px rgba(122, 20, 38, 0.25), 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+[data-theme='light'] .dmk-caster-name {
+  color: #4a1c22;
+}
+[data-theme='light'] .dmk-fav-label {
+  color: #8a5058;
+}
+[data-theme='light'] .dmk-fav-name {
+  color: #4a1418;
+}
+[data-theme='light'] .dmk-stars-row {
+  color: rgba(58, 15, 20, 0.18);
+}
+[data-theme='light'] .dmk-star.is-filled {
+  color: #7a4708;
+  text-shadow: 0 0 8px rgba(122, 71, 8, 0.35);
+}
+[data-theme='light'] .dmk-stars-count {
+  color: #8a5058;
+}
+[data-theme='light'] .dmk-series-caption {
+  color: #7a4d52;
+}
+[data-theme='light'] .dmk-symbol-label {
+  color: #7a4d52;
+}
+[data-theme='light'] .dmk-symbol-val {
+  color: #4a1c22;
+}
+[data-theme='light'] .dmk-micro-row {
+  color: #4a1c22;
+}
+[data-theme='light'] .dmk-micro-row.dmk-muted {
+  color: #96706f;
+}
+[data-theme='light'] .dmk-note {
+  background: rgba(122, 20, 38, 0.05);
+  border-color: rgba(122, 20, 38, 0.18);
+}
+[data-theme='light'] .dmk-note-tag {
+  color: #8a5a12;
+}
+[data-theme='light'] .dmk-note-text {
+  color: #4a1c22;
+}
+[data-theme='light'] .dmk-footer {
+  color: #6b4548;
+}
+
+/* ──────────────── seasons: accent-only flourish ────────────────
+   Keep the dark burst (mood stays anchored to the "canon" crimson look)
+   but let the frame border / kicker / star rating pick up each season's
+   accent color. */
+:is([data-theme='spring'], [data-theme='summer'], [data-theme='autumn'], [data-theme='winter']) .card-frame.dmk-frame {
+  border-color: var(--season-accent);
+}
+:is([data-theme='spring'], [data-theme='summer'], [data-theme='autumn'], [data-theme='winter']) .dmk-kicker {
+  color: var(--season-accent);
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+}
+:is([data-theme='spring'], [data-theme='summer'], [data-theme='autumn'], [data-theme='winter']) .dmk-star.is-filled {
+  color: var(--season-accent);
+  text-shadow: 0 0 10px var(--season-glow);
 }

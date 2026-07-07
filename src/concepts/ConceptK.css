@@ -1,11 +1,80 @@
-/* ──────────────── Concept K: Youkai Bestiary ──────────────── */
+/* ──────────────── Concept K: Youkai Bestiary ────────────────
+   Colors run through --ck-* custom properties scoped to .ck-frame-outer so
+   the dex card can offer a bright variant and a seasonal accent tint
+   without duplicating every rule. Dark navy is the default mood; the gold
+   accent splits into --ck-gold (decorative fills/borders) and --ck-gold-ink
+   (text) because a text-legible gold on a light card needs to run darker
+   than a gold used as a solid badge/border fill.
+
+   Selectors below double up as .card-frame.ck-frame-outer (not just
+   .ck-frame-outer): the outer node also carries the shared .card-frame
+   class, and Vite's dev server injects every concept's CSS before
+   global.css, so a same-specificity .ck-frame-outer rule can lose the
+   cascade to .card-frame's fallback colors depending on load order. The
+   compound selector's higher specificity wins deterministically regardless
+   of injection order. */
+.card-frame.ck-frame-outer {
+  --ck-bg-1: #1b2a4a;
+  --ck-bg-2: #0d1526;
+  --ck-gold: #ffca28;
+  --ck-gold-ink: #ffca28;
+  --ck-ink: #1b2a4a;
+  --ck-text: #e8eefc;
+  --ck-text-soft: #dbe4f7;
+  --ck-text-bright: #ffffff;
+  --ck-text-warm: #ffe082;
+  --ck-text-notes: #f0f4ff;
+  --ck-empty: rgba(232, 238, 252, 0.55);
+  --ck-track-unlit: rgba(255, 255, 255, 0.22);
+  --ck-overlay-frame: rgba(255, 255, 255, 0.04);
+  --ck-overlay-gauges: rgba(255, 255, 255, 0.05);
+  --ck-name-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(160deg, var(--ck-bg-1) 0%, var(--ck-bg-2) 100%);
+  border: 3px solid var(--ck-gold);
+  box-shadow: none;
+  overflow: hidden;
+}
+
+/* light: same dex-card layout, but a bright paper index card instead of a
+   navy panel — the navy becomes ink, and gold splits into a richer fill
+   tone (badges/borders) and a much darker ink tone (labels/body text) so
+   both stay legible on the pale card. */
+[data-theme='light'] .card-frame.ck-frame-outer {
+  --ck-bg-1: #fdf6e3;
+  --ck-bg-2: #f3e4bd;
+  --ck-gold: #dc9c00;
+  --ck-gold-ink: #7a5500;
+  --ck-ink: #1b2a4a;
+  --ck-text: #1b2a4a;
+  --ck-text-soft: #3c4f72;
+  --ck-text-bright: #0d1526;
+  --ck-text-warm: #8a6200;
+  --ck-text-notes: #1b2a4a;
+  --ck-empty: rgba(27, 42, 74, 0.5);
+  --ck-track-unlit: rgba(27, 42, 74, 0.16);
+  --ck-overlay-frame: rgba(27, 42, 74, 0.05);
+  --ck-overlay-gauges: rgba(27, 42, 74, 0.04);
+  --ck-name-shadow: none;
+}
+
+/* seasons keep the navy dex card and tint only the gold accent (outer
+   border, badges, corner brackets, lit gauge segments, gold labels) with
+   the season hue */
+[data-theme='spring'] .card-frame.ck-frame-outer,
+[data-theme='summer'] .card-frame.ck-frame-outer,
+[data-theme='autumn'] .card-frame.ck-frame-outer,
+[data-theme='winter'] .card-frame.ck-frame-outer {
+  --ck-gold: var(--season-accent);
+  --ck-gold-ink: var(--season-accent);
+}
+
 .ck-card {
   position: relative;
   padding: 22px 22px 18px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  color: #e8eefc;
+  color: var(--ck-text);
 }
 .ck-cameo {
   position: absolute;
@@ -26,8 +95,8 @@
 }
 .ck-dexno {
   font-family: 'DotGothic16', monospace;
-  background: #ffca28;
-  color: #1b2a4a;
+  background: var(--ck-gold);
+  color: var(--ck-ink);
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 11px;
@@ -36,8 +105,8 @@
 .ck-type {
   font-size: 11px;
   letter-spacing: 2px;
-  color: #ffca28;
-  border: 1px solid rgba(255, 202, 40, 0.5);
+  color: var(--ck-gold-ink);
+  border: 1px solid color-mix(in srgb, var(--ck-gold) 50%, transparent);
   padding: 3px 9px;
   border-radius: 10px;
 }
@@ -56,9 +125,9 @@
   position: relative;
   height: 176px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 202, 40, 0.4);
-  background: radial-gradient(circle at 50% 38%, rgba(255, 202, 40, 0.22), transparent 60%),
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.04) 0 10px, transparent 10px 20px);
+  border: 1px solid color-mix(in srgb, var(--ck-gold) 40%, transparent);
+  background: radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--ck-gold) 22%, transparent), transparent 60%),
+    repeating-linear-gradient(45deg, var(--ck-overlay-frame) 0 10px, transparent 10px 20px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,38 +145,38 @@
 .ck-corner.ck-tl {
   top: 6px;
   left: 6px;
-  border-top: 2px solid #ffca28;
-  border-left: 2px solid #ffca28;
+  border-top: 2px solid var(--ck-gold);
+  border-left: 2px solid var(--ck-gold);
 }
 .ck-corner.ck-tr {
   top: 6px;
   right: 6px;
-  border-top: 2px solid #ffca28;
-  border-right: 2px solid #ffca28;
+  border-top: 2px solid var(--ck-gold);
+  border-right: 2px solid var(--ck-gold);
 }
 .ck-corner.ck-bl {
   bottom: 6px;
   left: 6px;
-  border-bottom: 2px solid #ffca28;
-  border-left: 2px solid #ffca28;
+  border-bottom: 2px solid var(--ck-gold);
+  border-left: 2px solid var(--ck-gold);
 }
 .ck-corner.ck-br {
   bottom: 6px;
   right: 6px;
-  border-bottom: 2px solid #ffca28;
-  border-right: 2px solid #ffca28;
+  border-bottom: 2px solid var(--ck-gold);
+  border-right: 2px solid var(--ck-gold);
 }
 .ck-specimen {
   font-size: 11px;
   letter-spacing: 1.5px;
-  color: #ffca28;
+  color: var(--ck-gold-ink);
   margin-top: 2px;
 }
 .ck-name {
   font-size: 20px;
   font-weight: 900;
-  color: #ffffff;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  color: var(--ck-text-bright);
+  text-shadow: var(--ck-name-shadow);
   line-height: 1.25;
   word-break: keep-all;
   overflow-wrap: anywhere;
@@ -118,13 +187,13 @@
   gap: 2px;
 }
 .ck-species-label {
-  color: #ffca28;
+  color: var(--ck-gold-ink);
   font-weight: 700;
   letter-spacing: 0.5px;
   font-size: 11px;
 }
 .ck-species-value {
-  color: #e8eefc;
+  color: var(--ck-text);
   font-weight: 600;
   font-size: 13px;
   word-break: keep-all;
@@ -138,13 +207,19 @@
 }
 .ck-danger-label {
   font-size: 11px;
-  color: #ffca28;
+  color: var(--ck-gold-ink);
   letter-spacing: 0.5px;
 }
 .ck-danger-stars {
   font-size: 16px;
-  color: #ffca28;
   letter-spacing: 2px;
+}
+.ck-star-filled {
+  color: var(--ck-gold-ink);
+}
+.ck-star-empty {
+  color: var(--ck-text-soft);
+  opacity: 0.55;
 }
 
 .ck-stats-col {
@@ -159,8 +234,8 @@
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 8px 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 202, 40, 0.25);
+  background: var(--ck-overlay-gauges);
+  border: 1px solid color-mix(in srgb, var(--ck-gold) 25%, transparent);
   border-radius: 10px;
   padding: 10px 12px;
 }
@@ -168,7 +243,7 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.3px;
-  color: #ffca28;
+  color: var(--ck-gold-ink);
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
@@ -176,20 +251,24 @@
   display: flex;
   gap: 3px;
   min-width: 40px;
+  padding: 2px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--ck-gold) 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ck-gold) 22%, transparent);
 }
 .ck-seg {
   flex: 1;
   height: 6px;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.14);
+  background: var(--ck-track-unlit);
 }
 .ck-seg.is-lit {
-  background: #ffca28;
-  box-shadow: 0 0 6px rgba(255, 202, 40, 0.6);
+  background: var(--ck-gold);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--ck-gold) 60%, transparent);
 }
 .ck-gauge-value {
   font-size: 12px;
-  color: #e8eefc;
+  color: var(--ck-text);
   text-align: right;
   white-space: nowrap;
 }
@@ -203,11 +282,11 @@
   font-size: 11px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #ffca28;
+  color: var(--ck-gold-ink);
 }
 .ck-empty {
   font-size: 13px;
-  color: rgba(232, 238, 252, 0.55);
+  color: var(--ck-empty);
   font-style: italic;
 }
 .ck-classify-grid {
@@ -220,7 +299,7 @@
   align-items: baseline;
   gap: 6px;
   font-size: 12px;
-  color: #dbe4f7;
+  color: var(--ck-text-soft);
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
@@ -229,7 +308,7 @@
   width: 5px;
   height: 5px;
   margin-bottom: 1px;
-  background: #ffca28;
+  background: var(--ck-gold);
   transform: rotate(45deg);
 }
 .ck-tag-row {
@@ -239,7 +318,7 @@
 }
 .ck-tag {
   font-size: 12px;
-  color: #ffe082;
+  color: var(--ck-text-warm);
   letter-spacing: 0.3px;
   word-break: keep-all;
   overflow-wrap: anywhere;
@@ -250,15 +329,15 @@
   flex-direction: column;
   gap: 6px;
   font-size: 13px;
-  color: #dbe4f7;
+  color: var(--ck-text-soft);
   padding-top: 12px;
-  border-top: 1px dashed rgba(255, 202, 40, 0.3);
+  border-top: 1px dashed color-mix(in srgb, var(--ck-gold) 30%, transparent);
 }
 .ck-notes-label {
   font-size: 11px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #ffca28;
+  color: var(--ck-gold-ink);
   margin-bottom: 2px;
 }
 .ck-notes-row {
@@ -266,14 +345,17 @@
   overflow-wrap: anywhere;
 }
 .ck-notes-key {
-  color: #ffca28;
+  color: var(--ck-gold-ink);
   font-weight: 700;
   margin-right: 6px;
+}
+.ck-notes-key::after {
+  content: ':';
 }
 .ck-notes-free {
   white-space: pre-wrap;
   line-height: 1.7;
-  color: #f0f4ff;
+  color: var(--ck-text-notes);
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
@@ -282,6 +364,9 @@
   text-align: center;
   font-size: 10px;
   letter-spacing: 1px;
-  color: rgba(232, 238, 252, 0.45);
+  color: var(--ck-empty);
   padding-top: 4px;
+}
+.ck-footer-part {
+  white-space: nowrap;
 }

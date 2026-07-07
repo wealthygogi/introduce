@@ -54,44 +54,48 @@ export default function ConceptG() {
           <div className="cg-name">{d.nickname}</div>
 
           <div className="cg-columns">
-            <div className="cg-col">
-              <span className="cg-col-label">{d.t.bestChar}</span>
-              <span className="cg-col-sep">/</span>
-              <span className="cg-col-value">{d.charName}</span>
+            <div className="cg-col-row">
+              <div className="cg-col">
+                <span className="cg-col-label">{d.t.bestChar}</span>
+                <span className="cg-col-sep">/</span>
+                <span className="cg-col-value">{d.charName}</span>
+              </div>
+
+              <div className="cg-col">
+                <span className="cg-col-label">{d.t.mainSeries}</span>
+                <span className="cg-col-sep">/</span>
+                <span className={`cg-col-value ${d.seriesList.length === 0 ? 'is-empty' : ''}`}>
+                  {d.seriesList.length === 0 ? d.t.notSelected : d.seriesList.map((s) => s.label).join('・')}
+                </span>
+              </div>
+
+              <div className="cg-col">
+                <span className="cg-col-label">{d.t.acctType}</span>
+                <span className="cg-col-sep">/</span>
+                <span className={`cg-col-value ${d.acctList.length === 0 ? 'is-empty' : ''}`}>
+                  {d.acctList.length === 0 ? d.t.notSelected : d.acctList.map((a) => a.label).join('・')}
+                </span>
+              </div>
             </div>
 
-            <div className="cg-col">
-              <span className="cg-col-label">{d.t.mainSeries}</span>
-              <span className="cg-col-sep">/</span>
-              <span className={`cg-col-value ${d.seriesList.length === 0 ? 'is-empty' : ''}`}>
-                {d.seriesList.length === 0 ? d.t.notSelected : d.seriesList.map((s) => s.label).join('・')}
-              </span>
-            </div>
+            <div className="cg-col-row">
+              <div className="cg-col">
+                <span className="cg-col-label">{d.t.fub}</span>
+                <span className="cg-col-glyph">{fubGlyph}</span>
+                <span className="cg-col-value">{d.fubLabel}</span>
+              </div>
 
-            <div className="cg-col">
-              <span className="cg-col-label">{d.t.acctType}</span>
-              <span className="cg-col-sep">/</span>
-              <span className={`cg-col-value ${d.acctList.length === 0 ? 'is-empty' : ''}`}>
-                {d.acctList.length === 0 ? d.t.notSelected : d.acctList.map((a) => a.label).join('・')}
-              </span>
-            </div>
+              <div className="cg-col">
+                <span className="cg-col-label">{d.t.parting}</span>
+                <span className="cg-col-glyph">{partingGlyph}</span>
+                <span className="cg-col-value">{d.partingLabel}</span>
+              </div>
 
-            <div className="cg-col">
-              <span className="cg-col-label">{d.t.fub}</span>
-              <span className="cg-col-glyph">{fubGlyph}</span>
-              <span className="cg-col-value">{d.fubLabel}</span>
-            </div>
-
-            <div className="cg-col">
-              <span className="cg-col-label">{d.t.parting}</span>
-              <span className="cg-col-glyph">{partingGlyph}</span>
-              <span className="cg-col-value">{d.partingLabel}</span>
-            </div>
-
-            <div className="cg-col">
-              <span className="cg-col-label">{d.t.otherGenre}</span>
-              <span className="cg-col-glyph">{otherGlyph}</span>
-              <span className="cg-col-value">{d.otherLabel}</span>
+              <div className="cg-col">
+                <span className="cg-col-label">{d.t.otherGenre}</span>
+                <span className="cg-col-glyph">{otherGlyph}</span>
+                <span className="cg-col-value">{d.otherLabel}</span>
+              </div>
             </div>
           </div>
 
@@ -99,11 +103,11 @@ export default function ConceptG() {
             <div className="cg-oracle-title">{ADVICE_TITLE[d.lang]}</div>
             <div className="cg-oracle-line">
               <span className="cg-oracle-tag">{d.t.dislike}</span>
-              {d.dislike}
+              <span className="cg-oracle-value">{d.dislike}</span>
             </div>
             <div className="cg-oracle-line">
               <span className="cg-oracle-tag">{d.t.pairing}</span>
-              {d.pairing}
+              <span className="cg-oracle-value">{d.pairing}</span>
             </div>
           </div>
 
@@ -118,7 +122,9 @@ export default function ConceptG() {
             <span>{SEAL_TEXT[d.lang]}</span>
           </div>
 
-          <div className="cg-footer">Touhou Project © ZUN · Sprites by Majstek</div>
+          <div className="cg-footer">
+            <span>Touhou Project © ZUN</span> · <span>Sprites by Majstek</span>
+          </div>
         </div>
       </div>
     </div>

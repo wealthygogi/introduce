@@ -117,3 +117,6 @@
   color: var(--fg-subtle);
   letter-spacing: 0.5px;
 }
+.vnd-credit-part {
+  white-space: nowrap;
+}

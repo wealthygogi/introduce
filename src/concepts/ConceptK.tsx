@@ -43,16 +43,7 @@ export default function ConceptK() {
   const partingLevel = d.partingLabel === d.t.unfollow ? 0 : d.partingLabel === d.t.blockunfollow ? 1 : 2;
 
   return (
-    <div
-      id="preview-card"
-      className="card-frame"
-      style={{
-        background: 'linear-gradient(160deg, #1b2a4a 0%, #0d1526 100%)',
-        border: '3px solid #ffca28',
-        boxShadow: 'none',
-        overflow: 'hidden',
-      }}
-    >
+    <div id="preview-card" className="card-frame ck-frame-outer">
       <div className="ck-card">
         <img
           className="px ck-cameo"
@@ -84,8 +75,8 @@ export default function ConceptK() {
             <div className="ck-danger">
               <span className="ck-danger-label">{flavor.danger}</span>
               <span className="ck-danger-stars" aria-hidden="true">
-                {'★'.repeat(dangerLevel)}
-                {'☆'.repeat(5 - dangerLevel)}
+                <span className="ck-star-filled">{'★'.repeat(dangerLevel)}</span>
+                <span className="ck-star-empty">{'☆'.repeat(5 - dangerLevel)}</span>
               </span>
             </div>
           </div>
@@ -155,7 +146,11 @@ export default function ConceptK() {
           {d.freeText && <div className="ck-notes-free">{d.freeText}</div>}
         </div>
 
-        <div className="ck-footer">Touhou Project © ZUN · Sprites by Majstek</div>
+        <div className="ck-footer">
+          <span className="ck-footer-part">Touhou Project © ZUN</span>
+          {' · '}
+          <span className="ck-footer-part">Sprites by Majstek</span>
+        </div>
       </div>
     </div>
   );

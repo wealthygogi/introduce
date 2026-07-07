@@ -140,7 +140,10 @@ export default function ConceptD() {
           ))}
         </div>
 
-        <div className="vnd-footer">Touhou Project © ZUN · Sprites by Majstek</div>
+        <div className="vnd-footer">
+          <span className="vnd-credit-part">Touhou Project © ZUN</span>{' '}
+          <span className="vnd-credit-part">· Sprites by Majstek</span>
+        </div>
       </div>
     </div>
   );

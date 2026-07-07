@@ -1,7 +1,20 @@
 /* ──────────────── Concept A: RPG Status Window ────────────────
-   Fixed dark HUD palette (independent of site theme) so the "status
-   window" reads the same in every theme. Left/right split, gauge bars
-   instead of chips — no concept-chip / concept-pill anywhere. */
+   Navy HUD palette, dark by default so the "status window" keeps its
+   mood. Left/right split, gauge bars instead of chips — no concept-chip
+   / concept-pill anywhere.
+   Theme handling:
+   - default/dark: hardcoded navy HUD colors below (the "canon" look).
+   - [data-theme='light']: bright parchment-HUD variant (light bg, ink
+     text) layered on top, same layout/mood.
+   - spring/summer/autumn/winter: keep the dark HUD, swap only the
+     frame border / titlebar / kicker / Lv accent to var(--season-accent). */
+
+.card-frame.rpgs-frame {
+  background: linear-gradient(150deg, #1c2033 0%, #0a0b13 100%);
+  border: 2px solid #48507a;
+  box-shadow: none;
+  overflow: hidden;
+}
 
 .rpgs-card {
   display: flex;
@@ -265,4 +278,115 @@
   letter-spacing: 1px;
   color: #5c6488;
   padding: 10px 0 16px;
+}
+/* two credit parts never split mid-phrase: whole line if it fits,
+   otherwise wraps cleanly between "© ZUN" and "Sprites by Majstek" */
+.rpgs-footer-part {
+  white-space: nowrap;
+}
+
+/* ──────────────── light theme: bright parchment-HUD variant ────────────────
+   Mood stays (navy chrome, gold Lv/kicker) but the panel flips to a light,
+   navy-tinted surface with dark ink text for contrast. */
+[data-theme='light'] .card-frame.rpgs-frame {
+  background: linear-gradient(150deg, #f3f5fc 0%, #dde3f6 100%);
+  border-color: #8891c9;
+}
+[data-theme='light'] .rpgs-card {
+  color: #23264a;
+}
+[data-theme='light'] .rpgs-titlebar {
+  background: rgba(35, 38, 74, 0.06);
+  border-bottom-color: #8891c9;
+}
+[data-theme='light'] .rpgs-titlebar-text {
+  color: #4b5088;
+}
+[data-theme='light'] .rpgs-titlebar-lv {
+  color: #9a6b12;
+}
+[data-theme='light'] .rpgs-portrait-frame {
+  background: radial-gradient(circle at 50% 38%, rgba(154, 107, 18, 0.16), transparent 65%), rgba(35, 38, 74, 0.05);
+  border-color: #8891c9;
+}
+[data-theme='light'] .rpgs-idphoto {
+  border-color: #f3f5fc;
+}
+[data-theme='light'] .rpgs-name {
+  color: #1a1d3c;
+}
+[data-theme='light'] .rpgs-charname {
+  color: #4b5088;
+}
+[data-theme='light'] .rpgs-vital-label {
+  color: #4b5088;
+}
+[data-theme='light'] .rpgs-vital-track {
+  background: rgba(35, 38, 74, 0.1);
+}
+[data-theme='light'] .rpgs-gauge-header {
+  color: #2b2f57;
+}
+[data-theme='light'] .rpgs-gauge-label {
+  color: #3d4270;
+}
+[data-theme='light'] .rpgs-gauge-track {
+  background: rgba(35, 38, 74, 0.08);
+  border-color: rgba(35, 38, 74, 0.14);
+}
+[data-theme='light'] .rpgs-empty {
+  color: #5f6494;
+}
+[data-theme='light'] .rpgs-stat-tile {
+  background: rgba(35, 38, 74, 0.05);
+  border-color: rgba(35, 38, 74, 0.12);
+}
+[data-theme='light'] .rpgs-stat-tag {
+  color: #4b5088;
+}
+[data-theme='light'] .rpgs-stat-val {
+  color: #1a1d3c;
+}
+[data-theme='light'] .rpgs-effect {
+  background: rgba(35, 38, 74, 0.045);
+  border-left-color: #b5651d;
+}
+[data-theme='light'] .rpgs-effect-tag {
+  color: #b5651d;
+}
+[data-theme='light'] .rpgs-effect-val {
+  color: #2b2f57;
+}
+[data-theme='light'] .rpgs-log {
+  background: rgba(35, 38, 74, 0.05);
+  border-color: rgba(35, 38, 74, 0.12);
+}
+[data-theme='light'] .rpgs-log-label {
+  color: #9a6b12;
+}
+[data-theme='light'] .rpgs-log-text {
+  color: #23264a;
+}
+[data-theme='light'] .rpgs-footer {
+  color: #4b5088;
+}
+
+/* ──────────────── seasons: accent-only flourish ────────────────
+   Keep the dark HUD (mood stays anchored to the "canon" navy look) but
+   let the frame border / titlebar / kicker / Lv readout pick up each
+   season's accent color. */
+:is([data-theme='spring'], [data-theme='summer'], [data-theme='autumn'], [data-theme='winter']) .card-frame.rpgs-frame {
+  border-color: var(--season-accent);
+}
+:is([data-theme='spring'], [data-theme='summer'], [data-theme='autumn'], [data-theme='winter']) .rpgs-titlebar {
+  border-bottom-color: var(--season-accent);
+}
+:is([data-theme='spring'], [data-theme='summer'], [data-theme='autumn'], [data-theme='winter']) .rpgs-titlebar-lv {
+  color: var(--season-accent);
+}
+:is([data-theme='spring'], [data-theme='summer'], [data-theme='autumn'], [data-theme='winter']) .rpgs-portrait-frame {
+  border-color: var(--season-accent);
+}
+:is([data-theme='spring'], [data-theme='summer'], [data-theme='autumn'], [data-theme='winter']) .rpgs-kicker {
+  background: var(--season-accent);
 }

@@ -21,16 +21,7 @@ export default function ConceptB() {
   const acctCaption = d.acctList.length === 0 ? d.t.notSelected : d.acctList.map((a) => a.label).join(' · ');
 
   return (
-    <div
-      id="preview-card"
-      className="card-frame"
-      style={{
-        background: 'radial-gradient(ellipse at 50% 34%, #6b0f24 0%, #290611 55%, #070204 100%)',
-        border: '1px solid rgba(255, 205, 140, 0.4)',
-        boxShadow: 'none',
-        overflow: 'hidden',
-      }}
-    >
+    <div id="preview-card" className="card-frame dmk-frame">
       <div className="dmk-card">
         <div className="dmk-rings" aria-hidden="true" />
         <div className="dmk-dots" aria-hidden="true" />
@@ -97,7 +88,9 @@ export default function ConceptB() {
           </div>
         )}
 
-        <div className="dmk-footer font-dot">Touhou Project © ZUN · Sprites by Majstek</div>
+        <div className="dmk-footer font-dot">
+          <span className="dmk-footer-part">Touhou Project © ZUN</span> · <span className="dmk-footer-part">Sprites by Majstek</span>
+        </div>
       </div>
     </div>
   );

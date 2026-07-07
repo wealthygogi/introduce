@@ -1,10 +1,83 @@
 /* ──────────────── Concept J: DOS Boot Terminal ────────────────
    decorative chrome (prompts, labels, ASCII trim) uses the pixel/dot
-   fonts; actual field values inherit the default CJK-safe body font */
+   fonts; actual field values inherit the default CJK-safe body font.
+
+   Colors run through --cj-* custom properties scoped to .cj-frame so the
+   terminal can offer a bright variant and a seasonal accent tint without
+   duplicating every rule. Dark is the default mood (matches the PC-98 CRT
+   look); [data-theme='light'] flips to a bright terminal; the four season
+   themes keep the dark shell but tint the cyan/amber accents with
+   var(--season-accent).
+
+   Selectors below double up as .card-frame.cj-frame (not just .cj-frame):
+   the outer node also carries the shared .card-frame class, and Vite's dev
+   server injects every concept's CSS before global.css, so a same-specificity
+   .cj-frame rule can lose the cascade to .card-frame's fallback colors
+   depending on load order. The compound selector's higher specificity wins
+   deterministically regardless of injection order. */
+.card-frame.cj-frame {
+  --cj-bg: #101820;
+  --cj-scanline: rgba(0, 0, 0, 0.35);
+  --cj-cyan: #4dd0e1;
+  --cj-amber: #ffca28;
+  --cj-text: #e0f7fa;
+  --cj-value: #fffde7;
+  --cj-highlight: #fff59d;
+  --cj-highlight-glow: rgba(255, 245, 157, 0.55);
+  --cj-dim: #5c8a91;
+  --cj-line: #2c4a52;
+  --cj-block-line: #244147;
+  --cj-teal-file: #80cbc4;
+  --cj-fill-2: #33a8ba;
+  --cj-footer: #3d5a62;
+  --cj-panel: rgba(0, 0, 0, 0.25);
+  --cj-track-bg: rgba(255, 255, 255, 0.08);
+  --cj-base: #b2ebf2;
+  background: var(--cj-bg);
+  border: 2px solid var(--cj-cyan);
+  box-shadow: none;
+  overflow: hidden;
+}
+
+/* light: same PC-98 chrome, but a bright daylight terminal instead of a
+   dark CRT — cyan/amber accents deepen so they stay readable on the pale
+   screen, and the scanline overlay is toned way down so it can't muddy
+   contrast. */
+[data-theme='light'] .card-frame.cj-frame {
+  --cj-bg: #eef5f2;
+  --cj-scanline: rgba(8, 40, 40, 0.05);
+  --cj-cyan: #00798a;
+  --cj-amber: #966300;
+  --cj-text: #17383c;
+  --cj-value: #142a2c;
+  --cj-highlight: #7a4a00;
+  --cj-highlight-glow: rgba(122, 74, 0, 0.22);
+  --cj-dim: #5c7a7a;
+  --cj-line: #b6cfd0;
+  --cj-block-line: #93b6b8;
+  --cj-teal-file: #00695c;
+  --cj-fill-2: #00646f;
+  --cj-footer: #5c7a7a;
+  --cj-panel: rgba(0, 40, 40, 0.05);
+  --cj-track-bg: rgba(0, 60, 60, 0.08);
+  --cj-base: #17383c;
+}
+
+/* seasons keep the dark boot screen and tint only the cyan/amber accents
+   (border, boxcap header, loading gauge, gold labels) with the season hue */
+[data-theme='spring'] .card-frame.cj-frame,
+[data-theme='summer'] .card-frame.cj-frame,
+[data-theme='autumn'] .card-frame.cj-frame,
+[data-theme='winter'] .card-frame.cj-frame {
+  --cj-cyan: var(--season-accent);
+  --cj-amber: var(--season-accent);
+  --cj-fill-2: color-mix(in srgb, var(--season-accent) 70%, black);
+}
+
 .cj-card {
   position: relative;
-  background: #101820;
-  color: #b2ebf2;
+  background: var(--cj-bg);
+  color: var(--cj-base);
   overflow: hidden;
 }
 .cj-card::before {
@@ -16,8 +89,8 @@
   background: repeating-linear-gradient(
     transparent,
     transparent 2px,
-    rgba(0, 0, 0, 0.35) 2px,
-    rgba(0, 0, 0, 0.35) 4px
+    var(--cj-scanline) 2px,
+    var(--cj-scanline) 4px
   );
 }
 .cj-mascot {
@@ -42,7 +115,7 @@
 
 .cj-boxcap {
   font-family: 'DotGothic16', monospace;
-  color: #4dd0e1;
+  color: var(--cj-cyan);
   font-size: 11px;
   letter-spacing: 1px;
   white-space: pre;
@@ -50,11 +123,11 @@
 .cj-bootline {
   font-family: 'DotGothic16', monospace;
   font-size: 12px;
-  color: #e0f7fa;
+  color: var(--cj-text);
   letter-spacing: 0.5px;
 }
 .cj-bootline.cj-dim {
-  color: #5c8a91;
+  color: var(--cj-dim);
 }
 
 .cj-load {
@@ -66,23 +139,23 @@
 }
 .cj-load-label {
   font-family: 'DotGothic16', monospace;
-  color: #ffca28;
+  color: var(--cj-amber);
   flex-shrink: 0;
 }
 .cj-load-track {
   flex: 1;
   height: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid #2c4a52;
+  background: var(--cj-track-bg);
+  border: 1px solid var(--cj-line);
 }
 .cj-load-fill {
   height: 100%;
-  background: repeating-linear-gradient(90deg, #4dd0e1 0 6px, #33a8ba 6px 8px);
+  background: repeating-linear-gradient(90deg, var(--cj-cyan) 0 6px, var(--cj-fill-2) 6px 8px);
   transition: width 300ms ease;
 }
 .cj-load-pct {
   font-family: 'DotGothic16', monospace;
-  color: #ffca28;
+  color: var(--cj-amber);
   font-variant-numeric: tabular-nums;
   flex-shrink: 0;
 }
@@ -94,14 +167,14 @@
   justify-content: space-between;
   gap: 4px 10px;
   padding: 6px 10px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px dashed #2c4a52;
+  background: var(--cj-panel);
+  border: 1px dashed var(--cj-line);
 }
 .cj-hiscore-label {
   font-family: 'DotGothic16', monospace;
   font-size: 11px;
   letter-spacing: 2px;
-  color: #ffca28;
+  color: var(--cj-amber);
   flex-shrink: 0;
 }
 .cj-hiscore-value {
@@ -109,9 +182,9 @@
   font-family: 'DotGothic16', monospace;
   font-size: 15px;
   letter-spacing: 1px;
-  color: #fff59d;
+  color: var(--cj-highlight);
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 6px rgba(255, 245, 157, 0.55);
+  text-shadow: 0 0 6px var(--cj-highlight-glow);
   text-align: right;
   word-break: break-all;
   overflow-wrap: anywhere;
@@ -122,8 +195,8 @@
   flex-direction: column;
   gap: 6px;
   padding: 10px 12px;
-  border-left: 2px solid #244147;
-  background: rgba(77, 208, 225, 0.05);
+  border-left: 2px solid var(--cj-block-line);
+  background: color-mix(in srgb, var(--cj-cyan) 5%, transparent);
 }
 .cj-prompt {
   font-family: 'DotGothic16', monospace;
@@ -133,14 +206,14 @@
   padding-left: 2px;
 }
 .cj-path {
-  color: #4dd0e1;
+  color: var(--cj-cyan);
 }
 .cj-cmd {
-  color: #fff59d;
+  color: var(--cj-highlight);
 }
 .cj-cursor {
   display: inline-block;
-  color: #4dd0e1;
+  color: var(--cj-cyan);
   animation: cj-blink 1s steps(1) infinite;
 }
 @keyframes cj-blink {
@@ -159,7 +232,7 @@
 }
 .cj-k {
   font-family: 'DotGothic16', monospace;
-  color: #4dd0e1;
+  color: var(--cj-cyan);
   flex-shrink: 0;
   width: 52px;
 }
@@ -168,7 +241,7 @@
   margin-left: 2px;
 }
 .cj-v {
-  color: #fffde7;
+  color: var(--cj-value);
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
@@ -196,7 +269,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
-  color: #e0f7fa;
+  color: var(--cj-text);
 }
 .cj-dir-name,
 .cj-file-name {
@@ -206,7 +279,7 @@
 .cj-dir-flag {
   flex-shrink: 0;
   font-family: 'DotGothic16', monospace;
-  color: #ffca28;
+  color: var(--cj-amber);
 }
 .cj-file-name {
   flex-shrink: 1;
@@ -214,17 +287,17 @@
 .cj-file-ext {
   flex-shrink: 0;
   font-family: 'DotGothic16', monospace;
-  color: #5c8a91;
+  color: var(--cj-dim);
 }
 .cj-file-size {
   margin-left: auto;
   flex-shrink: 0;
   font-family: 'DotGothic16', monospace;
-  color: #80cbc4;
+  color: var(--cj-teal-file);
   font-variant-numeric: tabular-nums;
 }
 .cj-empty span {
-  color: #5c8a91;
+  color: var(--cj-dim);
   font-style: italic;
 }
 
@@ -242,11 +315,11 @@
 }
 .cj-config-key {
   font-family: 'DotGothic16', monospace;
-  color: #ffca28;
+  color: var(--cj-amber);
   white-space: nowrap;
 }
 .cj-config-val {
-  color: #e0f7fa;
+  color: var(--cj-text);
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
@@ -254,10 +327,10 @@
 .cj-message {
   margin-left: 14px;
   padding: 8px 10px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px dashed #2c4a52;
+  background: var(--cj-panel);
+  border: 1px dashed var(--cj-line);
   font-size: 13px;
-  color: #e0f7fa;
+  color: var(--cj-text);
   line-height: 1.7;
   white-space: pre-wrap;
   word-break: keep-all;
@@ -271,6 +344,9 @@
   text-align: center;
   font-size: 9px;
   letter-spacing: 1px;
-  color: #3d5a62;
+  color: var(--cj-footer);
   padding: 8px 0 18px;
+}
+.cj-footer-part {
+  white-space: nowrap;
 }

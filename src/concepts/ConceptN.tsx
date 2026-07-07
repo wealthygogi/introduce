@@ -137,7 +137,11 @@ export default function ConceptN() {
           </div>
         </div>
 
-        <div className="cn-footer">Touhou Project © ZUN · Sprites by Majstek</div>
+        <div className="cn-footer">
+          <span>Touhou Project © ZUN</span>
+          <span aria-hidden>·</span>
+          <span>Sprites by Majstek</span>
+        </div>
       </div>
     </div>
   );

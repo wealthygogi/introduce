@@ -138,7 +138,11 @@ export default function ConceptO() {
           </div>
 
           <div className="co-footer">
-            <span>Touhou Project © ZUN · Sprites by Majstek</span>
+            <div className="co-footer-credit">
+              <span>Touhou Project © ZUN</span>
+              <span aria-hidden>·</span>
+              <span>Sprites by Majstek</span>
+            </div>
             <span className="font-pixel">No.{serial}</span>
           </div>
         </div>

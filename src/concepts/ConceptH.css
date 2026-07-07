@@ -2,10 +2,22 @@
 .ch-card {
   --ch-green: #2e7d64;
   --ch-ink: #1e3a34;
-  background: repeating-linear-gradient(transparent, transparent 31px, #d8e6e0 31px, #d8e6e0 32px), #f7fbf9;
+  --ch-paper: #f7fbf9;
+  --ch-line: #d8e6e0;
+  --ch-chip: #e4f1ec;
+  --ch-dotted: #9ec6ba;
+  --ch-muted: #4f7a6c;
+  --ch-muted-2: #3f5952;
+  --ch-empty: #7a9a90;
+  --ch-stamp: #b3261e;
+  /* frame carries the border/divider chrome — kept separate from --ch-green (labels,
+     icons, the ℞ mark) so seasonal accents can retint structure without recoloring text */
+  --ch-frame: var(--ch-green);
+  background: repeating-linear-gradient(transparent, transparent 31px, var(--ch-line) 31px, var(--ch-line) 32px),
+    var(--ch-paper);
   color: var(--ch-ink);
   font-family: 'DotGothic16', 'Noto Sans KR', 'Noto Sans JP', monospace;
-  border: 2px solid var(--ch-green);
+  border: 2px solid var(--ch-frame);
   padding: 28px 28px 20px;
   position: relative;
   overflow: hidden;
@@ -17,7 +29,7 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 14px;
-  border-bottom: 2px solid var(--ch-green);
+  border-bottom: 2px solid var(--ch-frame);
   padding-bottom: 10px;
   margin-bottom: 10px;
 }
@@ -42,7 +54,7 @@
 .ch-clinic-sub {
   font-size: 11px;
   letter-spacing: 1px;
-  color: #4f7a6c;
+  color: var(--ch-muted);
   margin-bottom: 4px;
   word-break: keep-all;
 }
@@ -65,8 +77,8 @@
   align-items: baseline;
   gap: 8px;
   font-size: 11.5px;
-  background: #e4f1ec;
-  border: 1px solid var(--ch-green);
+  background: var(--ch-chip);
+  border: 1px solid var(--ch-frame);
   border-radius: 4px;
   padding: 5px 10px;
   margin-bottom: 14px;
@@ -87,7 +99,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  border-bottom: 1px dashed var(--ch-green);
+  border-bottom: 1px dashed var(--ch-frame);
   padding-bottom: 14px;
   margin-bottom: 6px;
 }
@@ -95,8 +107,8 @@
   width: 52px;
   height: 52px;
   border-radius: 8px;
-  background: #e4f1ec;
-  border: 2px solid var(--ch-green);
+  background: var(--ch-chip);
+  border: 2px solid var(--ch-frame);
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -127,6 +139,10 @@
 
 .ch-table {
   width: 100%;
+  /* fixed layout: keeps the th column at a stable 30% instead of auto-layout
+     starving it toward zero when a td value is long, which collapsed labels
+     like "최애 캐릭터" into a vertical single-character stack at narrower widths */
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 13.5px;
 }
@@ -159,7 +175,7 @@
   text-align: left;
   vertical-align: top;
   padding: 9px 6px;
-  border-bottom: 1px dotted #9ec6ba;
+  border-bottom: 1px dotted var(--ch-dotted);
 }
 .ch-table th {
   width: 30%;
@@ -202,13 +218,23 @@
   gap: 5px;
   white-space: nowrap;
 }
+/* the allergy row holds free text (not a short fixed tag) — let it wrap normally
+   and pin the checkbox to the top of the paragraph instead of its center */
+.ch-check-item-wrap {
+  display: flex;
+  align-items: flex-start;
+  white-space: normal;
+}
+.ch-check-item-wrap .ch-check {
+  margin-top: 3px;
+}
 .ch-check {
   width: 12px;
   height: 12px;
   flex-shrink: 0;
-  border: 1.5px solid var(--ch-green);
+  border: 1.5px solid var(--ch-frame);
   border-radius: 2px;
-  background: #fff;
+  background: var(--ch-paper);
   position: relative;
 }
 .ch-check.is-on {
@@ -235,17 +261,17 @@
 }
 .ch-rx-dosage {
   font-size: 11.5px;
-  color: #4f7a6c;
+  color: var(--ch-muted);
   font-style: italic;
 }
 .ch-rx-empty {
-  color: #7a9a90;
+  color: var(--ch-empty);
   font-style: italic;
 }
 
 .ch-small {
   font-size: 12px;
-  color: #3f5952;
+  color: var(--ch-muted-2);
 }
 .ch-pre {
   white-space: pre-wrap;
@@ -258,7 +284,7 @@
   gap: 14px;
   margin-top: 16px;
   padding-top: 12px;
-  border-top: 1px solid var(--ch-green);
+  border-top: 1px solid var(--ch-frame);
 }
 .ch-signature-line {
   display: flex;
@@ -268,7 +294,7 @@
 .ch-signature-tag {
   font-size: 10.5px;
   letter-spacing: 1px;
-  color: #4f7a6c;
+  color: var(--ch-muted);
   word-break: keep-all;
 }
 .ch-signature-script {
@@ -278,16 +304,16 @@
   color: var(--ch-ink);
   text-decoration: underline;
   text-decoration-style: wavy;
-  text-decoration-color: var(--ch-green);
+  text-decoration-color: var(--ch-frame);
   text-underline-offset: 4px;
 }
 .ch-stamp {
   flex-shrink: 0;
   width: 54px;
   height: 54px;
-  border: 2px solid #b3261e;
+  border: 2px solid var(--ch-stamp);
   border-radius: 4px;
-  color: #b3261e;
+  color: var(--ch-stamp);
   display: grid;
   place-items: center;
   font-size: 14px;
@@ -301,12 +327,44 @@
 .ch-footer {
   margin-top: 16px;
   padding-top: 10px;
-  border-top: 1px solid var(--ch-green);
+  border-top: 1px solid var(--ch-frame);
   text-align: center;
   font-size: 10px;
   letter-spacing: 1px;
-  color: #4f7a6c;
+  color: var(--ch-muted);
   font-family: 'Press Start 2P', monospace;
+}
+.ch-footer span {
+  white-space: nowrap;
+}
+
+/* ──────────────── dark theme: night chart ──────────────── */
+[data-theme='dark'] .ch-card {
+  --ch-green: #6fd6ac;
+  --ch-ink: #dcece6;
+  --ch-paper: #101c18;
+  --ch-line: #1c2e29;
+  --ch-chip: #172b25;
+  --ch-dotted: #2c453e;
+  --ch-muted: #8fb3a6;
+  --ch-muted-2: #a7c7bc;
+  --ch-empty: #6f9186;
+  --ch-stamp: #ff6f57;
+  --ch-frame: #6fd6ac;
+}
+[data-theme='dark'] .ch-check.is-on::after {
+  border-color: var(--ch-paper);
+}
+
+/* ──────────────── seasonal accent: frame / stamp nod to var(--season-accent) ──────────────── */
+/* the chop-stamp ink blends toward black so its glyph stays legible against the pale chart in every season */
+[data-theme='spring'] .ch-card,
+[data-theme='summer'] .ch-card,
+[data-theme='autumn'] .ch-card,
+[data-theme='winter'] .ch-card {
+  --ch-frame: var(--season-accent);
+  --ch-dotted: var(--season-accent);
+  --ch-stamp: color-mix(in srgb, var(--season-accent) 55%, black);
 }
 
 @keyframes ch-fill {

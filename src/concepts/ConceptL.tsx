@@ -140,10 +140,18 @@ export default function ConceptL() {
                 <p className="cl-preface-text font-serif">{d.freeText}</p>
               </div>
             )}
+
+            <div className="cl-page-foot" aria-hidden="true">
+              <span className="cl-sigil-sm">✦ ✧ ✦</span>
+            </div>
           </div>
         </div>
 
-        <div className="cl-credits">Touhou Project © ZUN · Sprites by Majstek</div>
+        <div className="cl-credits">
+          <span className="cl-credits-part">Touhou Project © ZUN</span>
+          {' · '}
+          <span className="cl-credits-part">Sprites by Majstek</span>
+        </div>
       </div>
     </div>
   );

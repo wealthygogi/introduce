@@ -4,6 +4,10 @@
   --cg-red: #a8241c;
   --cg-ink: #2a1a12;
   --cg-gold: #c9a66b;
+  /* frame (outer border) and seal (stamp) are split off --cg-red so seasonal
+     accents can retint them without touching the fixed vermillion ink/rank text */
+  --cg-frame: var(--cg-red);
+  --cg-seal: var(--cg-red);
   background: linear-gradient(175deg, #e7d6ba 0%, #d9c19c 100%);
   color: var(--cg-ink);
   font-family: 'Noto Serif KR', 'Noto Serif JP', serif;
@@ -28,8 +32,8 @@
   max-width: 420px;
   margin: 0 auto;
   background: var(--cg-paper);
-  border: 2px solid var(--cg-red);
-  box-shadow: inset 0 0 0 6px var(--cg-paper), inset 0 0 0 9px var(--cg-red), var(--shadow-md);
+  border: 2px solid var(--cg-frame);
+  box-shadow: inset 0 0 0 6px var(--cg-paper), inset 0 0 0 9px var(--cg-frame), var(--shadow-md);
   padding: 30px 26px 22px;
   text-align: center;
   animation: cg-unfurl 480ms ease-out both;
@@ -97,15 +101,23 @@
 
 .cg-columns {
   display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 6px 0 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px dotted var(--cg-gold);
+}
+/* each row groups a fixed trio of fields (identity / preference) so one long
+   joined series・acct list can't throw off the balance of the whole block —
+   only its own row grows taller, the other row stays compact */
+.cg-col-row {
+  display: flex;
   flex-direction: row-reverse;
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
   gap: 6px 15px;
-  min-height: 150px;
-  padding: 6px 0 16px;
-  margin-bottom: 16px;
-  border-bottom: 1px dotted var(--cg-gold);
+  min-height: 70px;
 }
 .cg-col {
   writing-mode: vertical-rl;
@@ -148,23 +160,29 @@
   word-break: keep-all;
 }
 .cg-oracle-line {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
   font-size: 14px;
   line-height: 1.7;
   word-break: keep-all;
   overflow-wrap: anywhere;
-  padding-left: 1.4em;
-  text-indent: -1.4em;
+}
+.cg-oracle-line + .cg-oracle-line {
+  margin-top: 4px;
 }
 .cg-oracle-tag {
-  display: inline-block;
-  min-width: 1.2em;
+  flex-shrink: 0;
   color: var(--cg-red);
   font-weight: 700;
-  margin-right: 6px;
 }
 .cg-oracle-tag::after {
   content: ':';
   margin-left: 1px;
+}
+.cg-oracle-value {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .cg-wish {
@@ -196,9 +214,9 @@
   bottom: 46px;
   width: 56px;
   height: 56px;
-  border: 2.5px solid var(--cg-red);
+  border: 2.5px solid var(--cg-seal);
   border-radius: 50%;
-  color: var(--cg-red);
+  color: var(--cg-seal);
   display: grid;
   place-items: center;
   font-size: 15px;
@@ -212,7 +230,7 @@
   content: '';
   position: absolute;
   inset: 4px;
-  border: 1px solid var(--cg-red);
+  border: 1px solid var(--cg-seal);
   border-radius: 50%;
 }
 
@@ -224,6 +242,11 @@
   letter-spacing: 1px;
   color: #8a6a52;
   font-family: 'Press Start 2P', monospace;
+}
+/* each credit part stays intact; the space around the middle dot is the only
+   line-break opportunity, so a too-narrow render drops to 2 lines by part */
+.cg-footer span {
+  white-space: nowrap;
 }
 
 /* English fallback: vertical CJK writing doesn't serve Latin readers, flatten to horizontal */
@@ -238,9 +261,11 @@
   gap: 2px;
 }
 .cg-card.cg-flat .cg-columns {
-  flex-direction: column;
   align-items: stretch;
-  min-height: 0;
+}
+/* unwrap the identity/preference row grouping — flat mode just wants one flat stack of 6 */
+.cg-card.cg-flat .cg-col-row {
+  display: contents;
 }
 .cg-card.cg-flat .cg-col {
   display: flex;
@@ -253,6 +278,37 @@
 .cg-card.cg-flat .cg-col-value {
   margin-left: auto;
   text-align: right;
+}
+
+/* ──────────────── dark theme: night shrine ──────────────── */
+[data-theme='dark'] .cg-card {
+  --cg-paper: #211a13;
+  --cg-ink: #efe3c8;
+  --cg-red: #ff6f57;
+  --cg-gold: #e3bb74;
+  background: linear-gradient(175deg, #2b2015 0%, #16110c 100%);
+}
+[data-theme='dark'] .cg-surface-mark {
+  color: rgba(255, 111, 87, 0.1);
+}
+[data-theme='dark'] .cg-rank {
+  text-shadow: 0 0 20px rgba(255, 111, 87, 0.5), 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+[data-theme='dark'] .cg-lot,
+[data-theme='dark'] .cg-col-value.is-empty,
+[data-theme='dark'] .cg-footer {
+  color: #c3a578;
+}
+
+/* ──────────────── seasonal accent: frame / seal / divider nod to var(--season-accent) ──────────────── */
+/* the seal blends toward black so the glyph stays legible against the pale paper in every season */
+[data-theme='spring'] .cg-card,
+[data-theme='summer'] .cg-card,
+[data-theme='autumn'] .cg-card,
+[data-theme='winter'] .cg-card {
+  --cg-frame: var(--season-accent);
+  --cg-gold: var(--season-accent);
+  --cg-seal: color-mix(in srgb, var(--season-accent) 55%, black);
 }
 
 @keyframes cg-unfurl {

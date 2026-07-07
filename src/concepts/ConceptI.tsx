@@ -15,11 +15,7 @@ export default function ConceptI() {
   const spaceCode = d.getCustom('space', autoSpaceCode);
 
   return (
-    <div
-      id="preview-card"
-      className="card-frame"
-      style={{ background: '#ffffff', border: '2px solid #1a1a1a', boxShadow: 'none', overflow: 'hidden' }}
-    >
+    <div id="preview-card" className="card-frame ci-frame">
       <div className="ci-card">
         <div className="ci-masthead">
           <div className="ci-masthead-text">
@@ -132,7 +128,9 @@ export default function ConceptI() {
           </span>
         </div>
 
-        <div className="ci-footer">Touhou Project © ZUN · Sprites by Majstek</div>
+        <div className="ci-footer">
+          <span>Touhou Project © ZUN</span> · <span>Sprites by Majstek</span>
+        </div>
       </div>
     </div>
   );

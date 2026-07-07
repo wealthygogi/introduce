@@ -1,9 +1,37 @@
 /* ──────────────── Concept I: Comiket Circle Catalog ──────────────── */
+/* card-frame gets its background/border here (was an inline style) so theme
+   overrides below can actually reach it */
+.ci-frame {
+  --ci-bg: #ffffff;
+  --ci-fg: #222222;
+  --ci-fg-strong: #1a1a1a;
+  --ci-fg-muted: #555555;
+  --ci-fg-soft: #333333;
+  --ci-line: #dddddd;
+  --ci-line-soft: #eeeeee;
+  --ci-line-faint: #cccccc;
+  --ci-chip-bg: #f7f7f7;
+  --ci-chip-border: #ececec;
+  --ci-muted: #999999;
+  --ci-faint: #aaaaaa;
+  --ci-accent: #c2185b;
+  --ci-accent-bright: #ff4081;
+  --ci-booth-idle: #e2e2e2;
+  --ci-newbook-bg: #fff0f5;
+  /* frame carries the outer border + catalog header dividers — kept separate from
+     --ci-accent so seasonal accents can retint structure without recoloring price/index text */
+  --ci-frame-color: #1a1a1a;
+  background: var(--ci-bg);
+  border: 2px solid var(--ci-frame-color);
+  box-shadow: none;
+  overflow: hidden;
+}
+
 .ci-card {
   display: flex;
   flex-direction: column;
-  background: #ffffff;
-  color: #222222;
+  background: var(--ci-bg);
+  color: var(--ci-fg);
 }
 
 .ci-masthead {
@@ -43,8 +71,8 @@
   gap: 14px;
   margin: 16px 20px 0;
   padding: 10px 14px;
-  background: #f7f7f7;
-  border: 1px solid #ececec;
+  background: var(--ci-chip-bg);
+  border: 1px solid var(--ci-chip-border);
   border-radius: 10px;
 }
 .ci-map {
@@ -56,11 +84,11 @@
 }
 .ci-booth {
   aspect-ratio: 1;
-  background: #e2e2e2;
+  background: var(--ci-booth-idle);
   border-radius: 2px;
 }
 .ci-booth.is-mine {
-  background: #ff4081;
+  background: var(--ci-accent-bright);
   box-shadow: 0 0 0 2px rgba(255, 64, 129, 0.35);
 }
 .ci-map-info {
@@ -72,13 +100,13 @@
 .ci-map-tag {
   font-size: 10px;
   letter-spacing: 1.5px;
-  color: #999999;
+  color: var(--ci-muted);
 }
 .ci-map-code {
   font-family: 'Courier New', monospace;
   font-weight: 700;
   font-size: 18px;
-  color: #1a1a1a;
+  color: var(--ci-fg-strong);
   word-break: break-all;
   overflow-wrap: anywhere;
 }
@@ -92,7 +120,7 @@
   position: relative;
   flex: 0 0 148px;
   height: 148px;
-  border: 2px dashed #cccccc;
+  border: 2px dashed var(--ci-line-faint);
   border-radius: 8px;
   background: linear-gradient(45deg, #fafafa 25%, transparent 25%, transparent 75%, #fafafa 75%),
     linear-gradient(45deg, #fafafa 25%, #ffffff 25%, #ffffff 75%, #fafafa 75%);
@@ -112,7 +140,7 @@
   right: 8px;
   font-size: 9px;
   letter-spacing: 1px;
-  color: #aaaaaa;
+  color: var(--ci-faint);
 }
 .ci-ident {
   flex: 1;
@@ -126,12 +154,12 @@
   font-family: 'Press Start 2P', monospace;
   font-size: 10px;
   letter-spacing: 2px;
-  color: #c2185b;
+  color: var(--ci-accent);
 }
 .ci-name {
   font-size: 27px;
   font-weight: 900;
-  color: #1a1a1a;
+  color: var(--ci-fg-strong);
   line-height: 1.2;
   word-break: keep-all;
   overflow-wrap: anywhere;
@@ -142,15 +170,15 @@
   align-items: baseline;
   gap: 8px;
   font-size: 14px;
-  color: #555555;
+  color: var(--ci-fg-muted);
 }
 .ci-fav-label {
   font-weight: 700;
-  color: #c2185b;
+  color: var(--ci-accent);
 }
 .ci-fav-value {
   font-weight: 600;
-  color: #222222;
+  color: var(--ci-fg);
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
@@ -173,19 +201,19 @@
   gap: 3px;
   font-size: 13px;
   font-weight: 700;
-  color: #1a1a1a;
-  border-bottom: 2px solid #1a1a1a;
+  color: var(--ci-fg-strong);
+  border-bottom: 2px solid var(--ci-frame-color);
   padding-bottom: 6px;
 }
 .ci-eyebrow {
   font-family: 'Press Start 2P', monospace;
   font-size: 8px;
   letter-spacing: 1.5px;
-  color: #c2185b;
+  color: var(--ci-accent);
 }
 .ci-empty {
   font-size: 13px;
-  color: #aaaaaa;
+  color: var(--ci-faint);
   font-style: italic;
 }
 
@@ -205,11 +233,11 @@
   font-family: 'Courier New', monospace;
   font-weight: 700;
   font-size: 11px;
-  color: #ff4081;
+  color: var(--ci-accent-bright);
   flex-shrink: 0;
 }
 .ci-index-label {
-  color: #333333;
+  color: var(--ci-fg-soft);
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
@@ -227,20 +255,20 @@
   font-size: 13px;
 }
 .ci-price-name {
-  color: #333333;
+  color: var(--ci-fg-soft);
   white-space: nowrap;
 }
 .ci-price-dots {
   flex: 1 1 auto;
   min-width: 10px;
-  border-bottom: 1px dotted #cccccc;
+  border-bottom: 1px dotted var(--ci-line-faint);
   margin-bottom: 4px;
 }
 .ci-price-value {
   flex-shrink: 0;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
-  color: #c2185b;
+  color: var(--ci-accent);
 }
 
 .ci-newbook {
@@ -248,8 +276,8 @@
   flex-direction: column;
   gap: 6px;
   margin: 18px 20px 0;
-  background: #fff0f5;
-  border: 1px dashed #ff4081;
+  background: var(--ci-newbook-bg);
+  border: 1px dashed var(--ci-accent-bright);
   border-radius: 10px;
   padding: 12px 14px;
 }
@@ -259,13 +287,13 @@
   font-weight: 700;
   letter-spacing: 1px;
   color: #ffffff;
-  background: #ff4081;
+  background: var(--ci-accent-bright);
   padding: 3px 10px;
   border-radius: 10px;
 }
 .ci-newbook-text {
   font-size: 14px;
-  color: #333333;
+  color: var(--ci-fg-soft);
   line-height: 1.7;
   white-space: pre-wrap;
   word-break: keep-all;
@@ -278,16 +306,16 @@
   gap: 6px 16px;
   margin: 18px 20px 0;
   padding: 12px 0 0;
-  border-top: 1px dashed #dddddd;
+  border-top: 1px dashed var(--ci-line);
   font-size: 11px;
-  color: #444444;
+  color: var(--ci-fg-soft);
 }
 .ci-notice span {
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
 .ci-notice b {
-  color: #c2185b;
+  color: var(--ci-accent);
   font-weight: 700;
   margin-right: 4px;
 }
@@ -298,7 +326,61 @@
   text-align: center;
   font-family: 'Press Start 2P', monospace;
   font-size: 9px;
-  color: #aaaaaa;
+  color: var(--ci-faint);
   letter-spacing: 1px;
-  border-top: 1px solid #eeeeee;
+  border-top: 1px solid var(--ci-line-soft);
+}
+/* each credit part stays intact; the space around the middle dot is the only
+   line-break opportunity, so a too-narrow render drops to 2 lines by part */
+.ci-footer span {
+  white-space: nowrap;
+}
+
+/* ──────────────── dark theme: night catalog ──────────────── */
+[data-theme='dark'] .ci-frame {
+  --ci-bg: #17151c;
+  --ci-fg: #e5e2ee;
+  --ci-fg-strong: #f7f5fb;
+  --ci-fg-muted: #b6b0c4;
+  --ci-fg-soft: #cac4d6;
+  --ci-line: #413c54;
+  --ci-line-soft: #2a2635;
+  --ci-line-faint: #3d3850;
+  --ci-chip-bg: #1f1c26;
+  --ci-chip-border: #332e3f;
+  --ci-muted: #8b86a0;
+  --ci-faint: #7d7891;
+  --ci-accent: #ff6fa8;
+  --ci-accent-bright: #ff4d94;
+  --ci-booth-idle: #3a3548;
+  --ci-newbook-bg: #2c1f28;
+  --ci-frame-color: #3d3850;
+}
+/* the masthead stays print-black in every theme; a bright underline is the only
+   night/season tell so "COMIC MARKET" white-on-black never loses contrast */
+[data-theme='dark'] .ci-masthead {
+  border-bottom: 2px solid #ff4d94;
+}
+[data-theme='dark'] .ci-booth.is-mine {
+  box-shadow: 0 0 0 2px rgba(255, 77, 148, 0.4);
+}
+[data-theme='dark'] .ci-cut {
+  background: linear-gradient(45deg, #221f2c 25%, transparent 25%, transparent 75%, #221f2c 75%),
+    linear-gradient(45deg, #221f2c 25%, #17151c 25%, #17151c 75%, #221f2c 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+}
+
+/* ──────────────── seasonal accent: frame / header / divider nod to var(--season-accent) ──────────────── */
+[data-theme='spring'] .ci-frame,
+[data-theme='summer'] .ci-frame,
+[data-theme='autumn'] .ci-frame,
+[data-theme='winter'] .ci-frame {
+  --ci-frame-color: var(--season-accent);
+}
+[data-theme='spring'] .ci-masthead,
+[data-theme='summer'] .ci-masthead,
+[data-theme='autumn'] .ci-masthead,
+[data-theme='winter'] .ci-masthead {
+  border-bottom: 2px solid var(--season-accent);
 }

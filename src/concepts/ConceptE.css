@@ -429,6 +429,9 @@
   color: var(--fg-subtle);
   font-family: 'Press Start 2P', monospace;
 }
+.eopt-credit-part {
+  white-space: nowrap;
+}
 
 @keyframes eopt-rise {
   from {

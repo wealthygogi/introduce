@@ -162,7 +162,11 @@ export default function ConceptM() {
           <div className="cm-orn" aria-hidden>
             ❧ ❦ ❧
           </div>
-          <div className="cm-credits">Touhou Project © ZUN · Sprites by Majstek</div>
+          <div className="cm-credits">
+            <span>Touhou Project © ZUN</span>
+            <span aria-hidden>·</span>
+            <span>Sprites by Majstek</span>
+          </div>
         </div>
       </div>
     </div>

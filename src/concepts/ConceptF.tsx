@@ -36,7 +36,7 @@ export default function ConceptF() {
   }[d.lang];
 
   return (
-    <div id="preview-card" className="card-frame">
+    <div id="preview-card" className="card-frame" style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}>
       <div className="cf-card">
         <div className="cf-masthead">
           <div className="cf-masthead-title">{MASTHEAD[d.lang]}</div>
@@ -141,7 +141,10 @@ export default function ConceptF() {
           </div>
         </div>
 
-        <div className="cf-footer">Touhou Project © ZUN · Sprites by Majstek</div>
+        <div className="cf-footer">
+          <span className="cf-credit-part">Touhou Project © ZUN</span>{' '}
+          <span className="cf-credit-part">· Sprites by Majstek</span>
+        </div>
       </div>
     </div>
   );

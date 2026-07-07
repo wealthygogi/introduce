@@ -17,11 +17,7 @@ export default function ConceptJ() {
   const hiScore = d.getCustom('hiScore', autoHiScore);
 
   return (
-    <div
-      id="preview-card"
-      className="card-frame"
-      style={{ background: '#101820', border: '2px solid #4dd0e1', boxShadow: 'none', overflow: 'hidden' }}
-    >
+    <div id="preview-card" className="card-frame cj-frame">
       <div className="cj-card">
         <img
           className="px cj-mascot"
@@ -147,10 +143,14 @@ export default function ConceptJ() {
             <span className="cj-path">C:\GENSOKYO&gt;</span> <span className="cj-cursor" aria-hidden="true">█</span>
           </div>
 
-          <div className="cj-boxcap">╚═══════════════════════════╝</div>
+          <div className="cj-boxcap">╚══════════════════════════╝</div>
         </div>
 
-        <div className="cj-footer">Touhou Project © ZUN · Sprites by Majstek</div>
+        <div className="cj-footer">
+          <span className="cj-footer-part">Touhou Project © ZUN</span>
+          {' · '}
+          <span className="cj-footer-part">Sprites by Majstek</span>
+        </div>
       </div>
     </div>
   );

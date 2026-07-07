@@ -89,7 +89,7 @@ export default function ConceptH() {
             <tr>
               <th scope="row">{ALLERGY_TAG[d.lang]}</th>
               <td>
-                <span className="ch-check-item">
+                <span className="ch-check-item ch-check-item-wrap">
                   <span className="ch-check is-on" aria-hidden="true" />
                   {d.dislike}
                 </span>
@@ -167,7 +167,9 @@ export default function ConceptH() {
           </div>
         </div>
 
-        <div className="ch-footer">Touhou Project © ZUN · Sprites by Majstek</div>
+        <div className="ch-footer">
+          <span>Touhou Project © ZUN</span> · <span>Sprites by Majstek</span>
+        </div>
       </div>
     </div>
   );

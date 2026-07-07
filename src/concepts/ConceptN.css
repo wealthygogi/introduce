@@ -237,6 +237,9 @@
   background: var(--accent-soft);
   padding: 3px;
   box-shadow: var(--shadow-sm);
+  /* .cn-msg aligns this row to flex-end; offset by the timestamp caption's height
+     so the avatar hugs the bubble itself instead of the caption below it */
+  margin-bottom: 13.5px;
 }
 
 .cn-bubble-wrap {
@@ -312,6 +315,7 @@
 
 .cn-msg-time {
   font-size: 10.5px;
+  line-height: 1;
   color: var(--fg-subtle);
   margin-top: 3px;
   padding: 0 4px;
@@ -320,8 +324,15 @@
 .cn-footer {
   border-top: 1px solid var(--border);
   padding: 12px 24px;
-  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 4px 10px;
   font-size: 11px;
   color: var(--fg-subtle);
   letter-spacing: 0.5px;
+}
+.cn-footer span {
+  white-space: nowrap;
 }

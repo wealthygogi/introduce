@@ -1,8 +1,22 @@
 /* ──────────────── Concept C: Title Screen ────────────────
-   Sparse, symmetric, fixed near-black/gold palette — deliberately airy
-   to contrast with Concept A's dense HUD grid and Concept B's radial
-   burst. Nickname is the giant hero logo; everything else compresses
-   into a ▶-prefixed menu list with a clear primary/secondary tier. */
+   Sparse, symmetric, near-black/gold palette by default — deliberately
+   airy to contrast with Concept A's dense HUD grid and Concept B's
+   radial burst. Nickname is the giant hero logo; everything else
+   compresses into a ▶-prefixed menu list with a clear primary/secondary
+   tier.
+   Theme handling:
+   - default/dark: hardcoded near-black/gold palette below (the "canon" look).
+   - [data-theme='light']: bright ivory/gold variant (light bg, ink text)
+     layered on top, same layout/mood.
+   - spring/summer/autumn/winter: keep the dark screen, swap only the
+     corner brackets / badge / arrow accent to var(--season-accent). */
+
+.card-frame.tsc-frame {
+  background: linear-gradient(180deg, #14131c 0%, #07070b 75%);
+  border: 1px solid rgba(232, 201, 136, 0.35);
+  box-shadow: none;
+  overflow: hidden;
+}
 
 .tsc-card {
   position: relative;
@@ -172,4 +186,70 @@
   font-size: 9px;
   letter-spacing: 1px;
   color: #665f4c;
+}
+/* two credit parts never split mid-phrase: whole line if it fits,
+   otherwise wraps cleanly between "© ZUN" and "Sprites by Majstek" */
+.tsc-footer-part {
+  white-space: nowrap;
+}
+
+/* ──────────────── light theme: bright ivory/gold variant ────────────────
+   Mood stays (gold corner brackets + menu) but the screen flips to a
+   warm ivory surface with dark ink text for contrast. */
+[data-theme='light'] .card-frame.tsc-frame {
+  background: linear-gradient(180deg, #fbf6ea 0%, #f3e8d2 75%);
+  border-color: rgba(154, 110, 32, 0.4);
+}
+[data-theme='light'] .tsc-card {
+  color: #241c10;
+}
+[data-theme='light'] .tsc-card::before {
+  background: radial-gradient(circle at 50% 26%, rgba(154, 110, 32, 0.12), transparent 58%);
+}
+[data-theme='light'] .tsc-corner {
+  border-color: rgba(154, 110, 32, 0.55);
+}
+[data-theme='light'] .tsc-title {
+  color: #241c10;
+  text-shadow: 0 0 20px rgba(154, 110, 32, 0.3), 0 2px 0 rgba(0, 0, 0, 0.08);
+}
+[data-theme='light'] .tsc-subtitle {
+  color: #6e5d3c;
+}
+[data-theme='light'] .tsc-version {
+  color: #6b6248;
+}
+[data-theme='light'] .tsc-menu-item {
+  border-color: rgba(154, 110, 32, 0.28);
+  background: rgba(154, 110, 32, 0.05);
+}
+[data-theme='light'] .tsc-menu-cta {
+  color: #241c10;
+  background: rgba(154, 110, 32, 0.14);
+}
+[data-theme='light'] .tsc-arrow {
+  color: #8a6218;
+}
+[data-theme='light'] .tsc-menu-label {
+  color: #6e5d3c;
+}
+[data-theme='light'] .tsc-menu-value {
+  color: #241c10;
+}
+[data-theme='light'] .tsc-footer {
+  color: #5a5340;
+}
+
+/* ──────────────── seasons: accent-only flourish ────────────────
+   Keep the dark screen (mood stays anchored to the "canon" gold-on-near-
+   black look) but let the corner brackets / badge / menu arrows pick up
+   each season's accent color. */
+:is([data-theme='spring'], [data-theme='summer'], [data-theme='autumn'], [data-theme='winter']) .tsc-corner {
+  border-color: var(--season-accent);
+}
+:is([data-theme='spring'], [data-theme='summer'], [data-theme='autumn'], [data-theme='winter']) .tsc-badge {
+  background: var(--season-accent);
+}
+:is([data-theme='spring'], [data-theme='summer'], [data-theme='autumn'], [data-theme='winter']) .tsc-arrow {
+  color: var(--season-accent);
 }

@@ -1,5 +1,7 @@
+import { useParams } from 'react-router-dom';
 import { useFormState, type FubChoice, type PartingChoice, type OtherGenreChoice } from '../contexts/FormStateContext';
 import { useLang } from '../contexts/LangContext';
+import { findConcept } from '../concepts/registry';
 import CharacterPicker from './CharacterPicker';
 import SeriesPicker from './SeriesPicker';
 import AccountTypePicker from './AccountTypePicker';
@@ -23,8 +25,11 @@ function CharCount({ value, max }: { value: string; max: number }) {
 }
 
 export default function FormPanel() {
-  const { state, set } = useFormState();
-  const { t } = useLang();
+  const { state, set, setCustom } = useFormState();
+  const { t, lang } = useLang();
+  const { id } = useParams<{ id: string }>();
+  const customFields = (id ? findConcept(id)?.customFields : undefined) ?? [];
+  const cardOnlyLabel = lang === 'ja' ? 'このカード専用' : lang === 'en' ? 'This Card Only' : '이 카드 전용';
   return (
     <aside className="form-panel" aria-label={t.intro}>
       <div className="form-section">
@@ -128,6 +133,30 @@ export default function FormPanel() {
         />
         <CharCount value={state.freeText} max={LIMITS.freeText} />
       </div>
+
+      {customFields.length > 0 && (
+        <>
+          <hr className="form-hr" />
+          <div className="form-section">
+            <label className="form-label">🎴 {cardOnlyLabel}</label>
+            {customFields.map((f) => (
+              <div key={f.key} className="form-section" style={{ gap: 4 }}>
+                <label className="form-hint" htmlFor={`inp-custom-${f.key}`}>
+                  {f.label[lang]}
+                </label>
+                <input
+                  id={`inp-custom-${f.key}`}
+                  className="form-input"
+                  value={state.custom[f.key] ?? ''}
+                  maxLength={f.maxLength}
+                  onChange={(e) => setCustom(f.key, e.target.value)}
+                  placeholder={f.placeholder}
+                />
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </aside>
   );
 }

@@ -1,114 +1,103 @@
 import { useDerived } from '../hooks/useDerived';
-import { spriteUrl } from '../data/characters';
+import './ConceptB.css';
+
+/** Real spell card names read as a short punchy phrase, not a paragraph.
+ *  freeText can run up to 300 chars, so only short entries become the hero
+ *  title — longer ones fall back to the nickname and surface as a note
+ *  instead, so nothing is ever dropped or rendered as an oversized wall of text. */
+const SPELL_NAME_MAX = 30;
 
 export default function ConceptB() {
   const d = useDerived();
+  const useFreeTextAsTitle = d.freeText.length > 0 && d.freeText.length <= SPELL_NAME_MAX;
+  const title = useFreeTextAsTitle ? d.freeText : `「${d.nickname}」`;
+  const longNote = !useFreeTextAsTitle ? d.freeText : '';
+  // Difficulty stars: nickname+reroll seeded roll (1–5); custom override (parsed +
+  // clamped 1–5) layered on top, falling back to the rolled value when non-numeric.
+  const rolledStarCount = d.rollInt('difficulty', 1, 5);
+  const parsedDifficulty = parseInt(d.getCustom('difficulty', String(rolledStarCount)), 10);
+  const starCount = Number.isNaN(parsedDifficulty) ? rolledStarCount : Math.min(5, Math.max(1, parsedDifficulty));
+  const seriesCaption = d.seriesList.length === 0 ? d.t.notSelected : d.seriesList.map((s) => s.label).join(' · ');
+  const acctCaption = d.acctList.length === 0 ? d.t.notSelected : d.acctList.map((a) => a.label).join(' · ');
 
   return (
-    <div id="preview-card" className="card-frame" style={{ background: 'transparent', border: 'none', boxShadow: 'none', paddingTop: 48, overflow: 'visible' }}>
-      <div className="cb-card">
-        <div className="cb-sprites" aria-hidden>
-          <img className="px cb-sprite" src={spriteUrl('1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Remilia Scarlet.png')} alt="" />
-          <img className="px cb-sprite mid" src={d.charSrc} alt="" />
-          <img className="px cb-sprite" src={spriteUrl('1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Patchouli Knowledge.png')} alt="" />
+    <div
+      id="preview-card"
+      className="card-frame"
+      style={{
+        background: 'radial-gradient(ellipse at 50% 34%, #6b0f24 0%, #290611 55%, #070204 100%)',
+        border: '1px solid rgba(255, 205, 140, 0.4)',
+        boxShadow: 'none',
+        overflow: 'hidden',
+      }}
+    >
+      <div className="dmk-card">
+        <div className="dmk-rings" aria-hidden="true" />
+        <div className="dmk-dots" aria-hidden="true" />
+
+        <div className="dmk-kicker font-dot">SPELL CARD</div>
+
+        <div className="dmk-sprite-wrap">
+          <img className="px dmk-sprite" src={d.charSrc} alt={d.charName} />
+          {d.avatarIsPhoto && <img className="dmk-sprite-photo" src={d.avatarSrc} alt="" />}
         </div>
-        <div className="cb-header">
-          <div className="cb-header-tag">SPELL CARD</div>
-          <div className="cb-header-title">「{d.t.intro}」</div>
+
+        <h1 className="dmk-title font-serif">{title}</h1>
+
+        {useFreeTextAsTitle && (
+          <div className="dmk-caster">
+            <span className="dmk-caster-tag font-dot">CASTER</span>
+            <span className="dmk-caster-name">{d.nickname}</span>
+          </div>
+        )}
+
+        <div className="dmk-fav">
+          <span className="dmk-fav-label">{d.t.bestChar}</span>
+          <span className="dmk-fav-name">{d.charName}</span>
         </div>
-        <div className="cb-body">
-          <section className="cb-section">
-            <h3>{d.t.nickname}</h3>
-            <div className="cb-name-row">
-              <span className={`cb-avatar ${d.avatarIsPhoto ? 'photo' : ''}`}>
-                <img className={d.avatarIsPhoto ? '' : 'px'} src={d.avatarSrc} alt="" />
+
+        <div className="dmk-stars-block">
+          <div className="dmk-stars-row" aria-hidden="true">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <span key={i} className={`dmk-star ${i < starCount ? 'is-filled' : ''}`}>
+                ★
               </span>
-              <span className="cb-nick">{d.nickname}</span>
-            </div>
-          </section>
-
-          <section className="cb-section">
-            <h3>{d.t.bestChar}</h3>
-            <div className="cb-fav-row">
-              <img className="px" src={d.charSrc} alt="" style={{ width: 52, height: 52 }} />
-              <div>
-                <div className="cb-fav-name">{d.charName}</div>
-                <div className="cb-fav-series-label">{d.t.mainSeries}:</div>
-                <div className="concept-chip-row">
-                  {d.seriesList.length === 0 ? (
-                    <span className="concept-meta">{d.t.notSelected}</span>
-                  ) : (
-                    d.seriesList.map((s) => (
-                      <span className="concept-chip" key={s.id}>
-                        {s.label}
-                      </span>
-                    ))
-                  )}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section className="cb-section">
-            <h3>{d.t.acctType}</h3>
-            <div style={{ paddingLeft: 13 }}>
-              <div className="concept-chip-row">
-                {d.acctList.length === 0 ? (
-                  <span className="concept-meta">{d.t.notSelected}</span>
-                ) : (
-                  d.acctList.map((a) => (
-                    <span className="concept-pill" key={a.id}>
-                      {a.label}
-                    </span>
-                  ))
-                )}
-              </div>
-            </div>
-          </section>
-
-          <section className="cb-section">
-            <h3>SNS</h3>
-            <div className="cb-grid3">
-              <div>
-                <div className="label">{d.t.fub}</div>
-                <div className="value">{d.fubLabel}</div>
-              </div>
-              <div>
-                <div className="label">{d.t.parting}</div>
-                <div className="value">{d.partingLabel}</div>
-              </div>
-              <div>
-                <div className="label">{d.t.otherGenre}</div>
-                <div className="value">{d.otherLabel}</div>
-              </div>
-            </div>
-          </section>
-
-          <section className="cb-section">
-            <h3>+</h3>
-            <div className="cb-misc">
-              <div className="cb-misc-row">
-                <div className="label">{d.t.dislike}</div>
-                <div className="value">{d.dislike}</div>
-              </div>
-              <div className="cb-misc-row">
-                <div className="label">{d.t.pairing}</div>
-                <div className="value">{d.pairing}</div>
-              </div>
-              {d.freeText && (
-                <div className="cb-misc-row">
-                  <div className="label">{d.t.freeText}</div>
-                  <div className="value">{d.freeText}</div>
-                </div>
-              )}
-            </div>
-          </section>
+            ))}
+            <span className="dmk-stars-count">×{d.seriesList.length}</span>
+          </div>
+          <div className="dmk-series-caption">{seriesCaption}</div>
         </div>
-        <div className="cb-footer">
-          <span>Touhou Project © ZUN</span>
-          <span>·</span>
-          <span>Sprites by Majstek</span>
+
+        <div className="dmk-symbol-row">
+          <span className="dmk-symbol-label">{d.t.acctType}</span>
+          <span className="dmk-symbol-val">{acctCaption}</span>
         </div>
+
+        <div className="dmk-micro-row">
+          <span>{d.fubLabel}</span>
+          <span className="dmk-sep">·</span>
+          <span>{d.partingLabel}</span>
+          <span className="dmk-sep">·</span>
+          <span>{d.otherLabel}</span>
+        </div>
+        <div className="dmk-micro-row dmk-muted">
+          <span>
+            {d.t.dislike} {d.dislike}
+          </span>
+          <span className="dmk-sep">·</span>
+          <span>
+            {d.t.pairing} {d.pairing}
+          </span>
+        </div>
+
+        {longNote && (
+          <div className="dmk-note">
+            <span className="dmk-note-tag font-dot">INCANTATION</span>
+            <p className="dmk-note-text">{longNote}</p>
+          </div>
+        )}
+
+        <div className="dmk-footer font-dot">Touhou Project © ZUN · Sprites by Majstek</div>
       </div>
     </div>
   );

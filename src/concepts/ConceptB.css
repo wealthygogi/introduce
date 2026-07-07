@@ -1,0 +1,223 @@
+/* ──────────────── Concept B: Spell Card Declaration (danmaku) ────────────────
+   Center-dominant, fixed crimson/black radial burst — independent of site
+   theme so the "declaration" flash always reads the same. Most fields are
+   shrunk to symbols (star count) or single caption lines; nothing is chip. */
+
+.dmk-card {
+  position: relative;
+  padding: 36px 28px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  color: #f7e9d8;
+  overflow: hidden;
+}
+.dmk-rings {
+  position: absolute;
+  top: 44%;
+  left: 50%;
+  width: 520px;
+  height: 520px;
+  transform: translate(-50%, -50%);
+  background: repeating-radial-gradient(
+    circle at 50% 50%,
+    transparent 0px,
+    transparent 34px,
+    rgba(255, 205, 140, 0.07) 34px,
+    rgba(255, 205, 140, 0.07) 36px
+  );
+  pointer-events: none;
+}
+.dmk-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1.4px);
+  background-size: 16px 16px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.dmk-kicker {
+  position: relative;
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: #ffcf8c;
+  opacity: 0.9;
+}
+.dmk-sprite-wrap {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0 2px;
+}
+.dmk-sprite {
+  width: 104px;
+  height: 104px;
+  filter: drop-shadow(0 0 22px rgba(255, 130, 90, 0.55)) drop-shadow(0 10px 18px rgba(0, 0, 0, 0.5));
+}
+.dmk-sprite-photo {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f7e9d8;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+.dmk-title {
+  position: relative;
+  font-size: clamp(24px, 4.4vw, 34px);
+  font-weight: 700;
+  color: #fbe8d3;
+  text-shadow: 0 0 24px rgba(255, 150, 110, 0.5), 0 2px 10px rgba(0, 0, 0, 0.5);
+  line-height: 1.35;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  margin-top: 6px;
+}
+.dmk-caster {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.dmk-caster-tag {
+  color: #290611;
+  background: #ffcf8c;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+  font-size: 10px;
+}
+.dmk-caster-name {
+  color: #f2c6a8;
+  font-weight: 600;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.dmk-fav {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 14px;
+  margin-top: 6px;
+}
+.dmk-fav-label {
+  color: #d8b7bb;
+}
+.dmk-fav-name {
+  color: #fbe8d3;
+  font-weight: 700;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.dmk-stars-block {
+  position: relative;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.dmk-stars-row {
+  font-size: 20px;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.2);
+}
+.dmk-star.is-filled {
+  color: #ffd479;
+  text-shadow: 0 0 10px rgba(255, 212, 121, 0.6);
+}
+.dmk-stars-count {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #d8b7bb;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.dmk-series-caption {
+  font-size: 12px;
+  color: #d8b7bb;
+  max-width: 460px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+.dmk-symbol-row {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+  margin-top: 10px;
+  max-width: 460px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.dmk-symbol-label {
+  color: #d8b7bb;
+  flex-shrink: 0;
+}
+.dmk-symbol-val {
+  color: #f2ded0;
+  font-weight: 600;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.dmk-micro-row {
+  position: relative;
+  font-size: 12px;
+  color: #f2ded0;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 4px;
+}
+.dmk-micro-row.dmk-muted {
+  color: #b08c8e;
+}
+.dmk-sep {
+  opacity: 0.5;
+}
+.dmk-note {
+  position: relative;
+  margin-top: 14px;
+  width: min(460px, 100%);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 205, 140, 0.25);
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-align: left;
+}
+.dmk-note-tag {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #ffcf8c;
+  margin-bottom: 6px;
+}
+.dmk-note-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #f2ded0;
+  white-space: pre-wrap;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.dmk-footer {
+  position: relative;
+  margin-top: 16px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #8a6a68;
+}

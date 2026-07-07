@@ -1,77 +1,90 @@
 import { useDerived } from '../hooks/useDerived';
-import { spriteUrl } from '../data/characters';
+import './ConceptC.css';
 
 export default function ConceptC() {
   const d = useDerived();
+  const seriesText = d.seriesList.length === 0 ? d.t.notSelected : d.seriesList.map((s) => s.label).join(' · ');
+  const acctText = d.acctList.length === 0 ? d.t.notSelected : d.acctList.map((a) => a.label).join(' · ');
+  // Small "ver.X" build stamp under the title/subtitle — separate from the
+  // localized subtitle text above it, so the subtitle wording never gets clobbered.
+  const version = d.getCustom('version', '1.00');
+
   return (
-    <div id="preview-card" className="card-frame" style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}>
-      <div className="cc-card">
-        <div className="cc-sprites">
-          <img className="px" src={spriteUrl('4. Other/[1] Main Characters/Marisa Kirisame.png')} alt="" />
-          <img className="px" src={d.charSrc} alt="" style={{ width: 64, height: 64 }} />
-          <img className="px" src={spriteUrl('1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Cirno.png')} alt="" />
-        </div>
-        <div className="cc-pre">★ TOUHOU INTRO ★</div>
-        {d.avatarIsPhoto && (
-          <img
-            className="cc-photo"
-            src={d.avatarSrc}
-            alt=""
-          />
-        )}
-        <h1 className="cc-title">{d.nickname}</h1>
-        <div className="cc-subtitle">{d.charName}</div>
+    <div
+      id="preview-card"
+      className="card-frame"
+      style={{
+        background: 'linear-gradient(180deg, #14131c 0%, #07070b 75%)',
+        border: '1px solid rgba(232, 201, 136, 0.35)',
+        boxShadow: 'none',
+        overflow: 'hidden',
+      }}
+    >
+      <div className="tsc-card">
+        <span className="tsc-corner tl" aria-hidden="true" />
+        <span className="tsc-corner tr" aria-hidden="true" />
+        <span className="tsc-corner bl" aria-hidden="true" />
+        <span className="tsc-corner br" aria-hidden="true" />
 
-        <div className="cc-menu">
-          {/* 다값 항목은 chip-row 블록 */}
-          <div className="cc-menu-block">
-            <div className="cc-block-label">{d.t.mainSeries}</div>
-            <div className="cc-chips">
-              {d.seriesList.length === 0 ? (
-                <span className="cc-meta">{d.t.notSelected}</span>
-              ) : (
-                d.seriesList.map((s) => (
-                  <span className="cc-chip" key={s.id}>
-                    {s.label}
-                  </span>
-                ))
-              )}
-            </div>
-          </div>
+        <div className="tsc-badge font-pixel">TOUHOU INTRO</div>
 
-          <div className="cc-menu-block">
-            <div className="cc-block-label">{d.t.acctType}</div>
-            <div className="cc-chips">
-              {d.acctList.length === 0 ? (
-                <span className="cc-meta">{d.t.notSelected}</span>
-              ) : (
-                d.acctList.map((a) => (
-                  <span className="cc-chip" key={a.id}>
-                    {a.label}
-                  </span>
-                ))
-              )}
-            </div>
-          </div>
-
-          {/* 단일 값은 기존 inline 메뉴 */}
-          <div className="cc-menu-item">
-            <span className="label">{d.t.fub} / {d.t.parting} / {d.t.otherGenre}</span>
-            <span className="value">{d.fubLabel} · {d.partingLabel} · {d.otherLabel}</span>
-          </div>
-          <div className="cc-menu-item">
-            <span className="label">{d.t.dislike}</span>
-            <span className="value">{d.dislike}</span>
-          </div>
-          <div className="cc-menu-item">
-            <span className="label">{d.t.pairing}</span>
-            <span className="value">{d.pairing}</span>
-          </div>
+        <div className="tsc-sprite-wrap">
+          <img className="px tsc-sprite" src={d.charSrc} alt={d.charName} />
+          {d.avatarIsPhoto && <img className="tsc-sprite-photo" src={d.avatarSrc} alt="" />}
         </div>
 
-        {d.freeText && <div className="cc-free">{d.freeText}</div>}
+        <div className="tsc-titles">
+          <h1 className="tsc-title">{d.nickname}</h1>
+          <div className="tsc-subtitle">{d.t.cardLabel}</div>
+          <div className="tsc-version font-dot">ver.{version}</div>
+        </div>
 
-        <div className="cc-credit">PRESS START · Touhou Project © ZUN · Sprites by Majstek</div>
+        <nav className="tsc-menu">
+          <div className="tsc-menu-item tsc-menu-cta">
+            <span className="tsc-arrow">▶</span>
+            <span>{d.t.startCta}</span>
+          </div>
+          <div className="tsc-menu-item">
+            <span className="tsc-arrow">▶</span>
+            <span className="tsc-menu-label">{d.t.bestChar}</span>
+            <span className="tsc-menu-value">{d.charName}</span>
+          </div>
+          <div className="tsc-menu-item">
+            <span className="tsc-arrow">▶</span>
+            <span className="tsc-menu-label">{d.t.mainSeries}</span>
+            <span className="tsc-menu-value">{seriesText}</span>
+          </div>
+          <div className="tsc-menu-item">
+            <span className="tsc-arrow">▶</span>
+            <span className="tsc-menu-label">{d.t.acctType}</span>
+            <span className="tsc-menu-value">{acctText}</span>
+          </div>
+          <div className="tsc-menu-item tsc-menu-sub">
+            <span className="tsc-arrow">▶</span>
+            <span className="tsc-menu-label">SNS</span>
+            <span className="tsc-menu-value">
+              {d.fubLabel} · {d.partingLabel} · {d.otherLabel}
+            </span>
+          </div>
+          <div className="tsc-menu-item tsc-menu-sub">
+            <span className="tsc-arrow">▶</span>
+            <span className="tsc-menu-label">
+              {d.t.dislike} / {d.t.pairing}
+            </span>
+            <span className="tsc-menu-value">
+              {d.dislike} / {d.pairing}
+            </span>
+          </div>
+          {d.freeText && (
+            <div className="tsc-menu-item tsc-menu-sub">
+              <span className="tsc-arrow">▶</span>
+              <span className="tsc-menu-label">{d.t.freeText}</span>
+              <span className="tsc-menu-value">{d.freeText}</span>
+            </div>
+          )}
+        </nav>
+
+        <div className="tsc-footer font-dot">Touhou Project © ZUN · Sprites by Majstek</div>
       </div>
     </div>
   );

@@ -15,6 +15,7 @@ export interface Messages {
   startCta: string;
   back: string;
   download: string;
+  reroll: string;
   saving: string;
   saved: string;
   saveFailed: string;
@@ -84,6 +85,26 @@ export interface Messages {
   conceptDDesc: string;
   conceptE: string;
   conceptEDesc: string;
+  conceptF: string;
+  conceptFDesc: string;
+  conceptG: string;
+  conceptGDesc: string;
+  conceptH: string;
+  conceptHDesc: string;
+  conceptI: string;
+  conceptIDesc: string;
+  conceptJ: string;
+  conceptJDesc: string;
+  conceptK: string;
+  conceptKDesc: string;
+  conceptL: string;
+  conceptLDesc: string;
+  conceptM: string;
+  conceptMDesc: string;
+  conceptN: string;
+  conceptNDesc: string;
+  conceptO: string;
+  conceptODesc: string;
 }
 
 export const messages: Record<Lang, Messages> = {
@@ -97,6 +118,7 @@ export const messages: Record<Lang, Messages> = {
     startCta: '시작하기',
     back: '목록으로',
     download: '이미지로 저장',
+    reroll: '다시 뽑기',
     saving: '저장 중...',
     saved: '저장됨',
     saveFailed: '저장 실패',
@@ -159,6 +181,26 @@ export const messages: Record<Lang, Messages> = {
     conceptDDesc: '캐릭터가 직접 당신을 소개하는 스토리 대화창 연출입니다.',
     conceptE: '설정 화면',
     conceptEDesc: '게임 설정 메뉴처럼 각 항목을 선택지로 표시합니다.',
+    conceptF: '분분마루 신문',
+    conceptFDesc: '샤메이마루 아야의 특종 1면처럼 소개합니다.',
+    conceptG: '하쿠레이 오미쿠지',
+    conceptGDesc: '신사 제비뽑기 운세처럼 소개합니다.',
+    conceptH: '영원정 처방전',
+    conceptHDesc: '에이린의 약 처방전 형식으로 소개합니다.',
+    conceptI: '코미케 서클',
+    conceptIDesc: '동인 서클 명함처럼 소개합니다.',
+    conceptJ: '레트로 PC-98',
+    conceptJDesc: '구작 도트 화면 감성으로 소개합니다.',
+    conceptK: '요괴 도감',
+    conceptKDesc: '요괴 도감 카드처럼 등록합니다.',
+    conceptL: '브와르 마도서',
+    conceptLDesc: '마법 도서관의 마도서처럼 소개합니다.',
+    conceptM: '연회 초대장',
+    conceptMDesc: '환상향 연회 초대장처럼 소개합니다.',
+    conceptN: '겐소쿄 메신저',
+    conceptNDesc: '현대적 메신저 프로필 카드처럼 소개합니다.',
+    conceptO: '트레이딩 카드',
+    conceptODesc: '능력치와 기술이 있는 수집형 카드처럼 소개합니다.',
   },
   ja: {
     brand: '東方 自己紹介',
@@ -170,6 +212,7 @@ export const messages: Record<Lang, Messages> = {
     startCta: 'はじめる',
     back: '一覧へ',
     download: '画像として保存',
+    reroll: '引き直す',
     saving: '保存中...',
     saved: '保存しました',
     saveFailed: '保存失敗',
@@ -232,6 +275,26 @@ export const messages: Record<Lang, Messages> = {
     conceptDDesc: 'キャラクターが直接あなたを紹介するストーリー会話演出。',
     conceptE: '設定画面',
     conceptEDesc: 'ゲームの設定メニューのように各項目を選択肢で表示。',
+    conceptF: '文々。新聞',
+    conceptFDesc: '射命丸文のスクープ一面のように紹介します。',
+    conceptG: '博麗神社 御神籤',
+    conceptGDesc: '神社のおみくじのように運勢で紹介します。',
+    conceptH: '永遠亭 処方箋',
+    conceptHDesc: '永琳の処方箋の形式で紹介します。',
+    conceptI: '同人サークル',
+    conceptIDesc: 'コミケのサークルカードのように紹介します。',
+    conceptJ: '旧作レトロ',
+    conceptJDesc: '旧作のドット画面テイストで紹介します。',
+    conceptK: '妖怪図鑑',
+    conceptKDesc: '妖怪図鑑カードのように登録します。',
+    conceptL: 'ヴワル魔法図書館',
+    conceptLDesc: '魔法図書館の魔導書のように紹介します。',
+    conceptM: '宴会 招待状',
+    conceptMDesc: '幻想郷の宴会の招待状のように紹介します。',
+    conceptN: '幻想郷メッセンジャー',
+    conceptNDesc: '現代風メッセンジャーのプロフィールのように紹介します。',
+    conceptO: 'トレーディングカード',
+    conceptODesc: 'ステータスと技を持つ収集カードのように紹介します。',
   },
   en: {
     brand: 'Touhou Intro',
@@ -243,6 +306,7 @@ export const messages: Record<Lang, Messages> = {
     startCta: 'Start',
     back: 'Back',
     download: 'Save as Image',
+    reroll: 'Reroll',
     saving: 'Saving...',
     saved: 'Saved',
     saveFailed: 'Save failed',
@@ -305,5 +369,25 @@ export const messages: Record<Lang, Messages> = {
     conceptDDesc: 'A character introduces you directly, story dialogue style.',
     conceptE: 'Config Menu',
     conceptEDesc: 'Game settings menu layout where each item is a selectable option.',
+    conceptF: 'Bunbunmaru News',
+    conceptFDesc: 'A front-page scoop, Aya Shameimaru style.',
+    conceptG: 'Shrine Fortune',
+    conceptGDesc: 'An omikuji fortune slip drawn at the shrine.',
+    conceptH: 'Eientei Prescription',
+    conceptHDesc: 'A clinical prescription from Eirin.',
+    conceptI: 'Doujin Circle',
+    conceptIDesc: 'A Comiket circle card.',
+    conceptJ: 'Retro PC-98',
+    conceptJDesc: 'Retro dot-matrix vibes from the PC-98 era.',
+    conceptK: 'Youkai Encyclopedia',
+    conceptKDesc: 'Registered like a youkai encyclopedia entry.',
+    conceptL: 'Voile Grimoire',
+    conceptLDesc: 'A tome from the Voile magic library.',
+    conceptM: 'Banquet Invitation',
+    conceptMDesc: 'A Gensokyo banquet invitation.',
+    conceptN: 'Gensokyo Messenger',
+    conceptNDesc: 'A modern messenger profile card.',
+    conceptO: 'Trading Card',
+    conceptODesc: 'A collectible TCG card with stats and moves.',
   },
 };

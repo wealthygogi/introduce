@@ -1,0 +1,313 @@
+/* ──────────────── Concept F: Bunbunmaru Newspaper ──────────────── */
+.cf-card {
+  --cf-ink: #1a1a1a;
+  --cf-paper: #f3efe4;
+  --cf-rule: #999;
+  background: var(--cf-paper);
+  color: var(--cf-ink);
+  font-family: 'Noto Serif KR', 'Noto Serif JP', serif;
+  border: 3px double var(--cf-ink);
+  padding: 26px 28px 18px;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  animation: cf-print-in 380ms ease-out both;
+}
+
+.cf-masthead {
+  text-align: center;
+  border-bottom: 4px solid var(--cf-ink);
+  padding-bottom: 8px;
+  margin-bottom: 6px;
+}
+.cf-masthead-title {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.cf-masthead-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 10px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px solid var(--cf-ink);
+  word-break: keep-all;
+}
+.cf-masthead-meta span:last-child {
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.cf-masthead-meta span:first-child {
+  font-weight: 700;
+  color: #a3241c;
+  animation: cf-stamp-in 420ms 200ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.cf-headline {
+  font-size: 28px;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.25;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  border-bottom: 2px solid var(--cf-ink);
+  padding-bottom: 10px;
+  margin: 14px 0 8px;
+}
+.cf-byline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  font-style: italic;
+  color: #4a4a4a;
+  margin-bottom: 16px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.cf-byline-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.cf-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+.cf-photo {
+  flex: 0 0 42%;
+  min-width: 0;
+}
+.cf-photo-frame {
+  width: 100%;
+  height: 150px;
+  border: 3px solid var(--cf-ink);
+  background: #e9e2d0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.cf-photo-real {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.1);
+}
+.cf-photo-sprite {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+}
+.cf-photo-caption {
+  font-size: 11px;
+  text-align: center;
+  color: #4a4a4a;
+  margin-top: 6px;
+  font-style: italic;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.cf-index {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--cf-ink);
+  padding: 10px 12px;
+}
+.cf-index-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--cf-ink);
+  padding-bottom: 5px;
+  margin-bottom: 7px;
+  word-break: keep-all;
+}
+.cf-index-group + .cf-index-group {
+  margin-top: 8px;
+}
+.cf-index-group-label {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #6a6a6a;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+  word-break: keep-all;
+}
+.cf-index-line {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 12px;
+  line-height: 1.6;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.cf-index-line.muted {
+  color: #8a8a8a;
+  font-style: italic;
+}
+.cf-index-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 65%;
+}
+.cf-index-leader {
+  flex: 1;
+  border-bottom: 1px dotted #8a8a8a;
+  margin-bottom: 3px;
+}
+.cf-index-page {
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.cf-article {
+  column-count: 2;
+  column-gap: 20px;
+  column-rule: 1px solid var(--cf-rule);
+}
+.cf-subhead {
+  break-inside: avoid;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: var(--cf-ink);
+  color: var(--cf-paper);
+  display: inline-block;
+  padding: 2px 8px;
+  margin: 0 0 6px;
+  word-break: keep-all;
+}
+.cf-lede-text,
+.cf-agate,
+.cf-para {
+  break-inside: avoid;
+  font-size: 13.5px;
+  line-height: 1.7;
+  margin-bottom: 14px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+.cf-lede-icon {
+  float: left;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  margin: 2px 10px 6px 0;
+  padding: 3px;
+  border: 2px solid var(--cf-ink);
+  background: #e9e2d0;
+}
+.cf-agate {
+  font-size: 11.5px;
+  color: #3a3a3a;
+  letter-spacing: 0.2px;
+}
+.cf-para::first-letter {
+  font-size: 2.5em;
+  font-weight: 900;
+  float: left;
+  line-height: 0.78;
+  padding: 2px 4px 0 0;
+}
+.cf-pullquote {
+  break-inside: avoid;
+  border-top: 2px solid var(--cf-ink);
+  border-bottom: 2px solid var(--cf-ink);
+  padding: 10px 4px;
+  margin: 4px 0 16px;
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1.5;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.cf-pullquote-mark {
+  font-size: 22px;
+  font-style: normal;
+  margin-right: 2px;
+  color: #a3241c;
+}
+
+.cf-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--cf-ink);
+}
+.cf-adbox {
+  flex: 1;
+  min-width: 0;
+  font-size: 10px;
+  border: 1px dashed #8a8a8a;
+  padding: 5px 8px;
+  color: #4a4a4a;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.cf-issue {
+  flex-shrink: 0;
+  font-size: 10px;
+  color: #4a4a4a;
+  white-space: nowrap;
+}
+
+.cf-footer {
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--cf-ink);
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #4a4a4a;
+  font-family: 'Press Start 2P', monospace;
+}
+
+@keyframes cf-print-in {
+  from {
+    opacity: 0;
+    transform: scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes cf-stamp-in {
+  from {
+    opacity: 0;
+    transform: scale(1.5) rotate(-6deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-card,
+  .cf-masthead-meta span:first-child {
+    animation: none;
+  }
+}

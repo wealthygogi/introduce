@@ -45,87 +45,97 @@ export default function ConceptJ() {
             <span className="cj-hiscore-value">{hiScore}</span>
           </div>
 
-          <div className="cj-block">
-            <div className="cj-prompt">
-              <span className="cj-path">C:\GENSOKYO&gt;</span> <span className="cj-cmd">WHOAMI</span>
-            </div>
-            <div className="cj-kv">
-              <span className="cj-k">NAME</span>
-              <span className="cj-v">{d.nickname}</span>
-            </div>
-            <div className="cj-kv">
-              <span className="cj-k">CHAR</span>
-              <span className="cj-v cj-v-char">
-                <img className="px cj-sprite" src={d.charSrc} alt="" />
-                {d.charName}
-              </span>
-            </div>
-          </div>
-
-          <div className="cj-block">
-            <div className="cj-prompt">
-              <span className="cj-path">C:\GENSOKYO&gt;</span> <span className="cj-cmd">DIR SERIES\</span>
-            </div>
-            <div className="cj-dir">
-              {d.seriesList.length === 0 ? (
-                <div className="cj-dirrow cj-empty">
-                  <span>{d.t.notSelected}</span>
+          {/* command output splits into 2 columns here (left: WHOAMI + DIR SERIES,
+              right: DIR ACCOUNT + CONFIG.SYS) so the terminal's command history
+              runs side by side instead of one long vertical scroll — the boot
+              header above and message/prompt/footer cap below stay full width */}
+          <div className="cj-columns">
+            <div className="cj-col">
+              <div className="cj-block">
+                <div className="cj-prompt">
+                  <span className="cj-path">C:\GENSOKYO&gt;</span> <span className="cj-cmd">WHOAMI</span>
                 </div>
-              ) : (
-                d.seriesList.map((s) => (
-                  <div className="cj-dirrow" key={s.id}>
-                    <span className="cj-dir-name">{s.label}</span>
-                    <span className="cj-dir-flag">&lt;DIR&gt;</span>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          <div className="cj-block">
-            <div className="cj-prompt">
-              <span className="cj-path">C:\GENSOKYO&gt;</span> <span className="cj-cmd">DIR ACCOUNT\</span>
-            </div>
-            <div className="cj-dir">
-              {d.acctList.length === 0 ? (
-                <div className="cj-filerow cj-empty">
-                  <span>{d.t.notSelected}</span>
+                <div className="cj-kv">
+                  <span className="cj-k">NAME</span>
+                  <span className="cj-v">{d.nickname}</span>
                 </div>
-              ) : (
-                d.acctList.map((a, i) => (
-                  <div className="cj-filerow" key={a.id}>
-                    <span className="cj-file-name">{a.label}</span>
-                    <span className="cj-file-ext">.SYS</span>
-                    <span className="cj-file-size">{(i + 1) * 4}KB</span>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
+                <div className="cj-kv">
+                  <span className="cj-k">CHAR</span>
+                  <span className="cj-v cj-v-char">
+                    <img className="px cj-sprite" src={d.charSrc} alt="" />
+                    {d.charName}
+                  </span>
+                </div>
+              </div>
 
-          <div className="cj-block">
-            <div className="cj-prompt">
-              <span className="cj-path">C:\GENSOKYO&gt;</span> <span className="cj-cmd">TYPE CONFIG.SYS</span>
+              <div className="cj-block">
+                <div className="cj-prompt">
+                  <span className="cj-path">C:\GENSOKYO&gt;</span> <span className="cj-cmd">DIR SERIES\</span>
+                </div>
+                <div className="cj-dir">
+                  {d.seriesList.length === 0 ? (
+                    <div className="cj-dirrow cj-empty">
+                      <span>{d.t.notSelected}</span>
+                    </div>
+                  ) : (
+                    d.seriesList.map((s) => (
+                      <div className="cj-dirrow" key={s.id}>
+                        <span className="cj-dir-name">{s.label}</span>
+                        <span className="cj-dir-flag">&lt;DIR&gt;</span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
             </div>
-            <div className="cj-config">
-              <div className="cj-config-row">
-                <span className="cj-config-key">&gt; {d.t.fub}:</span> <span className="cj-config-val">{d.fubLabel}</span>
+
+            <div className="cj-col">
+              <div className="cj-block">
+                <div className="cj-prompt">
+                  <span className="cj-path">C:\GENSOKYO&gt;</span> <span className="cj-cmd">DIR ACCOUNT\</span>
+                </div>
+                <div className="cj-dir">
+                  {d.acctList.length === 0 ? (
+                    <div className="cj-filerow cj-empty">
+                      <span>{d.t.notSelected}</span>
+                    </div>
+                  ) : (
+                    d.acctList.map((a, i) => (
+                      <div className="cj-filerow" key={a.id}>
+                        <span className="cj-file-name">{a.label}</span>
+                        <span className="cj-file-ext">.SYS</span>
+                        <span className="cj-file-size">{(i + 1) * 4}KB</span>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
-              <div className="cj-config-row">
-                <span className="cj-config-key">&gt; {d.t.parting}:</span>{' '}
-                <span className="cj-config-val">{d.partingLabel}</span>
-              </div>
-              <div className="cj-config-row">
-                <span className="cj-config-key">&gt; {d.t.otherGenre}:</span>{' '}
-                <span className="cj-config-val">{d.otherLabel}</span>
-              </div>
-              <div className="cj-config-row">
-                <span className="cj-config-key">&gt; {d.t.dislike}:</span>{' '}
-                <span className="cj-config-val">{d.dislike}</span>
-              </div>
-              <div className="cj-config-row">
-                <span className="cj-config-key">&gt; {d.t.pairing}:</span>{' '}
-                <span className="cj-config-val">{d.pairing}</span>
+
+              <div className="cj-block">
+                <div className="cj-prompt">
+                  <span className="cj-path">C:\GENSOKYO&gt;</span> <span className="cj-cmd">TYPE CONFIG.SYS</span>
+                </div>
+                <div className="cj-config">
+                  <div className="cj-config-row">
+                    <span className="cj-config-key">&gt; {d.t.fub}:</span> <span className="cj-config-val">{d.fubLabel}</span>
+                  </div>
+                  <div className="cj-config-row">
+                    <span className="cj-config-key">&gt; {d.t.parting}:</span>{' '}
+                    <span className="cj-config-val">{d.partingLabel}</span>
+                  </div>
+                  <div className="cj-config-row">
+                    <span className="cj-config-key">&gt; {d.t.otherGenre}:</span>{' '}
+                    <span className="cj-config-val">{d.otherLabel}</span>
+                  </div>
+                  <div className="cj-config-row">
+                    <span className="cj-config-key">&gt; {d.t.dislike}:</span>{' '}
+                    <span className="cj-config-val">{d.dislike}</span>
+                  </div>
+                  <div className="cj-config-row">
+                    <span className="cj-config-key">&gt; {d.t.pairing}:</span>{' '}
+                    <span className="cj-config-val">{d.pairing}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

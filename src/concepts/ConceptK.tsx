@@ -12,6 +12,22 @@ function renderTrack(total: number, level: number) {
   );
 }
 
+// Each gauge gets its own row (label + track + value) instead of sharing grid
+// columns across all 3 rows — a shared "auto" label column sized by the widest
+// label (타장르 언급) plus a shared value column sized by the widest value
+// (자유(FREE)), even though those two happen to live in different rows, left
+// almost no room for the track and made the whole row wrap. Per-row flex keeps
+// label/value at their own natural width and lets the track absorb the rest.
+function renderGaugeRow(label: string, total: number, level: number, value: string) {
+  return (
+    <div className="ck-gauge-row">
+      <span className="ck-gauge-label">{label}</span>
+      {renderTrack(total, level)}
+      <span className="ck-gauge-value">{value}</span>
+    </div>
+  );
+}
+
 export default function ConceptK() {
   const d = useDerived();
   const flavor = {
@@ -83,17 +99,9 @@ export default function ConceptK() {
 
           <div className="ck-stats-col">
             <div className="ck-gauges">
-              <span className="ck-gauge-label">{d.t.fub}</span>
-              {renderTrack(2, fubLevel)}
-              <span className="ck-gauge-value">{d.fubLabel}</span>
-
-              <span className="ck-gauge-label">{d.t.otherGenre}</span>
-              {renderTrack(3, otherLevel)}
-              <span className="ck-gauge-value">{d.otherLabel}</span>
-
-              <span className="ck-gauge-label">{d.t.parting}</span>
-              {renderTrack(3, partingLevel)}
-              <span className="ck-gauge-value">{d.partingLabel}</span>
+              {renderGaugeRow(d.t.fub, 2, fubLevel, d.fubLabel)}
+              {renderGaugeRow(d.t.otherGenre, 3, otherLevel, d.otherLabel)}
+              {renderGaugeRow(d.t.parting, 3, partingLevel, d.partingLabel)}
             </div>
 
             <div className="ck-classify">

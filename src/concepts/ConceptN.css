@@ -10,30 +10,30 @@
 
 .cn-cover {
   position: relative;
-  height: 108px;
+  height: 62px;
   background: linear-gradient(135deg, var(--accent), var(--accent-strong));
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
-  padding: 14px 18px;
+  padding: 9px 14px;
 }
 
 .cn-cover-sprite {
-  width: 40px;
-  height: 40px;
+  width: 28px;
+  height: 28px;
   opacity: 0.9;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
 }
 
 .cn-avatar {
   position: absolute;
-  top: 66px;
-  left: 28px;
-  width: 84px;
-  height: 84px;
+  top: 20px;
+  left: 20px;
+  width: 62px;
+  height: 62px;
   border-radius: 50%;
   background: var(--accent-soft);
-  border: 5px solid var(--bg-card);
+  border: 4px solid var(--bg-card);
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -41,8 +41,8 @@
 }
 
 .cn-avatar img {
-  width: 52px;
-  height: 52px;
+  width: 40px;
+  height: 40px;
 }
 
 .cn-avatar.photo img {
@@ -52,10 +52,10 @@
 }
 
 .cn-body {
-  padding: 48px 22px 22px;
+  padding: 28px 20px 16px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
 .cn-name-row {
@@ -119,17 +119,16 @@
 .cn-badge-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 8px;
-  padding-bottom: 2px;
+  gap: 7px 6px;
 }
 
 .cn-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 30px;
-  padding: 6px 14px;
-  border-radius: 14px;
+  min-height: 25px;
+  padding: 4px 12px;
+  border-radius: 13px;
   background: var(--accent-soft);
   border: 1.5px solid var(--bg-card);
   outline: 1px solid var(--border);
@@ -163,16 +162,15 @@
 .cn-stream {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 4px;
-  padding-top: 14px;
+  gap: 7px;
+  padding-top: 10px;
   border-top: 1px dashed var(--border);
 }
 
 .cn-msg {
   display: flex;
   align-items: flex-end;
-  gap: 8px;
+  gap: 7px;
   animation: cn-rise 380ms ease both;
 }
 .cn-msg-received {
@@ -206,12 +204,6 @@
 .cn-msg:nth-child(8) {
   animation-delay: 350ms;
 }
-.cn-msg:nth-child(9) {
-  animation-delay: 400ms;
-}
-.cn-msg:nth-child(10) {
-  animation-delay: 450ms;
-}
 
 @keyframes cn-rise {
   from {
@@ -230,16 +222,16 @@
 }
 
 .cn-msg-avatar {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
   border-radius: 50%;
   background: var(--accent-soft);
   padding: 3px;
   box-shadow: var(--shadow-sm);
-  /* .cn-msg aligns this row to flex-end; offset by the timestamp caption's height
-     so the avatar hugs the bubble itself instead of the caption below it */
-  margin-bottom: 13.5px;
+  /* received bubbles carry no trailing timestamp caption (it's shown once per
+     exchange, on the reply), so .cn-msg's align-items:flex-end already hugs
+     the avatar to the bubble's own bottom edge with no extra offset needed */
 }
 
 .cn-bubble-wrap {
@@ -257,9 +249,9 @@
 
 .cn-bubble {
   font-size: 13.5px;
-  line-height: 1.55;
-  padding: 9px 13px;
-  border-radius: 16px;
+  line-height: 1.45;
+  padding: 7px 12px;
+  border-radius: 15px;
   word-break: keep-all;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
@@ -277,36 +269,47 @@
 
 .cn-bubble.sent.hero {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 14px 8px 8px;
+  flex-direction: column;
+  gap: 5px;
+  padding: 7px 12px;
   background: var(--bg-card);
   color: var(--fg-strong);
   border: 2px solid var(--accent);
 }
+.cn-hero-greet {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fg-strong);
+}
+.cn-hero-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
 .cn-hero-sprite {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
-  border-radius: 10px;
+  border-radius: 9px;
   background: var(--accent-soft);
-  padding: 4px;
+  padding: 3px;
 }
 .cn-hero-text {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   min-width: 0;
 }
 .cn-hero-kicker {
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   color: var(--accent-strong);
 }
 .cn-hero-name {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--fg-strong);
   word-break: keep-all;
@@ -314,16 +317,16 @@
 }
 
 .cn-msg-time {
-  font-size: 10.5px;
+  font-size: 9.5px;
   line-height: 1;
   color: var(--fg-subtle);
-  margin-top: 3px;
-  padding: 0 4px;
+  margin-top: 2px;
+  padding: 0 3px;
 }
 
 .cn-footer {
   border-top: 1px solid var(--border);
-  padding: 12px 24px;
+  padding: 10px 22px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

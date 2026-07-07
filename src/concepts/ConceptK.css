@@ -230,27 +230,39 @@
   gap: 14px;
 }
 .ck-gauges {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   background: var(--ck-overlay-gauges);
   border: 1px solid color-mix(in srgb, var(--ck-gold) 25%, transparent);
   border-radius: 10px;
   padding: 10px 12px;
 }
+/* Each row sizes its own label/track/value instead of sharing a grid column
+   across all 3 rows — see the comment on renderGaugeRow() in ConceptK.tsx.
+   Label and value are nowrap and never shrink; the track is the only part
+   that gives, so the row always stays on one line regardless of how long a
+   given label or value turns out to be (FUB / other-genre / parting, in any
+   of the 3 languages). */
+.ck-gauge-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .ck-gauge-label {
+  flex: 0 0 auto;
+  min-width: 64px;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.3px;
   color: var(--ck-gold-ink);
-  word-break: keep-all;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
 }
 .ck-track {
   display: flex;
+  flex: 1 1 auto;
+  min-width: 24px;
   gap: 3px;
-  min-width: 40px;
   padding: 2px;
   border-radius: 5px;
   background: color-mix(in srgb, var(--ck-gold) 10%, transparent);
@@ -267,6 +279,11 @@
   box-shadow: 0 0 6px color-mix(in srgb, var(--ck-gold) 60%, transparent);
 }
 .ck-gauge-value {
+  /* No shared min-width (unlike the label): a cross-row floor here would size
+     every row's value to the longest one anywhere (e.g. 자유(FREE)), even on
+     rows whose own value is short (가끔, 언팔) — stealing width the track
+     could otherwise use. Right-aligned + nowrap is enough to keep it tidy. */
+  flex: 0 0 auto;
   font-size: 12px;
   color: var(--ck-text);
   text-align: right;

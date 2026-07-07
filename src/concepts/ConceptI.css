@@ -1,0 +1,304 @@
+/* ──────────────── Concept I: Comiket Circle Catalog ──────────────── */
+.ci-card {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  color: #222222;
+}
+
+.ci-masthead {
+  background: #1a1a1a;
+  color: #ffffff;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.ci-masthead-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.ci-masthead-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+.ci-masthead-sub {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #ff9ec2;
+}
+.ci-cameo {
+  width: 30px;
+  height: 30px;
+  opacity: 0.9;
+  flex-shrink: 0;
+}
+
+.ci-map-block {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 16px 20px 0;
+  padding: 10px 14px;
+  background: #f7f7f7;
+  border: 1px solid #ececec;
+  border-radius: 10px;
+}
+.ci-map {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 3px;
+  width: 168px;
+  flex-shrink: 0;
+}
+.ci-booth {
+  aspect-ratio: 1;
+  background: #e2e2e2;
+  border-radius: 2px;
+}
+.ci-booth.is-mine {
+  background: #ff4081;
+  box-shadow: 0 0 0 2px rgba(255, 64, 129, 0.35);
+}
+.ci-map-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.ci-map-tag {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #999999;
+}
+.ci-map-code {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 18px;
+  color: #1a1a1a;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+.ci-main {
+  display: flex;
+  gap: 18px;
+  padding: 18px 20px 4px;
+}
+.ci-cut {
+  position: relative;
+  flex: 0 0 148px;
+  height: 148px;
+  border: 2px dashed #cccccc;
+  border-radius: 8px;
+  background: linear-gradient(45deg, #fafafa 25%, transparent 25%, transparent 75%, #fafafa 75%),
+    linear-gradient(45deg, #fafafa 25%, #ffffff 25%, #ffffff 75%, #fafafa 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ci-cut img {
+  width: 100px;
+  height: 100px;
+}
+.ci-cut-tag {
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #aaaaaa;
+}
+.ci-ident {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+.ci-kicker {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #c2185b;
+}
+.ci-name {
+  font-size: 27px;
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1.2;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.ci-fav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 14px;
+  color: #555555;
+}
+.ci-fav-label {
+  font-weight: 700;
+  color: #c2185b;
+}
+.ci-fav-value {
+  font-weight: 600;
+  color: #222222;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.ci-catalog {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px 20px 4px;
+}
+.ci-catalog-col {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ci-catalog-head {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a1a;
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 6px;
+}
+.ci-eyebrow {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: #c2185b;
+}
+.ci-empty {
+  font-size: 13px;
+  color: #aaaaaa;
+  font-style: italic;
+}
+
+.ci-index {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.ci-index li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+}
+.ci-index-no {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 11px;
+  color: #ff4081;
+  flex-shrink: 0;
+}
+.ci-index-label {
+  color: #333333;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.ci-price-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.ci-price-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  font-size: 13px;
+}
+.ci-price-name {
+  color: #333333;
+  white-space: nowrap;
+}
+.ci-price-dots {
+  flex: 1 1 auto;
+  min-width: 10px;
+  border-bottom: 1px dotted #cccccc;
+  margin-bottom: 4px;
+}
+.ci-price-value {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: #c2185b;
+}
+
+.ci-newbook {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 18px 20px 0;
+  background: #fff0f5;
+  border: 1px dashed #ff4081;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.ci-newbook-tag {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #ffffff;
+  background: #ff4081;
+  padding: 3px 10px;
+  border-radius: 10px;
+}
+.ci-newbook-text {
+  font-size: 14px;
+  color: #333333;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.ci-notice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 18px 20px 0;
+  padding: 12px 0 0;
+  border-top: 1px dashed #dddddd;
+  font-size: 11px;
+  color: #444444;
+}
+.ci-notice span {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.ci-notice b {
+  color: #c2185b;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.ci-footer {
+  margin-top: 16px;
+  padding: 12px 20px;
+  text-align: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: #aaaaaa;
+  letter-spacing: 1px;
+  border-top: 1px solid #eeeeee;
+}

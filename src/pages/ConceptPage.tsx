@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { findConcept } from '../concepts/registry';
 import { useLang } from '../contexts/LangContext';
+import { useFormState } from '../contexts/FormStateContext';
 import FormPanel from '../components/FormPanel';
 import DownloadButton from '../components/DownloadButton';
 import { useCardScale } from '../hooks/useCardScale';
@@ -10,6 +11,7 @@ export default function ConceptPage() {
   const { id } = useParams<{ id: string }>();
   const concept = id ? findConcept(id) : undefined;
   const { t } = useLang();
+  const { doReroll } = useFormState();
   const wrapRef = useRef<HTMLDivElement>(null);
   const scalerRef = useRef<HTMLDivElement>(null);
   const [collapsed, setCollapsed] = useState(false);
@@ -27,6 +29,11 @@ export default function ConceptPage() {
       <div className={`preview-panel${collapsed ? ' is-collapsed' : ''}`}>
         <div className="preview-tools">
           <DownloadButton targetId="preview-card" filename={`trchinso-${concept.slug}.png`} />
+          {concept.hasRandomStats && (
+            <button type="button" className="btn" onClick={doReroll}>
+              🎲 {t.reroll}
+            </button>
+          )}
           <button
             type="button"
             className="preview-toggle"

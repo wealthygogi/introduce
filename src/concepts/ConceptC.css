@@ -1,0 +1,175 @@
+/* ──────────────── Concept C: Title Screen ────────────────
+   Sparse, symmetric, fixed near-black/gold palette — deliberately airy
+   to contrast with Concept A's dense HUD grid and Concept B's radial
+   burst. Nickname is the giant hero logo; everything else compresses
+   into a ▶-prefixed menu list with a clear primary/secondary tier. */
+
+.tsc-card {
+  position: relative;
+  min-height: 560px;
+  padding: 40px 32px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #eee6d6;
+  overflow: hidden;
+}
+.tsc-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 26%, rgba(232, 201, 136, 0.14), transparent 58%);
+  pointer-events: none;
+}
+.tsc-corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(232, 201, 136, 0.55);
+  pointer-events: none;
+}
+.tsc-corner.tl {
+  top: 14px;
+  left: 14px;
+  border-right: none;
+  border-bottom: none;
+}
+.tsc-corner.tr {
+  top: 14px;
+  right: 14px;
+  border-left: none;
+  border-bottom: none;
+}
+.tsc-corner.bl {
+  bottom: 14px;
+  left: 14px;
+  border-right: none;
+  border-top: none;
+}
+.tsc-corner.br {
+  bottom: 14px;
+  right: 14px;
+  border-left: none;
+  border-top: none;
+}
+
+.tsc-badge {
+  position: relative;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #14131c;
+  background: #e8c988;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.tsc-sprite-wrap {
+  position: relative;
+  margin-top: 20px;
+}
+.tsc-sprite {
+  width: 88px;
+  height: 88px;
+  filter: drop-shadow(0 0 20px rgba(232, 201, 136, 0.45)) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+}
+.tsc-sprite-photo {
+  position: absolute;
+  bottom: -4px;
+  right: -10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #14131c;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.tsc-titles {
+  position: relative;
+  margin: 22px 0 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.tsc-title {
+  font-size: clamp(28px, 6vw, 40px);
+  font-weight: 700;
+  line-height: 1.35;
+  color: #f7ecd6;
+  text-shadow: 0 0 26px rgba(232, 201, 136, 0.5), 0 3px 0 rgba(0, 0, 0, 0.4);
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  letter-spacing: 0.5px;
+}
+.tsc-subtitle {
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: #a5987a;
+}
+.tsc-version {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #8a7f5e;
+  opacity: 0.85;
+}
+
+.tsc-menu {
+  position: relative;
+  width: min(440px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+.tsc-menu-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid rgba(232, 201, 136, 0.25);
+  border-radius: 8px;
+  background: rgba(232, 201, 136, 0.05);
+  font-size: 14px;
+  text-align: left;
+}
+.tsc-menu-cta {
+  justify-content: center;
+  font-weight: 700;
+  color: #f7ecd6;
+  letter-spacing: 2px;
+  background: rgba(232, 201, 136, 0.12);
+}
+.tsc-arrow {
+  color: #e8c988;
+  flex-shrink: 0;
+}
+.tsc-menu-label {
+  color: #cbbf9e;
+  flex-shrink: 0;
+}
+.tsc-menu-value {
+  color: #f7ecd6;
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.tsc-menu-sub {
+  padding: 7px 14px;
+  font-size: 12px;
+  opacity: 0.82;
+}
+.tsc-menu-sub .tsc-menu-value {
+  font-weight: 500;
+}
+
+.tsc-footer {
+  position: relative;
+  margin-top: 20px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #665f4c;
+}

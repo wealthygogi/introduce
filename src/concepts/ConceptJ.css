@@ -1,0 +1,276 @@
+/* ──────────────── Concept J: DOS Boot Terminal ────────────────
+   decorative chrome (prompts, labels, ASCII trim) uses the pixel/dot
+   fonts; actual field values inherit the default CJK-safe body font */
+.cj-card {
+  position: relative;
+  background: #101820;
+  color: #b2ebf2;
+  overflow: hidden;
+}
+.cj-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.35) 2px,
+    rgba(0, 0, 0, 0.35) 4px
+  );
+}
+.cj-mascot {
+  position: absolute;
+  z-index: 2;
+  top: 14px;
+  right: 18px;
+  width: 28px;
+  height: 28px;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.cj-screen {
+  position: relative;
+  z-index: 2;
+  padding: 20px 24px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cj-boxcap {
+  font-family: 'DotGothic16', monospace;
+  color: #4dd0e1;
+  font-size: 11px;
+  letter-spacing: 1px;
+  white-space: pre;
+}
+.cj-bootline {
+  font-family: 'DotGothic16', monospace;
+  font-size: 12px;
+  color: #e0f7fa;
+  letter-spacing: 0.5px;
+}
+.cj-bootline.cj-dim {
+  color: #5c8a91;
+}
+
+.cj-load {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 2px;
+  font-size: 11px;
+}
+.cj-load-label {
+  font-family: 'DotGothic16', monospace;
+  color: #ffca28;
+  flex-shrink: 0;
+}
+.cj-load-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid #2c4a52;
+}
+.cj-load-fill {
+  height: 100%;
+  background: repeating-linear-gradient(90deg, #4dd0e1 0 6px, #33a8ba 6px 8px);
+  transition: width 300ms ease;
+}
+.cj-load-pct {
+  font-family: 'DotGothic16', monospace;
+  color: #ffca28;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.cj-hiscore {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 10px;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px dashed #2c4a52;
+}
+.cj-hiscore-label {
+  font-family: 'DotGothic16', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #ffca28;
+  flex-shrink: 0;
+}
+.cj-hiscore-value {
+  min-width: 0;
+  font-family: 'DotGothic16', monospace;
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: #fff59d;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 6px rgba(255, 245, 157, 0.55);
+  text-align: right;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+.cj-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-left: 2px solid #244147;
+  background: rgba(77, 208, 225, 0.05);
+}
+.cj-prompt {
+  font-family: 'DotGothic16', monospace;
+  font-size: 13px;
+}
+.cj-final {
+  padding-left: 2px;
+}
+.cj-path {
+  color: #4dd0e1;
+}
+.cj-cmd {
+  color: #fff59d;
+}
+.cj-cursor {
+  display: inline-block;
+  color: #4dd0e1;
+  animation: cj-blink 1s steps(1) infinite;
+}
+@keyframes cj-blink {
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.cj-kv {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 14px;
+  font-size: 14px;
+}
+.cj-k {
+  font-family: 'DotGothic16', monospace;
+  color: #4dd0e1;
+  flex-shrink: 0;
+  width: 52px;
+}
+.cj-k::after {
+  content: ':';
+  margin-left: 2px;
+}
+.cj-v {
+  color: #fffde7;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.cj-v-char {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.cj-sprite {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.cj-dir {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-left: 14px;
+  font-size: 13px;
+}
+.cj-dirrow,
+.cj-filerow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  color: #e0f7fa;
+}
+.cj-dir-name,
+.cj-file-name {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.cj-dir-flag {
+  flex-shrink: 0;
+  font-family: 'DotGothic16', monospace;
+  color: #ffca28;
+}
+.cj-file-name {
+  flex-shrink: 1;
+}
+.cj-file-ext {
+  flex-shrink: 0;
+  font-family: 'DotGothic16', monospace;
+  color: #5c8a91;
+}
+.cj-file-size {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-family: 'DotGothic16', monospace;
+  color: #80cbc4;
+  font-variant-numeric: tabular-nums;
+}
+.cj-empty span {
+  color: #5c8a91;
+  font-style: italic;
+}
+
+.cj-config {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-left: 14px;
+  font-size: 13px;
+}
+.cj-config-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 6px;
+}
+.cj-config-key {
+  font-family: 'DotGothic16', monospace;
+  color: #ffca28;
+  white-space: nowrap;
+}
+.cj-config-val {
+  color: #e0f7fa;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.cj-message {
+  margin-left: 14px;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px dashed #2c4a52;
+  font-size: 13px;
+  color: #e0f7fa;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.cj-footer {
+  position: relative;
+  z-index: 2;
+  font-family: 'Press Start 2P', monospace;
+  text-align: center;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #3d5a62;
+  padding: 8px 0 18px;
+}

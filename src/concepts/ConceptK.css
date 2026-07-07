@@ -1,0 +1,287 @@
+/* ──────────────── Concept K: Youkai Bestiary ──────────────── */
+.ck-card {
+  position: relative;
+  padding: 22px 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: #e8eefc;
+}
+.ck-cameo {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  width: 32px;
+  height: 32px;
+  opacity: 0.85;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+}
+
+.ck-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 46px;
+}
+.ck-dexno {
+  font-family: 'DotGothic16', monospace;
+  background: #ffca28;
+  color: #1b2a4a;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.ck-type {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #ffca28;
+  border: 1px solid rgba(255, 202, 40, 0.5);
+  padding: 3px 9px;
+  border-radius: 10px;
+}
+
+.ck-main {
+  display: flex;
+  gap: 18px;
+}
+.ck-portrait-col {
+  flex: 0 0 176px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ck-frame {
+  position: relative;
+  height: 176px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 202, 40, 0.4);
+  background: radial-gradient(circle at 50% 38%, rgba(255, 202, 40, 0.22), transparent 60%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.04) 0 10px, transparent 10px 20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ck-frame img {
+  width: 118px;
+  height: 118px;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+}
+.ck-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+}
+.ck-corner.ck-tl {
+  top: 6px;
+  left: 6px;
+  border-top: 2px solid #ffca28;
+  border-left: 2px solid #ffca28;
+}
+.ck-corner.ck-tr {
+  top: 6px;
+  right: 6px;
+  border-top: 2px solid #ffca28;
+  border-right: 2px solid #ffca28;
+}
+.ck-corner.ck-bl {
+  bottom: 6px;
+  left: 6px;
+  border-bottom: 2px solid #ffca28;
+  border-left: 2px solid #ffca28;
+}
+.ck-corner.ck-br {
+  bottom: 6px;
+  right: 6px;
+  border-bottom: 2px solid #ffca28;
+  border-right: 2px solid #ffca28;
+}
+.ck-specimen {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #ffca28;
+  margin-top: 2px;
+}
+.ck-name {
+  font-size: 20px;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  line-height: 1.25;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.ck-species {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ck-species-label {
+  color: #ffca28;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  font-size: 11px;
+}
+.ck-species-value {
+  color: #e8eefc;
+  font-weight: 600;
+  font-size: 13px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.ck-danger {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+}
+.ck-danger-label {
+  font-size: 11px;
+  color: #ffca28;
+  letter-spacing: 0.5px;
+}
+.ck-danger-stars {
+  font-size: 16px;
+  color: #ffca28;
+  letter-spacing: 2px;
+}
+
+.ck-stats-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ck-gauges {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 202, 40, 0.25);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.ck-gauge-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: #ffca28;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.ck-track {
+  display: flex;
+  gap: 3px;
+  min-width: 40px;
+}
+.ck-seg {
+  flex: 1;
+  height: 6px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.14);
+}
+.ck-seg.is-lit {
+  background: #ffca28;
+  box-shadow: 0 0 6px rgba(255, 202, 40, 0.6);
+}
+.ck-gauge-value {
+  font-size: 12px;
+  color: #e8eefc;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.ck-classify {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ck-classify-label {
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ffca28;
+}
+.ck-empty {
+  font-size: 13px;
+  color: rgba(232, 238, 252, 0.55);
+  font-style: italic;
+}
+.ck-classify-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 10px;
+}
+.ck-classify-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 12px;
+  color: #dbe4f7;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.ck-marker {
+  flex-shrink: 0;
+  width: 5px;
+  height: 5px;
+  margin-bottom: 1px;
+  background: #ffca28;
+  transform: rotate(45deg);
+}
+.ck-tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+}
+.ck-tag {
+  font-size: 12px;
+  color: #ffe082;
+  letter-spacing: 0.3px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.ck-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: #dbe4f7;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(255, 202, 40, 0.3);
+}
+.ck-notes-label {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #ffca28;
+  margin-bottom: 2px;
+}
+.ck-notes-row {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.ck-notes-key {
+  color: #ffca28;
+  font-weight: 700;
+  margin-right: 6px;
+}
+.ck-notes-free {
+  white-space: pre-wrap;
+  line-height: 1.7;
+  color: #f0f4ff;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.ck-footer {
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: rgba(232, 238, 252, 0.45);
+  padding-top: 4px;
+}

@@ -1,0 +1,327 @@
+/* ──────────────── Concept N: 겐소쿄 메신저 — 채팅 스트림 (Gensokyo Messenger — Chat Stream) ──────────────── */
+.cn-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.cn-cover {
+  position: relative;
+  height: 108px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 14px 18px;
+}
+
+.cn-cover-sprite {
+  width: 40px;
+  height: 40px;
+  opacity: 0.9;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+}
+
+.cn-avatar {
+  position: absolute;
+  top: 66px;
+  left: 28px;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  border: 5px solid var(--bg-card);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.cn-avatar img {
+  width: 52px;
+  height: 52px;
+}
+
+.cn-avatar.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cn-body {
+  padding: 48px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cn-name-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cn-name-block {
+  min-width: 0;
+  flex: 1;
+}
+
+.cn-nickname {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--fg-strong);
+  line-height: 1.25;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.cn-handle {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-top: 2px;
+  overflow-wrap: anywhere;
+}
+
+.cn-online {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-shrink: 0;
+  white-space: nowrap;
+  margin-top: 4px;
+}
+
+.cn-online-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3bc46a;
+  box-shadow: 0 0 0 2px var(--bg-card);
+}
+
+.cn-status {
+  font-size: 14px;
+  font-style: italic;
+  color: var(--fg-muted);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* ── profile badges / stickers (account types) ── */
+.cn-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 8px;
+  padding-bottom: 2px;
+}
+
+.cn-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 6px 14px;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  border: 1.5px solid var(--bg-card);
+  outline: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  color: var(--accent-strong);
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.cn-badge:nth-child(3n + 1) {
+  transform: rotate(-3deg);
+}
+.cn-badge:nth-child(3n + 2) {
+  transform: rotate(2deg);
+  filter: hue-rotate(18deg);
+}
+.cn-badge:nth-child(3n) {
+  transform: rotate(-1.5deg);
+  filter: hue-rotate(-16deg);
+}
+.cn-badge-empty {
+  color: var(--fg-muted);
+  background: var(--bg-elevated);
+  transform: none;
+  filter: none;
+  font-weight: 500;
+  outline-color: var(--border);
+}
+
+/* ── chat stream ── */
+.cn-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+}
+
+.cn-msg {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  animation: cn-rise 380ms ease both;
+}
+.cn-msg-received {
+  justify-content: flex-start;
+}
+.cn-msg-sent {
+  justify-content: flex-end;
+}
+
+.cn-msg:nth-child(1) {
+  animation-delay: 0ms;
+}
+.cn-msg:nth-child(2) {
+  animation-delay: 50ms;
+}
+.cn-msg:nth-child(3) {
+  animation-delay: 100ms;
+}
+.cn-msg:nth-child(4) {
+  animation-delay: 150ms;
+}
+.cn-msg:nth-child(5) {
+  animation-delay: 200ms;
+}
+.cn-msg:nth-child(6) {
+  animation-delay: 250ms;
+}
+.cn-msg:nth-child(7) {
+  animation-delay: 300ms;
+}
+.cn-msg:nth-child(8) {
+  animation-delay: 350ms;
+}
+.cn-msg:nth-child(9) {
+  animation-delay: 400ms;
+}
+.cn-msg:nth-child(10) {
+  animation-delay: 450ms;
+}
+
+@keyframes cn-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cn-msg {
+    animation: none;
+  }
+}
+
+.cn-msg-avatar {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  padding: 3px;
+  box-shadow: var(--shadow-sm);
+}
+
+.cn-bubble-wrap {
+  display: flex;
+  flex-direction: column;
+  max-width: 78%;
+  min-width: 0;
+}
+.cn-msg-received .cn-bubble-wrap {
+  align-items: flex-start;
+}
+.cn-msg-sent .cn-bubble-wrap {
+  align-items: flex-end;
+}
+
+.cn-bubble {
+  font-size: 13.5px;
+  line-height: 1.55;
+  padding: 9px 13px;
+  border-radius: 16px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.cn-bubble.received {
+  background: var(--bg-elevated);
+  color: var(--fg-strong);
+  border-bottom-left-radius: 4px;
+}
+.cn-bubble.sent {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-bottom-right-radius: 4px;
+}
+
+.cn-bubble.sent.hero {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px 8px 8px;
+  background: var(--bg-card);
+  color: var(--fg-strong);
+  border: 2px solid var(--accent);
+}
+.cn-hero-sprite {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  padding: 4px;
+}
+.cn-hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.cn-hero-kicker {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+}
+.cn-hero-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fg-strong);
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.cn-msg-time {
+  font-size: 10.5px;
+  color: var(--fg-subtle);
+  margin-top: 3px;
+  padding: 0 4px;
+}
+
+.cn-footer {
+  border-top: 1px solid var(--border);
+  padding: 12px 24px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--fg-subtle);
+  letter-spacing: 0.5px;
+}

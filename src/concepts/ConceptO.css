@@ -1,0 +1,325 @@
+/* ──────────────── Concept O: TCG 대전 카드 (Trading Card Game — Battle Card) ──────────────── */
+.co-frame {
+  padding: 5px;
+  border-radius: 26px;
+  background: linear-gradient(120deg, #ffd76a, #ff8ad1, #7ad9ff, #b98bff, #6ee7d8, #ffd76a);
+  background-size: 220% 220%;
+  animation: co-foil-shift 9s ease-in-out infinite;
+  box-shadow: var(--shadow-lg), 0 0 30px rgba(185, 139, 255, 0.25);
+}
+@keyframes co-foil-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .co-frame {
+    animation: none;
+  }
+}
+
+.co-card {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  background: linear-gradient(165deg, #1a1625 0%, #0d0b14 100%);
+  padding: 18px 20px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: #f3eefc;
+}
+
+.co-holo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  background: repeating-linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.05) 0 3px,
+    transparent 3px 9px,
+    rgba(185, 139, 255, 0.07) 9px 12px,
+    transparent 12px 18px
+  );
+}
+
+/* ── top bar: name · energy · HP ── */
+.co-topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.co-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.co-energy {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #14131c;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25), 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+.co-name {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #fff;
+  min-width: 0;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+.co-hp {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.co-hp-num {
+  font-size: 27px;
+  font-weight: 800;
+  color: #ff5a6e;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+.co-hp-label {
+  font-size: 12px;
+  color: #ff8a97;
+  letter-spacing: 1px;
+}
+
+/* ── illustration, holo-framed ── */
+.co-art {
+  position: relative;
+  border-radius: 14px;
+  padding: 5px;
+  background: linear-gradient(135deg, #fff 0%, #b98bff 30%, #7ad9ff 55%, #ffd76a 80%, #fff 100%);
+}
+.co-art-inner {
+  position: relative;
+  isolation: isolate;
+  border-radius: 10px;
+  overflow: hidden;
+  min-height: 168px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse 90px 44px at 50% 83%, rgba(255, 255, 255, 0.4), transparent 72%),
+    radial-gradient(circle at 50% 38%, rgba(185, 139, 255, 0.4), transparent 68%),
+    linear-gradient(180deg, #241f36 0%, #12101c 100%);
+}
+.co-art-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: overlay;
+  background: repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.06) 0 2px, transparent 2px 7px);
+}
+.co-art-sprite {
+  position: relative;
+  width: 128px;
+  height: 128px;
+  /* tight light rim first — Touhou sprites are black-outlined, which melts into
+     this card's dark backdrop without a bright edge to separate silhouette from
+     background; the second shadow keeps the soft grounding falloff */
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.9)) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6));
+}
+.co-art-plate {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  background: rgba(10, 8, 16, 0.62);
+  backdrop-filter: blur(2px);
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+.co-art-kicker {
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+}
+.co-art-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  text-align: right;
+  min-width: 0;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* ── move list ── */
+.co-moves {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.co-move {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.co-move-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #f3eefc;
+  flex-shrink: 0;
+  max-width: 60%;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.co-move-leader {
+  flex: 1;
+  min-width: 12px;
+  height: 0;
+  border-bottom: 2px dotted rgba(243, 238, 252, 0.28);
+  transform: translateY(-4px);
+}
+.co-move-dmg {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffd76a;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.co-move-empty .co-move-name {
+  color: rgba(243, 238, 252, 0.5);
+}
+.co-move-empty .co-move-dmg {
+  color: rgba(243, 238, 252, 0.4);
+}
+
+/* ── weakness/resistance/retreat-style ministat row ── */
+.co-substats {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding-top: 11px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+.co-substat {
+  text-align: center;
+}
+.co-substat + .co-substat {
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+.co-substat-label {
+  font-size: 9.5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(243, 238, 252, 0.5);
+  margin-bottom: 3px;
+}
+.co-substat-value {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #f3eefc;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* ── flavor text + rarity/set corner ── */
+.co-flavor {
+  position: relative;
+  font-size: 12.5px;
+  font-style: italic;
+  color: rgba(243, 238, 252, 0.78);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.co-bottom-row {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+}
+.co-notes {
+  font-size: 9.5px;
+  color: rgba(243, 238, 252, 0.4);
+  line-height: 1.5;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  flex: 1;
+  min-width: 0;
+}
+.co-rarity-set {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.co-rarity {
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: #ffd76a;
+}
+.co-set-symbols {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.co-set-symbol {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transform: rotate(45deg);
+  background: linear-gradient(135deg, #b98bff, #7ad9ff);
+  display: grid;
+  place-items: center;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+.co-set-symbol span {
+  transform: rotate(-45deg);
+  font-size: 7.5px;
+  font-weight: 700;
+  color: #14131c;
+}
+.co-set-overflow {
+  font-size: 10px;
+  color: rgba(243, 238, 252, 0.6);
+}
+
+/* ── footer ── */
+.co-footer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  color: rgba(243, 238, 252, 0.35);
+}

@@ -48,7 +48,7 @@ export default function ConceptC() {
           <div className="tsc-menu-item">
             <span className="tsc-arrow">▶</span>
             <span className="tsc-menu-label">{d.t.mainSeries}</span>
-            <span className="tsc-menu-value">{seriesText}</span>
+            <span className="tsc-menu-value tsc-value-series">{seriesText}</span>
           </div>
           <div className="tsc-menu-item">
             <span className="tsc-arrow">▶</span>

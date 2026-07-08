@@ -160,10 +160,18 @@ export default function ConceptF() {
           )}
 
           {voice && (
-            <>
+            /* 전체 폭 블록(column-span:all) — 멀티컬럼 안에 두면 캡처 시 마지막 단어가
+               우측 컬럼을 넘어 카드 밖으로 흘렀다. 풀쿼트처럼 전체 폭으로 내려 오버플로를
+               원천 차단한다. */
+            <div className="cf-voice">
               <div className="cf-subhead">{HEAD_VOICE[d.lang]}</div>
-              <p className="cf-para">{voice}</p>
-            </>
+              <p className="cf-para">
+                {/* 드롭캡을 실제 요소로 — ::first-letter 는 캡처(modern-screenshot)가
+                    렌더하지 못해 드롭캡이 사라진다. */}
+                <span className="cf-dropcap">{voice.charAt(0)}</span>
+                {voice.slice(1)}
+              </p>
+            </div>
           )}
         </div>
 

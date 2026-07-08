@@ -269,6 +269,10 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  /* barely-there tightening so a borderline char name like "하쿠레이 레이무" keeps
+     to one line in the PNG capture (text renders a hair wider there than in the
+     live preview). Proportional, so genuinely long names still wrap as before. */
+  letter-spacing: -0.4px;
 }
 .cj-sprite {
   width: 22px;

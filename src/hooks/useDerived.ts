@@ -101,8 +101,8 @@ export function useDerived(): Derived {
     fubLabel,
     partingLabel,
     otherLabel,
-    dislike: state.dislike.trim() || t.phDis,
-    pairing: state.pairing.trim() || t.phPair,
+    dislike: state.dislike.trim(),
+    pairing: state.pairing.trim(),
     freeText: state.freeText.trim(),
     custom: state.custom,
     getCustom: (key, fallback) => {

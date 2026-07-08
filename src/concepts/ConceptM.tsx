@@ -90,14 +90,20 @@ export default function ConceptM() {
                 {d.t.otherGenre} · {d.otherLabel}
               </span>
             </div>
-            <div className="cm-notice">
-              <span>
-                {d.t.dislike} · {d.dislike}
-              </span>
-              <span>
-                {d.t.pairing} · {d.pairing}
-              </span>
-            </div>
+            {(d.dislike || d.pairing) && (
+              <div className="cm-notice">
+                {d.dislike && (
+                  <span>
+                    {d.t.dislike} · {d.dislike}
+                  </span>
+                )}
+                {d.pairing && (
+                  <span>
+                    {d.t.pairing} · {d.pairing}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
 
           {d.freeText && (

@@ -118,14 +118,18 @@ export default function ConceptI() {
             <b>{d.t.otherGenre}</b>
             {d.otherLabel}
           </span>
-          <span>
-            <b>{d.t.dislike}</b>
-            {d.dislike}
-          </span>
-          <span>
-            <b>{d.t.pairing}</b>
-            {d.pairing}
-          </span>
+          {d.dislike && (
+            <span>
+              <b>{d.t.dislike}</b>
+              {d.dislike}
+            </span>
+          )}
+          {d.pairing && (
+            <span>
+              <b>{d.t.pairing}</b>
+              {d.pairing}
+            </span>
+          )}
         </div>
 
         <div className="ci-footer">

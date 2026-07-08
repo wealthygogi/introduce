@@ -71,15 +71,21 @@ export default function ConceptB() {
           <span className="dmk-sep">·</span>
           <span>{d.otherLabel}</span>
         </div>
-        <div className="dmk-micro-row dmk-muted">
-          <span>
-            {d.t.dislike} {d.dislike}
-          </span>
-          <span className="dmk-sep">·</span>
-          <span>
-            {d.t.pairing} {d.pairing}
-          </span>
-        </div>
+        {(d.dislike || d.pairing) && (
+          <div className="dmk-micro-row dmk-muted">
+            {d.dislike && (
+              <span>
+                {d.t.dislike} {d.dislike}
+              </span>
+            )}
+            {d.dislike && d.pairing && <span className="dmk-sep">·</span>}
+            {d.pairing && (
+              <span>
+                {d.t.pairing} {d.pairing}
+              </span>
+            )}
+          </div>
+        )}
 
         {longNote && (
           <div className="dmk-note">

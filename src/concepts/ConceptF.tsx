@@ -1,5 +1,6 @@
 import './ConceptF.css';
 import { useDerived } from '../hooks/useDerived';
+import type { Derived } from '../hooks/useDerived';
 import { spriteUrl } from '../data/characters';
 
 const MASTHEAD = { ko: '분분마루 신문', ja: '文々。新聞', en: 'Bunbunmaru News' };
@@ -18,6 +19,38 @@ const AD_TEXT = {
 };
 const PRICE_TAG = { ko: '정가 5문', ja: '定価5文', en: 'Price: 5 mon' };
 
+/** "독자의 소리" 문단 — dislike/pairing 조합에 따라 자연스러운 문장을 구성. 둘 다 없으면 빈 문자열(섹션 숨김). */
+function buildVoice(d: Derived): string {
+  const hasDislike = Boolean(d.dislike);
+  const hasPairing = Boolean(d.pairing);
+  if (!hasDislike && !hasPairing) return '';
+
+  if (d.lang === 'ko') {
+    if (hasDislike && hasPairing) {
+      return `한편 "${d.dislike}"는 되도록 피하고 싶다는 뜻을 전했으며, 최애 커플링으로는 "${d.pairing}"을 꼽았다.`;
+    }
+    return hasDislike
+      ? `한편 "${d.dislike}"는 되도록 피하고 싶다는 뜻을 전했다.`
+      : `한편 최애 커플링으로는 "${d.pairing}"을 꼽았다.`;
+  }
+
+  if (d.lang === 'ja') {
+    if (hasDislike && hasPairing) {
+      return `一方、「${d.dislike}」はできれば避けたいとのこと。推しカップリングには「${d.pairing}」を挙げた。`;
+    }
+    return hasDislike
+      ? `一方、「${d.dislike}」はできれば避けたいとのこと。`
+      : `一方、推しカップリングには「${d.pairing}」を挙げた。`;
+  }
+
+  if (hasDislike && hasPairing) {
+    return `Meanwhile, they'd rather steer clear of "${d.dislike}" — and when it comes to pairings, "${d.pairing}" tops the list.`;
+  }
+  return hasDislike
+    ? `Meanwhile, they'd rather steer clear of "${d.dislike}."`
+    : `Meanwhile, when it comes to pairings, "${d.pairing}" tops the list.`;
+}
+
 export default function ConceptF() {
   const d = useDerived();
   // nickname+reroll seeded issue number — same nickname+reroll always yields the same roll
@@ -29,11 +62,7 @@ export default function ConceptF() {
     en: `Sources confirm that ${d.nickname}'s favorite character is none other than "${d.charName}."`,
   }[d.lang];
 
-  const voice = {
-    ko: `한편 "${d.dislike}"는 되도록 피하고 싶다는 뜻을 전했으며, 최애 커플링으로는 "${d.pairing}"을 꼽았다.`,
-    ja: `一方、「${d.dislike}」はできれば避けたいとのこと。推しカップリングには「${d.pairing}」を挙げた。`,
-    en: `Meanwhile, they'd rather steer clear of "${d.dislike}" — and when it comes to pairings, "${d.pairing}" tops the list.`,
-  }[d.lang];
+  const voice = buildVoice(d);
 
   return (
     <div id="preview-card" className="card-frame" style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}>
@@ -130,8 +159,12 @@ export default function ConceptF() {
             </blockquote>
           )}
 
-          <div className="cf-subhead">{HEAD_VOICE[d.lang]}</div>
-          <p className="cf-para">{voice}</p>
+          {voice && (
+            <>
+              <div className="cf-subhead">{HEAD_VOICE[d.lang]}</div>
+              <p className="cf-para">{voice}</p>
+            </>
+          )}
         </div>
 
         <div className="cf-bottom">

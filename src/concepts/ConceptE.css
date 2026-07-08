@@ -376,6 +376,10 @@
 .eopt-readout.multiline {
   white-space: pre-wrap;
 }
+.eopt-readout.is-empty {
+  color: var(--fg-subtle);
+  font-style: italic;
+}
 
 .eopt-footer {
   display: flex;

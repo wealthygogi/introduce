@@ -45,8 +45,8 @@ function buildLines(d: Derived): Line[] {
         text: isOtherNone ? '다른 장르 이야기는 거의 안 해요.' : `다른 장르 언급은 ${d.otherLabel} 정도예요.`,
         size: 'sm',
       },
-      { key: 'dislike', text: `불호는 ${d.dislike} 쪽이에요.`, size: 'sm' },
-      { key: 'pairing', text: `최애 커플링은 ${d.pairing} 조합이에요.` },
+      ...(d.dislike ? [{ key: 'dislike', text: `불호는 ${d.dislike} 쪽이에요.`, size: 'sm' as const }] : []),
+      ...(d.pairing ? [{ key: 'pairing', text: `최애 커플링은 ${d.pairing} 조합이에요.` }] : []),
       ...(d.freeText
         ? [{ key: 'free', text: `그리고 이 말은 꼭 하고 싶어요. "${d.freeText}"`, highlight: true }]
         : []),
@@ -71,8 +71,8 @@ function buildLines(d: Derived): Line[] {
         text: isOtherNone ? '他ジャンルの話はほとんどしません。' : `他ジャンルの話題は${d.otherLabel}です。`,
         size: 'sm',
       },
-      { key: 'dislike', text: `苦手なものは${d.dislike}です。`, size: 'sm' },
-      { key: 'pairing', text: `推しカップリングは${d.pairing}です。` },
+      ...(d.dislike ? [{ key: 'dislike', text: `苦手なものは${d.dislike}です。`, size: 'sm' as const }] : []),
+      ...(d.pairing ? [{ key: 'pairing', text: `推しカップリングは${d.pairing}です。` }] : []),
       ...(d.freeText ? [{ key: 'free', text: `どうしてもこれだけは伝えたいです。「${d.freeText}」`, highlight: true }] : []),
     ];
   }
@@ -98,8 +98,8 @@ function buildLines(d: Derived): Line[] {
       text: isOtherNone ? "I rarely bring up other genres." : `I mention other genres ${d.otherLabel.toLowerCase()}.`,
       size: 'sm',
     },
-    { key: 'dislike', text: `I'd rather steer clear of ${d.dislike}.`, size: 'sm' },
-    { key: 'pairing', text: `My favorite ship is ${d.pairing}.` },
+    ...(d.dislike ? [{ key: 'dislike', text: `I'd rather steer clear of ${d.dislike}.`, size: 'sm' as const }] : []),
+    ...(d.pairing ? [{ key: 'pairing', text: `My favorite ship is ${d.pairing}.` }] : []),
     ...(d.freeText ? [{ key: 'free', text: `One more thing I really want to say — "${d.freeText}"`, highlight: true }] : []),
   ];
 }

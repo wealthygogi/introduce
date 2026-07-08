@@ -161,12 +161,12 @@ export default function ConceptE() {
 
             <div className="eopt-field compact">
               <span className="eopt-field-label">{d.t.dislike}</span>
-              <span className="eopt-readout">{d.dislike}</span>
+              <span className={`eopt-readout${d.dislike ? '' : ' is-empty'}`}>{d.dislike || '—'}</span>
             </div>
 
             <div className="eopt-field compact">
               <span className="eopt-field-label">{d.t.pairing}</span>
-              <span className="eopt-readout">{d.pairing}</span>
+              <span className={`eopt-readout${d.pairing ? '' : ' is-empty'}`}>{d.pairing || '—'}</span>
             </div>
 
             {d.freeText && (

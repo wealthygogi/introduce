@@ -127,14 +127,18 @@ export default function ConceptJ() {
                     <span className="cj-config-key">&gt; {d.t.otherGenre}:</span>{' '}
                     <span className="cj-config-val">{d.otherLabel}</span>
                   </div>
-                  <div className="cj-config-row">
-                    <span className="cj-config-key">&gt; {d.t.dislike}:</span>{' '}
-                    <span className="cj-config-val">{d.dislike}</span>
-                  </div>
-                  <div className="cj-config-row">
-                    <span className="cj-config-key">&gt; {d.t.pairing}:</span>{' '}
-                    <span className="cj-config-val">{d.pairing}</span>
-                  </div>
+                  {d.dislike && (
+                    <div className="cj-config-row">
+                      <span className="cj-config-key">&gt; {d.t.dislike}:</span>{' '}
+                      <span className="cj-config-val">{d.dislike}</span>
+                    </div>
+                  )}
+                  {d.pairing && (
+                    <div className="cj-config-row">
+                      <span className="cj-config-key">&gt; {d.t.pairing}:</span>{' '}
+                      <span className="cj-config-val">{d.pairing}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

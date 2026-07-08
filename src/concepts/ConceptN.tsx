@@ -70,7 +70,18 @@ export default function ConceptN() {
 
   const seriesLine = d.seriesList.length === 0 ? d.t.notSelected : d.seriesList.map((s) => s.label).join(' · ');
   const habitsLine = `${d.t.fub} ${d.fubLabel} · ${d.t.parting} ${d.partingLabel} · ${d.t.otherGenre} ${d.otherLabel}`;
-  const noteLine = `${d.t.dislike} ${d.dislike} · ${d.t.pairing} ${d.pairing}`;
+  // dislike/pairing are free text and may both be blank — fall back to whichever
+  // one is filled in, and skip the closing Q&A pair entirely when neither is
+  const hasDislike = Boolean(d.dislike);
+  const hasPairing = Boolean(d.pairing);
+  const noteLine =
+    hasDislike && hasPairing
+      ? `${d.t.dislike} ${d.dislike} · ${d.t.pairing} ${d.pairing}`
+      : hasDislike
+        ? `${d.t.dislike} ${d.dislike}`
+        : hasPairing
+          ? `${d.t.pairing} ${d.pairing}`
+          : '';
 
   return (
     <div id="preview-card" className="card-frame" style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}>
@@ -128,8 +139,12 @@ export default function ConceptN() {
             <Received text={S.q[2]} />
             <Sent time={S.times[2]}>{habitsLine}</Sent>
 
-            <Received text={S.q[3]} />
-            <Sent time={S.times[3]}>{noteLine}</Sent>
+            {noteLine && (
+              <>
+                <Received text={S.q[3]} />
+                <Sent time={S.times[3]}>{noteLine}</Sent>
+              </>
+            )}
           </div>
         </div>
 

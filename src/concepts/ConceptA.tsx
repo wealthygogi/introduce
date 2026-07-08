@@ -104,16 +104,22 @@ export default function ConceptA() {
               </div>
             </div>
 
-            <div className="rpgs-effects">
-              <div className="rpgs-effect">
-                <span className="rpgs-effect-tag">{d.t.dislike}</span>
-                <span className="rpgs-effect-val">{d.dislike}</span>
+            {(d.dislike || d.pairing) && (
+              <div className="rpgs-effects">
+                {d.dislike && (
+                  <div className="rpgs-effect">
+                    <span className="rpgs-effect-tag">{d.t.dislike}</span>
+                    <span className="rpgs-effect-val">{d.dislike}</span>
+                  </div>
+                )}
+                {d.pairing && (
+                  <div className="rpgs-effect">
+                    <span className="rpgs-effect-tag">{d.t.pairing}</span>
+                    <span className="rpgs-effect-val">{d.pairing}</span>
+                  </div>
+                )}
               </div>
-              <div className="rpgs-effect">
-                <span className="rpgs-effect-tag">{d.t.pairing}</span>
-                <span className="rpgs-effect-val">{d.pairing}</span>
-              </div>
-            </div>
+            )}
 
             {d.freeText && (
               <div className="rpgs-log">

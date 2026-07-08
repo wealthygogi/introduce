@@ -94,6 +94,13 @@
   white-space: pre-wrap;
   box-shadow: var(--shadow-sm);
 }
+/* JA 는 한자 폭이 커서 같은 대사가 캡처에서 한 줄을 살짝 넘긴다.
+   :lang(ja) 는 캡처 clone(html[lang] 조상이 없음)에서 매칭되지 않으므로, 컴포넌트가
+   붙이는 .vnd-log-ja 클래스로 스코프한다 — clone 에도 복제돼 다운로드에 반영된다. */
+.vnd-log-ja .vnd-bubble {
+  font-size: 13px;
+  letter-spacing: -0.5px;
+}
 .vnd-bubble.vnd-lg {
   font-size: 17px;
   font-weight: 700;

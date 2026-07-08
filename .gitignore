@@ -6,3 +6,6 @@ dist/
 .vscode/
 .idea/
 tsconfig.tsbuildinfo
+
+# 비주얼 QA 하네스가 생성하는 캡처 산출물 (재생성 가능한 PNG)
+tests/visual/output/

@@ -8,6 +8,11 @@ export default function ConceptC() {
   // Small "ver.X" build stamp under the title/subtitle — separate from the
   // localized subtitle text above it, so the subtitle wording never gets clobbered.
   const version = d.getCustom('version', '1.00');
+  // dislike/pairing can each be empty (user may skip either) — join only the
+  // parts that exist so the combined "A / B" label+value never shows a bare
+  // slash or a dangling half; the menu item itself hides when both are empty.
+  const dislikePairingLabel = [d.dislike && d.t.dislike, d.pairing && d.t.pairing].filter(Boolean).join(' / ');
+  const dislikePairingValue = [d.dislike, d.pairing].filter(Boolean).join(' / ');
 
   return (
     <div id="preview-card" className="card-frame tsc-frame">
@@ -57,15 +62,13 @@ export default function ConceptC() {
               {d.fubLabel} · {d.partingLabel} · {d.otherLabel}
             </span>
           </div>
-          <div className="tsc-menu-item tsc-menu-sub">
-            <span className="tsc-arrow">▶</span>
-            <span className="tsc-menu-label">
-              {d.t.dislike} / {d.t.pairing}
-            </span>
-            <span className="tsc-menu-value">
-              {d.dislike} / {d.pairing}
-            </span>
-          </div>
+          {dislikePairingValue && (
+            <div className="tsc-menu-item tsc-menu-sub">
+              <span className="tsc-arrow">▶</span>
+              <span className="tsc-menu-label">{dislikePairingLabel}</span>
+              <span className="tsc-menu-value">{dislikePairingValue}</span>
+            </div>
+          )}
           {d.freeText && (
             <div className="tsc-menu-item tsc-menu-sub">
               <span className="tsc-arrow">▶</span>

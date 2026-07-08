@@ -86,15 +86,17 @@ export default function ConceptH() {
                 </div>
               </td>
             </tr>
-            <tr>
-              <th scope="row">{ALLERGY_TAG[d.lang]}</th>
-              <td>
-                <span className="ch-check-item ch-check-item-wrap">
-                  <span className="ch-check is-on" aria-hidden="true" />
-                  {d.dislike}
-                </span>
-              </td>
-            </tr>
+            {d.dislike && (
+              <tr>
+                <th scope="row">{ALLERGY_TAG[d.lang]}</th>
+                <td>
+                  <span className="ch-check-item ch-check-item-wrap">
+                    <span className="ch-check is-on" aria-hidden="true" />
+                    {d.dislike}
+                  </span>
+                </td>
+              </tr>
+            )}
             <tr>
               <th scope="row">
                 {HISTORY_TAG[d.lang]} <small>({d.t.mainSeries})</small>
@@ -142,12 +144,14 @@ export default function ConceptH() {
                 {d.t.fub}: {d.fubLabel} · {d.t.parting}: {d.partingLabel} · {d.t.otherGenre}: {d.otherLabel}
               </td>
             </tr>
-            <tr>
-              <th scope="row">
-                {INTERACTION_TAG[d.lang]} <small>({d.t.pairing})</small>
-              </th>
-              <td>{d.pairing}</td>
-            </tr>
+            {d.pairing && (
+              <tr>
+                <th scope="row">
+                  {INTERACTION_TAG[d.lang]} <small>({d.t.pairing})</small>
+                </th>
+                <td>{d.pairing}</td>
+              </tr>
+            )}
             {d.freeText && (
               <tr>
                 <th scope="row">{NOTE_TAG[d.lang]}</th>

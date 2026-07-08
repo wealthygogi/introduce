@@ -86,12 +86,16 @@ export default function ConceptL() {
               <div className="cl-margin-row">
                 {d.t.fub} {d.fubLabel} · {d.t.parting} {d.partingLabel} · {d.t.otherGenre} {d.otherLabel}
               </div>
-              <div className="cl-margin-row">
-                {d.t.dislike} {d.dislike}
-              </div>
-              <div className="cl-margin-row">
-                {d.t.pairing} {d.pairing}
-              </div>
+              {d.dislike && (
+                <div className="cl-margin-row">
+                  {d.t.dislike} {d.dislike}
+                </div>
+              )}
+              {d.pairing && (
+                <div className="cl-margin-row">
+                  {d.t.pairing} {d.pairing}
+                </div>
+              )}
             </div>
           </div>
 

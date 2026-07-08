@@ -99,17 +99,23 @@ export default function ConceptG() {
             </div>
           </div>
 
-          <div className="cg-oracle">
-            <div className="cg-oracle-title">{ADVICE_TITLE[d.lang]}</div>
-            <div className="cg-oracle-line">
-              <span className="cg-oracle-tag">{d.t.dislike}</span>
-              <span className="cg-oracle-value">{d.dislike}</span>
+          {(d.dislike || d.pairing) && (
+            <div className="cg-oracle">
+              <div className="cg-oracle-title">{ADVICE_TITLE[d.lang]}</div>
+              {d.dislike && (
+                <div className="cg-oracle-line">
+                  <span className="cg-oracle-tag">{d.t.dislike}</span>
+                  <span className="cg-oracle-value">{d.dislike}</span>
+                </div>
+              )}
+              {d.pairing && (
+                <div className="cg-oracle-line">
+                  <span className="cg-oracle-tag">{d.t.pairing}</span>
+                  <span className="cg-oracle-value">{d.pairing}</span>
+                </div>
+              )}
             </div>
-            <div className="cg-oracle-line">
-              <span className="cg-oracle-tag">{d.t.pairing}</span>
-              <span className="cg-oracle-value">{d.pairing}</span>
-            </div>
-          </div>
+          )}
 
           {d.freeText && (
             <div className="cg-wish">

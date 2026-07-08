@@ -332,7 +332,11 @@
   position: relative;
   display: flex;
   align-items: flex-end;
-  justify-content: space-between;
+  /* flex-end (not space-between): when co-notes is blank and unmounted, the
+     lone co-rarity-set child must still hug the right edge, not snap to the
+     start — flex-end holds that in both the one-child and two-child case,
+     since co-notes' own flex:1 already claims all remaining width when present */
+  justify-content: flex-end;
   gap: 10px;
 }
 .co-notes {

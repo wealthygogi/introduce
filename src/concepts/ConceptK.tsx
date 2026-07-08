@@ -141,18 +141,24 @@ export default function ConceptK() {
           </div>
         </div>
 
-        <div className="ck-notes">
-          <div className="ck-notes-label">{flavor.note}</div>
-          <div className="ck-notes-row">
-            <span className="ck-notes-key">{d.t.dislike}</span>
-            {d.dislike}
+        {(d.dislike || d.pairing || d.freeText) && (
+          <div className="ck-notes">
+            <div className="ck-notes-label">{flavor.note}</div>
+            {d.dislike && (
+              <div className="ck-notes-row">
+                <span className="ck-notes-key">{d.t.dislike}</span>
+                {d.dislike}
+              </div>
+            )}
+            {d.pairing && (
+              <div className="ck-notes-row">
+                <span className="ck-notes-key">{d.t.pairing}</span>
+                {d.pairing}
+              </div>
+            )}
+            {d.freeText && <div className="ck-notes-free">{d.freeText}</div>}
           </div>
-          <div className="ck-notes-row">
-            <span className="ck-notes-key">{d.t.pairing}</span>
-            {d.pairing}
-          </div>
-          {d.freeText && <div className="ck-notes-free">{d.freeText}</div>}
-        </div>
+        )}
 
         <div className="ck-footer">
           <span className="ck-footer-part">Touhou Project © ZUN</span>

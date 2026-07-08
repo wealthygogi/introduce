@@ -52,6 +52,19 @@ export default function ConceptO() {
   const setEntries = d.seriesList.slice(0, 4);
   const setOverflow = d.seriesList.length - setEntries.length;
 
+  // dislike/pairing are free text and may both be blank — show whichever one
+  // is filled in, and hide the footnote entirely when neither is
+  const hasDislike = Boolean(d.dislike);
+  const hasPairing = Boolean(d.pairing);
+  const noteLine =
+    hasDislike && hasPairing
+      ? `${d.t.dislike} ${d.dislike} · ${d.t.pairing} ${d.pairing}`
+      : hasDislike
+        ? `${d.t.dislike} ${d.dislike}`
+        : hasPairing
+          ? `${d.t.pairing} ${d.pairing}`
+          : '';
+
   return (
     <div id="preview-card" className="card-frame" style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}>
       <div className="co-frame">
@@ -117,9 +130,7 @@ export default function ConceptO() {
           {d.freeText && <div className="co-flavor">“{d.freeText}”</div>}
 
           <div className="co-bottom-row">
-            <div className="co-notes">
-              {d.t.dislike} {d.dislike} · {d.t.pairing} {d.pairing}
-            </div>
+            {noteLine && <div className="co-notes">{noteLine}</div>}
             <div className="co-rarity-set">
               <span className="co-rarity" aria-hidden>
                 {rarity}

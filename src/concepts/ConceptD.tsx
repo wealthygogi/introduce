@@ -122,7 +122,7 @@ export default function ConceptD() {
           </div>
         </div>
 
-        <div className="vnd-log">
+        <div className={`vnd-log${d.lang === 'ja' ? ' vnd-log-ja' : ''}`}>
           {lines.map((line) => (
             <div
               key={line.key}

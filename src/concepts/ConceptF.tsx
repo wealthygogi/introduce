@@ -166,10 +166,16 @@ export default function ConceptF() {
             <div className="cf-voice">
               <div className="cf-subhead">{HEAD_VOICE[d.lang]}</div>
               <p className="cf-para">
-                {/* 드롭캡을 실제 요소로 — ::first-letter 는 캡처(modern-screenshot)가
-                    렌더하지 못해 드롭캡이 사라진다. */}
-                <span className="cf-dropcap">{voice.charAt(0)}</span>
-                {voice.slice(1)}
+                {/* 드롭캡을 실제 요소로 — ::first-letter 는 캡처가 렌더하지 못해 사라진다.
+                    단 JA voice 는 "一方…" 으로 시작하는데 드롭캡(가로획 一)이 어색하므로 제외. */}
+                {d.lang === 'ja' ? (
+                  voice
+                ) : (
+                  <>
+                    <span className="cf-dropcap">{voice.charAt(0)}</span>
+                    {voice.slice(1)}
+                  </>
+                )}
               </p>
             </div>
           )}

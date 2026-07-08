@@ -80,9 +80,14 @@
   background: var(--bg-elevated);
   border-left: 3px solid var(--border-strong);
   border-radius: 4px 14px 14px 4px;
-  padding: 10px 16px;
+  padding: 10px 12px;
   font-size: 14px;
   line-height: 1.65;
+  /* barely-there tightening (imperceptible in the preview) so a long spoken
+     line like "주로 TH06 홍마향, TH07 요요몽, TH08 영야초 시리즈를 좋아해요." keeps to
+     one line in the PNG capture, where text renders a hair wider. Longer text
+     still wraps normally. */
+  letter-spacing: -0.6px;
   color: var(--fg);
   word-break: keep-all;
   overflow-wrap: anywhere;

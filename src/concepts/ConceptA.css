@@ -223,6 +223,13 @@
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
+/* FUB value is a short fixed label (자유(FREE) / 맞팔(R4R) / フリー(FREE) …) that
+   easily fits its half-tile. Keep it on one line so the "(FREE)" suffix never
+   orphans onto a second row in the PNG capture, where glyphs render a hair
+   wider than the live preview and tip a borderline line over. */
+.rpgs-stat-grid > :first-child .rpgs-stat-val {
+  white-space: nowrap;
+}
 
 .rpgs-effects {
   display: flex;

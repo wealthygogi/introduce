@@ -97,12 +97,11 @@ export default function DownloadButton({ targetId, filename }: Props) {
         `display:inline-block;box-sizing:border-box;`;
       const clone = el.cloneNode(true) as HTMLElement;
       clone.style.margin = '0';
-      // .card-frame 의 width:min(640px,100%) 는 화면 밖 inline-block wrap 안에서
-      // 100% 기준(containing block)을 못 잡아, 폭이 콘텐츠에 따라 shrink-to-fit 으로
-      // 붕괴한다 → 멀티컬럼/테이블 폭 오계산으로 오버플로(f)·과대 캔버스, 최악의 경우
-      // canvas 크기 비정상으로 blob 생성 실패(h). 원본이 실제로 렌더된 폭을 그대로
-      // 고정해 레이아웃이 정확히 계산되게 한다.
-      clone.style.width = `${Math.round(el.getBoundingClientRect().width)}px`;
+      // 카드는 항상 640 폭(.card-frame). offsetWidth 는 레이아웃 폭(640, transform 무관)이라
+      // 화면 밖 wrap 에서도 레이아웃이 정확히 계산된다. getBoundingClientRect().width 는
+      // 모바일 useCardScale 의 transform:scale 이나 브라우저 zoom 이 반영된 축소 폭이어서
+      // clone 이 좁아지고 다운로드가 짤렸다 — 그래서 offsetWidth 로 고정한다.
+      clone.style.width = `${el.offsetWidth}px`;
       clone.style.maxWidth = 'none';
       // 진입 애니메이션(opacity:0→1, delay 최대 ~380ms)은 clone 을 새로 DOM 에
       // 부착하는 순간 처음부터 재생된다. 캡처는 그 직후 일어나므로 fill-mode both +

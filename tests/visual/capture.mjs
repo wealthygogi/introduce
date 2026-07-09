@@ -37,6 +37,21 @@ const SCENARIOS = {
     pairing: '다 좋아요',
     freeText: '비계/부계 @sanaisanae\n환상향에서 뉴스를 씁니다',
   },
+  // 최대 길이 근처 — 긴 값이 카드 폭을 넘어 짤리거나 부자연스럽게 줄바꿈되는지
+  long: {
+    nickname: '샤메이마루아야쨩', // 8자 (닉네임 max 10)
+    dislike: '약속에 늦는 사람 답장 느린 사람 읽고 씹는 사람 말없이 잠수타는 사람 전부 조금씩 힘들어요',
+    pairing: '레이무X마리사 사나에X스와코 유카리X유유코 레밀리아X사쿠야 알리스X마리사 전부 좋아합니다',
+    freeText:
+      '안녕하세요! 동방 좋아하는 트친소 왔습니다. 주로 그림 그리고 가끔 글도 써요. 마감은 늘 늦지만 열심히 하고 있어요. 맞팔 환영하고 편하게 말 걸어주세요. 잘 부탁드립니다 꾸벅',
+  },
+  // 엣지 — 공백 없는 긴 토큰/URL/특수문자 (줄바꿈 불가 오버플로 유발)
+  edge: {
+    nickname: 'Wealthygogi', // 라틴 (10자 제한으로 잘림)
+    dislike: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    pairing: 'https://twitter.com/some_very_long_handle_1234567890',
+    freeText: 'ReallyLongUnbreakableWord_1234567890_ABCDEFGHIJKLMNOPQRSTUV ★☆♥♪✿ @mention #hashtag',
+  },
   empty: null, // 폼을 채우지 않고 기본값(fallback)으로 렌더
 };
 
@@ -51,9 +66,11 @@ const lang = getOpt('lang', 'ko');
 const theme = getOpt('theme', 'light');
 const scenarioName = getOpt('scenario', 'full');
 const scenario = SCENARIOS[scenarioName];
+const mobile = argv.includes('--mobile');
+const vpWidth = parseInt(getOpt('width', '1400'), 10) || 1400;
 const conceptList = only.length ? only : ALL_CONCEPTS;
 
-const suffix = `${lang}-${theme}-${scenarioName}`;
+const suffix = `${lang}-${theme}-${scenarioName}${mobile ? '-m' : ''}`;
 
 // ── 유틸 ───────────────────────────────────────────────────
 async function waitForServer(url, timeoutMs = 60_000) {
@@ -71,7 +88,7 @@ async function waitForServer(url, timeoutMs = 60_000) {
 }
 
 // ── 메인 ───────────────────────────────────────────────────
-console.log(`[harness] concepts=${conceptList.join(',')} lang=${lang} theme=${theme} scenario=${scenarioName}`);
+console.log(`[harness] concepts=${conceptList.join(',')} lang=${lang} theme=${theme} scenario=${scenarioName} mobile=${mobile}`);
 
 rmSync(OUTPUT_DIR, { recursive: true, force: true });
 mkdirSync(OUTPUT_DIR, { recursive: true });
@@ -97,7 +114,8 @@ try {
   const context = await browser.newContext({
     acceptDownloads: true,
     deviceScaleFactor: 2,
-    viewport: { width: 1400, height: 1000 },
+    // --mobile 은 실제 폰 폭을 흉내내 useCardScale 의 transform:scale 경로를 태운다.
+    viewport: mobile ? { width: 390, height: 844 } : { width: vpWidth, height: 1000 },
   });
   await context.addInitScript(
     ([l, t]) => {

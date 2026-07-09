@@ -97,11 +97,11 @@ export default function DownloadButton({ targetId, filename }: Props) {
         `display:inline-block;box-sizing:border-box;`;
       const clone = el.cloneNode(true) as HTMLElement;
       clone.style.margin = '0';
-      // 카드는 항상 640 폭(.card-frame). offsetWidth 는 레이아웃 폭(640, transform 무관)이라
-      // 화면 밖 wrap 에서도 레이아웃이 정확히 계산된다. getBoundingClientRect().width 는
-      // 모바일 useCardScale 의 transform:scale 이나 브라우저 zoom 이 반영된 축소 폭이어서
-      // clone 이 좁아지고 다운로드가 짤렸다 — 그래서 offsetWidth 로 고정한다.
-      clone.style.width = `${el.offsetWidth}px`;
+      // 다운로드는 화면 폭과 무관하게 항상 카드 설계 폭(640)으로 캡처한다. 화면 카드는
+      // 좁은 창에서 min(640px,100%) 로 축소되는데(정상·반응형), 그 축소 폭
+      // (offsetWidth/getBoundingClientRect)을 clone 에 쓰면 내부가 640 기준 설계를 넘어
+      // 오버플로해 PNG 가 짤렸다. 640 을 고정해 어느 화면에서 눌러도 동일한 카드를 뽑는다.
+      clone.style.width = '640px';
       clone.style.maxWidth = 'none';
       // 진입 애니메이션(opacity:0→1, delay 최대 ~380ms)은 clone 을 새로 DOM 에
       // 부착하는 순간 처음부터 재생된다. 캡처는 그 직후 일어나므로 fill-mode both +

@@ -654,7 +654,11 @@ a {
 
 /* card frame (wraps each concept preview) */
 .card-frame {
-  width: min(640px, 100%);
+  /* 640 고정 — min(640px,100%) 로 두면 좁은 창(preview 영역<640)에서 카드가 축소되고,
+     카드 내부(멀티컬럼·게이지·2단 그리드 등)가 640 기준 설계를 넘어 오버플로한다.
+     게다가 다운로드 clone 이 그 축소 폭을 물어 PNG 까지 짤린다. 좁은 화면은
+     데스크탑=.preview-panel overflow-x 스크롤, 모바일=useCardScale transform 이 처리. */
+  width: 640px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 18px;

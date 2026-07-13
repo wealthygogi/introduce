@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { domToBlob } from 'modern-screenshot';
 import { useLang } from '../contexts/LangContext';
 
@@ -68,13 +68,13 @@ export default function DownloadButton({ targetId, filename }: Props) {
   const { t } = useLang();
   const [busy, setBusy] = useState(false);
 
-  // 사용자가 폼을 채우는 동안 폰트 임베드 CSS 를 미리 구워둬서(pre-warm) 첫 다운로드
-  // 클릭이 수십 개 woff2 서브셋 fetch 비용을 물지 않게 한다.
-  useEffect(() => {
-    const ric = (window as unknown as { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback;
-    if (ric) ric(() => void getFontEmbedCss());
-    else setTimeout(() => void getFontEmbedCss(), 1500);
-  }, []);
+  // The font-embed CSS (fetches the Google Fonts stylesheet + ~60 woff2 subsets
+  // and base64-inlines them) is built lazily on the first download click, not
+  // pre-warmed on mount: pre-warming ran that whole burst on every user's first
+  // concept visit (blocking the main thread briefly and making the page feel
+  // stuck for ~1s) even though most visitors never download. getFontEmbedCss()
+  // still memoizes its result, so only the first download pays the cost, behind
+  // the button's "saving…" state.
 
   const run = async () => {
     const el = document.getElementById(targetId);

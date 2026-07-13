@@ -46,11 +46,11 @@ export default function ConceptO() {
   // move damage — nickname+reroll seeded roll per account-type id, 10–120 in steps of 10
   const moves = d.acctList
     .map((a) => ({ ...a, dmg: d.rollInt('move-' + a.id, 1, 12) * 10 }))
-    .sort((a, b) => b.dmg - a.dmg)
-    .slice(0, 3);
+    .sort((a, b) => b.dmg - a.dmg);
 
-  const setEntries = d.seriesList.slice(0, 4);
-  const setOverflow = d.seriesList.length - setEntries.length;
+  // Show every selected series as a set symbol (the row wraps in CSS); users
+  // who pick many series expect to see them all, not a "+N" summary.
+  const setEntries = d.seriesList;
 
   // dislike/pairing are free text and may both be blank — show whichever one
   // is filled in, and hide the footnote entirely when neither is
@@ -142,7 +142,6 @@ export default function ConceptO() {
                       <span>{seriesCode(s.label)}</span>
                     </span>
                   ))}
-                  {setOverflow > 0 && <span className="co-set-overflow">+{setOverflow}</span>}
                 </div>
               )}
             </div>

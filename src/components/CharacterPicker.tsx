@@ -7,7 +7,12 @@ import { tr } from '../data/i18n';
 export default function CharacterPicker() {
   const { state, set } = useFormState();
   const { lang, t } = useLang();
-  const [open, setOpen] = useState(true);
+  // Collapsed by default: the grid renders 120+ sprite <img>s only when open,
+  // so every concept-page entry would otherwise fire a burst of ~110 image
+  // requests, blocking the main thread for ~1s and making the page feel stuck.
+  // The currently-selected character stays visible via picker-current; the user
+  // expands only when they want to change it.
+  const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
 
   const filtered = useMemo(() => {
@@ -67,7 +72,7 @@ export default function CharacterPicker() {
                     title={name}
                     aria-label={name}
                   >
-                    <img className="px" src={spriteUrl(c.rel)} alt="" />
+                    <img className="px" src={spriteUrl(c.rel)} alt="" loading="lazy" decoding="async" />
                   </button>
                 );
               })

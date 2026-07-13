@@ -658,6 +658,12 @@ a {
      다운로드 짤림은 카드를 640 으로 고정해서가 아니라, DownloadButton 이 캡처용 clone
      을 640 으로 고정해서 해결한다(화면과 다운로드를 분리). */
   width: min(640px, 100%);
+  /* The card is a fixed 640px block inside a full-width scaler/wrap. Without
+     this it left-pins (its % width makes ancestors fill the panel, then the
+     640 block aligns left), which looked like the whole preview jumping to the
+     left on wide screens once the form was filled in. Auto side-margins center
+     it; a no-op on mobile where the scaler is exactly 640. */
+  margin-inline: auto;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 18px;

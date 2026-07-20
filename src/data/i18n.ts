@@ -19,6 +19,16 @@ export interface Messages {
   saving: string;
   saved: string;
   saveFailed: string;
+  shareLink: string;
+  linkCopied: string;
+  linkCopyFailed: string;
+  tweet: string;
+  tweetText: string;
+  tweetTags: string;
+  tweetSaved: string;
+  tweetNoImage: string;
+  tweetOpen: string;
+  cancel: string;
   theme: string;
   language: string;
   // form
@@ -122,6 +132,16 @@ export const messages: Record<Lang, Messages> = {
     saving: '저장 중...',
     saved: '저장됨',
     saveFailed: '저장 실패',
+    shareLink: '링크 복사',
+    linkCopied: '링크 복사됨!',
+    linkCopyFailed: '복사 실패',
+    tweet: '트윗하기',
+    tweetText: '제 동방 트친소 카드예요! 🎴',
+    tweetTags: '#동방_𝕏친소 #동방_트친소',
+    tweetSaved: '이미지 저장됨 ✓',
+    tweetNoImage: '트윗에는 이미지가 자동으로 첨부되지 않아요. 먼저 이미지를 저장한 뒤, 열리는 트윗 작성창에 첨부해 주세요.',
+    tweetOpen: '트윗 작성창 열기',
+    cancel: '취소',
     theme: '테마',
     language: '언어',
     nickname: '닉네임',
@@ -216,6 +236,16 @@ export const messages: Record<Lang, Messages> = {
     saving: '保存中...',
     saved: '保存しました',
     saveFailed: '保存失敗',
+    shareLink: 'リンクをコピー',
+    linkCopied: 'コピーしました！',
+    linkCopyFailed: 'コピー失敗',
+    tweet: 'ツイート',
+    tweetText: '私の東方・自己紹介カードです！🎴',
+    tweetTags: '#東方好きな人と繋がりたい #東方Project',
+    tweetSaved: '画像を保存しました ✓',
+    tweetNoImage: 'ツイートに画像は自動で添付されません。先に画像を保存し、開いた作成画面に添付してください。',
+    tweetOpen: 'ツイート作成画面を開く',
+    cancel: 'キャンセル',
     theme: 'テーマ',
     language: '言語',
     nickname: 'ニックネーム',
@@ -310,6 +340,16 @@ export const messages: Record<Lang, Messages> = {
     saving: 'Saving...',
     saved: 'Saved',
     saveFailed: 'Save failed',
+    shareLink: 'Copy link',
+    linkCopied: 'Link copied!',
+    linkCopyFailed: 'Copy failed',
+    tweet: 'Tweet',
+    tweetText: 'My Touhou intro card! 🎴',
+    tweetTags: '#Touhou #TouhouProject',
+    tweetSaved: 'Image saved ✓',
+    tweetNoImage: 'The image is not attached to the tweet automatically. Save the image first, then attach it in the composer that opens.',
+    tweetOpen: 'Open tweet composer',
+    cancel: 'Cancel',
     theme: 'Theme',
     language: 'Language',
     nickname: 'Nickname',

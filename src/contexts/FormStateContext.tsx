@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { loadInitialState, saveToStorage, stripShareParam } from '../lib/formStateCodec';
 
 export type FubChoice = 'free' | 'r4r';
 export type PartingChoice = 'unfollow' | 'blockunfollow' | 'block';
@@ -32,7 +33,7 @@ interface FormStateContextValue {
   toggleAcct: (id: string) => void;
 }
 
-const defaultState: FormState = {
+export const defaultState: FormState = {
   nickname: '',
   profileImage: null,
   selectedChar: 'reimu',
@@ -59,7 +60,18 @@ const FormStateContext = createContext<FormStateContextValue>({
 });
 
 export function FormStateProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<FormState>(defaultState);
+  // 공유 링크(?c=) > localStorage > 기본값 순으로 초기 상태를 복원한다.
+  const [state, setState] = useState<FormState>(loadInitialState);
+
+  // 공유 링크(?c=)로 초기화한 경우, 마운트 후 URL 에서 파라미터를 정리한다.
+  useEffect(() => {
+    stripShareParam();
+  }, []);
+
+  // 상태가 바뀔 때마다 localStorage 에 저장 → 새로고침해도 입력 유지.
+  useEffect(() => {
+    saveToStorage(state);
+  }, [state]);
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setState((s) => ({ ...s, [key]: value }));

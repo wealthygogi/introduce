@@ -802,3 +802,54 @@ a {
     display: inline-flex;
   }
 }
+
+/* ── 안내 모달 (트윗하기 등) ─────────────────────────────── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+}
+.modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  padding: 26px 22px 22px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+}
+.modal-msg {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--fg-strong);
+}
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.modal-actions .btn {
+  justify-content: center;
+}
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  padding: 4px;
+  background: none;
+  border: none;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--fg-muted);
+  cursor: pointer;
+}
+.modal-close:hover {
+  color: var(--fg-strong);
+}

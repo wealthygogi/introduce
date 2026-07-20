@@ -5,6 +5,8 @@ import { useLang } from '../contexts/LangContext';
 import { useFormState } from '../contexts/FormStateContext';
 import FormPanel from '../components/FormPanel';
 import DownloadButton from '../components/DownloadButton';
+import ShareButton from '../components/ShareButton';
+import TweetButton from '../components/TweetButton';
 import { useCardScale } from '../hooks/useCardScale';
 
 export default function ConceptPage() {
@@ -29,6 +31,8 @@ export default function ConceptPage() {
       <div className={`preview-panel${collapsed ? ' is-collapsed' : ''}`}>
         <div className="preview-tools">
           <DownloadButton targetId="preview-card" filename={`trchinso-${concept.slug}.png`} />
+          <TweetButton targetId="preview-card" filename={`trchinso-${concept.slug}.png`} />
+          <ShareButton />
           {concept.hasRandomStats && (
             <button type="button" className="btn" onClick={doReroll}>
               🎲 {t.reroll}

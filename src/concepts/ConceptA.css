@@ -34,6 +34,10 @@
   font-size: 11px;
   letter-spacing: 2px;
   color: #aab3d1;
+  /* Fixed UI label — never let "STATUS WINDOW" split across two lines, even when
+     the card collapses toward min-content during PNG capture or a wide webfont
+     loads. It always fits the titlebar with room to spare. */
+  white-space: nowrap;
 }
 .rpgs-titlebar-lv {
   font-size: 12px;
@@ -250,6 +254,9 @@
   color: #ffb454;
   font-weight: 700;
   flex-shrink: 0;
+  /* Fixed label ("불호 / 지뢰", "커플링" …) — keep it whole on one line so it never
+     breaks mid-word; the value beside it takes the remaining width and wraps. */
+  white-space: nowrap;
 }
 .rpgs-effect-val {
   color: #dfe4f4;

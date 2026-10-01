@@ -1,0 +1,61 @@
+/* Concept V — PC-98 세이브 슬롯 */
+.pc-v {
+  --pc-bg: #000000;
+  --pc-fg: #ffffff;
+  --pc-accent: #ffd54a;
+  --pc-muted: #9aa0a6;
+  --cv-green: #5ad35a;
+  font-family: 'DotGothic16', 'Noto Sans KR', sans-serif;
+  box-shadow: inset 0 0 0 4px #fff, inset 0 0 0 6px #000;
+}
+.cv-head,
+.cv-meta .pc-meta-k,
+.cv-notes .pc-note-k {
+  font-family: 'Press Start 2P', 'DotGothic16', 'Noto Sans KR', sans-serif;
+}
+.cv-slot {
+  font-size: 12px;
+  color: var(--pc-accent);
+}
+.cv-stat {
+  font-size: 8px;
+  color: var(--cv-green);
+  white-space: pre;
+}
+.cv-meta .pc-meta-k,
+.cv-notes .pc-note-k {
+  font-size: 8px;
+}
+.pc-v[data-lang='ko'] .cv-meta .pc-meta-k,
+.pc-v[data-lang='ko'] .cv-notes .pc-note-k,
+.pc-v[data-lang='ja'] .cv-meta .pc-meta-k,
+.pc-v[data-lang='ja'] .cv-notes .pc-note-k {
+  font-size: 10px;
+}
+.cv-avatar {
+  border: 2px solid #fff;
+  border-radius: 0 !important;
+  background: #101010;
+}
+.pc-v .pc-chip:not(.more) {
+  border-radius: 0;
+  color: #000;
+}
+.pc-v .pc-acct .pc-chip:not(.more) {
+  background: var(--cv-green);
+}
+.cv-meta,
+.cv-notes,
+.cv-free {
+  border-top: 1px dashed #444;
+  padding-top: 4px;
+}
+.cv-foot {
+  justify-content: center;
+  font-family: 'Press Start 2P', 'DotGothic16', sans-serif;
+  font-size: 8px;
+  color: var(--pc-accent);
+}
+.cv-cursor {
+  color: var(--cv-green);
+}

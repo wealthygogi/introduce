@@ -1,0 +1,57 @@
+/* Concept X — 비봉클럽 조사파일 */
+.pc-x {
+  --pc-bg: #0b0f14;
+  --pc-fg: #d7ffe3;
+  --pc-accent: #59f78a;
+  --pc-muted: #6f8a79;
+  --cx-amber: #ffb347;
+  font-family: 'DotGothic16', 'Noto Sans KR', sans-serif;
+}
+.pc-x::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent 0 2px, rgba(0, 0, 0, 0.18) 2px 3px);
+}
+.cx-head {
+  border-bottom: 1px solid var(--pc-accent);
+}
+.cx-case {
+  font-size: 15px;
+  letter-spacing: 3px;
+  color: var(--pc-accent);
+}
+.cx-club {
+  font-size: 13px;
+  color: var(--cx-amber);
+}
+.cx-avatar {
+  border: 1px solid var(--pc-accent);
+  border-radius: 0 !important;
+}
+.pc-x .pc-chip:not(.more) {
+  border-radius: 2px;
+  color: #0b0f14;
+}
+.pc-x .pc-acct .pc-chip:not(.more) {
+  background: var(--cx-amber);
+}
+.cx-meta .pc-meta-k::before,
+.cx-notes .pc-note-k::before {
+  content: '> ';
+  color: var(--pc-accent);
+}
+.cx-meta,
+.cx-notes,
+.cx-free {
+  border-top: 1px dashed var(--pc-muted);
+  padding-top: 4px;
+}
+.cx-foot {
+  color: var(--pc-accent);
+}
+/* '> ' 접두만큼 라벨 열을 넓힌다 */
+.cx-notes .pc-note {
+  grid-template-columns: 84px 1fr;
+}

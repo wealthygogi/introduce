@@ -26,10 +26,10 @@ const OUTPUT_DIR = join(__dirname, 'output');
 const PORT = 5199;
 const BASE = `http://localhost:${PORT}/introduce`;
 
-const ALL_CONCEPTS = 'abcdefghijklmno'.split('');
+const ALL_CONCEPTS = 'pqrstuvwxy'.split('');
 
 // 텍스트가 가장 많은 "full" 케이스 — 텍스트 누락/오버플로 결함이 잘 드러남.
-// (nickname 최대 10자, dislike/pairing 100자, freeText 300자 제한)
+// (src/data/limits.ts LIMITS: nickname 10자, dislike/pairing 40자, freeText 120자 — 초과분은 입력 시 잘린다)
 const SCENARIOS = {
   full: {
     nickname: '샤메이마루',
@@ -57,7 +57,7 @@ const SCENARIOS = {
 
 // ── CLI 파싱 ────────────────────────────────────────────────
 const argv = process.argv.slice(2);
-const only = argv.filter((a) => /^[a-o]$/.test(a));
+const only = argv.filter((a) => /^[a-y]$/.test(a));
 const getOpt = (name, def) => {
   const hit = argv.find((a) => a.startsWith(`--${name}=`));
   return hit ? hit.split('=')[1] : def;

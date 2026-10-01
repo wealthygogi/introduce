@@ -115,6 +115,28 @@ export interface Messages {
   conceptNDesc: string;
   conceptO: string;
   conceptODesc: string;
+  conceptP: string;
+  conceptPDesc: string;
+  conceptQ: string;
+  conceptQDesc: string;
+  conceptR: string;
+  conceptRDesc: string;
+  conceptS: string;
+  conceptSDesc: string;
+  conceptT: string;
+  conceptTDesc: string;
+  conceptU: string;
+  conceptUDesc: string;
+  conceptV: string;
+  conceptVDesc: string;
+  conceptW: string;
+  conceptWDesc: string;
+  conceptX: string;
+  conceptXDesc: string;
+  conceptY: string;
+  conceptYDesc: string;
+  legacyNotice: string;
+  legacyCta: string;
 }
 
 export const messages: Record<Lang, Messages> = {
@@ -221,6 +243,28 @@ export const messages: Record<Lang, Messages> = {
     conceptNDesc: '현대적 메신저 프로필 카드처럼 소개합니다.',
     conceptO: '트레이딩 카드',
     conceptODesc: '능력치와 기술이 있는 수집형 카드처럼 소개합니다.',
+    conceptP: '스펠카드 포토카드',
+    conceptPDesc: '탄막 스펠카드처럼 선언하는 세로형 포토카드입니다.',
+    conceptQ: '하쿠레이 오후다',
+    conceptQDesc: '하쿠레이 신사의 부적처럼 소개합니다.',
+    conceptR: '예대제 입장권',
+    conceptRDesc: '예대제 입장 티켓처럼 좌석 번호와 함께 소개합니다.',
+    conceptS: '홍마관 초대장',
+    conceptSDesc: '홍마관 연회 초대장처럼 소개합니다.',
+    conceptT: '겐소쿄 SNS 프로필',
+    conceptTDesc: 'SNS 프로필 카드처럼 아이디와 함께 소개합니다.',
+    conceptU: '메이드 폴라로이드',
+    conceptUDesc: '사쿠야가 찍어 준 폴라로이드 사진처럼 소개합니다.',
+    conceptV: 'PC-98 세이브 슬롯',
+    conceptVDesc: '구작 세이브 화면처럼 레벨과 플레이 시간을 표시합니다.',
+    conceptW: '영원정 전단',
+    conceptWDesc: '영원정에서 뿌린 전단처럼 헤드라인으로 소개합니다.',
+    conceptX: '비봉클럽 조사파일',
+    conceptXDesc: '비봉클럽의 조사 기록 단말처럼 소개합니다.',
+    conceptY: '스티커 다이어리',
+    conceptYDesc: '스티커 가득한 다이어리 한 페이지처럼 소개합니다.',
+    legacyNotice: '구버전 컨셉입니다. 새 포토카드 컨셉을 사용해 보세요.',
+    legacyCta: '새 컨셉 보기 →',
   },
   ja: {
     brand: '東方 自己紹介',
@@ -325,6 +369,28 @@ export const messages: Record<Lang, Messages> = {
     conceptNDesc: '現代風メッセンジャーのプロフィールのように紹介します。',
     conceptO: 'トレーディングカード',
     conceptODesc: 'ステータスと技を持つ収集カードのように紹介します。',
+    conceptP: 'スペルカード・フォトカード',
+    conceptPDesc: '弾幕スペルカードのように宣言する縦型フォトカードです。',
+    conceptQ: '博麗の御札',
+    conceptQDesc: '博麗神社の御札のように紹介します。',
+    conceptR: '例大祭 入場券',
+    conceptRDesc: '例大祭の入場券のように座席番号付きで紹介します。',
+    conceptS: '紅魔館 招待状',
+    conceptSDesc: '紅魔館の宴への招待状のように紹介します。',
+    conceptT: '幻想郷SNSプロフィール',
+    conceptTDesc: 'SNSのプロフィールカードのようにIDと一緒に紹介します。',
+    conceptU: 'メイドのポラロイド',
+    conceptUDesc: '咲夜が撮ってくれたポラロイド写真のように紹介します。',
+    conceptV: 'PC-98 セーブスロット',
+    conceptVDesc: '旧作のセーブ画面のようにレベルとプレイ時間を表示します。',
+    conceptW: '永遠亭 瓦版',
+    conceptWDesc: '永遠亭が配った瓦版のように見出しで紹介します。',
+    conceptX: '秘封倶楽部 調査ファイル',
+    conceptXDesc: '秘封倶楽部の調査記録端末のように紹介します。',
+    conceptY: 'シールだいありー',
+    conceptYDesc: 'シールいっぱいの日記の1ページのように紹介します。',
+    legacyNotice: '旧バージョンのコンセプトです。新しいフォトカードをお試しください。',
+    legacyCta: '新しいコンセプトへ →',
   },
   en: {
     brand: 'Touhou Intro',
@@ -429,5 +495,27 @@ export const messages: Record<Lang, Messages> = {
     conceptNDesc: 'A modern messenger profile card.',
     conceptO: 'Trading Card',
     conceptODesc: 'A collectible TCG card with stats and moves.',
+    conceptP: 'Spell Card Photocard',
+    conceptPDesc: 'A portrait photocard declared like a danmaku spell card.',
+    conceptQ: 'Hakurei Ofuda',
+    conceptQDesc: 'Introduce yourself like a Hakurei Shrine talisman.',
+    conceptR: 'Reitaisai Ticket',
+    conceptRDesc: 'A Reitaisai admission ticket with your seat number.',
+    conceptS: 'Scarlet Devil Mansion Invitation',
+    conceptSDesc: 'An invitation to the Scarlet Devil Mansion.',
+    conceptT: 'Gensokyo SNS Profile',
+    conceptTDesc: 'An SNS profile card with your handle.',
+    conceptU: 'Maid Polaroid',
+    conceptUDesc: 'A polaroid snapped by the perfect maid.',
+    conceptV: 'PC-98 Save Slot',
+    conceptVDesc: 'A retro save screen with level and play time.',
+    conceptW: 'Eientei Flyer',
+    conceptWDesc: 'A flyer from Eientei with your name as the headline.',
+    conceptX: 'Sealing Club Case File',
+    conceptXDesc: 'A Sealing Club investigation record terminal.',
+    conceptY: 'Sticker Diary',
+    conceptYDesc: 'A diary page covered in stickers.',
+    legacyNotice: 'This is a legacy concept. Try the new photocard concepts.',
+    legacyCta: 'See new concepts →',
   },
 };

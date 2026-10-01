@@ -677,6 +677,22 @@ a {
   display: block;
 }
 
+/* 구버전(레거시) 컨셉 안내 배너 */
+.legacy-banner {
+  font-size: 13px;
+  padding: 8px 12px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 10px;
+  color: var(--fg-muted);
+  background: var(--bg-elevated);
+  text-align: center;
+  max-width: 640px;
+}
+.legacy-banner a {
+  color: var(--accent-strong);
+  margin-left: 6px;
+}
+
 @media (max-width: 880px) {
   .card-frame {
     /* Force 640px DOM so PNG capture stays consistent across viewports */
@@ -704,6 +720,7 @@ a {
   }
   .preview-tools {
     justify-content: center;
+    flex-wrap: wrap;
     margin-bottom: 0;
   }
   .preview-wrap {
@@ -726,8 +743,8 @@ a {
   .card-scaler {
     transform-origin: top center;
     transform: scale(var(--card-scale, 1));
-    width: 640px;
-    flex: 0 0 640px;
+    width: var(--card-w, 640px);
+    flex: 0 0 var(--card-w, 640px);
   }
   .btn {
     min-height: 44px;

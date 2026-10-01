@@ -1,0 +1,65 @@
+/* Concept Q — 하쿠레이 오후다 */
+.pc-q {
+  --pc-bg: #f6efe1;
+  --pc-fg: #231f20;
+  --pc-accent: #c8322b;
+  --pc-muted: #8a7f72;
+  font-family: 'Noto Serif KR', 'Noto Serif JP', serif;
+}
+.cq-head {
+  justify-content: center;
+  border-bottom: 1px solid var(--pc-accent);
+}
+.cq-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--pc-accent);
+}
+.cq-vert {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  writing-mode: vertical-rl;
+  font-size: 13px;
+  line-height: 1;
+  padding: 3px 2px;
+  border: 1px solid var(--pc-accent);
+  color: var(--pc-accent);
+}
+.cq-avatar {
+  border: 1px solid var(--pc-accent);
+}
+.cq-stamp {
+  position: absolute;
+  right: 4px;
+  bottom: 6px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--pc-accent);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  opacity: 0.85;
+}
+.cq-hero .pc-name-block {
+  padding-right: 40px;
+}
+.cq-meta,
+.cq-notes,
+.cq-free {
+  border-top: 1px dotted var(--pc-muted);
+  padding-top: 4px;
+}
+.cq-foot {
+  justify-content: center;
+  border-top: 1px solid var(--pc-accent);
+}
+.cq-foot-text {
+  color: var(--pc-accent);
+  letter-spacing: 3px;
+}

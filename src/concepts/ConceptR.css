@@ -1,0 +1,57 @@
+/* Concept R — 예대제 입장권 */
+.pc-r {
+  --pc-bg: #fbf7ee;
+  --pc-fg: #5a3d2b;
+  --pc-accent: #b8322d;
+  --pc-muted: #a08b78;
+}
+/* 절취선 양끝 노치: 프레임 기준 free 존 상단(14 + 56+150+64+60+70 = 414px) */
+.pc-r::before,
+.pc-r::after {
+  content: '';
+  position: absolute;
+  top: 404px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--bg);
+}
+.pc-r::before {
+  left: -12px;
+}
+.pc-r::after {
+  right: -12px;
+}
+.cr-head {
+  border-bottom: 2px solid var(--pc-accent);
+}
+.cr-admit {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--pc-accent);
+}
+.cr-seat {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border: 1px solid var(--pc-fg);
+  border-radius: 4px;
+}
+.cr-avatar {
+  border: 1px solid var(--pc-muted);
+}
+.cr-free {
+  border-top: 2px dashed var(--pc-accent);
+  padding-top: 4px;
+}
+.cr-foot {
+  font-weight: 700;
+  color: var(--pc-fg);
+}
+.cr-barcode {
+  width: 120px;
+  height: 18px;
+  flex: 0 0 120px;
+  background: repeating-linear-gradient(90deg, var(--pc-fg) 0 2px, transparent 2px 4px);
+}

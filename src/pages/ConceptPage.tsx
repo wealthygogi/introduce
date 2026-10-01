@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useRef, useState, type CSSProperties } from 'react';
+import { useParams, Navigate, Link } from 'react-router-dom';
 import { findConcept } from '../concepts/registry';
 import { useLang } from '../contexts/LangContext';
 import { useFormState } from '../contexts/FormStateContext';
@@ -17,7 +17,7 @@ export default function ConceptPage() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const scalerRef = useRef<HTMLDivElement>(null);
   const [collapsed, setCollapsed] = useState(false);
-  useCardScale(wrapRef, scalerRef);
+  useCardScale(wrapRef, scalerRef, concept?.cardWidth ?? 640);
 
   if (!concept) {
     return <Navigate to="/" replace />;
@@ -29,9 +29,14 @@ export default function ConceptPage() {
     <div className="page-shell">
       <FormPanel />
       <div className={`preview-panel${collapsed ? ' is-collapsed' : ''}`}>
+        {concept.legacy && (
+          <div className="legacy-banner" role="note">
+            {t.legacyNotice} <Link to="/">{t.legacyCta}</Link>
+          </div>
+        )}
         <div className="preview-tools">
-          <DownloadButton targetId="preview-card" filename={`trchinso-${concept.slug}.png`} />
-          <TweetButton targetId="preview-card" filename={`trchinso-${concept.slug}.png`} />
+          <DownloadButton targetId="preview-card" filename={`trchinso-${concept.slug}.png`} capture={concept.capture} />
+          <TweetButton targetId="preview-card" filename={`trchinso-${concept.slug}.png`} capture={concept.capture} />
           <ShareButton />
           {concept.hasRandomStats && (
             <button type="button" className="btn" onClick={doReroll}>
@@ -50,7 +55,11 @@ export default function ConceptPage() {
           </button>
         </div>
         <div id="preview-card-wrap" className="preview-wrap" ref={wrapRef} aria-hidden={collapsed}>
-          <div className="card-scaler" ref={scalerRef}>
+          <div
+            className="card-scaler"
+            ref={scalerRef}
+            style={{ '--card-w': `${concept.cardWidth}px` } as CSSProperties}
+          >
             <ConceptComponent />
           </div>
         </div>

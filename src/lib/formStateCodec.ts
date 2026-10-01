@@ -9,12 +9,10 @@
  * 모두 검증한 뒤 defaultState 위에 병합한다.
  */
 import { defaultState, type FormState, type FubChoice, type PartingChoice, type OtherGenreChoice } from '../contexts/FormStateContext';
+import { LIMITS, CUSTOM_LIMIT } from '../data/limits';
 
 const STORAGE_KEY = 'introduce:form';
 const SHARE_PARAM = 'c';
-
-// 붙여넣기 URL 남용 방지용 느슨한 상한(정상 입력은 넉넉히 통과).
-const CAP = { nickname: 40, dislike: 400, pairing: 400, freeText: 1200, customVal: 400 };
 
 const FUB: FubChoice[] = ['free', 'r4r'];
 const PARTING: PartingChoice[] = ['unfollow', 'blockunfollow', 'block'];
@@ -67,11 +65,11 @@ function fromPlain(p: FormStatePlain): FormState {
   const custom: Record<string, string> = {};
   if (p.custom && typeof p.custom === 'object') {
     for (const [k, v] of Object.entries(p.custom as Record<string, unknown>)) {
-      if (typeof v === 'string') custom[k] = v.slice(0, CAP.customVal);
+      if (typeof v === 'string') custom[k] = v.slice(0, CUSTOM_LIMIT);
     }
   }
   return {
-    nickname: str(p.nickname, defaultState.nickname, CAP.nickname),
+    nickname: str(p.nickname, defaultState.nickname, LIMITS.nickname),
     profileImage: typeof p.profileImage === 'string' ? p.profileImage : null,
     selectedChar: str(p.selectedChar, defaultState.selectedChar, 64),
     selectedSeries: Array.isArray(p.selectedSeries)
@@ -83,9 +81,9 @@ function fromPlain(p: FormStatePlain): FormState {
     fub: oneOf(p.fub, FUB, defaultState.fub),
     parting: oneOf(p.parting, PARTING, defaultState.parting),
     otherGenre: oneOf(p.otherGenre, OTHER, defaultState.otherGenre),
-    dislike: str(p.dislike, '', CAP.dislike),
-    pairing: str(p.pairing, '', CAP.pairing),
-    freeText: str(p.freeText, '', CAP.freeText),
+    dislike: str(p.dislike, '', LIMITS.dislike),
+    pairing: str(p.pairing, '', LIMITS.pairing),
+    freeText: str(p.freeText, '', LIMITS.freeText),
     custom,
     reroll: typeof p.reroll === 'number' && Number.isFinite(p.reroll) ? p.reroll >>> 0 : 0,
   };
@@ -135,11 +133,11 @@ function fromCompact(o: Record<string, unknown>): FormState {
   const custom: Record<string, string> = {};
   if (o.u && typeof o.u === 'object') {
     for (const [k, v] of Object.entries(o.u as Record<string, unknown>)) {
-      if (typeof v === 'string') custom[k] = v.slice(0, CAP.customVal);
+      if (typeof v === 'string') custom[k] = v.slice(0, CUSTOM_LIMIT);
     }
   }
   return {
-    nickname: 'n' in o ? str(o.n, defaultState.nickname, CAP.nickname) : defaultState.nickname,
+    nickname: 'n' in o ? str(o.n, defaultState.nickname, LIMITS.nickname) : defaultState.nickname,
     profileImage: null, // 공유 링크에는 사진이 없다
     selectedChar: 'c' in o ? str(o.c, defaultState.selectedChar, 64) : defaultState.selectedChar,
     selectedSeries: Array.isArray(o.s) ? new Set(strArr(o.s)) : new Set(defaultState.selectedSeries),
@@ -147,9 +145,9 @@ function fromCompact(o: Record<string, unknown>): FormState {
     fub: 'f' in o ? oneOf(o.f, FUB, defaultState.fub) : defaultState.fub,
     parting: 'p' in o ? oneOf(o.p, PARTING, defaultState.parting) : defaultState.parting,
     otherGenre: 'o' in o ? oneOf(o.o, OTHER, defaultState.otherGenre) : defaultState.otherGenre,
-    dislike: str(o.d, '', CAP.dislike),
-    pairing: str(o.g, '', CAP.pairing),
-    freeText: str(o.t, '', CAP.freeText),
+    dislike: str(o.d, '', LIMITS.dislike),
+    pairing: str(o.g, '', LIMITS.pairing),
+    freeText: str(o.t, '', LIMITS.freeText),
     custom,
     reroll: typeof o.r === 'number' && Number.isFinite(o.r) ? o.r >>> 0 : 0,
   };

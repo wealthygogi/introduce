@@ -1,0 +1,60 @@
+/* Concept Y — 스티커 다이어리 (프리셋 B) */
+.pc-y {
+  --pc-bg: #fff8ec;
+  --pc-fg: #4a3f3a;
+  --pc-accent: #ff9ec4;
+  --pc-muted: #9c8f88;
+  --cy-mint: #9be3c8;
+  --cy-yellow: #ffe27a;
+  font-family: 'DotGothic16', 'Noto Sans KR', sans-serif;
+  background: radial-gradient(#f2d9c4 1px, transparent 1px) 0 0 / 12px 12px, var(--pc-bg);
+}
+.cy-title {
+  font-size: 15px;
+  color: #e0679a;
+  letter-spacing: 1px;
+}
+.cy-sub {
+  font-size: 12px;
+  color: var(--pc-muted);
+}
+.cy-avatar {
+  border: 2px dashed var(--pc-accent);
+}
+.cy-hero .pc-name-block {
+  text-align: center;
+}
+/* 스티커 칩: 회전해도 프레임/존 안에 머물러야 하므로 data-deco 아님 */
+.cy-chips .pc-chips {
+  overflow: visible;
+  padding-left: 2px;
+}
+.cy-chips .pc-chip {
+  color: #4a3f3a;
+}
+.cy-chips .pc-chip:nth-child(3n + 1) {
+  background: var(--pc-accent);
+}
+.cy-chips .pc-chip:nth-child(3n + 2) {
+  background: var(--cy-mint);
+}
+.cy-chips .pc-chip:nth-child(3n) {
+  background: var(--cy-yellow);
+}
+.cy-chips .pc-chip:nth-child(odd) {
+  transform: rotate(-3deg);
+}
+.cy-chips .pc-chip:nth-child(even) {
+  transform: rotate(2deg);
+}
+.cy-chips .pc-chip.more {
+  background: transparent;
+}
+.cy-free {
+  background: var(--cy-yellow);
+  padding: 8px;
+  border-radius: 4px;
+}
+.cy-foot {
+  justify-content: center;
+}

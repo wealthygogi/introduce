@@ -7,13 +7,7 @@ import SeriesPicker from './SeriesPicker';
 import AccountTypePicker from './AccountTypePicker';
 import RadioGroup from './RadioGroup';
 import PhotoUpload from './PhotoUpload';
-
-const LIMITS = {
-  nickname: 10,
-  dislike: 100,
-  pairing: 100,
-  freeText: 300,
-} as const;
+import { LIMITS } from '../data/limits';
 
 function CharCount({ value, max }: { value: string; max: number }) {
   const len = [...value].length;

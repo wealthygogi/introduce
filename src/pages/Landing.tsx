@@ -19,7 +19,7 @@ export default function Landing() {
       </section>
 
       <div className="grid">
-        {CONCEPTS.map((c) => (
+        {CONCEPTS.filter((c) => !c.legacy).map((c) => (
           <Link to={`/concept/${c.id}`} key={c.id} className="concept-card">
             <div className="preview">
               <img className="px" src={spriteUrl(c.sprite)} alt="" />

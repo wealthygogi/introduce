@@ -1,0 +1,37 @@
+/* Concept T — 겐소쿄 SNS 프로필 */
+.pc-t {
+  --pc-bg: #ffffff;
+  --pc-fg: #14171a;
+  --pc-accent: #1b6fb3;
+  --pc-muted: #657786;
+}
+.ct-head {
+  justify-content: flex-end;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1b6fb3, #5aa9e6);
+  color: #fff;
+}
+.ct-brand {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.ct-avatar {
+  border-radius: 50% !important;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 1px #d6dde3;
+}
+.ct-handle {
+  color: var(--pc-muted);
+  font-size: 13px;
+}
+.ct-meta,
+.ct-notes,
+.ct-free {
+  border-top: 1px solid #e6ecf0;
+  padding-top: 4px;
+}
+.ct-foot {
+  justify-content: center;
+}

@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 
-const CARD_BASE_WIDTH = 640;
 const MIN_DIFF = 0.005;
 const DESKTOP_BREAKPOINT = 880;
 
 export function useCardScale(
   wrapRef: React.RefObject<HTMLDivElement>,
   scalerRef: React.RefObject<HTMLDivElement>,
+  baseWidth: number,
 ) {
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -35,7 +35,7 @@ export function useCardScale(
       const style = getComputedStyle(parent);
       const hPad = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
       const available = parent.clientWidth - hPad;
-      const scale = Math.min(available / CARD_BASE_WIDTH, 1);
+      const scale = Math.min(available / baseWidth, 1);
       if (Math.abs(scale - lastScale) < MIN_DIFF) return;
       lastScale = scale;
       scaler.style.setProperty('--card-scale', String(scale));
@@ -64,5 +64,5 @@ export function useCardScale(
       window.removeEventListener('orientationchange', schedule);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [wrapRef, scalerRef]);
+  }, [wrapRef, scalerRef, baseWidth]);
 }

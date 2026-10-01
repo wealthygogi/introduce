@@ -1,0 +1,58 @@
+/* Concept P — 스펠카드 포토카드 */
+.pc-p {
+  --pc-bg: #140a16;
+  --pc-fg: #f7e9ee;
+  --pc-accent: #d8213f;
+  --pc-muted: #9a8a99;
+  --cp-gold: #e3c46a;
+  font-family: 'Noto Serif KR', 'Noto Serif JP', serif;
+}
+.pc-p .pc-z + .pc-z {
+  border-top: 1px solid var(--cp-gold);
+}
+.cp-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--cp-gold);
+}
+.cp-fu {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--cp-gold);
+  border-radius: 50%;
+  color: var(--pc-accent);
+  font-size: 16px;
+  letter-spacing: 0;
+}
+.cp-no {
+  font-size: 12px;
+  color: var(--pc-muted);
+  letter-spacing: 1px;
+}
+.cp-avatar {
+  border: 2px solid var(--cp-gold);
+}
+.pc-p .pc-chip:not(.more) {
+  color: #fff;
+}
+.pc-p .pc-acct .pc-chip:not(.more) {
+  background: transparent;
+  color: var(--cp-gold);
+  border: 1px solid var(--cp-gold);
+  line-height: 14px;
+}
+.cp-meta,
+.cp-notes,
+.cp-free {
+  padding-top: 4px;
+}
+.cp-foot {
+  justify-content: center;
+  color: var(--cp-gold);
+}

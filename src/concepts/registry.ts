@@ -15,6 +15,16 @@ import ConceptL from './ConceptL';
 import ConceptM from './ConceptM';
 import ConceptN from './ConceptN';
 import ConceptO from './ConceptO';
+import ConceptP from './ConceptP';
+import ConceptQ from './ConceptQ';
+import ConceptR from './ConceptR';
+import ConceptS from './ConceptS';
+import ConceptT from './ConceptT';
+import ConceptU from './ConceptU';
+import ConceptV from './ConceptV';
+import ConceptW from './ConceptW';
+import ConceptX from './ConceptX';
+import ConceptY from './ConceptY';
 
 /**
  * 컨셉 전용 커스텀 입력 필드 정의.
@@ -27,6 +37,13 @@ export interface CustomFieldDef {
   label: Record<Lang, string>;
   placeholder: string;
   maxLength?: number;
+}
+
+export interface CaptureOptions {
+  /** 캡처 래퍼 여백(px). 포토카드는 0 → PNG 가 카드와 정확히 일치 */
+  padding: number;
+  /** domToBlob scale. 360px 카드 ×3 = 1080px */
+  scale: number;
 }
 
 export interface ConceptDef {
@@ -45,10 +62,19 @@ export interface ConceptDef {
   customFields?: CustomFieldDef[];
   /** 랜덤 스탯(닉네임 시드 + 다시뽑기)을 쓰는 컨셉이면 true → 프리뷰 툴바에 🎲 버튼 표시 */
   hasRandomStats?: boolean;
+  /** 카드 레이아웃 폭(CSS px). useCardScale 기준 폭 · .card-scaler --card-w */
+  cardWidth: number;
+  capture: CaptureOptions;
+  /** true 면 랜딩 그리드에서 숨기고 ConceptPage 에 구버전 배너 표시 */
+  legacy?: true;
 }
+
+const LEGACY = { cardWidth: 640, capture: { padding: 48, scale: 2 }, legacy: true } as const;
+const PHOTOCARD = { cardWidth: 360, capture: { padding: 0, scale: 3 } } as const;
 
 export const CONCEPTS: ConceptDef[] = [
   {
+    ...LEGACY,
     id: 'a',
     name: (t) => t.conceptA,
     desc: (t) => t.conceptADesc,
@@ -62,6 +88,7 @@ export const CONCEPTS: ConceptDef[] = [
     ],
   },
   {
+    ...LEGACY,
     id: 'b',
     name: (t) => t.conceptB,
     desc: (t) => t.conceptBDesc,
@@ -75,6 +102,7 @@ export const CONCEPTS: ConceptDef[] = [
     ],
   },
   {
+    ...LEGACY,
     id: 'c',
     name: (t) => t.conceptC,
     desc: (t) => t.conceptCDesc,
@@ -87,6 +115,7 @@ export const CONCEPTS: ConceptDef[] = [
     ],
   },
   {
+    ...LEGACY,
     id: 'd',
     name: (t) => t.conceptD,
     desc: (t) => t.conceptDDesc,
@@ -96,6 +125,7 @@ export const CONCEPTS: ConceptDef[] = [
     Component: ConceptD,
   },
   {
+    ...LEGACY,
     id: 'e',
     name: (t) => t.conceptE,
     desc: (t) => t.conceptEDesc,
@@ -108,6 +138,7 @@ export const CONCEPTS: ConceptDef[] = [
     ],
   },
   {
+    ...LEGACY,
     id: 'f',
     name: (t) => t.conceptF,
     desc: (t) => t.conceptFDesc,
@@ -121,6 +152,7 @@ export const CONCEPTS: ConceptDef[] = [
     ],
   },
   {
+    ...LEGACY,
     id: 'g',
     name: (t) => t.conceptG,
     desc: (t) => t.conceptGDesc,
@@ -135,6 +167,7 @@ export const CONCEPTS: ConceptDef[] = [
     ],
   },
   {
+    ...LEGACY,
     id: 'h',
     name: (t) => t.conceptH,
     desc: (t) => t.conceptHDesc,
@@ -148,6 +181,7 @@ export const CONCEPTS: ConceptDef[] = [
     ],
   },
   {
+    ...LEGACY,
     id: 'i',
     name: (t) => t.conceptI,
     desc: (t) => t.conceptIDesc,
@@ -161,6 +195,7 @@ export const CONCEPTS: ConceptDef[] = [
     ],
   },
   {
+    ...LEGACY,
     id: 'j',
     name: (t) => t.conceptJ,
     desc: (t) => t.conceptJDesc,
@@ -174,6 +209,7 @@ export const CONCEPTS: ConceptDef[] = [
     ],
   },
   {
+    ...LEGACY,
     id: 'k',
     name: (t) => t.conceptK,
     desc: (t) => t.conceptKDesc,
@@ -188,6 +224,7 @@ export const CONCEPTS: ConceptDef[] = [
     ],
   },
   {
+    ...LEGACY,
     id: 'l',
     name: (t) => t.conceptL,
     desc: (t) => t.conceptLDesc,
@@ -200,6 +237,7 @@ export const CONCEPTS: ConceptDef[] = [
     ],
   },
   {
+    ...LEGACY,
     id: 'm',
     name: (t) => t.conceptM,
     desc: (t) => t.conceptMDesc,
@@ -214,6 +252,7 @@ export const CONCEPTS: ConceptDef[] = [
     ],
   },
   {
+    ...LEGACY,
     id: 'n',
     name: (t) => t.conceptN,
     desc: (t) => t.conceptNDesc,
@@ -226,6 +265,7 @@ export const CONCEPTS: ConceptDef[] = [
     ],
   },
   {
+    ...LEGACY,
     id: 'o',
     name: (t) => t.conceptO,
     desc: (t) => t.conceptODesc,
@@ -238,6 +278,112 @@ export const CONCEPTS: ConceptDef[] = [
       { key: 'hp', label: { ko: 'HP', ja: 'HP', en: 'HP' }, placeholder: '125', maxLength: 4 },
       { key: 'rarity', label: { ko: '레어도 (별 1~5)', ja: 'レア度 (星 1~5)', en: 'Rarity (1-5)' }, placeholder: '3', maxLength: 1 },
     ],
+  },
+  {
+    ...PHOTOCARD,
+    id: 'p',
+    name: (t) => t.conceptP,
+    desc: (t) => t.conceptPDesc,
+    slug: 'spell-photocard',
+    sprite: '1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Flandre Scarlet.png',
+    tag: 'SPELL',
+    Component: ConceptP,
+    hasRandomStats: true,
+  },
+  {
+    ...PHOTOCARD,
+    id: 'q',
+    name: (t) => t.conceptQ,
+    desc: (t) => t.conceptQDesc,
+    slug: 'ofuda',
+    sprite: '4. Other/[1] Main Characters/Reimu Hakurei.png',
+    tag: 'OFUDA',
+    Component: ConceptQ,
+  },
+  {
+    ...PHOTOCARD,
+    id: 'r',
+    name: (t) => t.conceptR,
+    desc: (t) => t.conceptRDesc,
+    slug: 'ticket',
+    sprite: '4. Other/[1] Main Characters/Marisa Kirisame.png',
+    tag: 'TICKET',
+    Component: ConceptR,
+    hasRandomStats: true,
+  },
+  {
+    ...PHOTOCARD,
+    id: 's',
+    name: (t) => t.conceptS,
+    desc: (t) => t.conceptSDesc,
+    slug: 'scarlet-invitation',
+    sprite: '1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Remilia Scarlet.png',
+    tag: 'INVITE',
+    Component: ConceptS,
+  },
+  {
+    ...PHOTOCARD,
+    id: 't',
+    name: (t) => t.conceptT,
+    desc: (t) => t.conceptTDesc,
+    slug: 'sns-profile',
+    sprite: '1. Mainline Games/[9] Kaeizuka ~ Phantasmagoria of Flower View/Aya Shameimaru.png',
+    tag: 'PROFILE',
+    Component: ConceptT,
+    customFields: [
+      { key: 'handle', label: { ko: '아이디', ja: 'ID', en: 'Handle' }, placeholder: '@gensokyo', maxLength: 20 },
+    ],
+  },
+  {
+    ...PHOTOCARD,
+    id: 'u',
+    name: (t) => t.conceptU,
+    desc: (t) => t.conceptUDesc,
+    slug: 'polaroid',
+    sprite: '1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Sakuya Izayoi.png',
+    tag: 'POLAROID',
+    Component: ConceptU,
+  },
+  {
+    ...PHOTOCARD,
+    id: 'v',
+    name: (t) => t.conceptV,
+    desc: (t) => t.conceptVDesc,
+    slug: 'save-slot',
+    sprite: '1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Cirno.png',
+    tag: 'SAVE',
+    Component: ConceptV,
+    hasRandomStats: true,
+  },
+  {
+    ...PHOTOCARD,
+    id: 'w',
+    name: (t) => t.conceptW,
+    desc: (t) => t.conceptWDesc,
+    slug: 'eientei-flyer',
+    sprite: '1. Mainline Games/[8] Eiyashou ~ Imperishable Night/Reisen Udonge Inaba.png',
+    tag: 'FLYER',
+    Component: ConceptW,
+  },
+  {
+    ...PHOTOCARD,
+    id: 'x',
+    name: (t) => t.conceptX,
+    desc: (t) => t.conceptXDesc,
+    slug: 'sealing-club-file',
+    sprite: '4. Other/[2] Hifuu Club/Renko Usami.png',
+    tag: 'DOSSIER',
+    Component: ConceptX,
+  },
+  {
+    ...PHOTOCARD,
+    id: 'y',
+    name: (t) => t.conceptY,
+    desc: (t) => t.conceptYDesc,
+    slug: 'sticker-diary',
+    sprite: '1. Mainline Games/[11] Chireiden ~ Subterranean Animism/Koishi Komeiji.png',
+    tag: 'DIARY',
+    Component: ConceptY,
   },
 ];
 

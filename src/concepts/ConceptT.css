@@ -1,37 +1,284 @@
-/* Concept T — 겐소쿄 SNS 프로필 */
+/* Concept T — 겐소쿄 SNS 프로필(文々。新聞 아야): 풀블리드 배너 + 겹친 원형 아바타 + 프로필 본문 */
 .pc-t {
   --pc-bg: #ffffff;
   --pc-fg: #14171a;
   --pc-accent: #1b6fb3;
   --pc-muted: #657786;
+  --ct-line: #e1e8ed;
+  --ct-soft: #f5f8fa;
+  padding: 0;
+  grid-template-rows: 80px minmax(0, 1fr);
+  font-family: 'Noto Sans KR', 'Noto Sans JP', sans-serif;
 }
-.ct-head {
-  justify-content: flex-end;
-  padding: 0 12px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #1b6fb3, #5aa9e6);
+
+/* 배너: 그라데이션 + 신문 망점 + 文々。 워터마크 */
+.ct-banner {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1.4px) 0 0 / 7px 7px,
+    linear-gradient(135deg, #1b6fb3, #5aa9e6);
   color: #fff;
 }
-.ct-brand {
-  font-size: 16px;
+.ct-app {
+  position: absolute;
+  top: 12px;
+  left: 18px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  opacity: 0.9;
+  white-space: nowrap;
+}
+.ct-mark {
+  position: absolute;
+  right: 14px;
+  bottom: 2px;
+  font-family: 'Noto Serif JP', 'Noto Serif KR', serif;
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -2px;
+  color: rgba(255, 255, 255, 0.28);
+  white-space: nowrap;
+}
+
+/* 본문: 위에서 아래로 흐르는 프로필 */
+.ct-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 18px 14px;
+  min-height: 0;
+}
+.ct-body > * {
+  flex-shrink: 0;
+}
+
+.ct-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 30px;
 }
 .ct-avatar {
-  border-radius: 50% !important;
+  width: 80px;
+  height: 80px;
+  position: relative;
+  z-index: 1;
+  margin-top: -44px;
+  border-radius: 50%;
   border: 3px solid #fff;
-  box-shadow: 0 0 0 1px #d6dde3;
+  background: #e8f1f9;
+  flex-shrink: 0;
+}
+.ct-follow {
+  margin-top: 8px;
+  padding: 0 14px;
+  border: 1px solid #cfd9de;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 26px;
+  white-space: nowrap;
+}
+
+/* 이름 블록 */
+.ct-id {
+  display: grid;
+  gap: 1px;
+}
+.ct-nameline {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.ct-nick {
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 28px;
+  letter-spacing: -0.3px;
+}
+.ct-badge {
+  position: relative;
+  flex: 0 0 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--pc-accent);
+}
+.ct-badge::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 3px;
+  width: 4px;
+  height: 7px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
 }
 .ct-handle {
-  color: var(--pc-muted);
   font-size: 13px;
+  line-height: 18px;
+  color: var(--pc-muted);
 }
-.ct-meta,
-.ct-notes,
-.ct-free {
-  border-top: 1px solid #e6ecf0;
-  padding-top: 4px;
+.ct-char {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--pc-muted);
 }
-.ct-foot {
+
+/* bio */
+.ct-bio-t {
+  margin: 0;
+  font-size: 13px;
+  line-height: 19px;
+  white-space: pre-line;
+}
+
+/* 통계 행: 값 굵게 + 라벨 회색 */
+.ct-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.ct-stat-v {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 19px;
+}
+.ct-stat-k {
+  font-size: 10.5px;
+  line-height: 14px;
+  color: var(--pc-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 해시태그: 시리즈 2행 + 계정 1행 */
+.ct-tags {
+  display: grid;
+  gap: 2px;
+}
+.ct-tags .pc-chips {
+  gap: 0 10px;
+}
+.ct-tags .pc-series {
+  max-height: 36px;
+}
+.ct-tags .pc-acct {
+  max-height: 18px;
+}
+.ct-tags .pc-chip {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  font-size: 12px;
+  line-height: 18px;
+}
+.ct-tags .pc-chip:not(.more) {
+  color: var(--pc-accent);
+}
+.ct-tags .pc-chip:not(.more)::before {
+  content: '#';
+}
+.ct-tags .pc-acct .pc-chip:not(.more) {
+  color: #3f86c4;
+}
+.ct-tags .pc-chip.more {
+  border: none;
+  color: var(--pc-muted);
+  line-height: 18px;
+}
+
+/* 타임라인: 탭 + 고정 게시물(불호 · 커플링) 또는 빈 타임라인 */
+.ct-feed {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin: 0 -18px;
+}
+.ct-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid var(--ct-line);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 26px;
+  text-align: center;
+  color: var(--pc-muted);
+}
+.ct-tab.on {
+  color: var(--pc-fg);
+  box-shadow: inset 0 -3px 0 var(--pc-accent);
+}
+.ct-pin {
+  display: grid;
+  gap: 4px;
+  padding: 8px 18px 0;
+}
+.ct-quiet {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--pc-muted);
+}
+.ct-quiet-mark {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--ct-soft);
+  font-family: 'Noto Serif JP', 'Noto Serif KR', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #aab8c2;
+}
+.ct-pin-h {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 14px;
+  color: var(--pc-muted);
+}
+.ct-pin-ico {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: var(--pc-muted);
+}
+.ct-pin-ico::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 7px;
+  width: 2px;
+  height: 5px;
+  background: var(--pc-muted);
+}
+.ct-note {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 8px;
+  align-items: baseline;
+}
+.ct-note-k {
+  font-size: 11px;
+  line-height: 15px;
+  color: var(--pc-muted);
+}
+.ct-note-v {
+  font-size: 13px;
+  line-height: 18px;
 }

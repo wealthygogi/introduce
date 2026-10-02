@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { messages } from '../../src/data/i18n';
 import { ACCT_TYPES } from '../../src/data/accountTypes';
-import { NEW_IDS, PRESET_B_IDS, SCENARIOS, EMPTY, CHAR_NAME, type Lang, type PlainState } from './fixtures';
+import { NEW_IDS, SCENARIOS, EMPTY, CHAR_NAME, type Lang, type PlainState } from './fixtures';
 import { gotoConcept, expectFrame, expectNoOverflow } from './helpers';
 
 const CASES: [name: string, state: PlainState, lang: Lang][] = [
@@ -36,14 +36,13 @@ for (const id of NEW_IDS) {
           if (id === 't') await expect(card).toContainText(state.custom.handle);
         }
         if (name === 'long') {
-          expect(await card.locator('.pc-chip.more').count()).toBeGreaterThanOrEqual(1);
-          await expect(card.locator('.pc-chip.more').first()).toBeVisible();
-          const maxSeries = PRESET_B_IDS.includes(id) ? 4 : 6;
-          expect(await card.locator('.pc-series .pc-chip:not(.more)').count()).toBeLessThanOrEqual(maxSeries);
+          // 시리즈 23개 · 계정 11개 전부 선택 → 칩이 넘치면 +N 으로 접히고 그 +N 은 보여야 한다
+          await expect(card.locator('.pc-series .pc-chip.more')).toBeVisible();
+          await expect(card.locator('.pc-acct .pc-chip.more')).toBeVisible();
         }
         if (name === 'empty') {
           await expect(card).toContainText(messages.ko.nickFallback);
-          await expect(card.locator('.pc-note-v').first()).toHaveText('—');
+          await expect(card).toContainText(CHAR_NAME.reimu.ko);
         }
         expect(errors).toEqual([]);
       });

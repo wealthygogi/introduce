@@ -28,8 +28,9 @@ test('닉네임 최소: 빈 값은 대체 문구, 한 글자는 그대로 표시
   const card = page.locator('#preview-card');
   await page.fill('#inp-nickname', '');
   await expect(card).toContainText(messages.ko.nickFallback);
-  await page.fill('#inp-nickname', 'a');
-  await expect(card.locator('.pc-name')).toHaveText('a');
+  await page.fill('#inp-nickname', '뷁');
+  await expect(card).toContainText('뷁');
+  await expect(card).not.toContainText(messages.ko.nickFallback);
 });
 
 test('공유 링크의 과도한 값은 상한으로 잘리고 ?c= 는 제거된다', async ({ page }) => {

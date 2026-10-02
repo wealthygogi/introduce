@@ -15,13 +15,13 @@ test('미등록 컨셉 id 는 랜딩으로 보낸다', async ({ page }) => {
   await expect(page).toHaveURL(/\/introduce\/$/);
 });
 
-test('v1 컨셉 링크(a~o)는 공유 쿼리를 유지한 채 /v1/ 사본으로 넘긴다', async ({ page }) => {
-  for (const id of [V1_IDS[0], V1_IDS[V1_IDS.length - 1]]) {
+for (const id of [V1_IDS[0], V1_IDS[V1_IDS.length - 1]]) {
+  test(`v1 컨셉 링크 /concept/${id} 는 공유 쿼리를 유지한 채 /v1/ 사본으로 넘긴다`, async ({ page }) => {
     const hop = page.waitForRequest((r) => new URL(r.url()).pathname === `/introduce/v1/concept/${id}`);
-    await page.goto(`/introduce/concept/${id}?c=abc`);
+    await page.goto(`/introduce/concept/${id}?c=abc`, { waitUntil: 'commit' });
     expect(new URL((await hop).url()).search).toBe('?c=abc');
-  }
-});
+  });
+}
 
 test('404 페이지는 v1 딥링크를 v1 index 의 ?p= 로 넘긴다', async ({ page }) => {
   const hop = page.waitForRequest((r) => new URL(r.url()).pathname === '/introduce/v1/' && r.isNavigationRequest());

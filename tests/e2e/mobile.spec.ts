@@ -17,7 +17,8 @@ test.describe('iPhone 폭 390', () => {
     const nick = (await page.locator('#inp-nickname').boundingBox())!;
     expect(nick.y + nick.height).toBeLessThanOrEqual(844);
     // 스크롤해도 화면 위에 붙어 있는 건 탭 바 하나뿐
-    await page.mouse.wheel(0, 1500);
+    await page.evaluate(() => window.scrollTo(0, 1500));
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(500);
     const tabs = (await page.locator('.mobile-tabs').boundingBox())!;
     expect(tabs.y).toBe(0);
     expect(tabs.height).toBeLessThanOrEqual(64);
@@ -26,7 +27,7 @@ test.describe('iPhone 폭 390', () => {
   for (const id of ['p', 'u']) {
     test(`concept ${id}: 미리보기 탭에서 카드 전체가 한 화면에 들어오고 PNG 는 1080×1620`, async ({ page }) => {
       await gotoConcept(page, id, { state: SCENARIOS.full });
-      await page.mouse.wheel(0, 600);
+      await page.evaluate(() => window.scrollTo(0, 600));
       await openPreviewTab(page);
       const box = (await page.locator('#preview-card').boundingBox())!;
       expect(box.width).toBeGreaterThanOrEqual(350);

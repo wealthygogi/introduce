@@ -2,8 +2,6 @@ import type { ReactNode } from 'react';
 import './photocard.css';
 import { useLang } from '../../contexts/LangContext';
 
-export type Preset = 'a' | 'b';
-
 /**
  * 세로 포토카드(360×540) 공통 프레임.
  * id="preview-card" 는 Download/Tweet/E2E 가 찾는 계약이다.
@@ -12,16 +10,14 @@ export type Preset = 'a' | 'b';
  */
 export default function PhotoCardShell({
   concept,
-  preset,
   children,
 }: {
   concept: string;
-  preset: Preset;
   children: ReactNode;
 }) {
   const { lang } = useLang();
   return (
-    <div id="preview-card" className={`pc-frame pc-${concept} pc-grid-${preset}`} data-lang={lang}>
+    <div id="preview-card" className={`pc-frame pc-${concept}`} data-lang={lang}>
       {children}
     </div>
   );

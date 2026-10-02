@@ -1,71 +1,291 @@
-/* Concept U — 메이드 폴라로이드 (프리셋 B) */
+/* Concept U — 메이드 폴라로이드: 린넨 책상 위 폴라로이드 한 장 + 메모 몇 장 */
 .pc-u {
   --pc-bg: #efe9df;
   --pc-fg: #2b2b2b;
   --pc-accent: #5b7fb5;
   --pc-muted: #8c877d;
+  --cu-ink: #2a4270;
+  --cu-paper: #fffdf8;
+  --cu-shadow: rgba(70, 56, 36, 0.16);
+  grid-template-rows: 312px 38px minmax(0, 1fr);
+  gap: 8px;
+  /* 린넨: 가는 가로·세로 실 + 가운데가 밝은 조명 */
+  background:
+    repeating-linear-gradient(0deg, rgba(120, 102, 78, 0.05) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(120, 102, 78, 0.04) 0 1px, transparent 1px 4px),
+    radial-gradient(120% 75% at 50% 32%, #f6f1e8 0%, #ebe4d7 100%);
 }
-.cu-head {
-  justify-content: center;
-}
-.cu-title {
-  font-family: 'DotGothic16', sans-serif;
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: var(--pc-accent);
-}
+
+/* ── 폴라로이드 ─────────────────────────── */
 .cu-hero {
+  position: relative;
   display: grid;
-  place-items: center;
+  justify-items: center;
+  align-items: start;
+  padding-top: 9px;
 }
 .cu-polaroid {
-  position: relative;
-  width: 196px;
-  height: 204px;
-  padding: 8px 8px 0;
-  background: #ffffff;
-  transform: rotate(-2deg);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  width: 232px;
+  height: 288px;
+  padding: 12px 12px 0;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: 206px minmax(0, 1fr);
+  background: var(--cu-paper);
+  transform: rotate(-2deg);
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.06),
+    0 8px 18px var(--cu-shadow);
 }
-.cu-avatar {
+.cu-photo-wrap {
+  position: relative;
+}
+.pc-u .cu-photo {
   width: 100%;
   height: 100%;
+  background:
+    radial-gradient(ellipse 54px 9px at 50% 82%, rgba(43, 43, 43, 0.2), transparent 70%),
+    radial-gradient(circle at 50% 36%, #f8fafd 0%, #dde5f1 48%, #aab9d4 100%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+.pc-u .cu-photo.sprite img {
+  width: 128px;
+  height: 128px;
+}
+.cu-date {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  font-family: 'DotGothic16', monospace;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 1px;
+  color: #ff8a3d;
+  text-shadow: 0 0 2px rgba(255, 120, 40, 0.55);
 }
 .cu-caption {
-  padding: 4px 2px 6px;
+  display: grid;
+  align-content: center;
+  gap: 1px;
+  padding: 2px 4px;
   text-align: center;
-  line-height: 16px;
 }
 .cu-nick {
-  font-family: 'DotGothic16', 'Noto Sans KR', sans-serif;
-  font-size: 14px;
-  line-height: 18px;
+  font-family: 'DotGothic16', 'Noto Sans KR', 'Noto Sans JP', sans-serif;
+  font-size: 18px;
+  line-height: 24px;
+  color: var(--cu-ink);
 }
-.cu-caption .pc-char {
-  font-size: 10px;
+.cu-char {
+  font-size: 10.5px;
+  line-height: 15px;
+  letter-spacing: 0.5px;
+  color: var(--pc-muted);
 }
+
+/* 마스킹 테이프 */
 .cu-tape {
   position: absolute;
-  top: -6px;
-  width: 48px;
+  z-index: 1;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+.cu-tape-hero {
+  top: 0;
+  left: 50%;
+  width: 78px;
+  height: 20px;
+  transform: translateX(-50%) rotate(3deg);
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.4) 0 4px, transparent 4px 8px),
+    rgba(196, 213, 238, 0.78);
+}
+.cu-tape-memo {
+  top: -5px;
+  left: 50%;
+  width: 44px;
   height: 14px;
-  background: rgba(255, 230, 150, 0.7);
+  transform: translateX(-50%) rotate(-4deg);
+  background: rgba(255, 228, 150, 0.8);
 }
-.cu-tape-l {
-  left: -10px;
-  transform: rotate(-8deg);
+
+/* 사쿠야의 회중시계(10:10) */
+.cu-watch {
+  position: absolute;
+  right: 3px;
+  bottom: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #b79d6c;
+  background:
+    radial-gradient(circle, var(--pc-fg) 0 1.5px, transparent 2px),
+    radial-gradient(circle, #fdfaf3 0 60%, #efe6d3 100%);
+  box-shadow: 0 2px 4px var(--cu-shadow);
 }
-.cu-tape-r {
-  right: -10px;
-  transform: rotate(8deg);
+.cu-watch::before,
+.cu-watch::after {
+  content: '';
+  position: absolute;
+  left: calc(50% - 0.75px);
+  bottom: 50%;
+  width: 1.5px;
+  background: var(--pc-fg);
+  transform-origin: 50% 100%;
+}
+.cu-watch::before {
+  height: 7px;
+  transform: rotate(-60deg);
+}
+.cu-watch::after {
+  height: 10px;
+  background: var(--pc-accent);
+  transform: rotate(60deg);
+}
+
+/* ── 라벨 스티커(칩) ─────────────────────── */
+.cu-tags {
+  display: grid;
+  grid-template-rows: 16px 16px;
+  row-gap: 6px;
+  align-content: center;
+  padding: 0 2px;
+}
+.cu-tags .pc-chips {
+  height: 16px;
+  gap: 4px 5px;
+}
+.cu-tags .pc-chip {
+  border-radius: 2px;
+}
+.cu-tags .pc-series .pc-chip:not(.more) {
+  background: rgba(255, 253, 248, 0.92);
+  color: var(--pc-fg);
+  box-shadow: 0 1px 0 rgba(70, 56, 36, 0.14);
+}
+.cu-tags .pc-acct .pc-chip:not(.more) {
+  padding: 0 4px 0 10px;
+  background: radial-gradient(circle at 4px 50%, var(--pc-accent) 0 2px, transparent 2.5px);
+  color: var(--pc-accent);
+}
+.cu-tags .pc-chip.more {
+  background: transparent;
+  color: var(--pc-muted);
+  border: 1px dashed var(--pc-muted);
+}
+
+/* ── 책상 위 메모 ─────────────────────────── */
+.cu-desk {
+  display: flex;
+  gap: 10px;
+  min-height: 0;
+  padding: 4px 3px 3px;
+}
+.cu-memo-wrap {
+  position: relative;
+  flex: 1 1 0;
+  display: grid;
+}
+.cu-memo {
+  padding: 10px 9px 8px 13px;
+  transform: rotate(1.5deg);
+  box-shadow: 0 3px 8px var(--cu-shadow);
+  /* 줄 노트: 왼쪽 여백선 + 16px 괘선(본문 line-height 와 일치) */
+  background:
+    linear-gradient(90deg, transparent 0 7px, rgba(214, 96, 96, 0.35) 7px 8px, transparent 8px),
+    linear-gradient(180deg, transparent 0 15px, rgba(91, 127, 181, 0.22) 15px 16px) 0 10px / 100% 16px repeat-y,
+    var(--cu-paper);
 }
 .cu-free {
-  border-top: 1px dashed var(--pc-muted);
-  padding-top: 4px;
+  margin: 0;
+  font-size: 11px;
+  line-height: 16px;
+  white-space: pre-line;
 }
-.cu-foot {
+
+.cu-card {
+  flex: 1.15 1 0;
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: var(--cu-paper);
+  box-shadow: 0 1px 3px var(--cu-shadow);
+}
+.cu-meta {
+  margin: 0;
+  display: grid;
+}
+.cu-meta-row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 6px;
+  align-items: baseline;
+  line-height: 15px;
+}
+.cu-meta-row dt {
+  font-size: 9px;
+  color: var(--pc-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cu-meta-row dd {
+  margin: 0;
+  font-size: 10.5px;
+}
+.cu-notes {
+  display: grid;
+  gap: 3px;
+  padding-top: 5px;
+  border-top: 1px dotted rgba(140, 135, 125, 0.6);
+}
+.cu-note {
+  margin: 0;
+  font-size: 10.5px;
+  line-height: 14px;
+}
+.cu-note b {
+  margin-right: 5px;
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--pc-accent);
+  white-space: nowrap;
+}
+
+/* 한국어는 어절 단위로 줄바꿈(긴 토큰은 overflow-wrap:anywhere 가 끊는다) */
+.pc-frame[data-lang='ko'] .cu-free,
+.pc-frame[data-lang='ko'] .cu-note {
+  word-break: keep-all;
+}
+
+/* 자유글이 없으면 인덱스 카드 한 장 + 서명만 책상 위에 남는다 */
+.cu-desk.is-solo {
+  flex-direction: column;
   justify-content: center;
+  gap: 14px;
+  padding-inline: 8px;
+}
+.is-solo .cu-card {
+  flex: none;
+  padding: 10px 12px;
+  transform: rotate(-1deg);
+}
+.is-solo .cu-meta {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.is-solo .cu-meta-row {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1px;
+  text-align: center;
+}
+.cu-sign {
+  margin: 0 6px 0 0;
+  align-self: flex-end;
+  font-family: 'Noto Serif JP', 'Noto Serif KR', serif;
+  font-size: 15px;
   font-style: italic;
+  letter-spacing: 0.5px;
+  color: var(--cu-ink);
+  opacity: 0.6;
+  transform: rotate(-3deg);
 }

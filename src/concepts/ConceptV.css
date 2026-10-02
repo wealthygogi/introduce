@@ -1,61 +1,237 @@
-/* Concept V — PC-98 세이브 슬롯 */
+/* Concept V — PC-98 세이브 슬롯: 검은 화면 위 이중선 RPG 윈도우 3개 */
 .pc-v {
   --pc-bg: #000000;
   --pc-fg: #ffffff;
   --pc-accent: #ffd54a;
   --pc-muted: #9aa0a6;
   --cv-green: #5ad35a;
-  font-family: 'DotGothic16', 'Noto Sans KR', sans-serif;
-  box-shadow: inset 0 0 0 4px #fff, inset 0 0 0 6px #000;
+  --cv-pixel: 'Press Start 2P', 'DotGothic16', 'Noto Sans KR', sans-serif;
+  font-family: 'DotGothic16', 'Noto Sans KR', 'Noto Sans JP', sans-serif;
+  border-radius: 10px;
+  padding: 16px 14px 14px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  row-gap: 14px;
 }
-.cv-head,
-.cv-meta .pc-meta-k,
-.cv-notes .pc-note-k {
-  font-family: 'Press Start 2P', 'DotGothic16', 'Noto Sans KR', sans-serif;
+
+/* 윈도우: 굵은 바깥선 2px + 2px 틈 + 가는 안쪽선 1px */
+.cv-win {
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  min-height: 0;
+  border: 2px solid #fff;
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 2px #000, inset 0 0 0 3px #fff;
+  padding: 14px 12px 10px;
 }
-.cv-slot {
-  font-size: 12px;
+.cv-tab {
+  position: absolute;
+  top: -7px;
+  left: 10px;
+  padding: 0 6px;
+  background: #000;
+  font: 8px/12px var(--cv-pixel);
   color: var(--pc-accent);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.cv-tab-r {
+  left: auto;
+  right: 10px;
+  font: 11px/12px 'DotGothic16', 'Noto Sans JP', sans-serif;
+  color: var(--pc-muted);
+  letter-spacing: 2px;
+}
+
+/* (1) 상태 윈도우 */
+.cv-party-body {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  column-gap: 14px;
+  min-height: 84px;
+}
+.pc-v .cv-avatar {
+  width: 84px;
+  height: 84px;
+  border: 1px solid var(--pc-muted);
+  background: #0b160b;
+}
+.cv-who {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  align-content: start;
+  row-gap: 2px;
+}
+.cv-nick {
+  font-size: 20px;
+  line-height: 26px;
+  color: #fff;
+}
+.cv-char {
+  font-size: 11px;
+  line-height: 15px;
+  color: var(--pc-muted);
 }
 .cv-stat {
+  align-self: end;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  white-space: nowrap;
+  font-family: var(--cv-pixel);
+  line-height: 14px;
+}
+.cv-k {
   font-size: 8px;
+  color: var(--pc-muted);
+}
+.cv-lv,
+.cv-time {
+  font-size: 11px;
+}
+.cv-lv {
+  color: var(--pc-accent);
+  margin-right: 8px;
+}
+.cv-time {
   color: var(--cv-green);
-  white-space: pre;
 }
-.cv-meta .pc-meta-k,
-.cv-notes .pc-note-k {
-  font-size: 8px;
+
+/* (2) 스테이터스 / 아이템 윈도우 */
+.cv-status-body {
+  display: grid;
+  /* 불호·커플링이 비어 남는 높이는 섹션 사이 여백으로 고르게 나눈다 */
+  align-content: space-evenly;
+  row-gap: 12px;
+  font-size: 12px;
 }
-.pc-v[data-lang='ko'] .cv-meta .pc-meta-k,
-.pc-v[data-lang='ko'] .cv-notes .pc-note-k,
-.pc-v[data-lang='ja'] .cv-meta .pc-meta-k,
-.pc-v[data-lang='ja'] .cv-notes .pc-note-k {
-  font-size: 10px;
+.cv-stats {
+  display: grid;
+  row-gap: 2px;
 }
-.cv-avatar {
-  border: 2px solid #fff;
-  border-radius: 0 !important;
-  background: #101010;
+.cv-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  line-height: 17px;
+}
+.cv-row-k {
+  flex: none;
+  font-size: 11px;
+  color: var(--pc-muted);
+}
+.cv-dots {
+  flex: 1 1 12px;
+  min-width: 12px;
+  align-self: center;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #4a4f55 0 2px, transparent 2px 5px);
+}
+.cv-row-v {
+  flex: 0 1 auto;
+  color: var(--pc-accent);
+}
+
+.cv-items {
+  display: grid;
+  row-gap: 4px;
+}
+.cv-h {
+  font: 8px/12px var(--cv-pixel);
+  color: var(--pc-accent);
+  letter-spacing: 1px;
+}
+.cv-items .pc-series {
+  max-height: 36px;
+}
+.cv-items .pc-acct {
+  max-height: 16px;
+}
+.cv-items .pc-chips {
+  gap: 4px 12px;
+  padding-left: 2px;
+}
+.pc-v .pc-chip {
+  font-size: 11px;
+  line-height: 16px;
+  padding: 0;
+  border-radius: 0;
+  background: none;
 }
 .pc-v .pc-chip:not(.more) {
-  border-radius: 0;
-  color: #000;
+  color: #fff;
+}
+.pc-v .pc-chip:not(.more)::before {
+  content: '・';
+  color: var(--pc-muted);
 }
 .pc-v .pc-acct .pc-chip:not(.more) {
-  background: var(--cv-green);
+  color: var(--cv-green);
 }
-.cv-meta,
-.cv-notes,
-.cv-free {
-  border-top: 1px dashed #444;
-  padding-top: 4px;
-}
-.cv-foot {
-  justify-content: center;
-  font-family: 'Press Start 2P', 'DotGothic16', sans-serif;
+.pc-v .pc-chip.more {
+  border: 0;
+  line-height: 16px;
+  font-family: var(--cv-pixel);
   font-size: 8px;
   color: var(--pc-accent);
 }
-.cv-cursor {
+
+.cv-notes {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 12px;
+  padding-top: 8px;
+  border-top: 1px dashed #3a3f45;
+}
+.cv-note {
+  display: contents;
+  line-height: 15px;
+}
+.cv-note-k {
+  line-height: 15px;
+  max-width: 120px;
+  font-size: 10px;
+  color: var(--pc-muted);
+}
+.cv-note-v {
+  line-height: 15px;
+}
+.cv-note-k::before {
+  margin-right: 3px;
+}
+.cv-note-dislike .cv-note-k::before {
+  content: '✕';
+  color: #ff6b6b;
+}
+.cv-note-pairing .cv-note-k::before {
+  content: '♥';
   color: var(--cv-green);
+}
+
+/* (3) 메시지 윈도우: 대사 + 정적 ▼ */
+.cv-msg {
+  padding: 12px 14px 14px;
+}
+.cv-msg-body {
+  height: 72px;
+}
+.cv-say {
+  margin: 0;
+  font-size: 13px;
+  line-height: 18px;
+  white-space: pre-line;
+}
+.cv-sys {
+  margin: 0;
+  font: 8px/18px var(--cv-pixel);
+  color: var(--pc-muted);
+  letter-spacing: 1px;
+}
+.cv-next {
+  position: absolute;
+  right: 12px;
+  bottom: 3px;
+  font-size: 10px;
+  line-height: 12px;
+  color: var(--pc-accent);
 }

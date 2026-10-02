@@ -1,60 +1,416 @@
-/* Concept Y — 스티커 다이어리 (프리셋 B) */
+/* Concept Y — 스티커 다이어리: 모눈 노트 한 페이지에 사진 · 스티커 · 포스트잇 · 메모지를 붙인 스크랩북 */
 .pc-y {
   --pc-bg: #fff8ec;
   --pc-fg: #4a3f3a;
   --pc-accent: #ff9ec4;
   --pc-muted: #9c8f88;
+  --cy-ink: #d9578f;
   --cy-mint: #9be3c8;
   --cy-yellow: #ffe27a;
-  font-family: 'DotGothic16', 'Noto Sans KR', sans-serif;
-  background: radial-gradient(#f2d9c4 1px, transparent 1px) 0 0 / 12px 12px, var(--pc-bg);
+  --cy-grid: #f3e2d3;
+  font-family: 'DotGothic16', 'Noto Sans KR', 'Noto Sans JP', sans-serif;
+  background:
+    linear-gradient(var(--cy-grid) 1px, transparent 1px) 0 0 / 16px 16px,
+    linear-gradient(90deg, var(--cy-grid) 1px, transparent 1px) 0 0 / 16px 16px,
+    var(--pc-bg);
+  grid-template-rows: 36px 158px auto auto minmax(0, 1fr) 16px;
+  grid-template-areas: 'head' 'hero' 'stk' 'post' 'body' 'foot';
+  gap: 8px;
+}
+.pc-y i {
+  font-style: normal;
+}
+/* 자유글이 없으면 메모지 자리를 사진이 차지한다(사진 크게 · 이름은 아래 가운데) */
+.pc-y:has(.cy-hero.tall) {
+  grid-template-rows: 36px minmax(0, 1fr) auto auto auto 16px;
+}
+
+/* ── 머리말: 손글씨풍 제목 + 날짜 · 날씨 칸 ── */
+.cy-head {
+  grid-area: head;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  white-space: nowrap;
 }
 .cy-title {
-  font-size: 15px;
-  color: #e0679a;
-  letter-spacing: 1px;
+  display: grid;
+  line-height: 1.15;
 }
-.cy-sub {
-  font-size: 12px;
+.cy-title b {
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: 1px;
+  color: var(--cy-ink);
+}
+.cy-title small {
+  font-size: 9px;
+  letter-spacing: 3px;
   color: var(--pc-muted);
 }
-.cy-avatar {
-  border: 2px dashed var(--pc-accent);
+.cy-date {
+  display: grid;
+  justify-items: end;
+  gap: 3px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--pc-muted);
 }
-.cy-hero .pc-name-block {
-  text-align: center;
+.cy-date-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  line-height: 11px;
 }
-/* 스티커 칩: 회전해도 프레임/존 안에 머물러야 하므로 data-deco 아님 */
-.cy-chips .pc-chips {
-  overflow: visible;
-  padding-left: 2px;
+.cy-slot {
+  display: block;
+  width: 20px;
+  height: 10px;
+  border-bottom: 1px solid var(--pc-muted);
 }
-.cy-chips .pc-chip {
-  color: #4a3f3a;
+.cy-wx {
+  display: flex;
+  gap: 3px;
 }
-.cy-chips .pc-chip:nth-child(3n + 1) {
-  background: var(--pc-accent);
+.cy-wx i {
+  display: grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  font-size: 10px;
+  line-height: 1;
 }
-.cy-chips .pc-chip:nth-child(3n + 2) {
-  background: var(--cy-mint);
+.cy-wx .on {
+  border: 1px solid var(--cy-ink);
+  border-radius: 50%;
+  color: var(--cy-ink);
 }
-.cy-chips .pc-chip:nth-child(3n) {
-  background: var(--cy-yellow);
+
+/* ── 사진 + 이름: 기울어진 폴라로이드, 형광펜 제목, 말풍선 스티커 ── */
+.cy-hero {
+  grid-area: hero;
+  display: grid;
+  grid-template-columns: 134px 1fr;
+  gap: 8px;
+  align-items: center;
 }
-.cy-chips .pc-chip:nth-child(odd) {
+.cy-photo {
+  position: relative;
+  justify-self: center;
+  margin: 0;
+  padding: 6px 6px 22px;
+  background: #ffffff;
+  box-shadow: 0 3px 8px rgba(74, 63, 58, 0.18);
+  transform: rotate(-4deg);
+}
+.pc-y .cy-avatar {
+  width: 112px;
+  height: 112px;
+  background: #fde6ef;
+}
+.pc-y .cy-avatar.sprite img {
+  width: 96px;
+  height: 96px;
+}
+.cy-photo-cap {
+  position: absolute;
+  right: 9px;
+  bottom: 4px;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--cy-ink);
+}
+.cy-tape {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  width: 56px;
+  height: 16px;
+  margin-left: -28px;
+  transform: rotate(6deg);
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(155, 227, 200, 0.85) 0 5px,
+    rgba(155, 227, 200, 0.55) 5px 10px
+  );
+}
+.cy-id {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  height: 100%;
+  padding: 4px 2px 4px 10px;
+}
+.cy-k {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--pc-muted);
+}
+.cy-nick {
+  font-size: 23px;
+  line-height: 1.3;
+}
+.cy-hl {
+  padding: 0 2px;
+  background: linear-gradient(transparent 56%, rgba(255, 158, 196, 0.62) 56%, rgba(255, 158, 196, 0.62) 92%, transparent 92%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.cy-bubble {
+  position: relative;
+  align-self: flex-start;
+  max-width: 100%;
+  margin-top: 4px;
+  padding: 4px 10px;
+  border: 1.5px solid var(--pc-fg);
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.cy-bubble::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  border-left: 1.5px solid var(--pc-fg);
+  border-bottom: 1.5px solid var(--pc-fg);
+  background: #ffffff;
+  transform: rotate(45deg);
+}
+.cy-hero.tall {
+  grid-template-columns: 1fr;
+  align-content: center;
+  justify-items: center;
+  gap: 4px;
+}
+.cy-hero.tall .cy-photo {
   transform: rotate(-3deg);
 }
-.cy-chips .pc-chip:nth-child(even) {
+.pc-y .cy-hero.tall .cy-avatar {
+  width: 136px;
+  height: 128px;
+}
+.cy-hero.tall .cy-id {
+  height: auto;
+  max-width: 100%;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 4px 2px;
+  text-align: center;
+}
+.cy-hero.tall .cy-bubble {
+  align-self: center;
+  margin-top: 6px;
+}
+.cy-hero.tall .cy-bubble::before {
+  left: 50%;
+  top: -6px;
+  margin: 0 0 0 -5px;
+  transform: rotate(135deg);
+}
+
+/* ── 스티커 시트: 시리즈는 색색 둥근 스티커, 계정은 #라벨 스티커 ── */
+.cy-stk {
+  grid-area: stk;
+  display: grid;
+  gap: 4px;
+}
+.pc-y .cy-stk .pc-chips {
+  height: auto;
+  gap: 5px 6px;
+  padding: 3px 4px;
+}
+.pc-y .cy-stk .pc-series {
+  max-height: 44px;
+}
+.pc-y .cy-stk .pc-acct {
+  max-height: 22px;
+}
+.pc-y .cy-stk .pc-chip:not(.more) {
+  max-width: calc(100% - 8px);
+  color: var(--pc-fg);
+  box-shadow: 0 1px 2px rgba(74, 63, 58, 0.18);
+}
+.pc-y .cy-stk .pc-series .pc-chip:not(.more):nth-child(3n + 1) {
+  background: var(--pc-accent);
+}
+.pc-y .cy-stk .pc-series .pc-chip:not(.more):nth-child(3n + 2) {
+  background: var(--cy-mint);
+}
+.pc-y .cy-stk .pc-series .pc-chip:not(.more):nth-child(3n) {
+  background: var(--cy-yellow);
+}
+.pc-y .cy-stk .pc-chip:not(.more):nth-child(odd) {
+  transform: rotate(-3deg);
+}
+.pc-y .cy-stk .pc-chip:not(.more):nth-child(even) {
   transform: rotate(2deg);
 }
-.cy-chips .pc-chip.more {
-  background: transparent;
+.pc-y .cy-stk .pc-acct .pc-chip:not(.more) {
+  line-height: 14px;
+  border: 1px dashed var(--cy-ink);
+  border-radius: 3px;
+  background: #ffffff;
+  color: var(--cy-ink);
 }
-.cy-free {
-  background: var(--cy-yellow);
-  padding: 8px;
-  border-radius: 4px;
+.pc-y .cy-stk .pc-acct .pc-chip:not(.more)::before {
+  content: '#';
+  margin-right: 1px;
 }
+.pc-y .cy-stk .pc-chip.more {
+  border: 1px dashed var(--pc-muted);
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--pc-fg);
+}
+
+/* ── 포스트잇: 불호 · 커플링(입력된 것만) ── */
+.cy-posts {
+  grid-area: post;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 10px;
+  padding: 3px;
+}
+.cy-post {
+  padding: 5px 8px 6px;
+  background: #ffd7e7;
+  box-shadow: 0 2px 4px rgba(74, 63, 58, 0.14);
+  transform: rotate(-1.5deg);
+}
+.cy-post.pairing {
+  background: #cdf1e3;
+  transform: rotate(1.2deg);
+}
+.cy-post-k {
+  display: block;
+  margin-bottom: 1px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  color: rgba(74, 63, 58, 0.66);
+}
+.cy-post.dislike .cy-post-k::before {
+  content: '× ';
+}
+.cy-post.pairing .cy-post-k::before {
+  content: '♡ ';
+}
+.cy-post-v {
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* ── 체크리스트(FUB · 이별 · 타장르) + 노란 메모지(자유글) ── */
+.cy-body {
+  grid-area: body;
+  display: grid;
+  grid-template-columns: 108px 1fr;
+  gap: 10px;
+  min-height: 0;
+}
+.cy-body.solo {
+  grid-template-columns: 1fr;
+}
+.cy-check {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  margin: 0;
+  padding: 4px 0 0;
+  list-style: none;
+}
+.cy-body.solo .cy-check {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 10px;
+}
+.cy-check li {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr);
+  column-gap: 5px;
+  align-items: start;
+}
+.cy-box {
+  position: relative;
+  grid-row: span 2;
+  width: 12px;
+  height: 12px;
+  margin-top: 1px;
+  border: 1.5px solid var(--pc-fg);
+  border-radius: 2px;
+  background: #ffffff;
+}
+.cy-box::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: -2px;
+  width: 4px;
+  height: 8px;
+  border-right: 2px solid var(--cy-ink);
+  border-bottom: 2px solid var(--cy-ink);
+  transform: rotate(40deg);
+}
+.cy-ck-k {
+  font-size: 9px;
+  line-height: 13px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  color: var(--pc-muted);
+}
+.cy-ck-v {
+  font-size: 12px;
+  line-height: 1.35;
+}
+.cy-memo-wrap {
+  position: relative;
+  min-height: 0;
+  padding: 4px 3px 3px;
+}
+.cy-memo {
+  height: 100%;
+  padding: 12px 10px 8px;
+  border-radius: 2px 2px 12px 2px;
+  /* 줄 노트: 줄 간격 18px = 본문 line-height(12px × 1.5), padding-top 12px 에 맞춘다 */
+  background:
+    linear-gradient(transparent 17px, rgba(74, 63, 58, 0.13) 17px) 0 12px / 100% 18px,
+    var(--cy-yellow);
+  box-shadow: 0 2px 5px rgba(74, 63, 58, 0.16);
+  transform: rotate(1deg);
+}
+.cy-memo-t {
+  margin: 0;
+  white-space: pre-line;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.cy-pin {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffd0e2 0 2px, var(--cy-ink) 3px);
+  box-shadow: 0 1px 2px rgba(74, 63, 58, 0.3);
+}
+
+/* ── 꼬리말 ── */
 .cy-foot {
-  justify-content: center;
+  grid-area: foot;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  color: var(--pc-muted);
 }

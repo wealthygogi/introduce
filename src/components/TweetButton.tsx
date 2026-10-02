@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useLang } from '../contexts/LangContext';
 import { captureCardBlob, saveBlob } from '../lib/captureCard';
-import type { CaptureOptions } from '../concepts/registry';
 
 interface Props {
   targetId: string;
   filename: string;
-  capture: CaptureOptions;
 }
 
 /**
@@ -15,7 +13,7 @@ interface Props {
  * (2) 트윗 작성창 열기를 사용자가 직접 하도록 안내한다. 트친소 카드에는 링크를
  * 넣지 않고, 태그는 언어별 유행 태그를 text 에 직접 담는다.
  */
-export default function TweetButton({ targetId, filename, capture }: Props) {
+export default function TweetButton({ targetId, filename }: Props) {
   const { t } = useLang();
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -37,7 +35,7 @@ export default function TweetButton({ targetId, filename, capture }: Props) {
     if (busy) return;
     setBusy(true);
     try {
-      const blob = await captureCardBlob(targetId, capture);
+      const blob = await captureCardBlob(targetId);
       saveBlob(blob, filename);
       setSaved(true);
     } catch (e) {

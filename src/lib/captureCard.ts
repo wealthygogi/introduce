@@ -1,5 +1,4 @@
 import { domToBlob } from 'modern-screenshot';
-import type { CaptureOptions } from '../concepts/registry';
 
 // ── 다운로드 캡처용 웹폰트 임베드 ───────────────────────────────
 // 캡처는 DOM 을 SVG <foreignObject> 로 직렬화한 뒤 <img> 로 로드해 canvas 에 그린다.
@@ -57,12 +56,15 @@ function getFontEmbedCss(): Promise<string> {
   return fontCssCache;
 }
 
+/** 포토카드 360×540 CSS px → PNG 1080×1620 */
+const CAPTURE_SCALE = 3;
+
 /**
- * 화면에 보이는 카드(targetId)를 opts.padding 여백 래퍼로 감싸 PNG blob 으로 캡처한다.
- * 원본은 건드리지 않게 화면 밖에서 clone 을 찍는다. transform:scale·진입 애니메이션의
- * 영향을 받지 않도록 clone 폭을 offsetWidth 로 고정하고 애니메이션을 끈다.
+ * 화면에 보이는 카드(targetId)를 PNG blob 으로 캡처한다(여백 없음 → PNG 가 카드와 정확히 일치).
+ * 원본은 건드리지 않게 화면 밖에서 clone 을 찍는다. 모바일 transform:scale 의 영향을 받지
+ * 않도록 clone 폭을 레이아웃 폭(offsetWidth)으로 고정하고 애니메이션을 끈다.
  */
-export async function captureCardBlob(targetId: string, opts: CaptureOptions): Promise<Blob> {
+export async function captureCardBlob(targetId: string): Promise<Blob> {
   const el = document.getElementById(targetId);
   if (!el) throw new Error(`captureCardBlob: #${targetId} not found`);
 
@@ -74,7 +76,7 @@ export async function captureCardBlob(targetId: string, opts: CaptureOptions): P
   const bg = getComputedStyle(document.body).backgroundColor || '#ffffff';
   const wrap = document.createElement('div');
   wrap.style.cssText =
-    `position:fixed;left:-99999px;top:0;padding:${opts.padding}px;background:${bg};` +
+    `position:fixed;left:-99999px;top:0;background:${bg};` +
     `display:inline-block;box-sizing:border-box;`;
   const clone = el.cloneNode(true) as HTMLElement;
   clone.style.margin = '0';
@@ -90,7 +92,7 @@ export async function captureCardBlob(targetId: string, opts: CaptureOptions): P
 
   try {
     const blob = await domToBlob(wrap, {
-      scale: opts.scale,
+      scale: CAPTURE_SCALE,
       type: 'image/png',
       backgroundColor: bg,
       ...(fontCssText ? { font: { cssText: fontCssText } } : {}),

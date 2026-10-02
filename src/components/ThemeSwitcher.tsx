@@ -34,7 +34,7 @@ export default function ThemeSwitcher() {
   };
 
   return (
-    <div className="switcher" role="group" aria-label={t.theme}>
+    <div className="switcher theme-switcher" role="group" aria-label={t.theme}>
       {THEME_ORDER.map((th) => (
         <button
           key={th}
@@ -43,6 +43,7 @@ export default function ThemeSwitcher() {
           onClick={() => setTheme(th)}
           aria-pressed={theme === th}
           title={label(th)}
+          aria-label={label(th)}
         >
           <span
             className="swatch"
@@ -54,7 +55,7 @@ export default function ThemeSwitcher() {
             }}
             aria-hidden
           />
-          <span>{label(th)}</span>
+          <span className="switcher-label">{label(th)}</span>
         </button>
       ))}
     </div>

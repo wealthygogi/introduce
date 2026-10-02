@@ -57,7 +57,7 @@ const SCENARIOS = {
 
 // ── CLI 파싱 ────────────────────────────────────────────────
 const argv = process.argv.slice(2);
-const only = argv.filter((a) => /^[a-y]$/.test(a));
+const only = argv.filter((a) => /^[p-y]$/.test(a));
 const getOpt = (name, def) => {
   const hit = argv.find((a) => a.startsWith(`--${name}=`));
   return hit ? hit.split('=')[1] : def;

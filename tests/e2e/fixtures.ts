@@ -6,7 +6,8 @@ import { ACCT_TYPES } from '../../src/data/accountTypes';
 export type Lang = 'ko' | 'ja' | 'en';
 
 export const NEW_IDS = 'pqrstuvwxy'.split('');
-export const LEGACY_IDS = 'abcdefghijklmno'.split('');
+/** /introduce/v1/ 아카이브로 넘기는 v1 컨셉 id */
+export const V1_IDS = 'abcdefghijklmno'.split('');
 /** 프리셋 B(사진 중심) 컨셉 — 칩 상한이 다르다 */
 export const PRESET_B_IDS = ['u', 'y'];
 

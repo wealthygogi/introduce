@@ -11,6 +11,8 @@ export default function Footer() {
         <a href="https://github.com/wealthygogi/introduce" target="_blank" rel="noopener noreferrer">
           Source on GitHub
         </a>
+        {' · '}
+        <a href="/introduce/">v1 (archive) · New version →</a>
       </div>
     </footer>
   );

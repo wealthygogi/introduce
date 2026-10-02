@@ -225,6 +225,8 @@
   font-size: 12px;
   line-height: 18px;
   white-space: pre-line;
+  /* 가운데 정렬 + 한글 글자 단위 줄바꿈이면 Linux Chromium 에서 줄이 폭을 4px 넘는다 → 어절 단위로 끊는다 */
+  word-break: keep-all;
   color: var(--pc-fg);
 }
 

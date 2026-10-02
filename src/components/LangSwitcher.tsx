@@ -10,7 +10,7 @@ const LANGS: { code: Lang; label: string }[] = [
 export default function LangSwitcher() {
   const { lang, setLang, t } = useLang();
   return (
-    <div className="switcher" role="group" aria-label={t.language}>
+    <div className="switcher lang-switcher" role="group" aria-label={t.language}>
       {LANGS.map((l) => (
         <button
           key={l.code}

@@ -7,6 +7,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+KR:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet" />
+<script>
+  // GitHub Pages 는 없는 경로에 404.html(= 이 파일 사본)을 준다. v1 사본(/introduce/v1/) 딥링크면
+  // v1 index 로 경로를 ?p= 에 실어 넘기고, v1 이 부팅 전에 원래 주소로 복원한다.
+  (function () {
+    var root = '/introduce/v1/';
+    var path = location.pathname;
+    if (path.indexOf(root) === 0 && path.length > root.length) {
+      location.replace(root + '?p=' + encodeURIComponent(path.slice(root.length - 1) + location.search) + location.hash);
+    }
+  })();
+</script>
 </head>
 <body>
 <div id="root"></div>

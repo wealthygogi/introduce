@@ -22,11 +22,3 @@ for (const id of NEW_IDS) {
     });
   }
 }
-
-test('레거시 concept a 는 기존 캡처(여백 48 · ×2)를 유지한다', async ({ page }) => {
-  await gotoConcept(page, 'a', { state: SCENARIOS.full });
-  // 데스크톱 레거시 카드 폭은 min(640px, 100%) 라 패널 폭에 따라 달라진다 → 실제 폭 기준
-  const cardW = await page.locator('#preview-card').evaluate((e) => (e as HTMLElement).offsetWidth);
-  const dl = await downloadPng(page);
-  expect(dl.width).toBe((cardW + 96) * 2);
-});

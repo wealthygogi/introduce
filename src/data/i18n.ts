@@ -41,8 +41,8 @@ export interface Messages {
   searchChar: string;
   collapse: string;
   expand: string;
-  previewHide: string;
-  previewShow: string;
+  tabEdit: string;
+  tabPreview: string;
   mainSeries: string;
   acctType: string;
   fub: string;
@@ -85,36 +85,6 @@ export interface Messages {
   cardLabel: string;
   intro: string;
   // concept names
-  conceptA: string;
-  conceptADesc: string;
-  conceptB: string;
-  conceptBDesc: string;
-  conceptC: string;
-  conceptCDesc: string;
-  conceptD: string;
-  conceptDDesc: string;
-  conceptE: string;
-  conceptEDesc: string;
-  conceptF: string;
-  conceptFDesc: string;
-  conceptG: string;
-  conceptGDesc: string;
-  conceptH: string;
-  conceptHDesc: string;
-  conceptI: string;
-  conceptIDesc: string;
-  conceptJ: string;
-  conceptJDesc: string;
-  conceptK: string;
-  conceptKDesc: string;
-  conceptL: string;
-  conceptLDesc: string;
-  conceptM: string;
-  conceptMDesc: string;
-  conceptN: string;
-  conceptNDesc: string;
-  conceptO: string;
-  conceptODesc: string;
   conceptP: string;
   conceptPDesc: string;
   conceptQ: string;
@@ -135,8 +105,6 @@ export interface Messages {
   conceptXDesc: string;
   conceptY: string;
   conceptYDesc: string;
-  legacyNotice: string;
-  legacyCta: string;
 }
 
 export const messages: Record<Lang, Messages> = {
@@ -175,8 +143,8 @@ export const messages: Record<Lang, Messages> = {
     searchChar: '캐릭터 검색',
     collapse: '접기',
     expand: '펼치기',
-    previewHide: '미리보기 접기',
-    previewShow: '미리보기 펼치기',
+    tabEdit: '입력',
+    tabPreview: '미리보기',
     mainSeries: '주력 시리즈',
     acctType: '계정 유형',
     fub: 'FUB',
@@ -213,36 +181,6 @@ export const messages: Record<Lang, Messages> = {
     selectAll: '전체',
     cardLabel: '트친소 카드',
     intro: '자기소개',
-    conceptA: 'RPG 상태창',
-    conceptADesc: 'RPG 게임의 캐릭터 상태창처럼 능력치 형식으로 소개합니다.',
-    conceptB: '스펠 카드 선언',
-    conceptBDesc: '탄막 게임의 스펠 카드 선언 연출로 강렬한 인상을 줍니다.',
-    conceptC: '타이틀 화면',
-    conceptCDesc: '동방 게임의 타이틀 화면처럼 빛나는 닉네임이 중심입니다.',
-    conceptD: '대화창',
-    conceptDDesc: '캐릭터가 직접 당신을 소개하는 스토리 대화창 연출입니다.',
-    conceptE: '설정 화면',
-    conceptEDesc: '게임 설정 메뉴처럼 각 항목을 선택지로 표시합니다.',
-    conceptF: '분분마루 신문',
-    conceptFDesc: '샤메이마루 아야의 특종 1면처럼 소개합니다.',
-    conceptG: '하쿠레이 오미쿠지',
-    conceptGDesc: '신사 제비뽑기 운세처럼 소개합니다.',
-    conceptH: '영원정 처방전',
-    conceptHDesc: '에이린의 약 처방전 형식으로 소개합니다.',
-    conceptI: '코미케 서클',
-    conceptIDesc: '동인 서클 명함처럼 소개합니다.',
-    conceptJ: '레트로 PC-98',
-    conceptJDesc: '구작 도트 화면 감성으로 소개합니다.',
-    conceptK: '요괴 도감',
-    conceptKDesc: '요괴 도감 카드처럼 등록합니다.',
-    conceptL: '브와르 마도서',
-    conceptLDesc: '마법 도서관의 마도서처럼 소개합니다.',
-    conceptM: '연회 초대장',
-    conceptMDesc: '환상향 연회 초대장처럼 소개합니다.',
-    conceptN: '겐소쿄 메신저',
-    conceptNDesc: '현대적 메신저 프로필 카드처럼 소개합니다.',
-    conceptO: '트레이딩 카드',
-    conceptODesc: '능력치와 기술이 있는 수집형 카드처럼 소개합니다.',
     conceptP: '스펠카드 포토카드',
     conceptPDesc: '탄막 스펠카드처럼 선언하는 세로형 포토카드입니다.',
     conceptQ: '하쿠레이 오후다',
@@ -263,8 +201,6 @@ export const messages: Record<Lang, Messages> = {
     conceptXDesc: '비봉클럽의 조사 기록 단말처럼 소개합니다.',
     conceptY: '스티커 다이어리',
     conceptYDesc: '스티커 가득한 다이어리 한 페이지처럼 소개합니다.',
-    legacyNotice: '구버전 컨셉입니다. 새 포토카드 컨셉을 사용해 보세요.',
-    legacyCta: '새 컨셉 보기 →',
   },
   ja: {
     brand: '東方 自己紹介',
@@ -301,8 +237,8 @@ export const messages: Record<Lang, Messages> = {
     searchChar: 'キャラ検索',
     collapse: '閉じる',
     expand: '開く',
-    previewHide: 'プレビューを閉じる',
-    previewShow: 'プレビューを開く',
+    tabEdit: '入力',
+    tabPreview: 'プレビュー',
     mainSeries: '主力シリーズ',
     acctType: 'アカウントタイプ',
     fub: 'FUB',
@@ -339,36 +275,6 @@ export const messages: Record<Lang, Messages> = {
     selectAll: '全て',
     cardLabel: '自己紹介カード',
     intro: '自己紹介',
-    conceptA: 'RPGステータス',
-    conceptADesc: 'RPGゲームのキャラクターステータス画面のように紹介します。',
-    conceptB: 'スペルカード宣言',
-    conceptBDesc: '弾幕ゲームのスペルカード宣言演出で強烈な印象を。',
-    conceptC: 'タイトル画面',
-    conceptCDesc: '東方ゲームのタイトル画面のように輝くニックネームが中心。',
-    conceptD: '会話ウィンドウ',
-    conceptDDesc: 'キャラクターが直接あなたを紹介するストーリー会話演出。',
-    conceptE: '設定画面',
-    conceptEDesc: 'ゲームの設定メニューのように各項目を選択肢で表示。',
-    conceptF: '文々。新聞',
-    conceptFDesc: '射命丸文のスクープ一面のように紹介します。',
-    conceptG: '博麗神社 御神籤',
-    conceptGDesc: '神社のおみくじのように運勢で紹介します。',
-    conceptH: '永遠亭 処方箋',
-    conceptHDesc: '永琳の処方箋の形式で紹介します。',
-    conceptI: '同人サークル',
-    conceptIDesc: 'コミケのサークルカードのように紹介します。',
-    conceptJ: '旧作レトロ',
-    conceptJDesc: '旧作のドット画面テイストで紹介します。',
-    conceptK: '妖怪図鑑',
-    conceptKDesc: '妖怪図鑑カードのように登録します。',
-    conceptL: 'ヴワル魔法図書館',
-    conceptLDesc: '魔法図書館の魔導書のように紹介します。',
-    conceptM: '宴会 招待状',
-    conceptMDesc: '幻想郷の宴会の招待状のように紹介します。',
-    conceptN: '幻想郷メッセンジャー',
-    conceptNDesc: '現代風メッセンジャーのプロフィールのように紹介します。',
-    conceptO: 'トレーディングカード',
-    conceptODesc: 'ステータスと技を持つ収集カードのように紹介します。',
     conceptP: 'スペルカード・フォトカード',
     conceptPDesc: '弾幕スペルカードのように宣言する縦型フォトカードです。',
     conceptQ: '博麗の御札',
@@ -389,8 +295,6 @@ export const messages: Record<Lang, Messages> = {
     conceptXDesc: '秘封倶楽部の調査記録端末のように紹介します。',
     conceptY: 'シールだいありー',
     conceptYDesc: 'シールいっぱいの日記の1ページのように紹介します。',
-    legacyNotice: '旧バージョンのコンセプトです。新しいフォトカードをお試しください。',
-    legacyCta: '新しいコンセプトへ →',
   },
   en: {
     brand: 'Touhou Intro',
@@ -427,8 +331,8 @@ export const messages: Record<Lang, Messages> = {
     searchChar: 'Search character',
     collapse: 'Collapse',
     expand: 'Expand',
-    previewHide: 'Hide preview',
-    previewShow: 'Show preview',
+    tabEdit: 'Edit',
+    tabPreview: 'Preview',
     mainSeries: 'Main Series',
     acctType: 'Account Type',
     fub: 'FUB',
@@ -465,36 +369,6 @@ export const messages: Record<Lang, Messages> = {
     selectAll: 'All',
     cardLabel: 'Intro Card',
     intro: 'Self-Intro',
-    conceptA: 'RPG Status',
-    conceptADesc: 'Display your intro as character stats from an RPG game.',
-    conceptB: 'Spell Card',
-    conceptBDesc: 'Spell card declaration style from bullet hell games. Bold and dramatic.',
-    conceptC: 'Title Screen',
-    conceptCDesc: 'A Touhou title screen with your nickname glowing as the main title.',
-    conceptD: 'Dialogue',
-    conceptDDesc: 'A character introduces you directly, story dialogue style.',
-    conceptE: 'Config Menu',
-    conceptEDesc: 'Game settings menu layout where each item is a selectable option.',
-    conceptF: 'Bunbunmaru News',
-    conceptFDesc: 'A front-page scoop, Aya Shameimaru style.',
-    conceptG: 'Shrine Fortune',
-    conceptGDesc: 'An omikuji fortune slip drawn at the shrine.',
-    conceptH: 'Eientei Prescription',
-    conceptHDesc: 'A clinical prescription from Eirin.',
-    conceptI: 'Doujin Circle',
-    conceptIDesc: 'A Comiket circle card.',
-    conceptJ: 'Retro PC-98',
-    conceptJDesc: 'Retro dot-matrix vibes from the PC-98 era.',
-    conceptK: 'Youkai Encyclopedia',
-    conceptKDesc: 'Registered like a youkai encyclopedia entry.',
-    conceptL: 'Voile Grimoire',
-    conceptLDesc: 'A tome from the Voile magic library.',
-    conceptM: 'Banquet Invitation',
-    conceptMDesc: 'A Gensokyo banquet invitation.',
-    conceptN: 'Gensokyo Messenger',
-    conceptNDesc: 'A modern messenger profile card.',
-    conceptO: 'Trading Card',
-    conceptODesc: 'A collectible TCG card with stats and moves.',
     conceptP: 'Spell Card Photocard',
     conceptPDesc: 'A portrait photocard declared like a danmaku spell card.',
     conceptQ: 'Hakurei Ofuda',
@@ -515,7 +389,5 @@ export const messages: Record<Lang, Messages> = {
     conceptXDesc: 'A Sealing Club investigation record terminal.',
     conceptY: 'Sticker Diary',
     conceptYDesc: 'A diary page covered in stickers.',
-    legacyNotice: 'This is a legacy concept. Try the new photocard concepts.',
-    legacyCta: 'See new concepts →',
   },
 };

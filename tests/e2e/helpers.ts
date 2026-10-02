@@ -48,9 +48,9 @@ export async function gotoConcept(
   return errors;
 }
 
-/** 카드 · 웹폰트 · 이미지 로드 완료까지 대기 */
+/** 카드 · 웹폰트 · 이미지 로드 완료까지 대기(모바일 입력 탭에서는 카드가 숨겨져 있어 attached 기준) */
 export async function waitReady(page: Page): Promise<void> {
-  await page.locator('#preview-card').waitFor();
+  await page.locator('#preview-card').waitFor({ state: 'attached' });
   await page.evaluate(() => document.fonts.ready);
   await page.evaluate(() =>
     Promise.all(

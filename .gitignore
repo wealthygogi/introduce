@@ -14,3 +14,6 @@ tests/visual/output/
 playwright-report/
 test-results/
 tests/e2e/output/
+
+# v1 아카이브 빌드용 worktree (scripts/build-v1.sh)
+.v1/

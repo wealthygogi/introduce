@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 
+/** .pc-frame 레이아웃 폭(photocard.css) */
+const CARD_W = 360;
 const MIN_DIFF = 0.005;
 const DESKTOP_BREAKPOINT = 880;
 
 export function useCardScale(
   wrapRef: React.RefObject<HTMLDivElement>,
   scalerRef: React.RefObject<HTMLDivElement>,
-  baseWidth: number,
 ) {
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -35,7 +36,9 @@ export function useCardScale(
       const style = getComputedStyle(parent);
       const hPad = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
       const available = parent.clientWidth - hPad;
-      const scale = Math.min(available / baseWidth, 1);
+      // 모바일 입력 탭에서는 미리보기가 display:none(폭 0) — 다시 보일 때 ResizeObserver 가 재계산한다.
+      if (available <= 0) return;
+      const scale = Math.min(available / CARD_W, 1);
       if (Math.abs(scale - lastScale) < MIN_DIFF) return;
       lastScale = scale;
       scaler.style.setProperty('--card-scale', String(scale));
@@ -64,5 +67,5 @@ export function useCardScale(
       window.removeEventListener('orientationchange', schedule);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [wrapRef, scalerRef, baseWidth]);
+  }, [wrapRef, scalerRef]);
 }

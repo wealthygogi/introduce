@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import { useLang } from '../contexts/LangContext';
 import { captureCardBlob, saveBlob } from '../lib/captureCard';
-import type { CaptureOptions } from '../concepts/registry';
 
 interface Props {
   targetId: string;
   filename: string;
-  capture: CaptureOptions;
 }
 
-export default function DownloadButton({ targetId, filename, capture }: Props) {
+export default function DownloadButton({ targetId, filename }: Props) {
   const { t } = useLang();
   const [busy, setBusy] = useState(false);
 
@@ -17,7 +15,7 @@ export default function DownloadButton({ targetId, filename, capture }: Props) {
     if (busy) return;
     setBusy(true);
     try {
-      const blob = await captureCardBlob(targetId, capture);
+      const blob = await captureCardBlob(targetId);
       saveBlob(blob, filename);
     } catch (e) {
       console.error('Save failed', e);

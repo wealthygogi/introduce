@@ -1,56 +1,267 @@
-/* Concept W — 영원정 전단 */
+/* Concept W — 永遠亭 瓦版: 옛 신문 1면 */
 .pc-w {
   --pc-bg: #fbf8f1;
   --pc-fg: #2f3b63;
   --pc-accent: #d9b86a;
   --pc-muted: #7c849e;
+  --cw-rule: color-mix(in srgb, var(--pc-fg) 28%, transparent);
   font-family: 'Noto Serif KR', 'Noto Serif JP', serif;
-}
-.cw-head {
-  border-bottom: 3px double var(--pc-fg);
-}
-.cw-title {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 2px;
-}
-.cw-vol {
-  font-size: 12px;
-  color: var(--pc-muted);
-  font-style: italic;
-}
-.pc-w .pc-name {
-  font-size: 24px;
-  line-height: 1.4;
-  font-family: 'Noto Serif KR', 'Noto Serif JP', serif;
-}
-.cw-avatar {
-  border: 1px solid var(--pc-fg);
-  border-radius: 2px !important;
-}
-.pc-w .pc-chip:not(.more) {
-  color: var(--pc-fg);
-}
-.cw-meta,
-.cw-notes,
-.cw-free {
-  border-top: 1px solid var(--pc-fg);
-  padding-top: 3px;
-}
-.cw-two-col {
-  grid-template-columns: 1fr 1fr;
+  border-radius: 6px;
+  padding: 14px 16px;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
   gap: 8px;
 }
-.cw-two-col .pc-note {
-  grid-template-columns: 1fr;
+
+/* ── 제호 ── */
+.cw-mast {
+  display: grid;
+  grid-template-columns: 56px 1fr 56px;
+  align-items: center;
+  padding-bottom: 4px;
+  border-bottom: 3px double var(--pc-fg);
+  white-space: nowrap;
+}
+.cw-title {
+  text-align: center;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 3px;
+  font-family: 'Noto Serif JP', 'Noto Serif KR', serif;
+}
+.cw-ear {
+  display: grid;
+  gap: 1px;
+  font-size: 8.5px;
+  line-height: 1.25;
+  color: var(--pc-muted);
+  padding: 2px 0;
+  border-block: 1px solid var(--cw-rule);
+  text-align: center;
+  overflow: hidden;
+}
+.cw-ear > :first-child {
+  color: var(--pc-fg);
+  font-weight: 700;
+}
+.cw-dateline {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  font-size: 8.5px;
+  letter-spacing: 1px;
+  color: var(--pc-muted);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── 헤드라인 ── */
+.cw-lead {
+  display: grid;
   gap: 0;
 }
-.cw-two-col .pc-note-k {
+.cw-headline {
+  margin: 0;
+  font-size: 29px;
+  font-weight: 700;
+  line-height: 1.36;
+  letter-spacing: -0.5px;
+}
+.cw-sub {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cw-kicker {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  background: var(--pc-fg);
+  color: var(--pc-accent);
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 700;
+}
+.cw-char {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--pc-fg);
+  opacity: 0.85;
+}
+
+/* ── 사진 + 기사 ── */
+.cw-body {
+  display: grid;
+  grid-template-columns: 116px 1fr;
+  column-gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--pc-fg);
+}
+.cw-fig {
+  margin: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 3px;
+  height: 100%;
+}
+.cw-photo {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--pc-fg);
+  background: radial-gradient(color-mix(in srgb, var(--pc-fg) 14%, transparent) 0.8px, transparent 1.2px) 0 0 / 4px 4px,
+    color-mix(in srgb, var(--pc-accent) 16%, var(--pc-bg));
+}
+.cw-photo.sprite img {
+  width: 96px;
+  height: 96px;
+}
+.cw-cap {
+  font-size: 9px;
+  line-height: 1.3;
+  color: var(--pc-muted);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.cw-col {
+  padding-left: 12px;
+  margin-left: -12px;
+  border-left: 1px solid var(--cw-rule);
+}
+.cw-article {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.65;
+  white-space: pre-line;
+}
+.cw-from {
+  color: var(--pc-fg);
+  font-weight: 700;
+}
+/* 자유글이 없으면 사진 특집: 사진이 기사 폭 전체를 차지 */
+.cw-solo {
+  grid-template-columns: 1fr;
+}
+.cw-solo .cw-photo.sprite img {
+  width: 128px;
+  height: 128px;
+}
+.cw-solo .cw-cap {
+  text-align: center;
+}
+
+/* ── 키워드(시리즈 · 계정) ── */
+.cw-keys {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  grid-template-rows: auto 16px;
+  gap: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--cw-rule);
+}
+.cw-key-k {
+  font-size: 9.5px;
+  line-height: 16px;
+  font-weight: 700;
+  color: var(--pc-muted);
+  white-space: nowrap;
+}
+.cw-keys .pc-chips {
+  gap: 4px;
+}
+/* 시리즈는 최대 2행(16+4+16) — 내용이 적으면 1행으로 줄어든다 */
+.cw-keys .pc-series {
+  height: auto;
+  max-height: 36px;
+}
+.pc-w .pc-chip {
+  border-radius: 0;
+  font-size: 10px;
+  line-height: 14px;
+  padding: 0 5px;
+  border: 1px solid var(--cw-rule);
+}
+.pc-w .pc-chip:not(.more) {
+  background: transparent;
+  color: var(--pc-fg);
+}
+.pc-w .pc-chip.more {
+  background: var(--pc-accent);
+  border-color: var(--pc-accent);
+  color: var(--pc-fg);
+  font-weight: 700;
+}
+
+/* ── 社告(메타 · 불호 · 커플링) ── */
+.cw-notice {
+  display: grid;
+  gap: 5px;
+  padding: 0 8px 7px;
+  border: 1px solid var(--pc-fg);
+  outline: 1px solid var(--cw-rule);
+  outline-offset: -4px;
+}
+.cw-notice-tag {
+  justify-self: center;
+  margin-top: 4px;
+  padding: 0 8px;
+  font-size: 9.5px;
+  line-height: 14px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--pc-bg);
+  background: var(--pc-fg);
+}
+.cw-meta,
+.cw-notes {
+  margin: 0;
+}
+.cw-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.cw-meta-i {
+  padding: 0 6px;
+  text-align: center;
+}
+.cw-meta-i + .cw-meta-i {
+  border-left: 1px dotted var(--cw-rule);
+}
+.cw-meta dt,
+.cw-notes dt {
+  font-size: 9.5px;
+  line-height: 13px;
+  color: var(--pc-muted);
+}
+.cw-meta dt {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.cw-foot {
-  justify-content: center;
-  border-top: 3px double var(--pc-fg);
+.cw-meta dd {
+  margin: 0;
+  font-size: 12px;
+  line-height: 17px;
+  font-weight: 700;
+}
+.cw-notes {
+  display: grid;
+  gap: 3px;
+  padding-top: 5px;
+  border-top: 1px dotted var(--cw-rule);
+}
+.cw-note {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 6px;
+  align-items: baseline;
+}
+.cw-notes dd {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 16px;
+}
+.pc-frame[data-lang='en'] .cw-note {
+  grid-template-columns: 96px 1fr;
 }

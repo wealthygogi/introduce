@@ -80,7 +80,7 @@ export async function expectFrame(card: Locator, w = 360, h = 540): Promise<void
 /**
  * 오버플로 위반 목록이 비어 있어야 한다.
  * (1) [data-clamp] 가로 넘침 없음  (2) allowTruncate=false 면 세로 잘림 없음
- * (3) [data-clamp] 가 자기 존(.pc-z) 밖으로 잘려 나가지 않음
+ * (3) [data-clamp] 는 .pc-z 존 안에 있고, 그 존 밖으로 잘려 나가지 않음
  * (4) data-deco(와 자손)를 뺀 모든 요소가 프레임 안(±1px)
  */
 export async function expectNoOverflow(card: Locator, { allowTruncate }: { allowTruncate: boolean }): Promise<void> {
@@ -99,7 +99,8 @@ export async function expectNoOverflow(card: Locator, { allowTruncate }: { allow
       if (!allowTruncate && el.scrollHeight > el.clientHeight + tol)
         out.push(`truncated ${el.scrollHeight}>${el.clientHeight} ${desc(el)}`);
       const zone = el.closest('.pc-z');
-      if (zone && outside(el.getBoundingClientRect(), zone.getBoundingClientRect())) out.push(`zone-clip ${desc(el)}`);
+      if (!zone) out.push(`no-zone ${desc(el)}`);
+      else if (outside(el.getBoundingClientRect(), zone.getBoundingClientRect())) out.push(`zone-clip ${desc(el)}`);
     }
     for (const el of frame.querySelectorAll<HTMLElement>('*')) {
       if (el.closest('[data-deco]')) continue;

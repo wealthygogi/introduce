@@ -1,58 +1,307 @@
-/* Concept P — 스펠카드 포토카드 */
+/* Concept P — 스펠카드 포토카드: 탄막 스펠카드 선언 화면의 중앙 대칭 구도 */
 .pc-p {
   --pc-bg: #140a16;
   --pc-fg: #f7e9ee;
   --pc-accent: #d8213f;
   --pc-muted: #9a8a99;
   --cp-gold: #e3c46a;
+  --cp-gold-dim: rgba(227, 196, 106, 0.38);
+  background:
+    radial-gradient(circle at 50% 30%, rgba(216, 33, 63, 0.26), transparent 46%),
+    radial-gradient(ellipse at 50% 100%, rgba(227, 196, 106, 0.08), transparent 60%),
+    var(--pc-bg);
   font-family: 'Noto Serif KR', 'Noto Serif JP', serif;
+  padding: 14px 18px 12px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 6px;
+  text-align: center;
 }
-.pc-p .pc-z + .pc-z {
-  border-top: 1px solid var(--cp-gold);
+.pc-frame.pc-p[data-lang='ja'] {
+  font-family: 'Noto Serif JP', 'Noto Serif KR', serif;
 }
-.cp-title {
-  display: inline-flex;
+
+/* ── 상단: SPELL CARD ◆符◆ No.000 (좌우 대칭) ── */
+.cp-head {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 2px;
+  gap: 12px;
+  height: 30px;
+  font-size: 9px;
+  letter-spacing: 3px;
   color: var(--cp-gold);
 }
-.cp-fu {
-  display: inline-grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border: 1px solid var(--cp-gold);
-  border-radius: 50%;
-  color: var(--pc-accent);
-  font-size: 16px;
-  letter-spacing: 0;
+.cp-head-l {
+  text-align: right;
 }
-.cp-no {
-  font-size: 12px;
+.cp-head-r {
+  text-align: left;
+  letter-spacing: 2px;
   color: var(--pc-muted);
-  letter-spacing: 1px;
 }
-.cp-avatar {
-  border: 2px solid var(--cp-gold);
+.cp-sigil {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin: 4px;
+  border: 1px solid var(--cp-gold);
+  background: var(--pc-accent);
+  transform: rotate(45deg);
 }
-.pc-p .pc-chip:not(.more) {
+.cp-sigil > span {
+  transform: rotate(-45deg);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0;
   color: #fff;
 }
-.pc-p .pc-acct .pc-chip:not(.more) {
+
+/* ── 본문: 세로 중앙 정렬 ── */
+.cp-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  min-height: 0;
+}
+
+/* 마법진(원 + 겹친 두 정사각형 = 팔각성) 속 원형 아바타 */
+.cp-hero {
+  flex: 0 0 auto;
+  height: 150px;
+  display: grid;
+  place-items: center;
+}
+.cp-circle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150px;
+  height: 150px;
+  margin: -75px 0 0 -75px;
+  border: 1px solid var(--cp-gold-dim);
+  border-radius: 50%;
+}
+.cp-circle::before,
+.cp-circle::after {
+  content: '';
+  position: absolute;
+  inset: 22px;
+  border: 1px solid var(--cp-gold-dim);
+}
+.cp-circle::after {
+  transform: rotate(45deg);
+}
+.cp-avatar {
+  position: relative;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  border: 2px solid var(--cp-gold);
+  background: radial-gradient(circle, #3a1222, #1c0b17);
+  box-shadow:
+    0 0 0 3px var(--pc-bg),
+    0 0 0 4px var(--pc-accent);
+}
+
+/* 「스펠 이름」 */
+.cp-title {
+  flex: 0 0 auto;
+  display: grid;
+  gap: 2px;
+}
+.cp-spell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cp-br {
+  flex: 0 0 auto;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--cp-gold);
+}
+.cp-nick {
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 1px;
+  color: #fff;
+}
+.cp-char {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--pc-muted);
+}
+
+/* 칩: 시리즈 = 금 테두리, 계정 = 진홍 */
+.cp-chips {
+  flex: 0 0 auto;
+  display: grid;
+  gap: 4px;
+}
+.cp-chips .pc-chips {
+  justify-content: center;
+  height: auto;
+}
+.cp-chips .pc-series {
+  max-height: 36px;
+}
+.cp-chips .pc-acct {
+  max-height: 16px;
+}
+.pc-p .pc-series .pc-chip:not(.more) {
   background: transparent;
   color: var(--cp-gold);
-  border: 1px solid var(--cp-gold);
+  border: 1px solid var(--cp-gold-dim);
   line-height: 14px;
 }
-.cp-meta,
-.cp-notes,
-.cp-free {
-  padding-top: 4px;
+.pc-p .pc-acct .pc-chip:not(.more) {
+  background: var(--pc-accent);
+  color: #fff;
 }
-.cp-foot {
-  justify-content: center;
+.pc-p .pc-chip.more {
+  color: var(--pc-muted);
+  border-color: var(--pc-muted);
+}
+
+/* 장식선 — 금빛 가는 선 가운데 ◆ */
+.cp-rule {
+  flex: 0 0 auto;
+  position: relative;
+  align-self: center;
+  width: 160px;
+  height: 1px;
+  margin: 3px 0;
+  background: linear-gradient(90deg, transparent, var(--cp-gold), transparent);
+}
+.cp-rule::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  background: var(--cp-gold);
+  transform: rotate(45deg);
+}
+
+/* 메타 3종: 한 줄 3칸(라벨 위 · 값 아래), 칸 사이 진홍 ◆ 구분점 */
+.cp-meta {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.cp-meta-i {
+  position: relative;
+  padding: 0 6px;
+}
+.cp-meta-i + .cp-meta-i::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin-top: -2px;
+  background: var(--pc-accent);
+  transform: rotate(45deg);
+}
+.cp-k {
+  font-size: 9px;
+  line-height: 13px;
+  letter-spacing: 1px;
   color: var(--cp-gold);
+}
+.cp-v {
+  font-size: 11px;
+  line-height: 16px;
+}
+
+/* 불호 · 커플링: 작은 2열 */
+.cp-notes {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.cp-notes.cp-solo {
+  grid-template-columns: 1fr;
+  padding: 0 40px;
+}
+.cp-note-k {
+  font-size: 9px;
+  line-height: 13px;
+  letter-spacing: 1px;
+  color: var(--cp-gold);
+}
+.cp-note-v {
+  font-size: 11px;
+  line-height: 15px;
+}
+
+/* 자유글: 인용구 */
+.cp-free {
+  flex: 0 0 auto;
+  align-self: center;
+  max-width: 100%;
+  padding: 0 18px;
+}
+.cp-free::before,
+.cp-free::after {
+  position: absolute;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--pc-accent);
+}
+.cp-free::before {
+  content: '“';
+  left: 0;
+  top: 0;
+}
+.cp-free::after {
+  content: '”';
+  right: 0;
+  bottom: -6px;
+}
+.cp-quote {
+  margin: 0;
+  white-space: pre-line;
+  font-size: 11.5px;
+  line-height: 17px;
+  color: rgba(247, 233, 238, 0.86);
+}
+
+/* 입력이 거의 없을 때: 마법진을 키워 화면을 채운다 */
+.cp-sparse {
+  gap: 12px;
+}
+.cp-sparse .cp-hero {
+  height: 200px;
+}
+.cp-sparse .cp-circle {
+  width: 196px;
+  height: 196px;
+  margin: -98px 0 0 -98px;
+}
+.cp-sparse .cp-circle::before,
+.cp-sparse .cp-circle::after {
+  inset: 29px;
+}
+.cp-sparse .cp-avatar {
+  width: 120px;
+  height: 120px;
+}
+.cp-sparse .cp-nick {
+  font-size: 28px;
+}
+
+.cp-foot {
+  font-size: 9px;
+  letter-spacing: 3px;
+  line-height: 14px;
+  color: var(--cp-gold-dim);
 }

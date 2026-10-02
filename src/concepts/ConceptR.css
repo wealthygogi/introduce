@@ -1,57 +1,317 @@
-/* Concept R — 예대제 입장권 */
+/* Concept R — 예대제 입장권. 본권 214px / 절취선 22px / 반권 나머지(272px) */
 .pc-r {
   --pc-bg: #fbf7ee;
   --pc-fg: #5a3d2b;
   --pc-accent: #b8322d;
   --pc-muted: #a08b78;
+  --cr-stub: #f4ecdc;
+  --cr-line: color-mix(in srgb, var(--pc-fg) 22%, transparent);
+  grid-template-rows: 214px 22px minmax(0, 1fr);
+  gap: 0;
+  /* 절취선 중심(패딩 박스 기준 y = 14 + 214 + 11 = 239)에서 종이 색이 바뀐다 */
+  background: linear-gradient(180deg, var(--pc-bg) 0 239px, var(--cr-stub) 239px);
+  font-family: 'Noto Sans KR', 'Noto Sans JP', sans-serif;
 }
-/* 절취선 양끝 노치: 프레임 기준 free 존 상단(14 + 56+150+64+60+70 = 414px) */
+/* 절취선 양끝 반원 노치: 페이지 배경색으로 파내고 테마 링 색으로 테두리 */
 .pc-r::before,
 .pc-r::after {
   content: '';
   position: absolute;
-  top: 404px;
-  width: 20px;
-  height: 20px;
+  top: 227px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: var(--bg);
+  border: 2px solid var(--season-accent);
 }
 .pc-r::before {
-  left: -12px;
+  left: -14px;
 }
 .pc-r::after {
-  right: -12px;
+  right: -14px;
 }
-.cr-head {
-  border-bottom: 2px solid var(--pc-accent);
+
+.pc-r dl,
+.pc-r dd {
+  margin: 0;
+}
+
+/* ── 본권 ─────────────────────────────── */
+.cr-main {
+  display: flex;
+  flex-direction: column;
+  padding-top: 2px;
+}
+.cr-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  white-space: nowrap;
+  font-size: 9px;
+  line-height: 16px;
+  letter-spacing: 1px;
+  color: var(--pc-muted);
 }
 .cr-admit {
-  font-size: 18px;
+  padding: 0 7px;
+  border-radius: 2px;
+  background: var(--pc-accent);
+  color: var(--pc-bg);
   font-weight: 700;
   letter-spacing: 3px;
-  color: var(--pc-accent);
 }
-.cr-seat {
-  font-size: 12px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border: 1px solid var(--pc-fg);
-  border-radius: 4px;
+.cr-title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
 }
-.cr-avatar {
-  border: 1px solid var(--pc-muted);
+.cr-event {
+  display: grid;
+  gap: 4px;
 }
-.cr-free {
-  border-top: 2px dashed var(--pc-accent);
-  padding-top: 4px;
-}
-.cr-foot {
-  font-weight: 700;
+.cr-event-jp {
+  font-family: 'Noto Serif JP', 'Noto Serif KR', serif;
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 4px;
   color: var(--pc-fg);
 }
+.cr-event-en {
+  font-size: 8px;
+  line-height: 10px;
+  font-weight: 700;
+  letter-spacing: 2.4px;
+  color: var(--pc-accent);
+  white-space: nowrap;
+}
+.cr-avatar {
+  flex: 0 0 60px;
+  width: 60px;
+  height: 60px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--pc-muted) 16%, var(--pc-bg));
+  box-shadow: inset 0 0 0 1px var(--cr-line);
+}
+
+.cr-field {
+  display: grid;
+  gap: 1px;
+  align-content: start;
+}
+.cr-k {
+  font-size: 8px;
+  line-height: 11px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  color: var(--pc-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cr-name {
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid var(--cr-line);
+  min-height: 0;
+}
+.cr-name-v {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 34px;
+  letter-spacing: -0.3px;
+  /* 28px 글꼴의 글리프 박스(≈40px)가 34px 줄을 넘쳐 잘리지 않게 아래만 여유 */
+  padding-bottom: 4px;
+  margin-bottom: -4px;
+  color: var(--pc-fg);
+}
+.cr-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px 40px;
+  gap: 10px;
+  margin-top: auto;
+}
+.cr-v {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+}
+.cr-seat {
+  color: var(--pc-accent);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* ── 절취선 ───────────────────────────── */
+.cr-perf {
+  margin-inline: -14px;
+  background: repeating-linear-gradient(90deg, var(--pc-muted) 0 5px, transparent 5px 10px) center / 100% 2px
+    no-repeat;
+}
+
+/* ── 반권(주의사항처럼 작은 인쇄) ───────── */
+.cr-stub {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  padding-top: 4px;
+  font-size: 10.5px;
+  line-height: 14px;
+}
+.cr-stub-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  white-space: nowrap;
+  font-size: 8px;
+  line-height: 11px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  color: var(--pc-muted);
+}
+.cr-chips {
+  display: grid;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+.cr-chips .pc-chips {
+  height: 16px;
+}
+.cr-chips .pc-chip {
+  font-size: 9.5px;
+  line-height: 14px;
+  padding: 0 5px;
+  border-radius: 2px;
+  background: transparent;
+}
+.cr-chips .pc-series .pc-chip:not(.more) {
+  color: var(--pc-fg);
+  border: 1px solid color-mix(in srgb, var(--pc-fg) 40%, transparent);
+}
+.cr-chips .pc-acct .pc-chip:not(.more) {
+  color: var(--pc-accent);
+  border: 1px solid color-mix(in srgb, var(--pc-accent) 55%, transparent);
+}
+.cr-chips .pc-chip.more {
+  color: var(--pc-muted);
+  border: 1px dashed var(--pc-muted);
+}
+
+.cr-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  flex: 0 0 auto;
+}
+.cr-meta-cell {
+  display: grid;
+  gap: 1px;
+}
+.cr-meta-v {
+  font-size: 11px;
+  line-height: 15px;
+  font-weight: 700;
+}
+
+.cr-notes {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 3px 10px;
+  flex: 0 0 auto;
+  padding-top: 7px;
+  border-top: 1px dotted color-mix(in srgb, var(--pc-fg) 35%, transparent);
+}
+.cr-note {
+  display: contents;
+}
+.cr-note-k {
+  font-size: 9px;
+  line-height: 14px;
+  color: var(--pc-muted);
+  white-space: nowrap;
+}
+.cr-note-v {
+  line-height: 14px;
+}
+
+.cr-free {
+  flex: 0 0 auto;
+}
+.cr-free-v {
+  margin: 0;
+  white-space: pre-line;
+  line-height: 14px;
+  color: color-mix(in srgb, var(--pc-fg) 88%, transparent);
+}
+
+/* もぎり 입장 도장: 반권 오른쪽 아래에 찍힌 테두리형 스탬프(글자 위에 겹쳐도 읽히게 속은 비움) */
+.cr-stamp {
+  position: absolute;
+  right: 4px;
+  bottom: 50px;
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  border: 2px solid var(--pc-accent);
+  box-shadow: inset 0 0 0 3px transparent, inset 0 0 0 4px var(--pc-accent);
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1px;
+  transform: rotate(-14deg);
+  opacity: 0.72;
+  color: var(--pc-accent);
+  pointer-events: none;
+}
+.cr-stamp-big {
+  font-family: 'Noto Serif JP', 'Noto Serif KR', serif;
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 18px;
+  letter-spacing: 2px;
+}
+.cr-stamp-small {
+  font-size: 6.5px;
+  line-height: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.cr-bottom {
+  margin-top: auto;
+  display: grid;
+  gap: 5px;
+}
+.cr-fine {
+  font-size: 7.5px;
+  line-height: 10px;
+  letter-spacing: 1px;
+  color: var(--pc-muted);
+  white-space: nowrap;
+}
+.cr-code {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+}
 .cr-barcode {
-  width: 120px;
-  height: 18px;
-  flex: 0 0 120px;
-  background: repeating-linear-gradient(90deg, var(--pc-fg) 0 2px, transparent 2px 4px);
+  flex: 1 1 auto;
+  height: 22px;
+  background:
+    repeating-linear-gradient(90deg, var(--pc-fg) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, var(--pc-fg) 0 2px, transparent 2px 7px),
+    repeating-linear-gradient(90deg, transparent 0 11px, var(--pc-fg) 11px 14px, transparent 14px 17px);
+}
+.cr-code-no {
+  font-size: 9px;
+  line-height: 11px;
+  letter-spacing: 1.5px;
+  color: var(--pc-fg);
+  white-space: nowrap;
 }

@@ -49,13 +49,21 @@ npm run qa:visual # 포토카드 10종을 렌더→다운로드→PNG로 캡처�
 
 `tests/e2e/`(설정: `playwright.config.ts`). 로컬은 dev 서버, `CI=true`면 `vite preview`로 `dist`를 검사하므로 CI 모드는 먼저 `npm run build:site`가 필요합니다(v1 딥링크 복원 전체 경로는 CI 모드에서만 검사).
 
-- `render.spec.ts` — 컨셉 10종 × 시나리오(full/long/edge/ja/en/empty): 360×540 고정, 사용자 입력(`[data-clamp]`)의 가로 넘침·잘림·존 밖 클리핑 없음, 데이터 표시
+- `render.spec.ts` — 컨셉 10종 × 시나리오(full/long/edge/ja/en/empty): 360×540 고정, 사용자 입력(`[data-clamp]`)의 가로 넘침·잘림·`.pc-z` 존 이탈 없음, 데이터 표시, 칩이 넘치면 `+N` 노출
 - `download.spec.ts` — 다운로드 PNG 1080×1620, 화면 스크린샷과 픽셀 차이 ≤ 1% (diff: `tests/e2e/output/`)
 - `limits.spec.ts` — 입력·공유 링크·커스텀 필드 글자 수 상한
 - `landing.spec.ts` · `mobile.spec.ts` — 랜딩 노출·v1 리다이렉트, 모바일 탭(입력 탭에서 미리보기 숨김·미리보기 탭에서 카드 전체 노출)·390/320px 다운로드
 
-포토카드 마크업은 `src/concepts/photocard/`(`PhotoCardShell`, `blocks.tsx`)만 써서 사용자 데이터를 그립니다.
-캡처 불일치 이력 때문에 포토카드 CSS에서 `:lang()`, `::first-letter`, `column-count`, 애니메이션 의존 표시는 금지입니다(언어 분기는 `.pc-frame[data-lang='ja']`).
+## 포토카드 작성 규칙
+
+컨셉마다 레이아웃은 자유(`src/concepts/Concept{ID}.tsx/.css`, 접두사 `c{id}-`)이고, 공통으로 지키는 건 `src/concepts/photocard/`의 안전장치뿐입니다.
+
+- `PhotoCardShell` — `#preview-card` 360×540 프레임(테두리 = 테마 색 `--season-accent`). 폭·높이·테두리는 컨셉에서 바꾸지 않습니다.
+- `Clamp lines={1..6}` — 사용자 입력 텍스트는 전부 이걸로 그리고 `.pc-z` 존 안에 둡니다(가로로 넘치지 않고, 넘치는 줄은 `…`).
+- `SeriesChips`/`AcctChips` — 칩 컨테이너(`.pc-series`/`.pc-acct`)에 CSS로 높이를 주면 들어가는 만큼만 보이고 나머지는 `+N`으로 접힙니다.
+- `metaList(d)` · `noteList(d)` — 선택값 3종, 입력된 불호/커플링만. 빈 값은 요소째 숨깁니다.
+- 프레임 밖으로 나가도 되는 장식(테이프·도장 등)은 `data-deco`.
+- 캡처 불일치 이력 때문에 `:lang()`, `::first-letter`, `column-count`, 애니메이션/트랜지션 의존 표시, `position: fixed`, vw/vh는 금지입니다(언어 분기는 `.pc-frame[data-lang='ja']`).
 
 ## 비주얼 QA 하네스
 

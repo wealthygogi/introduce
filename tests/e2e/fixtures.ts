@@ -8,8 +8,6 @@ export type Lang = 'ko' | 'ja' | 'en';
 export const NEW_IDS = 'pqrstuvwxy'.split('');
 /** /introduce/v1/ 아카이브로 넘기는 v1 컨셉 id */
 export const V1_IDS = 'abcdefghijklmno'.split('');
-/** 프리셋 B(사진 중심) 컨셉 — 칩 상한이 다르다 */
-export const PRESET_B_IDS = ['u', 'y'];
 
 export const ALL_SERIES = SERIES.map((s) => s.id);
 export const ALL_ACCT = ACCT_TYPES.map((a) => a.id);

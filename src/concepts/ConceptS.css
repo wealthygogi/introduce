@@ -1,55 +1,283 @@
-/* Concept S — 홍마관 초대장 */
+/* Concept S — 홍마관 연회 초대장: 와인빛 편지지, 이중 금테, 중앙 정렬 */
 .pc-s {
   --pc-bg: #4a0b18;
   --pc-fg: #f3e6d3;
   --pc-accent: #d4af37;
   --pc-muted: #c9a6a6;
+  --cs-gold-soft: rgba(212, 175, 55, 0.5);
+  background: radial-gradient(ellipse 120% 80% at 50% 28%, #5c1222 0%, #4a0b18 55%, #3c0813 100%);
   font-family: 'Noto Serif KR', 'Noto Serif JP', serif;
-  outline: 1px solid var(--pc-accent);
-  outline-offset: -8px;
+  border-radius: 10px;
+  padding: 20px 22px 18px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 6px;
+  text-align: center;
 }
-.cs-title {
-  font-size: 16px;
+.pc-frame.pc-s[data-lang='ja'] {
+  font-family: 'Noto Serif JP', 'Noto Serif KR', serif;
+}
+
+/* 이중 금테: 바깥 굵은 선 + 안쪽 가는 선(의사 요소는 위치 검사 대상이 아니고 콘텐츠를 가리지 않는다) */
+.pc-s::before,
+.pc-s::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+.pc-s::before {
+  inset: 5px;
+  border: 1px solid var(--pc-accent);
+  border-radius: 7px;
+}
+.pc-s::after {
+  inset: 9px;
+  border: 1px solid var(--cs-gold-soft);
+  border-radius: 4px;
+}
+
+/* 문장(紋章) */
+.cs-crest {
+  display: grid;
+  justify-items: center;
+  gap: 1px;
+  color: var(--pc-accent);
+  white-space: nowrap;
+}
+.cs-crest-mark {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 3px;
-  color: var(--pc-accent);
+  letter-spacing: 6px;
+  line-height: 14px;
+  padding-left: 6px; /* letter-spacing 끝 여백 보정 → 시각 중앙 */
 }
-.cs-house {
-  font-size: 14px;
-  color: var(--pc-accent);
+.cs-crest-mark::before,
+.cs-crest-mark::after {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: var(--cs-gold-soft);
+}
+.cs-crest-mark::before {
+  margin-right: 2px;
+}
+.cs-crest-sub {
+  font-size: 8px;
+  font-style: italic;
+  letter-spacing: 2px;
+  line-height: 11px;
+  color: var(--pc-muted);
+}
+
+/* 편지 본문 */
+.cs-letter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.cs-medal {
+  width: 66px;
+  height: 66px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1px solid var(--pc-accent);
+  padding: 3px;
+  outline: 1px solid var(--cs-gold-soft);
+  outline-offset: 2px;
 }
 .cs-avatar {
-  border: 1px solid var(--pc-accent);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 40%, #fbf3e6 0%, #e9d6bb 100%);
 }
-.cs-hero .pc-name-block {
-  padding-right: 44px;
+.cs-avatar.sprite img {
+  width: 48px;
+  height: 48px;
 }
+.cs-invited {
+  margin: 12px 0 0;
+  font-size: 11px;
+  font-style: italic;
+  letter-spacing: 1px;
+  line-height: 15px;
+  color: var(--pc-muted);
+  white-space: nowrap;
+}
+.cs-guest {
+  margin: 3px 0 0;
+  max-width: 100%;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.34;
+  color: var(--pc-fg);
+  letter-spacing: 0.5px;
+}
+.cs-with {
+  margin-top: 2px;
+  max-width: 100%;
+  font-size: 12px;
+  line-height: 17px;
+  color: var(--pc-accent);
+}
+.cs-with::before {
+  content: 'with ';
+  font-style: italic;
+  color: var(--pc-muted);
+}
+.cs-flourish {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 132px;
+  margin: 10px 0 8px;
+  color: var(--pc-accent);
+  font-size: 8px;
+  line-height: 10px;
+}
+.cs-flourish::before,
+.cs-flourish::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+}
+.cs-flourish::before {
+  background: linear-gradient(90deg, transparent, var(--pc-accent));
+}
+.cs-flourish::after {
+  background: linear-gradient(90deg, var(--pc-accent), transparent);
+}
+.cs-body {
+  margin: 0;
+  max-width: 272px;
+  font-size: 11.5px;
+  line-height: 18px;
+  white-space: pre-line;
+  color: var(--pc-fg);
+}
+.cs-soiree {
+  font-size: 11px;
+  font-style: italic;
+  letter-spacing: 0.5px;
+  color: var(--pc-muted);
+}
+
+/* 관심사: 칩 대신 '·' 로 이어지는 한 줄 텍스트 */
+.cs-tastes {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  margin-top: 10px;
+}
+.cs-tastes .pc-chips {
+  height: 16px;
+  justify-content: center;
+  gap: 0;
+}
+.cs-tastes .pc-chip {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  line-height: 16px;
+  font-size: 10px;
+  letter-spacing: 0.3px;
+}
+.cs-tastes .pc-chip:not(.more) {
+  color: var(--pc-fg);
+}
+.cs-tastes .pc-acct .pc-chip:not(.more) {
+  color: var(--pc-muted);
+}
+.cs-tastes .pc-chip + .pc-chip::before {
+  content: '·';
+  padding: 0 6px;
+  color: var(--pc-accent);
+  font-style: normal;
+}
+.cs-tastes .pc-chip.more {
+  color: var(--pc-accent);
+  font-style: italic;
+}
+
+/* R.S.V.P. 응답란 */
+.cs-rsvp {
+  display: grid;
+  gap: 5px;
+  padding: 0 30px 2px;
+}
+.cs-rsvp-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9px;
+  font-style: italic;
+  letter-spacing: 3px;
+  line-height: 12px;
+  color: var(--pc-accent);
+  white-space: nowrap;
+}
+.cs-rsvp-title::before,
+.cs-rsvp-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--cs-gold-soft);
+}
+.cs-rsvp-list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+}
+.cs-rsvp-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10px;
+  align-items: baseline;
+}
+.cs-rsvp-row dt {
+  text-align: right;
+  font-size: 9px;
+  font-style: italic;
+  line-height: 14px;
+  color: var(--pc-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cs-rsvp-row dd {
+  margin: 0;
+  text-align: left;
+  font-size: 10.5px;
+  line-height: 14px;
+  color: var(--pc-fg);
+}
+
+/* 밀랍 봉인 */
 .cs-seal {
   position: absolute;
-  right: 2px;
-  bottom: 6px;
-  width: 40px;
-  height: 40px;
+  right: 9px;
+  bottom: 9px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: #8c1d2b;
-  color: var(--pc-accent);
+  background: radial-gradient(circle at 36% 30%, #b8303f 0%, #8c1d2b 52%, #5f0f1c 100%);
+  box-shadow:
+    0 0 0 2px #7d1826,
+    inset 0 0 0 4px rgba(95, 15, 28, 0.6),
+    inset 0 0 0 5px rgba(212, 175, 55, 0.45),
+    0 3px 6px rgba(0, 0, 0, 0.4);
+  transform: rotate(-12deg);
+}
+.cs-seal span {
   font-size: 18px;
   font-weight: 700;
-  box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.25);
-}
-.pc-s .pc-chip:not(.more) {
-  color: #4a0b18;
-}
-.cs-meta,
-.cs-notes {
-  border-top: 1px solid rgba(212, 175, 55, 0.4);
-  padding-top: 4px;
-}
-.cs-foot {
-  justify-content: center;
-  font-style: italic;
-  color: var(--pc-accent);
-  letter-spacing: 2px;
+  line-height: 1;
+  color: #e6c55a;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
 }

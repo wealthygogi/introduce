@@ -7,6 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+KR:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet" />
+<script>
+  // v1 은 /introduce/v1/ 아래 정적 사본이다. GitHub Pages 의 404.html(v2 앱)이 v1 딥링크를
+  // /introduce/v1/?p=<경로+쿼리> 로 넘기면, 앱이 뜨기 전에 원래 주소로 복원한다.
+  (function () {
+    var p = new URLSearchParams(location.search).get('p');
+    if (p !== null && p.charAt(0) === '/') history.replaceState(null, '', '/introduce/v1' + p + location.hash);
+  })();
+</script>
 </head>
 <body>
 <div id="root"></div>

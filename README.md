@@ -50,7 +50,8 @@ npm run qa:visual # 포토카드 10종을 렌더→다운로드→PNG로 캡처�
 `tests/e2e/`(설정: `playwright.config.ts`). 로컬은 dev 서버, `CI=true`면 `vite preview`로 `dist`를 검사하므로 CI 모드는 먼저 `npm run build:site`가 필요합니다(v1 딥링크 복원 전체 경로는 CI 모드에서만 검사).
 
 - `render.spec.ts` — 컨셉 10종 × 시나리오(full/long/edge/ja/en/empty): 360×540 고정, 사용자 입력(`[data-clamp]`)의 가로 넘침·잘림·`.pc-z` 존 이탈 없음, 데이터 표시, 칩이 넘치면 `+N` 노출
-- `download.spec.ts` — 다운로드 PNG 1080×1620, 화면 스크린샷과 픽셀 차이 ≤ 1% (diff: `tests/e2e/output/`)
+- `download.spec.ts` — 다운로드 PNG 1080×1620, 화면 스크린샷과 픽셀 차이 ≤ 1%(Chromium) · 2%(WebKit) (diff: `tests/e2e/output/{project}-{id}-{scenario}-diff.png`)
+- `download.spec.ts` · `mobile.spec.ts`는 Chromium과 WebKit(Safari) 두 엔진에서 돌고, 나머지는 Chromium만 돕니다. CI는 Chromium을 ubuntu, WebKit을 macOS 러너에서 돌리고 둘 다 통과해야 배포합니다. 로컬 첫 실행 전 `npx playwright install chromium webkit`
 - `limits.spec.ts` — 입력·공유 링크·커스텀 필드 글자 수 상한
 - `landing.spec.ts` · `mobile.spec.ts` — 랜딩 노출·v1 리다이렉트, 모바일 탭(입력 탭에서 미리보기 숨김·미리보기 탭에서 카드 전체 노출)·390/320px 다운로드
 

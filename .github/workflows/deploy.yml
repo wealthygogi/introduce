@@ -29,7 +29,7 @@ jobs:
       # dist/ = v2, dist/v1/ = 태그 v1-final 빌드 (scripts/build-v1.sh)
       - run: npm run build:site
       # CI 의 webServer 는 vite preview(dist) 를 띄운다
-      - run: npm run test:e2e
+      - run: npm run test:e2e -- --project=chromium
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
@@ -44,8 +44,32 @@ jobs:
         with:
           path: dist
 
+  # Safari(iPhone 포함) 다운로드 경로. Linux WebKit(WebKitGTK)은 Safari 와 그리기 경로가 다르고 arm Docker 에선
+  # 크래시했다 → 사용자 환경에 가까운 macOS WebKit 에서 다운로드 · 모바일 스펙만 돌린다.
+  webkit:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npx playwright install webkit
+      - run: npm run build:site
+      - run: npm run test:e2e -- --project=webkit
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-webkit
+          path: |
+            playwright-report
+            test-results
+            tests/e2e/output
+          retention-days: 7
+
   deploy:
-    needs: build
+    needs: [build, webkit]
     runs-on: ubuntu-latest
     environment:
       name: github-pages

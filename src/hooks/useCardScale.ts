@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 
 /** .pc-frame 레이아웃 폭(photocard.css) */
 const CARD_W = 360;
-const MIN_DIFF = 0.005;
 const DESKTOP_BREAKPOINT = 880;
 
 export function useCardScale(
@@ -18,16 +17,15 @@ export function useCardScale(
 
     let raf = 0;
     let lastScale = -1;
+    const mobileQuery = window.matchMedia(`(max-width: ${DESKTOP_BREAKPOINT}px)`);
 
     const recompute = () => {
       raf = 0;
       // On desktop, let CSS take over completely: clear scale + height.
-      if (parent.clientWidth >= DESKTOP_BREAKPOINT) {
-        if (lastScale !== 1) {
-          scaler.style.removeProperty('--card-scale');
-          wrap.style.removeProperty('height');
-          lastScale = 1;
-        }
+      if (!mobileQuery.matches) {
+        scaler.style.removeProperty('--card-scale');
+        wrap.style.removeProperty('height');
+        lastScale = -1;
         return;
       }
 
@@ -39,9 +37,10 @@ export function useCardScale(
       // 모바일 입력 탭에서는 미리보기가 display:none(폭 0) — 다시 보일 때 ResizeObserver 가 재계산한다.
       if (available <= 0) return;
       const scale = Math.min(available / CARD_W, 1);
-      if (Math.abs(scale - lastScale) < MIN_DIFF) return;
-      lastScale = scale;
-      scaler.style.setProperty('--card-scale', String(scale));
+      if (scale !== lastScale) {
+        lastScale = scale;
+        scaler.style.setProperty('--card-scale', String(scale));
+      }
       // transform doesn't affect layout → set wrap height from card's natural height
       const card = scaler.firstElementChild as HTMLElement | null;
       const naturalH = card ? card.offsetHeight : scaler.offsetHeight;
@@ -61,10 +60,12 @@ export function useCardScale(
     const card = scaler.firstElementChild;
     if (card) ro.observe(card);
 
+    window.addEventListener('resize', schedule);
     window.addEventListener('orientationchange', schedule);
     return () => {
       ro.disconnect();
       window.removeEventListener('orientationchange', schedule);
+      window.removeEventListener('resize', schedule);
       if (raf) cancelAnimationFrame(raf);
     };
   }, [wrapRef, scalerRef]);

@@ -19,6 +19,8 @@ const LangContext = createContext<LangContextValue>({
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => {
     if (typeof window === 'undefined') return DEFAULT_LANG;
+    const sharedLang = new URLSearchParams(window.location.search).get('lang');
+    if (sharedLang === 'ko' || sharedLang === 'ja' || sharedLang === 'en') return sharedLang;
     const stored = window.localStorage.getItem(STORAGE_KEY) as Lang | null;
     if (stored && stored in messages) return stored;
     const nav = window.navigator.language.toLowerCase();

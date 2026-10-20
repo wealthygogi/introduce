@@ -6,7 +6,7 @@ import { buildShareUrl } from '../lib/formStateCodec';
 /** 현재 폼 상태를 담은 공유 링크를 클립보드로 복사한다(업로드 사진 제외). */
 export default function ShareButton() {
   const { state } = useFormState();
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [status, setStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
   const timer = useRef<number | undefined>(undefined);
 
@@ -19,7 +19,7 @@ export default function ShareButton() {
   };
 
   const run = async () => {
-    const url = buildShareUrl(state);
+    const url = buildShareUrl(state, lang);
     try {
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(url);

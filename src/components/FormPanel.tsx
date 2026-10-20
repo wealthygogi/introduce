@@ -8,6 +8,7 @@ import AccountTypePicker from './AccountTypePicker';
 import RadioGroup from './RadioGroup';
 import PhotoUpload from './PhotoUpload';
 import { LIMITS } from '../data/limits';
+import SocialAccountField from './SocialAccountField';
 
 function CharCount({ value, max }: { value: string; max: number }) {
   const len = [...value].length;
@@ -43,6 +44,9 @@ export default function FormPanel() {
 
       <hr className="form-hr" />
       <PhotoUpload />
+
+      <hr className="form-hr" />
+      <SocialAccountField />
 
       <hr className="form-hr" />
       <CharacterPicker />

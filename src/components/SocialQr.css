@@ -1,0 +1,33 @@
+.social-settings summary {
+  cursor: pointer;
+  padding-block: 4px;
+}
+.social-settings summary .form-hint {
+  margin-left: 10px;
+  font-weight: 400;
+}
+.social-settings-body { margin-top: 12px; }
+.social-settings-body p { margin: 0; overflow-wrap: anywhere; }
+.social-settings .social-error { color: var(--accent-strong); }
+.card-export {
+  width: 360px;
+  margin-inline: auto;
+}
+.social-qr-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 12px;
+  padding: 12px 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg-card);
+  color: var(--fg);
+  text-decoration: none;
+}
+.social-qr-copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.social-qr-platform { color: var(--accent-strong); font-size: 13px; font-weight: 700; }
+.social-qr-account { font-size: 20px; overflow-wrap: anywhere; line-height: 1.3; }
+.social-qr-caption { color: var(--fg-muted); font-size: 12px; }
+.social-qr-footer svg { display: block; flex: 0 0 112px; }

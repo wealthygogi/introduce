@@ -10,13 +10,18 @@
  */
 import { defaultState, type FormState, type FubChoice, type PartingChoice, type OtherGenreChoice } from '../contexts/FormStateContext';
 import { LIMITS, CUSTOM_LIMIT } from '../data/limits';
+import { SOCIAL_PLATFORMS } from './socialAccount';
+import type { Lang } from '../data/i18n';
 
 const STORAGE_KEY = 'introduce:form';
 const SHARE_PARAM = 'c';
 
+const SOCIAL_ACCOUNT_LIMIT = 300;
+
 const FUB: FubChoice[] = ['free', 'r4r'];
 const PARTING: PartingChoice[] = ['unfollow', 'blockunfollow', 'block'];
 const OTHER: OtherGenreChoice[] = ['none', 'sometimes', 'often'];
+const SOCIAL: FormState['socialPlatform'][] = ['none', ...SOCIAL_PLATFORMS];
 
 interface FormStatePlain {
   nickname?: unknown;
@@ -30,6 +35,8 @@ interface FormStatePlain {
   dislike?: unknown;
   pairing?: unknown;
   freeText?: unknown;
+  socialPlatform?: unknown;
+  socialAccount?: unknown;
   custom?: unknown;
   reroll?: unknown;
 }
@@ -55,6 +62,8 @@ function toPlain(state: FormState, includeImage: boolean): Record<string, unknow
     dislike: state.dislike,
     pairing: state.pairing,
     freeText: state.freeText,
+    socialPlatform: state.socialPlatform,
+    socialAccount: state.socialAccount.slice(0, SOCIAL_ACCOUNT_LIMIT),
     custom: state.custom,
     reroll: state.reroll,
   };
@@ -84,6 +93,8 @@ function fromPlain(p: FormStatePlain): FormState {
     dislike: str(p.dislike, '', LIMITS.dislike),
     pairing: str(p.pairing, '', LIMITS.pairing),
     freeText: str(p.freeText, '', LIMITS.freeText),
+    socialPlatform: oneOf(p.socialPlatform, SOCIAL, defaultState.socialPlatform),
+    socialAccount: str(p.socialAccount, '', SOCIAL_ACCOUNT_LIMIT),
     custom,
     reroll: typeof p.reroll === 'number' && Number.isFinite(p.reroll) ? p.reroll >>> 0 : 0,
   };
@@ -123,6 +134,8 @@ function toCompact(state: FormState): Record<string, unknown> {
   if (state.dislike) o.d = state.dislike;
   if (state.pairing) o.g = state.pairing;
   if (state.freeText) o.t = state.freeText;
+  if (state.socialPlatform !== defaultState.socialPlatform) o.q = state.socialPlatform;
+  if (state.socialAccount) o.h = state.socialAccount.slice(0, SOCIAL_ACCOUNT_LIMIT);
   if (Object.keys(state.custom).length) o.u = state.custom;
   if (state.reroll) o.r = state.reroll;
   return o;
@@ -148,6 +161,8 @@ function fromCompact(o: Record<string, unknown>): FormState {
     dislike: str(o.d, '', LIMITS.dislike),
     pairing: str(o.g, '', LIMITS.pairing),
     freeText: str(o.t, '', LIMITS.freeText),
+    socialPlatform: oneOf(o.q, SOCIAL, defaultState.socialPlatform),
+    socialAccount: str(o.h, '', SOCIAL_ACCOUNT_LIMIT),
     custom,
     reroll: typeof o.r === 'number' && Number.isFinite(o.r) ? o.r >>> 0 : 0,
   };
@@ -159,16 +174,17 @@ export function encodeShareParam(state: FormState): string {
 export function decodeShareParam(param: string): FormState | null {
   try {
     const o = JSON.parse(b64urlDecode(param));
-    if (!o || typeof o !== 'object') return null;
+    if (!o || typeof o !== 'object' || Array.isArray(o)) return null;
     return fromCompact(o as Record<string, unknown>);
   } catch {
     return null;
   }
 }
 /** 현재 상태를 담은 절대 공유 URL(사진 제외). */
-export function buildShareUrl(state: FormState): string {
+export function buildShareUrl(state: FormState, lang: Lang): string {
   const url = new URL(window.location.href);
   url.searchParams.set(SHARE_PARAM, encodeShareParam(state));
+  url.searchParams.set('lang', lang);
   return url.toString();
 }
 
@@ -222,6 +238,7 @@ export function stripShareParam(): void {
   const params = new URLSearchParams(window.location.search);
   if (!params.has(SHARE_PARAM)) return;
   params.delete(SHARE_PARAM);
+  params.delete('lang');
   const q = params.toString();
   window.history.replaceState(null, '', window.location.pathname + (q ? `?${q}` : '') + window.location.hash);
 }

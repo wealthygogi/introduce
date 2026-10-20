@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { loadInitialState, saveToStorage, stripShareParam } from '../lib/formStateCodec';
+import type { SocialPlatform } from '../lib/socialAccount';
 
 export type FubChoice = 'free' | 'r4r';
 export type PartingChoice = 'unfollow' | 'blockunfollow' | 'block';
@@ -17,6 +18,8 @@ export interface FormState {
   dislike: string;
   pairing: string;
   freeText: string;
+  socialPlatform: SocialPlatform | 'none';
+  socialAccount: string;
   /** 컨셉 전용 커스텀 입력값 (key -> value). registry.customFields 로 정의 */
   custom: Record<string, string>;
   /** 랜덤 스탯 시드. 🎲 다시 뽑기 버튼이 갱신. 0 이면 닉네임 시드만 사용 */
@@ -45,6 +48,8 @@ export const defaultState: FormState = {
   dislike: '',
   pairing: '',
   freeText: '',
+  socialPlatform: 'none',
+  socialAccount: '',
   custom: {},
   reroll: 0,
 };

@@ -8,6 +8,7 @@ import DownloadButton from '../components/DownloadButton';
 import ShareButton from '../components/ShareButton';
 import TweetButton from '../components/TweetButton';
 import { useCardScale } from '../hooks/useCardScale';
+import SocialQrFooter from '../components/SocialQrFooter';
 
 /** v1(가로형 컨셉 A~O)은 git 태그 v1-final 을 빌드한 정적 사본이 /introduce/v1/ 에 있다. */
 const V1_CONCEPT_ID = /^[a-o]$/;
@@ -62,8 +63,8 @@ export default function ConceptPage() {
       </div>
       <div className="preview-panel">
         <div className="preview-tools">
-          <DownloadButton targetId="preview-card" filename={`trchinso-${concept.slug}.png`} />
-          <TweetButton targetId="preview-card" filename={`trchinso-${concept.slug}.png`} />
+          <DownloadButton targetId="card-export" filename={`trchinso-${concept.slug}.png`} />
+          <TweetButton targetId="card-export" filename={`trchinso-${concept.slug}.png`} />
           <ShareButton />
           {concept.hasRandomStats && (
             <button type="button" className="btn" onClick={doReroll}>
@@ -73,7 +74,10 @@ export default function ConceptPage() {
         </div>
         <div className="preview-wrap" ref={wrapRef}>
           <div className="card-scaler" ref={scalerRef}>
-            <ConceptComponent />
+            <div id="card-export" className="card-export">
+              <ConceptComponent />
+              <SocialQrFooter />
+            </div>
           </div>
         </div>
       </div>

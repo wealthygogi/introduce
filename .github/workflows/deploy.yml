@@ -28,6 +28,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       # dist/ = v2, dist/v1/ = 태그 v1-final 빌드 (scripts/build-v1.sh)
       - run: npm run build:site
+      - run: npm run test:share
       # CI 의 webServer 는 vite preview(dist) 를 띄운다
       - run: npm run test:e2e -- --project=chromium
       - if: failure()

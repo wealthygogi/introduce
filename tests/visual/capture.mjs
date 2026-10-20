@@ -1,7 +1,7 @@
 // @ts-check
 /**
  * 비주얼 QA 하네스 — 각 컨셉을 실제 브라우저에서 렌더한 뒤,
- * (1) 화면 미리보기(#preview-card) 스크린샷과
+ * (1) 화면 미리보기(#card-export, 선택한 SNS QR 포함) 스크린샷과
  * (2) 다운로드 버튼이 실제로 뽑아내는 PNG(modern-screenshot 결과)
  * 를 나란히 tests/visual/output/ 에 저장한다.
  *
@@ -152,7 +152,7 @@ try {
       await page.evaluate(() => document.fonts.ready);
       await page.waitForTimeout(500);
 
-      const card = page.locator('#preview-card');
+      const card = page.locator('#card-export');
       await card.screenshot({ path: join(OUTPUT_DIR, `${id}-${suffix}-preview.png`) });
 
       const [download] = await Promise.all([

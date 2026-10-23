@@ -84,15 +84,35 @@ test('full Wide density wraps every field and exports all selected content', asy
     await page.locator(`[data-character-choice="${id}"]`).click();
   }
 
-  const values = Object.fromEntries([
-    ['wide:handle', 400], ['wide:intro', 400], ['wide:keywords', 400],
-    ['wide:callname', 400], ['wide:age', 400], ['wide:workNote', 400],
-    ['wide:characterNote', 400], ['wide:pairing', 100], ['wide:activities', 400],
-    ['wide:otherGenre', 400], ['wide:dislike', 100], ['wide:boundaryMethod', 400],
-    ['wide:interaction', 400], ['wide:closing', 400], ['wide:freeText', 300],
-  ].map(([key, length]) => [key, `${key} 한글 English 日本語\n`.repeat(30).slice(0, length as number)]));
-  await page.locator('#wide-nickname').fill('全入力🙂');
-  for (const [key, value] of Object.entries(values)) await page.locator(`[id="${key}"]`).fill(value);
+  const fieldLimits: Record<string, number> = {
+    'wide:handle': 400, 'wide:intro': 400, 'wide:keywords': 400,
+    'wide:callname': 400, 'wide:age': 400, 'wide:workNote': 400,
+    'wide:characterNote': 400, 'wide:pairing': 100, 'wide:activities': 400,
+    'wide:otherGenre': 400, 'wide:dislike': 100, 'wide:boundaryMethod': 400,
+    'wide:interaction': 400, 'wide:closing': 400, 'wide:freeText': 300,
+  };
+  const multilineKeys: Record<string, true> = {
+    'wide:intro': true, 'wide:workNote': true, 'wide:characterNote': true,
+    'wide:interaction': true, 'wide:freeText': true,
+  };
+  const values = Object.fromEntries(Object.entries(fieldLimits).map(([key, limit]) => {
+    const value = multilineKeys[key]
+      ? `${key}${Array.from({ length: limit - key.length }, (_, index) => index % 22 === 21 ? '\n' : '漢').join('')}`
+      : key === 'wide:handle' ? 'H'.repeat(limit) : `${key}${'한글English日本語'.repeat(40)}`.slice(0, limit);
+    return [key, value];
+  })) as Record<string, string>;
+  const nickname = page.locator('#wide-nickname');
+  await nickname.fill('全入力確認用長文🙂');
+  await expect(nickname).toHaveValue('全入力確認用長文🙂');
+  await expect.poll(() => nickname.evaluate(element => (element as HTMLInputElement).value.length)).toBe(10);
+  for (const [key, value] of Object.entries(values)) {
+    const field = page.locator(`[id="${key}"]`);
+    await field.fill(value);
+    await expect(field).toHaveValue(value);
+    await expect.poll(() => field.evaluate(element => (element as HTMLInputElement).maxLength)).toBe(fieldLimits[key]);
+    await expect.poll(() => field.evaluate(element => (element as HTMLInputElement).value.length)).toBe(fieldLimits[key]);
+    await expect.poll(() => field.evaluate(element => element.tagName === 'TEXTAREA')).toBe(!!multilineKeys[key]);
+  }
   await page.locator('details.wide-form-group').nth(3).locator('.chip-group').getByRole('button').last().click();
 
   const exportRoot = page.locator('#wide-export');

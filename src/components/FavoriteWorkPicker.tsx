@@ -1,0 +1,14 @@
+import { useMemo, useState } from 'react';
+import { useFormState } from '../contexts/FormStateContext';
+import { useLang } from '../contexts/LangContext';
+import { PROFILE_WORKS, MAX_FAVORITE_WORKS, type WorkCategory } from '../data/profileCatalog';
+const copy = { ko: { title: '좋아하는 작품', search: '작품 검색', all: '전체', game: '게임', book: '도서', music: '음악', remove: '삭제', add: '추가', selected: '선택됨' }, ja: { title: '好きな作品', search: '作品検索', all: 'すべて', game: 'ゲーム', book: '書籍', music: '音楽', remove: '削除', add: '追加', selected: '選択済み' }, en: { title: 'Favorite works', search: 'Search works', all: 'All', game: 'Games', book: 'Books', music: 'Music', remove: 'Remove', add: 'Add', selected: 'Selected' } };
+export default function FavoriteWorkPicker() {
+ const { state, set } = useFormState(); const { lang } = useLang(); const [query, setQuery] = useState(''); const [category, setCategory] = useState<'all' | WorkCategory>('all'); const t = copy[lang];
+ const selected = state.favoriteWorks; const results = useMemo(() => { const q = query.trim().toLowerCase(); return PROFILE_WORKS.filter(w => (category === 'all' || w.category === category) && (!q || [w.ko, w.ja, w.en].some(n => n.toLowerCase().includes(q)))); }, [category, query]);
+ const categoryLabels: Record<'all' | WorkCategory, string> = { all: t.all, game: t.game, book: t.book, music: t.music };
+ return <section className="wide-picker" aria-label={t.title}><h3>{t.title} <small>{selected.length}/{MAX_FAVORITE_WORKS}</small></h3><label className="wide-picker-label" htmlFor="wide-work-search">{t.search}</label><input id="wide-work-search" type="search" value={query} onChange={e => setQuery(e.target.value)} />
+ <div className="wide-category-filter" role="group" aria-label={t.title}>{(['all', 'game', 'book', 'music'] as const).map(c => <button type="button" key={c} data-work-category={c} aria-pressed={category === c} onClick={() => setCategory(c)}>{categoryLabels[c]}</button>)}</div>
+ <ul className="wide-picked-works">{selected.map(id => { const w = PROFILE_WORKS.find(x => x.id === id)!; return <li key={id}><span>{w[lang]} <small>{categoryLabels[w.category]}</small></span><button type="button" data-work-remove={id} aria-label={`${t.remove}: ${w[lang]}`} onClick={() => set('favoriteWorks', selected.filter(x => x !== id))}>{t.remove}</button></li>; })}</ul>
+ <div className="wide-picker-results" role="group" aria-label={t.search}>{results.map(w => { const isSelected = selected.includes(w.id); return <button type="button" key={w.id} data-work-choice={w.id} aria-pressed={isSelected} disabled={!isSelected && selected.length >= MAX_FAVORITE_WORKS} onClick={() => set('favoriteWorks', isSelected ? selected.filter(id => id !== w.id) : [...selected, w.id])}>{w[lang]} · {categoryLabels[w.category]}{isSelected ? ` · ${t.selected}` : ` · ${t.add}`}</button>; })}</div></section>;
+}

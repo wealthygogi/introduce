@@ -30,3 +30,17 @@ for (const id of NEW_IDS) {
     });
   }
 }
+
+test('compact QR footer remains inside the full export and PNG dimensions', async ({ page }) => {
+  await gotoConcept(page, 'p', { state: SCENARIOS.full });
+  const socialSettings = page.locator('details.social-settings');
+  if (!(await socialSettings.evaluate((element: HTMLDetailsElement) => element.open))) await socialSettings.locator('summary').click();
+  await page.locator('#social-platform').selectOption('other');
+  await page.locator('#social-account').fill('https://example.com/profile');
+  const exportRoot = page.locator('#card-export');
+  await expect(exportRoot.locator('.social-qr-footer')).toHaveCount(1);
+  const box = await exportRoot.evaluate((element: HTMLElement) => ({ width: element.offsetWidth, height: element.offsetHeight }));
+  const png = await downloadPng(page);
+  expect([png.width, png.height]).toEqual([box.width * 3, box.height * 3]);
+  expect(png.height).toBeGreaterThan(1620);
+});

@@ -9,14 +9,27 @@
  * 모두 검증한 뒤 defaultState 위에 병합한다.
  */
 import { defaultState, type FormState, type FubChoice, type PartingChoice, type OtherGenreChoice } from '../contexts/FormStateContext';
-import { LIMITS, CUSTOM_LIMIT } from '../data/limits';
 import { SOCIAL_PLATFORMS } from './socialAccount';
 import type { Lang } from '../data/i18n';
+import { migrateProfileSelections } from '../data/profileCatalog';
 
-const STORAGE_KEY = 'introduce:form';
+const STORAGE_KEY = 'introduce:form:v2';
+const LEGACY_STORAGE_KEY = 'introduce:form';
 const SHARE_PARAM = 'c';
 
-const SOCIAL_ACCOUNT_LIMIT = 300;
+// The common fields retain Compact's input limits; Wide keeps independent, longer values.
+const CAP = {
+  nickname: 10,
+  dislike: 40,
+  pairing: 40,
+  freeText: 120,
+  wideDislike: 400,
+  widePairing: 400,
+  wideFreeText: 1200,
+  customVal: 40,
+  wideCustomVal: 400,
+  socialAccount: 300,
+};
 
 const FUB: FubChoice[] = ['free', 'r4r'];
 const PARTING: PartingChoice[] = ['unfollow', 'blockunfollow', 'block'];
@@ -29,6 +42,8 @@ interface FormStatePlain {
   selectedChar?: unknown;
   selectedSeries?: unknown;
   selectedAcct?: unknown;
+  rankedCharacters?: unknown;
+  favoriteWorks?: unknown;
   fub?: unknown;
   parting?: unknown;
   otherGenre?: unknown;
@@ -56,6 +71,8 @@ function toPlain(state: FormState, includeImage: boolean): Record<string, unknow
     selectedChar: state.selectedChar,
     selectedSeries: [...state.selectedSeries],
     selectedAcct: [...state.selectedAcct],
+    rankedCharacters: state.rankedCharacters,
+    favoriteWorks: state.favoriteWorks,
     fub: state.fub,
     parting: state.parting,
     otherGenre: state.otherGenre,
@@ -63,7 +80,7 @@ function toPlain(state: FormState, includeImage: boolean): Record<string, unknow
     pairing: state.pairing,
     freeText: state.freeText,
     socialPlatform: state.socialPlatform,
-    socialAccount: state.socialAccount.slice(0, SOCIAL_ACCOUNT_LIMIT),
+    socialAccount: state.socialAccount.slice(0, CAP.socialAccount),
     custom: state.custom,
     reroll: state.reroll,
   };
@@ -71,30 +88,51 @@ function toPlain(state: FormState, includeImage: boolean): Record<string, unknow
 
 /** 순수 객체(신뢰 불가) → 검증된 FormState. */
 function fromPlain(p: FormStatePlain): FormState {
-  const custom: Record<string, string> = {};
-  if (p.custom && typeof p.custom === 'object') {
-    for (const [k, v] of Object.entries(p.custom as Record<string, unknown>)) {
-      if (typeof v === 'string') custom[k] = v.slice(0, CUSTOM_LIMIT);
-    }
+  const selectedChar = str(p.selectedChar, defaultState.selectedChar, 64);
+  const selectedSeries = Array.isArray(p.selectedSeries) ? new Set(strArr(p.selectedSeries)) : new Set(defaultState.selectedSeries);
+  const incomingCustom = p.custom && typeof p.custom === 'object'
+    ? p.custom as Record<string, unknown>
+    : {};
+  const custom: Record<string, string> = {
+    ...defaultState.custom,
+  };
+  for (const [k, v] of Object.entries(incomingCustom)) {
+    if (typeof v !== 'string') continue;
+    const cap = k === 'wide:dislike' ? CAP.wideDislike
+      : k === 'wide:pairing' ? CAP.widePairing
+      : k === 'wide:freeText' ? CAP.wideFreeText
+      : k.startsWith('wide:') ? CAP.wideCustomVal
+      : CAP.customVal;
+    custom[k] = v.slice(0, cap);
   }
+  const hasCustomKey = (key: string) => Object.prototype.hasOwnProperty.call(incomingCustom, key);
+  if (!hasCustomKey('wide:dislike')) custom['wide:dislike'] = str(p.dislike, '', CAP.wideDislike);
+  if (!hasCustomKey('wide:pairing')) custom['wide:pairing'] = str(p.pairing, '', CAP.widePairing);
+  if (!hasCustomKey('wide:freeText')) custom['wide:freeText'] = str(p.freeText, '', CAP.wideFreeText);
+  const selections = migrateProfileSelections({
+    ...('rankedCharacters' in p ? { rankedCharacters: p.rankedCharacters } : {}),
+    ...('favoriteWorks' in p ? { favoriteWorks: p.favoriteWorks } : {}),
+    selectedChar, selectedSeries, custom,
+  });
+  if (selections.needsReview) custom['wide:selectionReview'] = '1';
   return {
-    nickname: str(p.nickname, defaultState.nickname, LIMITS.nickname),
+    nickname: str(p.nickname, defaultState.nickname, CAP.nickname),
     profileImage: typeof p.profileImage === 'string' ? p.profileImage : null,
-    selectedChar: str(p.selectedChar, defaultState.selectedChar, 64),
-    selectedSeries: Array.isArray(p.selectedSeries)
-      ? new Set(strArr(p.selectedSeries))
-      : new Set(defaultState.selectedSeries),
+    selectedChar,
+    selectedSeries,
+    rankedCharacters: selections.rankedCharacters,
+    favoriteWorks: selections.favoriteWorks,
     selectedAcct: Array.isArray(p.selectedAcct)
       ? new Set(strArr(p.selectedAcct))
       : new Set(defaultState.selectedAcct),
     fub: oneOf(p.fub, FUB, defaultState.fub),
     parting: oneOf(p.parting, PARTING, defaultState.parting),
     otherGenre: oneOf(p.otherGenre, OTHER, defaultState.otherGenre),
-    dislike: str(p.dislike, '', LIMITS.dislike),
-    pairing: str(p.pairing, '', LIMITS.pairing),
-    freeText: str(p.freeText, '', LIMITS.freeText),
+    dislike: str(p.dislike, '', CAP.dislike),
+    pairing: str(p.pairing, '', CAP.pairing),
+    freeText: str(p.freeText, '', CAP.freeText),
     socialPlatform: oneOf(p.socialPlatform, SOCIAL, defaultState.socialPlatform),
-    socialAccount: str(p.socialAccount, '', SOCIAL_ACCOUNT_LIMIT),
+    socialAccount: str(p.socialAccount, '', CAP.socialAccount),
     custom,
     reroll: typeof p.reroll === 'number' && Number.isFinite(p.reroll) ? p.reroll >>> 0 : 0,
   };
@@ -124,6 +162,8 @@ const setEq = (a: Set<string>, b: Set<string>): boolean =>
 /** state → 단축키 + 비(非)기본값만 담은 객체. */
 function toCompact(state: FormState): Record<string, unknown> {
   const o: Record<string, unknown> = {};
+  o.k = state.rankedCharacters;
+  o.w = state.favoriteWorks;
   if (state.nickname !== defaultState.nickname) o.n = state.nickname;
   if (state.selectedChar !== defaultState.selectedChar) o.c = state.selectedChar;
   if (!setEq(state.selectedSeries, defaultState.selectedSeries)) o.s = [...state.selectedSeries];
@@ -131,11 +171,11 @@ function toCompact(state: FormState): Record<string, unknown> {
   if (state.fub !== defaultState.fub) o.f = state.fub;
   if (state.parting !== defaultState.parting) o.p = state.parting;
   if (state.otherGenre !== defaultState.otherGenre) o.o = state.otherGenre;
-  if (state.dislike) o.d = state.dislike;
-  if (state.pairing) o.g = state.pairing;
-  if (state.freeText) o.t = state.freeText;
+  if (state.dislike) o.d = state.dislike.slice(0, CAP.dislike);
+  if (state.pairing) o.g = state.pairing.slice(0, CAP.pairing);
+  if (state.freeText) o.t = state.freeText.slice(0, CAP.freeText);
   if (state.socialPlatform !== defaultState.socialPlatform) o.q = state.socialPlatform;
-  if (state.socialAccount) o.h = state.socialAccount.slice(0, SOCIAL_ACCOUNT_LIMIT);
+  if (state.socialAccount) o.h = state.socialAccount.slice(0, CAP.socialAccount);
   if (Object.keys(state.custom).length) o.u = state.custom;
   if (state.reroll) o.r = state.reroll;
   return o;
@@ -143,29 +183,25 @@ function toCompact(state: FormState): Record<string, unknown> {
 
 /** 단축키 객체(신뢰 불가) → 검증된 FormState (없는 필드는 기본값). */
 function fromCompact(o: Record<string, unknown>): FormState {
-  const custom: Record<string, string> = {};
-  if (o.u && typeof o.u === 'object') {
-    for (const [k, v] of Object.entries(o.u as Record<string, unknown>)) {
-      if (typeof v === 'string') custom[k] = v.slice(0, CUSTOM_LIMIT);
-    }
-  }
-  return {
-    nickname: 'n' in o ? str(o.n, defaultState.nickname, LIMITS.nickname) : defaultState.nickname,
-    profileImage: null, // 공유 링크에는 사진이 없다
-    selectedChar: 'c' in o ? str(o.c, defaultState.selectedChar, 64) : defaultState.selectedChar,
-    selectedSeries: Array.isArray(o.s) ? new Set(strArr(o.s)) : new Set(defaultState.selectedSeries),
-    selectedAcct: Array.isArray(o.a) ? new Set(strArr(o.a)) : new Set(defaultState.selectedAcct),
-    fub: 'f' in o ? oneOf(o.f, FUB, defaultState.fub) : defaultState.fub,
-    parting: 'p' in o ? oneOf(o.p, PARTING, defaultState.parting) : defaultState.parting,
-    otherGenre: 'o' in o ? oneOf(o.o, OTHER, defaultState.otherGenre) : defaultState.otherGenre,
-    dislike: str(o.d, '', LIMITS.dislike),
-    pairing: str(o.g, '', LIMITS.pairing),
-    freeText: str(o.t, '', LIMITS.freeText),
-    socialPlatform: oneOf(o.q, SOCIAL, defaultState.socialPlatform),
-    socialAccount: str(o.h, '', SOCIAL_ACCOUNT_LIMIT),
-    custom,
-    reroll: typeof o.r === 'number' && Number.isFinite(o.r) ? o.r >>> 0 : 0,
-  };
+  return fromPlain({
+    nickname: o.n,
+    profileImage: null,
+    selectedChar: o.c,
+    selectedSeries: o.s,
+    selectedAcct: o.a,
+    ...('k' in o ? { rankedCharacters: o.k } : {}),
+    ...('w' in o ? { favoriteWorks: o.w } : {}),
+    fub: o.f,
+    parting: o.p,
+    otherGenre: o.o,
+    dislike: o.d,
+    pairing: o.g,
+    freeText: o.t,
+    socialPlatform: o.q,
+    socialAccount: o.h,
+    custom: o.u,
+    reroll: o.r,
+  });
 }
 
 export function encodeShareParam(state: FormState): string {
@@ -193,18 +229,32 @@ export function saveToStorage(state: FormState): void {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(toPlain(state, true)));
   } catch {
-    // 용량 초과(대개 업로드 사진) 시 사진 없이라도 저장 시도.
+    // Keep a recoverable legacy photo draft when duplicating it exceeds storage quota.
+    let preserveLegacyPhoto = false;
+    try {
+      if (state.profileImage && window.localStorage.getItem(STORAGE_KEY) === null) {
+        const legacy = window.localStorage.getItem(LEGACY_STORAGE_KEY);
+        if (legacy) {
+          const legacyDraft = JSON.parse(legacy) as FormStatePlain;
+          preserveLegacyPhoto = typeof legacyDraft.profileImage === 'string';
+        }
+      }
+    } catch {
+      // If storage cannot be inspected, retain the existing no-image fallback.
+    }
+    if (preserveLegacyPhoto) return;
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(toPlain(state, false)));
     } catch {
-      /* 저장 포기 — 세션 내 동작에는 영향 없음 */
+      /* Storage full; the current session remains usable. */
     }
   }
 }
 function loadFromStorage(): FormState | null {
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
+    let raw = window.localStorage.getItem(STORAGE_KEY);
+    if (raw === null) raw = window.localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (raw === null) return null;
     return fromPlain(JSON.parse(raw) as FormStatePlain);
   } catch {
     return null;

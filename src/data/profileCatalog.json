@@ -1,0 +1,3451 @@
+{
+  "source": "touhouwiki-kr/data/touhou-vote-list - touhou_list.csv",
+  "characters": [
+    {
+      "id": "reimu",
+      "ko": "하쿠레이 레이무",
+      "ja": "博麗 霊夢",
+      "en": "Reimu Hakurei",
+      "group": {
+        "ko": "공통",
+        "ja": "共通",
+        "en": "Common"
+      },
+      "spriteRel": "4. Other/[1] Main Characters/Reimu Hakurei.png"
+    },
+    {
+      "id": "marisa",
+      "ko": "키리사메 마리사",
+      "ja": "霧雨 魔理沙",
+      "en": "Marisa Kirisame",
+      "group": {
+        "ko": "공통",
+        "ja": "共通",
+        "en": "Common"
+      },
+      "spriteRel": "4. Other/[1] Main Characters/Marisa Kirisame.png"
+    },
+    {
+      "id": "rumia",
+      "ko": "루미아",
+      "ja": "ルーミア",
+      "en": "Rumia",
+      "group": {
+        "ko": "동방홍마향",
+        "ja": "東方紅魔郷",
+        "en": "Embodiment of Scarlet Devil"
+      },
+      "spriteRel": "1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Rumia.png"
+    },
+    {
+      "id": "daiyousei",
+      "ko": "대요정",
+      "ja": "大妖精",
+      "en": "Daiyousei",
+      "group": {
+        "ko": "동방홍마향",
+        "ja": "東方紅魔郷",
+        "en": "Embodiment of Scarlet Devil"
+      },
+      "spriteRel": "1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Daiyousei.png"
+    },
+    {
+      "id": "cirno",
+      "ko": "치르노",
+      "ja": "チルノ",
+      "en": "Cirno",
+      "group": {
+        "ko": "동방홍마향",
+        "ja": "東方紅魔郷",
+        "en": "Embodiment of Scarlet Devil"
+      },
+      "spriteRel": "1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Cirno.png"
+    },
+    {
+      "id": "meiling",
+      "ko": "홍 메이링",
+      "ja": "紅 美鈴",
+      "en": "Hong Meiling",
+      "group": {
+        "ko": "동방홍마향",
+        "ja": "東方紅魔郷",
+        "en": "Embodiment of Scarlet Devil"
+      },
+      "spriteRel": "1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Hong Meiling.png"
+    },
+    {
+      "id": "koakuma",
+      "ko": "소악마",
+      "ja": "小悪魔",
+      "en": "Koakuma",
+      "group": {
+        "ko": "동방홍마향",
+        "ja": "東方紅魔郷",
+        "en": "Embodiment of Scarlet Devil"
+      },
+      "spriteRel": "1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Koakuma.png"
+    },
+    {
+      "id": "patchouli",
+      "ko": "파츄리 널릿지",
+      "ja": "パチュリー・ノーレッジ",
+      "en": "Patchouli Knowledge",
+      "group": {
+        "ko": "동방홍마향",
+        "ja": "東方紅魔郷",
+        "en": "Embodiment of Scarlet Devil"
+      },
+      "spriteRel": "1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Patchouli Knowledge.png"
+    },
+    {
+      "id": "sakuya",
+      "ko": "이자요이 사쿠야",
+      "ja": "十六夜 咲夜",
+      "en": "Sakuya Izayoi",
+      "group": {
+        "ko": "동방홍마향",
+        "ja": "東方紅魔郷",
+        "en": "Embodiment of Scarlet Devil"
+      },
+      "spriteRel": "1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Sakuya Izayoi.png"
+    },
+    {
+      "id": "remilia",
+      "ko": "레밀리아 스칼렛",
+      "ja": "レミリア・スカーレット",
+      "en": "Remilia Scarlet",
+      "group": {
+        "ko": "동방홍마향",
+        "ja": "東方紅魔郷",
+        "en": "Embodiment of Scarlet Devil"
+      },
+      "spriteRel": "1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Remilia Scarlet.png"
+    },
+    {
+      "id": "flandre",
+      "ko": "플랑드르 스칼렛",
+      "ja": "フランドール・スカーレット",
+      "en": "Flandre Scarlet",
+      "group": {
+        "ko": "동방홍마향",
+        "ja": "東方紅魔郷",
+        "en": "Embodiment of Scarlet Devil"
+      },
+      "spriteRel": "1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Flandre Scarlet.png"
+    },
+    {
+      "id": "letty",
+      "ko": "레티 화이트락",
+      "ja": "レティ・ホワイトロック",
+      "en": "Letty Whiterock",
+      "group": {
+        "ko": "동방요요몽",
+        "ja": "東方妖々夢",
+        "en": "Perfect Cherry Blossom"
+      },
+      "spriteRel": "1. Mainline Games/[7] Youyoumu ~ Perfect Cherry Blossom/Letty Whiterock.png"
+    },
+    {
+      "id": "chen",
+      "ko": "첸",
+      "ja": "橙",
+      "en": "Chen",
+      "group": {
+        "ko": "동방요요몽",
+        "ja": "東方妖々夢",
+        "en": "Perfect Cherry Blossom"
+      },
+      "spriteRel": "1. Mainline Games/[7] Youyoumu ~ Perfect Cherry Blossom/Chen.png"
+    },
+    {
+      "id": "alice",
+      "ko": "앨리스 마가트로이드",
+      "ja": "アリス・マーガトロイド",
+      "en": "Alice Margatroid",
+      "group": {
+        "ko": "동방요요몽",
+        "ja": "東方妖々夢",
+        "en": "Perfect Cherry Blossom"
+      },
+      "spriteRel": "1. Mainline Games/[7] Youyoumu ~ Perfect Cherry Blossom/Alice Margatroid.png"
+    },
+    {
+      "id": "lily",
+      "ko": "릴리 화이트",
+      "ja": "リリーホワイト",
+      "en": "Lily White",
+      "group": {
+        "ko": "동방요요몽",
+        "ja": "東方妖々夢",
+        "en": "Perfect Cherry Blossom"
+      },
+      "spriteRel": "1. Mainline Games/[7] Youyoumu ~ Perfect Cherry Blossom/Lily White.png"
+    },
+    {
+      "id": "lunasa",
+      "ko": "루나사 프리즘리버",
+      "ja": "ルナサ・プリズムリバー",
+      "en": "Lunasa Prismriver",
+      "group": {
+        "ko": "동방요요몽",
+        "ja": "東方妖々夢",
+        "en": "Perfect Cherry Blossom"
+      },
+      "spriteRel": "1. Mainline Games/[7] Youyoumu ~ Perfect Cherry Blossom/Lunasa Prismriver.png"
+    },
+    {
+      "id": "merlin",
+      "ko": "메를랑 프리즘리버",
+      "ja": "メルラン・プリズムリバー",
+      "en": "Merlin Prismriver",
+      "group": {
+        "ko": "동방요요몽",
+        "ja": "東方妖々夢",
+        "en": "Perfect Cherry Blossom"
+      },
+      "spriteRel": "1. Mainline Games/[7] Youyoumu ~ Perfect Cherry Blossom/Merlin Prismriver.png"
+    },
+    {
+      "id": "lyrica",
+      "ko": "리리카 프리즘리버",
+      "ja": "リリカ・プリズムリバー",
+      "en": "Lyrica Prismriver",
+      "group": {
+        "ko": "동방요요몽",
+        "ja": "東方妖々夢",
+        "en": "Perfect Cherry Blossom"
+      },
+      "spriteRel": "1. Mainline Games/[7] Youyoumu ~ Perfect Cherry Blossom/Lyrica Prismriver.png"
+    },
+    {
+      "id": "youmu",
+      "ko": "콘파쿠 요우무",
+      "ja": "魂魄 妖夢",
+      "en": "Youmu Konpaku",
+      "group": {
+        "ko": "동방요요몽",
+        "ja": "東方妖々夢",
+        "en": "Perfect Cherry Blossom"
+      },
+      "spriteRel": "1. Mainline Games/[7] Youyoumu ~ Perfect Cherry Blossom/Youmu Konpaku.png"
+    },
+    {
+      "id": "yuyuko",
+      "ko": "사이교우지 유유코",
+      "ja": "西行寺 幽々子",
+      "en": "Yuyuko Saigyouji",
+      "group": {
+        "ko": "동방요요몽",
+        "ja": "東方妖々夢",
+        "en": "Perfect Cherry Blossom"
+      },
+      "spriteRel": "1. Mainline Games/[7] Youyoumu ~ Perfect Cherry Blossom/Yuyuko Saigyouji.png"
+    },
+    {
+      "id": "ran",
+      "ko": "야쿠모 란",
+      "ja": "八雲 藍",
+      "en": "Ran Yakumo",
+      "group": {
+        "ko": "동방요요몽",
+        "ja": "東方妖々夢",
+        "en": "Perfect Cherry Blossom"
+      },
+      "spriteRel": "1. Mainline Games/[7] Youyoumu ~ Perfect Cherry Blossom/Ran Yakumo.png"
+    },
+    {
+      "id": "yukari",
+      "ko": "야쿠모 유카리",
+      "ja": "八雲 紫",
+      "en": "Yukari Yakumo",
+      "group": {
+        "ko": "동방요요몽",
+        "ja": "東方妖々夢",
+        "en": "Perfect Cherry Blossom"
+      },
+      "spriteRel": "1. Mainline Games/[7] Youyoumu ~ Perfect Cherry Blossom/Yukari Yakumo.png"
+    },
+    {
+      "id": "wriggle",
+      "ko": "리글 나이트버그",
+      "ja": "リグル・ナイトバグ",
+      "en": "Wriggle Nightbug",
+      "group": {
+        "ko": "동방영야초",
+        "ja": "東方永夜抄",
+        "en": "Imperishable Night"
+      },
+      "spriteRel": "1. Mainline Games/[8] Eiyashou ~ Imperishable Night/Wriggle Nightbug.png"
+    },
+    {
+      "id": "mystia",
+      "ko": "미스티아 로렐라이",
+      "ja": "ミスティア・ローレライ",
+      "en": "Mystia Lorelei",
+      "group": {
+        "ko": "동방영야초",
+        "ja": "東方永夜抄",
+        "en": "Imperishable Night"
+      },
+      "spriteRel": "1. Mainline Games/[8] Eiyashou ~ Imperishable Night/Mystia Lorelei.png"
+    },
+    {
+      "id": "keine",
+      "ko": "카미시라사와 케이네",
+      "ja": "上白沢 慧音",
+      "en": "Keine Kamishirasawa",
+      "group": {
+        "ko": "동방영야초",
+        "ja": "東方永夜抄",
+        "en": "Imperishable Night"
+      },
+      "spriteRel": "1. Mainline Games/[8] Eiyashou ~ Imperishable Night/Keine Kamishirasawa.png"
+    },
+    {
+      "id": "tewi",
+      "ko": "이나바 테위",
+      "ja": "因幡 てゐ",
+      "en": "Tewi Inaba",
+      "group": {
+        "ko": "동방영야초",
+        "ja": "東方永夜抄",
+        "en": "Imperishable Night"
+      },
+      "spriteRel": "1. Mainline Games/[8] Eiyashou ~ Imperishable Night/Tewi Inaba.png"
+    },
+    {
+      "id": "reisen",
+      "ko": "레이센 우동게인 이나바",
+      "ja": "鈴仙・優曇華院・イナバ",
+      "en": "Reisen Udongein Inaba",
+      "group": {
+        "ko": "동방영야초",
+        "ja": "東方永夜抄",
+        "en": "Imperishable Night"
+      },
+      "spriteRel": "1. Mainline Games/[8] Eiyashou ~ Imperishable Night/Reisen Udonge Inaba.png"
+    },
+    {
+      "id": "eirin",
+      "ko": "야고코로 에이린",
+      "ja": "八意 永琳",
+      "en": "Eirin Yagokoro",
+      "group": {
+        "ko": "동방영야초",
+        "ja": "東方永夜抄",
+        "en": "Imperishable Night"
+      },
+      "spriteRel": "1. Mainline Games/[8] Eiyashou ~ Imperishable Night/Eirin Yagokoro.png"
+    },
+    {
+      "id": "kaguya",
+      "ko": "호라이산 카구야",
+      "ja": "蓬莱山 輝夜",
+      "en": "Kaguya Houraisan",
+      "group": {
+        "ko": "동방영야초",
+        "ja": "東方永夜抄",
+        "en": "Imperishable Night"
+      },
+      "spriteRel": "1. Mainline Games/[8] Eiyashou ~ Imperishable Night/Kaguya Houraisan.png"
+    },
+    {
+      "id": "mokou",
+      "ko": "후지와라노 모코우",
+      "ja": "藤原 妹紅",
+      "en": "Fujiwara no Mokou",
+      "group": {
+        "ko": "동방영야초",
+        "ja": "東方永夜抄",
+        "en": "Imperishable Night"
+      },
+      "spriteRel": "1. Mainline Games/[8] Eiyashou ~ Imperishable Night/Fujiwara no Mokou.png"
+    },
+    {
+      "id": "suika",
+      "ko": "이부키 스이카",
+      "ja": "伊吹 萃香",
+      "en": "Suika Ibuki",
+      "group": {
+        "ko": "동방췌몽상",
+        "ja": "東方萃夢想",
+        "en": "Immaterial and Missing Power"
+      },
+      "spriteRel": "2. Spin-offs/[7.5] Suimusou ~ Immaterial and Missing Power/Suika Ibuki.png"
+    },
+    {
+      "id": "aya",
+      "ko": "샤메이마루 아야",
+      "ja": "射命丸 文",
+      "en": "Aya Shameimaru",
+      "group": {
+        "ko": "동방문화첩",
+        "ja": "東方文花帖",
+        "en": "Shoot the Bullet"
+      },
+      "spriteRel": "1. Mainline Games/[9] Kaeizuka ~ Phantasmagoria of Flower View/Aya Shameimaru.png"
+    },
+    {
+      "id": "medicine",
+      "ko": "메디슨 멜랑콜리",
+      "ja": "メディスン・メランコリー",
+      "en": "Medicine Melancholy",
+      "group": {
+        "ko": "동방화영총",
+        "ja": "東方花映塚",
+        "en": "Phantasmagoria of Flower View"
+      },
+      "spriteRel": "1. Mainline Games/[9] Kaeizuka ~ Phantasmagoria of Flower View/Medicine Melancholy.png"
+    },
+    {
+      "id": "yuuka",
+      "ko": "카자미 유카",
+      "ja": "風見 幽香",
+      "en": "Yuuka Kazami",
+      "group": {
+        "ko": "동방화영총",
+        "ja": "東方花映塚",
+        "en": "Phantasmagoria of Flower View"
+      },
+      "spriteRel": "1. Mainline Games/[9] Kaeizuka ~ Phantasmagoria of Flower View/Yuuka Kazami.png"
+    },
+    {
+      "id": "komachi",
+      "ko": "오노즈카 코마치",
+      "ja": "小野塚 小町",
+      "en": "Komachi Onozuka",
+      "group": {
+        "ko": "동방화영총",
+        "ja": "東方花映塚",
+        "en": "Phantasmagoria of Flower View"
+      },
+      "spriteRel": "1. Mainline Games/[9] Kaeizuka ~ Phantasmagoria of Flower View/Komachi Onozuka.png"
+    },
+    {
+      "id": "shiki",
+      "ko": "시키에이키 야마자나두",
+      "ja": "四季映姫・ヤマザナドゥ",
+      "en": "Eiki Shiki, Yamaxanadu",
+      "group": {
+        "ko": "동방화영총",
+        "ja": "東方花映塚",
+        "en": "Phantasmagoria of Flower View"
+      },
+      "spriteRel": "1. Mainline Games/[9] Kaeizuka ~ Phantasmagoria of Flower View/Eiki Shiki, Yamaxanadu.png"
+    },
+    {
+      "id": "shizuha",
+      "ko": "아키 시즈하",
+      "ja": "秋 静葉",
+      "en": "Shizuha Aki",
+      "group": {
+        "ko": "동방풍신록",
+        "ja": "東方風神録",
+        "en": "Mountain of Faith"
+      },
+      "spriteRel": "1. Mainline Games/[10] Fuujinroku ~ Mountain of faith/Shizuha Aki.png"
+    },
+    {
+      "id": "minoriko",
+      "ko": "아키 미노리코",
+      "ja": "秋 穣子",
+      "en": "Minoriko Aki",
+      "group": {
+        "ko": "동방풍신록",
+        "ja": "東方風神録",
+        "en": "Mountain of Faith"
+      },
+      "spriteRel": "1. Mainline Games/[10] Fuujinroku ~ Mountain of faith/Minoriko Aki.png"
+    },
+    {
+      "id": "hina",
+      "ko": "카기야마 히나",
+      "ja": "鍵山 雛",
+      "en": "Hina Kagiyama",
+      "group": {
+        "ko": "동방풍신록",
+        "ja": "東方風神録",
+        "en": "Mountain of Faith"
+      },
+      "spriteRel": "1. Mainline Games/[10] Fuujinroku ~ Mountain of faith/Hina Kagiyama.png"
+    },
+    {
+      "id": "nitori",
+      "ko": "카와시로 니토리",
+      "ja": "河城 にとり",
+      "en": "Nitori Kawashiro",
+      "group": {
+        "ko": "동방풍신록",
+        "ja": "東方風神録",
+        "en": "Mountain of Faith"
+      },
+      "spriteRel": "1. Mainline Games/[10] Fuujinroku ~ Mountain of faith/Nitori Kawashiro.png"
+    },
+    {
+      "id": "momiji",
+      "ko": "이누바시리 모미지",
+      "ja": "犬走 椛",
+      "en": "Momiji Inubashiri",
+      "group": {
+        "ko": "동방풍신록",
+        "ja": "東方風神録",
+        "en": "Mountain of Faith"
+      },
+      "spriteRel": "1. Mainline Games/[10] Fuujinroku ~ Mountain of faith/Momiji Inubashiri.png"
+    },
+    {
+      "id": "sanae",
+      "ko": "코치야 사나에",
+      "ja": "東風谷 早苗",
+      "en": "Sanae Kochiya",
+      "group": {
+        "ko": "동방풍신록",
+        "ja": "東方風神録",
+        "en": "Mountain of Faith"
+      },
+      "spriteRel": "1. Mainline Games/[10] Fuujinroku ~ Mountain of faith/Sanae Kochiya.png"
+    },
+    {
+      "id": "kanako",
+      "ko": "야사카 카나코",
+      "ja": "八坂 神奈子",
+      "en": "Kanako Yasaka",
+      "group": {
+        "ko": "동방풍신록",
+        "ja": "東方風神録",
+        "en": "Mountain of Faith"
+      },
+      "spriteRel": "1. Mainline Games/[10] Fuujinroku ~ Mountain of faith/Kanako Yasaka.png"
+    },
+    {
+      "id": "suwako",
+      "ko": "모리야 스와코",
+      "ja": "洩矢 諏訪子",
+      "en": "Suwako Moriya",
+      "group": {
+        "ko": "동방풍신록",
+        "ja": "東方風神録",
+        "en": "Mountain of Faith"
+      },
+      "spriteRel": "1. Mainline Games/[10] Fuujinroku ~ Mountain of faith/Suwako Moriya.png"
+    },
+    {
+      "id": "iku",
+      "ko": "나가에 이쿠",
+      "ja": "永江 衣玖",
+      "en": "Iku Nagae",
+      "group": {
+        "ko": "동방비상천",
+        "ja": "東方緋想天",
+        "en": "Scarlet Weather Rhapsody"
+      },
+      "spriteRel": "2. Spin-offs/[10.5] Hisouten ~ Scarlet Weather Rhapsody/Iku Nagae.png"
+    },
+    {
+      "id": "tenshi",
+      "ko": "히나나위 텐시",
+      "ja": "比那名居 天子",
+      "en": "Tenshi Hinanawi",
+      "group": {
+        "ko": "동방비상천",
+        "ja": "東方緋想天",
+        "en": "Scarlet Weather Rhapsody"
+      },
+      "spriteRel": "2. Spin-offs/[10.5] Hisouten ~ Scarlet Weather Rhapsody/Tenshi Hinanawi.png"
+    },
+    {
+      "id": "kisume",
+      "ko": "키스메",
+      "ja": "キスメ",
+      "en": "Kisume",
+      "group": {
+        "ko": "동방지령전",
+        "ja": "東方地霊殿",
+        "en": "Subterranean Animism"
+      },
+      "spriteRel": "1. Mainline Games/[11] Chireiden ~ Subterranean Animism/Kisume.png"
+    },
+    {
+      "id": "yamame",
+      "ko": "쿠로다니 야마메",
+      "ja": "黒谷 ヤマメ",
+      "en": "Yamame Kurodani",
+      "group": {
+        "ko": "동방지령전",
+        "ja": "東方地霊殿",
+        "en": "Subterranean Animism"
+      },
+      "spriteRel": "1. Mainline Games/[11] Chireiden ~ Subterranean Animism/Yamame Kurodani.png"
+    },
+    {
+      "id": "parsee",
+      "ko": "미즈하시 파르시",
+      "ja": "水橋 パルスィ",
+      "en": "Parsee Mizuhashi",
+      "group": {
+        "ko": "동방지령전",
+        "ja": "東方地霊殿",
+        "en": "Subterranean Animism"
+      },
+      "spriteRel": "1. Mainline Games/[11] Chireiden ~ Subterranean Animism/Parsee Mizuhashi.png"
+    },
+    {
+      "id": "yuugi",
+      "ko": "호시구마 유기",
+      "ja": "星熊 勇儀",
+      "en": "Yuugi Hoshiguma",
+      "group": {
+        "ko": "동방지령전",
+        "ja": "東方地霊殿",
+        "en": "Subterranean Animism"
+      },
+      "spriteRel": "1. Mainline Games/[11] Chireiden ~ Subterranean Animism/Yuugi Hoshiguma.png"
+    },
+    {
+      "id": "satori",
+      "ko": "코메이지 사토리",
+      "ja": "古明地 さとり",
+      "en": "Satori Komeiji",
+      "group": {
+        "ko": "동방지령전",
+        "ja": "東方地霊殿",
+        "en": "Subterranean Animism"
+      },
+      "spriteRel": "1. Mainline Games/[11] Chireiden ~ Subterranean Animism/Satori Komeiji.png"
+    },
+    {
+      "id": "orin",
+      "ko": "카엔뵤 린",
+      "ja": "火焔猫 燐",
+      "en": "Rin Kaenbyou",
+      "group": {
+        "ko": "동방지령전",
+        "ja": "東方地霊殿",
+        "en": "Subterranean Animism"
+      },
+      "spriteRel": "1. Mainline Games/[11] Chireiden ~ Subterranean Animism/Rin Kaenbyou.png"
+    },
+    {
+      "id": "okuu",
+      "ko": "레이우지 우츠호",
+      "ja": "霊烏路 空",
+      "en": "Utsuho Reiuji",
+      "group": {
+        "ko": "동방지령전",
+        "ja": "東方地霊殿",
+        "en": "Subterranean Animism"
+      },
+      "spriteRel": "1. Mainline Games/[11] Chireiden ~ Subterranean Animism/Utsuho Reiuji.png"
+    },
+    {
+      "id": "koishi",
+      "ko": "코메이지 코이시",
+      "ja": "古明地 こいし",
+      "en": "Koishi Komeiji",
+      "group": {
+        "ko": "동방지령전",
+        "ja": "東方地霊殿",
+        "en": "Subterranean Animism"
+      },
+      "spriteRel": "1. Mainline Games/[11] Chireiden ~ Subterranean Animism/Koishi Komeiji.png"
+    },
+    {
+      "id": "nazrin",
+      "ko": "나즈린",
+      "ja": "ナズーリン",
+      "en": "Nazrin",
+      "group": {
+        "ko": "동방성련선",
+        "ja": "東方星蓮船",
+        "en": "Undefined Fantastic Object"
+      },
+      "spriteRel": "1. Mainline Games/[12] Seirensen ~ Undefined Fantastic Object/Nazrin.png"
+    },
+    {
+      "id": "kogasa",
+      "ko": "타타라 코가사",
+      "ja": "多々良 小傘",
+      "en": "Kogasa Tatara",
+      "group": {
+        "ko": "동방성련선",
+        "ja": "東方星蓮船",
+        "en": "Undefined Fantastic Object"
+      },
+      "spriteRel": "1. Mainline Games/[12] Seirensen ~ Undefined Fantastic Object/Kogasa Tatara.png"
+    },
+    {
+      "id": "ichirin",
+      "ko": "쿠모이 이치린",
+      "ja": "雲居 一輪",
+      "en": "Ichirin Kumoi",
+      "group": {
+        "ko": "동방성련선",
+        "ja": "東方星蓮船",
+        "en": "Undefined Fantastic Object"
+      },
+      "spriteRel": "1. Mainline Games/[12] Seirensen ~ Undefined Fantastic Object/Ichirin Kumoi.png"
+    },
+    {
+      "id": "char-95c18f5fff56",
+      "ko": "운잔",
+      "ja": "雲山",
+      "en": "Unzan",
+      "group": {
+        "ko": "동방성련선",
+        "ja": "東方星蓮船",
+        "en": "Undefined Fantastic Object"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "murasa",
+      "ko": "무라사 미나미츠",
+      "ja": "村紗 水蜜",
+      "en": "Minamitsu Murasa",
+      "group": {
+        "ko": "동방성련선",
+        "ja": "東方星蓮船",
+        "en": "Undefined Fantastic Object"
+      },
+      "spriteRel": "1. Mainline Games/[12] Seirensen ~ Undefined Fantastic Object/Minamitsu Murasa.png"
+    },
+    {
+      "id": "shou",
+      "ko": "토라마루 쇼",
+      "ja": "寅丸 星",
+      "en": "Shou Toramaru",
+      "group": {
+        "ko": "동방성련선",
+        "ja": "東方星蓮船",
+        "en": "Undefined Fantastic Object"
+      },
+      "spriteRel": "1. Mainline Games/[12] Seirensen ~ Undefined Fantastic Object/Shou Toramaru.png"
+    },
+    {
+      "id": "byakuren",
+      "ko": "히지리 뱌쿠렌",
+      "ja": "聖 白蓮",
+      "en": "Byakuren Hijiri",
+      "group": {
+        "ko": "동방성련선",
+        "ja": "東方星蓮船",
+        "en": "Undefined Fantastic Object"
+      },
+      "spriteRel": "1. Mainline Games/[12] Seirensen ~ Undefined Fantastic Object/Byakuren Hijiri.png"
+    },
+    {
+      "id": "nue",
+      "ko": "호쥬 누에",
+      "ja": "封獣 ぬえ",
+      "en": "Nue Houjuu",
+      "group": {
+        "ko": "동방성련선",
+        "ja": "東方星蓮船",
+        "en": "Undefined Fantastic Object"
+      },
+      "spriteRel": "1. Mainline Games/[12] Seirensen ~ Undefined Fantastic Object/Nue Houjuu.png"
+    },
+    {
+      "id": "char-420eebd45720",
+      "ko": "오오나마즈",
+      "ja": "大ナマズ",
+      "en": "Giant Catfish",
+      "group": {
+        "ko": "동방비상천칙",
+        "ja": "東方非想天則",
+        "en": "Touhou Hisoutensoku"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "hatate",
+      "ko": "히메카이도 하타테",
+      "ja": "姫海棠 はたて",
+      "en": "Hatate Himekaidou",
+      "group": {
+        "ko": "더블 스포일러",
+        "ja": "ダブルスポイラー",
+        "en": "Double Spoiler"
+      },
+      "spriteRel": "2. Spin-offs/[12.5] Double Spoiler ~ Bunkachou/Hatate Himekaidou.png"
+    },
+    {
+      "id": "kyouko",
+      "ko": "카소다니 쿄코",
+      "ja": "幽谷 響子",
+      "en": "Kyouko Kasodani",
+      "group": {
+        "ko": "동방신령묘",
+        "ja": "東方神霊廟",
+        "en": "Ten Desires"
+      },
+      "spriteRel": "1. Mainline Games/[13] Shinreibyou ~ Ten Desires/Kyouko Kasodani.png"
+    },
+    {
+      "id": "yoshika",
+      "ko": "미야코 요시카",
+      "ja": "宮古 芳香",
+      "en": "Yoshika Miyako",
+      "group": {
+        "ko": "동방신령묘",
+        "ja": "東方神霊廟",
+        "en": "Ten Desires"
+      },
+      "spriteRel": "1. Mainline Games/[13] Shinreibyou ~ Ten Desires/Yoshika Miyako.png"
+    },
+    {
+      "id": "seiga",
+      "ko": "곽청아",
+      "ja": "霍 青娥",
+      "en": "Seiga Kaku",
+      "group": {
+        "ko": "동방신령묘",
+        "ja": "東方神霊廟",
+        "en": "Ten Desires"
+      },
+      "spriteRel": "1. Mainline Games/[13] Shinreibyou ~ Ten Desires/Seiga Kaku.png"
+    },
+    {
+      "id": "tojiko",
+      "ko": "소가노 토지코",
+      "ja": "蘇我 屠自古",
+      "en": "Soga no Tojiko",
+      "group": {
+        "ko": "동방신령묘",
+        "ja": "東方神霊廟",
+        "en": "Ten Desires"
+      },
+      "spriteRel": "1. Mainline Games/[13] Shinreibyou ~ Ten Desires/Soga no Tojiko.png"
+    },
+    {
+      "id": "futo",
+      "ko": "모노노베노 후토",
+      "ja": "物部 布都",
+      "en": "Mononobe no Futo",
+      "group": {
+        "ko": "동방신령묘",
+        "ja": "東方神霊廟",
+        "en": "Ten Desires"
+      },
+      "spriteRel": "1. Mainline Games/[13] Shinreibyou ~ Ten Desires/Mononobe no Futo.png"
+    },
+    {
+      "id": "miko",
+      "ko": "토요사토미미노 미코",
+      "ja": "豊聡耳 神子",
+      "en": "Toyosatomimi no Miko",
+      "group": {
+        "ko": "동방신령묘",
+        "ja": "東方神霊廟",
+        "en": "Ten Desires"
+      },
+      "spriteRel": "1. Mainline Games/[13] Shinreibyou ~ Ten Desires/Toyosatomimi no Miko.png"
+    },
+    {
+      "id": "mamizou",
+      "ko": "후타츠이와 마미조",
+      "ja": "二ッ岩 マミゾウ",
+      "en": "Mamizou Futatsuiwa",
+      "group": {
+        "ko": "동방신령묘",
+        "ja": "東方神霊廟",
+        "en": "Ten Desires"
+      },
+      "spriteRel": "1. Mainline Games/[13] Shinreibyou ~ Ten Desires/Maimizou Futatsuiwa.png"
+    },
+    {
+      "id": "kokoro",
+      "ko": "하타노 코코로",
+      "ja": "秦 こころ",
+      "en": "Hata no Kokoro",
+      "group": {
+        "ko": "동방심기루",
+        "ja": "東方心綺楼",
+        "en": "Hopeless Masquerade"
+      },
+      "spriteRel": "2. Spin-offs/[13.5] Shinkirou ~ Hopeless Masquerade/Hata no Kokoro.png"
+    },
+    {
+      "id": "wakasagi",
+      "ko": "와카사기히메",
+      "ja": "わかさぎ姫",
+      "en": "Wakasagihime",
+      "group": {
+        "ko": "동방휘침성",
+        "ja": "東方輝針城",
+        "en": "Double Dealing Character"
+      },
+      "spriteRel": "1. Mainline Games/[14] Kishinjou ~ Double Dealing Character/Wakasagihime.png"
+    },
+    {
+      "id": "sekibanki",
+      "ko": "세키반키",
+      "ja": "赤蛮奇",
+      "en": "Sekibanki",
+      "group": {
+        "ko": "동방휘침성",
+        "ja": "東方輝針城",
+        "en": "Double Dealing Character"
+      },
+      "spriteRel": "1. Mainline Games/[14] Kishinjou ~ Double Dealing Character/Sekibanki.png"
+    },
+    {
+      "id": "kagerou",
+      "ko": "이마이즈미 카게로",
+      "ja": "今泉 影狼",
+      "en": "Kagerou Imaizumi",
+      "group": {
+        "ko": "동방휘침성",
+        "ja": "東方輝針城",
+        "en": "Double Dealing Character"
+      },
+      "spriteRel": "1. Mainline Games/[14] Kishinjou ~ Double Dealing Character/Kagerou Imaizumi.png"
+    },
+    {
+      "id": "benben",
+      "ko": "츠쿠모 벤벤",
+      "ja": "九十九 弁々",
+      "en": "Benben Tsukumo",
+      "group": {
+        "ko": "동방휘침성",
+        "ja": "東方輝針城",
+        "en": "Double Dealing Character"
+      },
+      "spriteRel": "1. Mainline Games/[14] Kishinjou ~ Double Dealing Character/Benben Tsukumo.png"
+    },
+    {
+      "id": "yatsuhashi",
+      "ko": "츠쿠모 야츠하시",
+      "ja": "九十九 八橋",
+      "en": "Yatsuhashi Tsukumo",
+      "group": {
+        "ko": "동방휘침성",
+        "ja": "東方輝針城",
+        "en": "Double Dealing Character"
+      },
+      "spriteRel": "1. Mainline Games/[14] Kishinjou ~ Double Dealing Character/Yatsuhashi Tsukumo.png"
+    },
+    {
+      "id": "seija",
+      "ko": "키진 세이자",
+      "ja": "鬼人 正邪",
+      "en": "Seija Kijin",
+      "group": {
+        "ko": "동방휘침성",
+        "ja": "東方輝針城",
+        "en": "Double Dealing Character"
+      },
+      "spriteRel": "1. Mainline Games/[14] Kishinjou ~ Double Dealing Character/Seija Kijin.png"
+    },
+    {
+      "id": "shinmyoumaru",
+      "ko": "스쿠나 신묘마루",
+      "ja": "少名 針妙丸",
+      "en": "Shinmyoumaru Sukuna",
+      "group": {
+        "ko": "동방휘침성",
+        "ja": "東方輝針城",
+        "en": "Double Dealing Character"
+      },
+      "spriteRel": "1. Mainline Games/[14] Kishinjou ~ Double Dealing Character/Shinmyoumaru Sukuna.png"
+    },
+    {
+      "id": "raiko",
+      "ko": "호리카와 라이코",
+      "ja": "堀川 雷鼓",
+      "en": "Raiko Horikawa",
+      "group": {
+        "ko": "동방휘침성",
+        "ja": "東方輝針城",
+        "en": "Double Dealing Character"
+      },
+      "spriteRel": "1. Mainline Games/[14] Kishinjou ~ Double Dealing Character/Raiko Horikawa.png"
+    },
+    {
+      "id": "sumireko",
+      "ko": "우사미 스미레코",
+      "ja": "宇佐見 菫子",
+      "en": "Sumireko Usami",
+      "group": {
+        "ko": "동방심비록",
+        "ja": "東方深秘録",
+        "en": "Urban Legend in Limbo"
+      },
+      "spriteRel": "2. Spin-offs/[14.5] Shinpiroku ~ Urban Legend in Limbo/Sumireko Usami.png"
+    },
+    {
+      "id": "seiran",
+      "ko": "세이란",
+      "ja": "清蘭",
+      "en": "Seiran",
+      "group": {
+        "ko": "동방감주전",
+        "ja": "東方紺珠伝",
+        "en": "Legacy of Lunatic Kingdom"
+      },
+      "spriteRel": "1. Mainline Games/[15] Kanjuden ~ Legacy of Lunatic Kingdom/Seiran.png"
+    },
+    {
+      "id": "ringo",
+      "ko": "링고",
+      "ja": "鈴瑚",
+      "en": "Ringo",
+      "group": {
+        "ko": "동방감주전",
+        "ja": "東方紺珠伝",
+        "en": "Legacy of Lunatic Kingdom"
+      },
+      "spriteRel": "1. Mainline Games/[15] Kanjuden ~ Legacy of Lunatic Kingdom/Ringo.png"
+    },
+    {
+      "id": "doremy",
+      "ko": "도레미 스위트",
+      "ja": "ドレミー・スイート",
+      "en": "Doremy Sweet",
+      "group": {
+        "ko": "동방감주전",
+        "ja": "東方紺珠伝",
+        "en": "Legacy of Lunatic Kingdom"
+      },
+      "spriteRel": "1. Mainline Games/[15] Kanjuden ~ Legacy of Lunatic Kingdom/Doremy Sweet.png"
+    },
+    {
+      "id": "sagume",
+      "ko": "키신 사구메",
+      "ja": "稀神 サグメ",
+      "en": "Sagume Kishin",
+      "group": {
+        "ko": "동방감주전",
+        "ja": "東方紺珠伝",
+        "en": "Legacy of Lunatic Kingdom"
+      },
+      "spriteRel": "1. Mainline Games/[15] Kanjuden ~ Legacy of Lunatic Kingdom/Sagume Kishin.png"
+    },
+    {
+      "id": "clownpiece",
+      "ko": "클라운피스",
+      "ja": "クラウンピース",
+      "en": "Clownpiece",
+      "group": {
+        "ko": "동방감주전",
+        "ja": "東方紺珠伝",
+        "en": "Legacy of Lunatic Kingdom"
+      },
+      "spriteRel": "1. Mainline Games/[15] Kanjuden ~ Legacy of Lunatic Kingdom/Clownpiece.png"
+    },
+    {
+      "id": "junko",
+      "ko": "순호",
+      "ja": "純狐",
+      "en": "Junko",
+      "group": {
+        "ko": "동방감주전",
+        "ja": "東方紺珠伝",
+        "en": "Legacy of Lunatic Kingdom"
+      },
+      "spriteRel": "1. Mainline Games/[15] Kanjuden ~ Legacy of Lunatic Kingdom/Junko.png"
+    },
+    {
+      "id": "hecatia",
+      "ko": "헤카티아 라피스라줄리",
+      "ja": "ヘカーティア・ラピスラズリ",
+      "en": "Hecatia Lapislazuli",
+      "group": {
+        "ko": "동방감주전",
+        "ja": "東方紺珠伝",
+        "en": "Legacy of Lunatic Kingdom"
+      },
+      "spriteRel": "1. Mainline Games/[15] Kanjuden ~ Legacy of Lunatic Kingdom/Hecatia Lapislazuli.png"
+    },
+    {
+      "id": "larva",
+      "ko": "이터니티 라바",
+      "ja": "エタニティラルバ",
+      "en": "Eternity Larva",
+      "group": {
+        "ko": "동방천공장",
+        "ja": "東方天空璋",
+        "en": "Hidden Star in Four Seasons"
+      },
+      "spriteRel": "1. Mainline Games/[16] Tenkuushou ~ Hidden Star in Four Seasons/Eternity Larva.png"
+    },
+    {
+      "id": "nemuno",
+      "ko": "사카타 네무노",
+      "ja": "坂田ネムノ",
+      "en": "Nemuno Sakata",
+      "group": {
+        "ko": "동방천공장",
+        "ja": "東方天空璋",
+        "en": "Hidden Star in Four Seasons"
+      },
+      "spriteRel": "1. Mainline Games/[16] Tenkuushou ~ Hidden Star in Four Seasons/Nemuno Sakata.png"
+    },
+    {
+      "id": "aunn",
+      "ko": "코마노 아운",
+      "ja": "高麗野あうん",
+      "en": "Aunn Komano",
+      "group": {
+        "ko": "동방천공장",
+        "ja": "東方天空璋",
+        "en": "Hidden Star in Four Seasons"
+      },
+      "spriteRel": "1. Mainline Games/[16] Tenkuushou ~ Hidden Star in Four Seasons/Aunn Komano.png"
+    },
+    {
+      "id": "narumi",
+      "ko": "야타데라 나루미",
+      "ja": "矢田寺成美",
+      "en": "Narumi Yatadera",
+      "group": {
+        "ko": "동방천공장",
+        "ja": "東方天空璋",
+        "en": "Hidden Star in Four Seasons"
+      },
+      "spriteRel": "1. Mainline Games/[16] Tenkuushou ~ Hidden Star in Four Seasons/Narumi Yatadera.png"
+    },
+    {
+      "id": "satono",
+      "ko": "니시다 사토노",
+      "ja": "爾子田里乃",
+      "en": "Satono Nishida",
+      "group": {
+        "ko": "동방천공장",
+        "ja": "東方天空璋",
+        "en": "Hidden Star in Four Seasons"
+      },
+      "spriteRel": "1. Mainline Games/[16] Tenkuushou ~ Hidden Star in Four Seasons/Satono Nishida.png"
+    },
+    {
+      "id": "mai",
+      "ko": "테이레이다 마이",
+      "ja": "丁礼田舞",
+      "en": "Mai Teireida",
+      "group": {
+        "ko": "동방천공장",
+        "ja": "東方天空璋",
+        "en": "Hidden Star in Four Seasons"
+      },
+      "spriteRel": "1. Mainline Games/[16] Tenkuushou ~ Hidden Star in Four Seasons/Mai Teireida.png"
+    },
+    {
+      "id": "okina",
+      "ko": "마타라 오키나",
+      "ja": "摩多羅隠岐奈",
+      "en": "Okina Matara",
+      "group": {
+        "ko": "동방천공장",
+        "ja": "東方天空璋",
+        "en": "Hidden Star in Four Seasons"
+      },
+      "spriteRel": "1. Mainline Games/[16] Tenkuushou ~ Hidden Star in Four Seasons/Okina Matara.png"
+    },
+    {
+      "id": "joon",
+      "ko": "요리가미 조온",
+      "ja": "依神女苑",
+      "en": "Joon Yorigami",
+      "group": {
+        "ko": "동방빙의화",
+        "ja": "東方憑依華",
+        "en": "Antinomy of Common Flowers"
+      },
+      "spriteRel": "2. Spin-offs/[15.5] Hyoubana ~ Antinomy of Common Flowers/Joon Yorigami.png"
+    },
+    {
+      "id": "shion",
+      "ko": "요리가미 시온",
+      "ja": "依神紫苑",
+      "en": "Shion Yorigami",
+      "group": {
+        "ko": "동방빙의화",
+        "ja": "東方憑依華",
+        "en": "Antinomy of Common Flowers"
+      },
+      "spriteRel": "2. Spin-offs/[15.5] Hyoubana ~ Antinomy of Common Flowers/Shion Yorigami.png"
+    },
+    {
+      "id": "eika",
+      "ko": "에비스 에이카",
+      "ja": "戎 瓔花",
+      "en": "Eika Ebisu",
+      "group": {
+        "ko": "동방귀형수",
+        "ja": "東方鬼形獣",
+        "en": "Wily Beast and Weakest Creature"
+      },
+      "spriteRel": "1. Mainline Games/[17] Kikeijuu ~ Wily Beast and Weakest Creature/Eika Ebisu.png"
+    },
+    {
+      "id": "urumi",
+      "ko": "우시자키 우루미",
+      "ja": "牛崎 潤美",
+      "en": "Urumi Ushizaki",
+      "group": {
+        "ko": "동방귀형수",
+        "ja": "東方鬼形獣",
+        "en": "Wily Beast and Weakest Creature"
+      },
+      "spriteRel": "1. Mainline Games/[17] Kikeijuu ~ Wily Beast and Weakest Creature/Urumi Ushizaki.png"
+    },
+    {
+      "id": "kutaka",
+      "ko": "니와타리 쿠타카",
+      "ja": "庭渡 久侘歌",
+      "en": "Kutaka Niwatari",
+      "group": {
+        "ko": "동방귀형수",
+        "ja": "東方鬼形獣",
+        "en": "Wily Beast and Weakest Creature"
+      },
+      "spriteRel": "1. Mainline Games/[17] Kikeijuu ~ Wily Beast and Weakest Creature/Kutaka Niwatari.png"
+    },
+    {
+      "id": "yachie",
+      "ko": "킷초 야치에",
+      "ja": "吉弔 八千慧",
+      "en": "Yachie Kicchou",
+      "group": {
+        "ko": "동방귀형수",
+        "ja": "東方鬼形獣",
+        "en": "Wily Beast and Weakest Creature"
+      },
+      "spriteRel": "1. Mainline Games/[17] Kikeijuu ~ Wily Beast and Weakest Creature/Yachie Kicchou.png"
+    },
+    {
+      "id": "mayumi",
+      "ko": "조토구 마유미",
+      "ja": "杖刀偶 磨弓",
+      "en": "Mayumi Joutouguu",
+      "group": {
+        "ko": "동방귀형수",
+        "ja": "東方鬼形獣",
+        "en": "Wily Beast and Weakest Creature"
+      },
+      "spriteRel": "1. Mainline Games/[17] Kikeijuu ~ Wily Beast and Weakest Creature/Mayumi Joutouguu.png"
+    },
+    {
+      "id": "keiki",
+      "ko": "하니야스신 케이키",
+      "ja": "埴安神 袿姫",
+      "en": "Keiki Haniyasushin",
+      "group": {
+        "ko": "동방귀형수",
+        "ja": "東方鬼形獣",
+        "en": "Wily Beast and Weakest Creature"
+      },
+      "spriteRel": "1. Mainline Games/[17] Kikeijuu ~ Wily Beast and Weakest Creature/Keiki Haniyasushin.png"
+    },
+    {
+      "id": "saki",
+      "ko": "쿠로코마 사키",
+      "ja": "驪駒 早鬼",
+      "en": "Saki Kurokoma",
+      "group": {
+        "ko": "동방귀형수",
+        "ja": "東方鬼形獣",
+        "en": "Wily Beast and Weakest Creature"
+      },
+      "spriteRel": "1. Mainline Games/[17] Kikeijuu ~ Wily Beast and Weakest Creature/Saki Kurokoma.png"
+    },
+    {
+      "id": "char-53600b47a98e",
+      "ko": "늑대령",
+      "ja": "オオカミ霊",
+      "en": "Wolf Spirit",
+      "group": {
+        "ko": "동방귀형수",
+        "ja": "東方鬼形獣",
+        "en": "Wily Beast and Weakest Creature"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-bed7fe81b327",
+      "ko": "수달령",
+      "ja": "カワウソ霊",
+      "en": "Otter Spirit",
+      "group": {
+        "ko": "동방귀형수",
+        "ja": "東方鬼形獣",
+        "en": "Wily Beast and Weakest Creature"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-de1efa090f21",
+      "ko": "참수리령",
+      "ja": "オオワシ霊",
+      "en": "Eagle Spirit",
+      "group": {
+        "ko": "동방귀형수",
+        "ja": "東方鬼形獣",
+        "en": "Wily Beast and Weakest Creature"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "mike",
+      "ko": "고토쿠지 미케",
+      "ja": "豪徳寺 ミケ",
+      "en": "Mike Goutokuji",
+      "group": {
+        "ko": "동방홍룡동",
+        "ja": "東方虹龍洞",
+        "en": "Unconnected Marketeers"
+      },
+      "spriteRel": "1. Mainline Games/[18] Kouryuudou ~ Unconnected Marketeers/Mike Goutokuji.png"
+    },
+    {
+      "id": "takane",
+      "ko": "야마시로 타카네",
+      "ja": "山城 たかね",
+      "en": "Takane Yamashiro",
+      "group": {
+        "ko": "동방홍룡동",
+        "ja": "東方虹龍洞",
+        "en": "Unconnected Marketeers"
+      },
+      "spriteRel": "1. Mainline Games/[18] Kouryuudou ~ Unconnected Marketeers/Takane Yamashiro.png"
+    },
+    {
+      "id": "sannyo",
+      "ko": "코마쿠사 산뇨",
+      "ja": "駒草 山如",
+      "en": "Sannyo Komakusa",
+      "group": {
+        "ko": "동방홍룡동",
+        "ja": "東方虹龍洞",
+        "en": "Unconnected Marketeers"
+      },
+      "spriteRel": "1. Mainline Games/[18] Kouryuudou ~ Unconnected Marketeers/Sannyo Komakusa.png"
+    },
+    {
+      "id": "misumaru",
+      "ko": "타마츠쿠리 미스마루",
+      "ja": "玉造 魅須丸",
+      "en": "Misumaru Tamatsukuri",
+      "group": {
+        "ko": "동방홍룡동",
+        "ja": "東方虹龍洞",
+        "en": "Unconnected Marketeers"
+      },
+      "spriteRel": "1. Mainline Games/[18] Kouryuudou ~ Unconnected Marketeers/Misumaru Tamatsukuri.png"
+    },
+    {
+      "id": "tsukasa",
+      "ko": "쿠다마키 츠카사",
+      "ja": "菅牧 典",
+      "en": "Tsukasa Kudamaki",
+      "group": {
+        "ko": "동방홍룡동",
+        "ja": "東方虹龍洞",
+        "en": "Unconnected Marketeers"
+      },
+      "spriteRel": "1. Mainline Games/[18] Kouryuudou ~ Unconnected Marketeers/Tsukasa Kudamaki.png"
+    },
+    {
+      "id": "megumu",
+      "ko": "이즈나마루 메구무",
+      "ja": "飯綱丸 龍",
+      "en": "Megumu Iizunamaru",
+      "group": {
+        "ko": "동방홍룡동",
+        "ja": "東方虹龍洞",
+        "en": "Unconnected Marketeers"
+      },
+      "spriteRel": "1. Mainline Games/[18] Kouryuudou ~ Unconnected Marketeers/Megumu Iizunamaru.png"
+    },
+    {
+      "id": "chimata",
+      "ko": "텐큐 치마타",
+      "ja": "天弓 千亦",
+      "en": "Chimata Tenkyuu",
+      "group": {
+        "ko": "동방홍룡동",
+        "ja": "東方虹龍洞",
+        "en": "Unconnected Marketeers"
+      },
+      "spriteRel": "1. Mainline Games/[18] Kouryuudou ~ Unconnected Marketeers/Chimata Tenkyuu.png"
+    },
+    {
+      "id": "momoyo",
+      "ko": "히메무시 모모요",
+      "ja": "姫虫 百々世",
+      "en": "Momoyo Himemushi",
+      "group": {
+        "ko": "동방홍룡동",
+        "ja": "東方虹龍洞",
+        "en": "Unconnected Marketeers"
+      },
+      "spriteRel": "1. Mainline Games/[18] Kouryuudou ~ Unconnected Marketeers/Momoyo Himemushi.png"
+    },
+    {
+      "id": "yuuma",
+      "ko": "토테츠 유마",
+      "ja": "饕餮 尤魔",
+      "en": "Yuma Toutetsu",
+      "group": {
+        "ko": "동방강욕이문",
+        "ja": "東方剛欲異聞",
+        "en": "Sunken Fossil World"
+      },
+      "spriteRel": "2. Spin-offs/[17.5] Gouyoku Ibun ~ Sunken Fossil World/Yuuma Toutetsu.png"
+    },
+    {
+      "id": "son_biten",
+      "ko": "손미천",
+      "ja": "孫 美天",
+      "en": "Biten Son",
+      "group": {
+        "ko": "동방수왕원",
+        "ja": "東方獣王園",
+        "en": "Unfinished Dream of All Living Ghost"
+      },
+      "spriteRel": "1. Mainline Games/[19] Juuouen ~ Unfinished Dream of All Living Ghost/Son Biten.png"
+    },
+    {
+      "id": "enoko",
+      "ko": "미츠가시라 에노코",
+      "ja": "三頭 慧ノ子",
+      "en": "Enoko Mitsugashira",
+      "group": {
+        "ko": "동방수왕원",
+        "ja": "東方獣王園",
+        "en": "Unfinished Dream of All Living Ghost"
+      },
+      "spriteRel": "1. Mainline Games/[19] Juuouen ~ Unfinished Dream of All Living Ghost/Enoko Mitsugashira.png"
+    },
+    {
+      "id": "chiyari",
+      "ko": "텐카진 치야리",
+      "ja": "天火人 ちやり",
+      "en": "Chiyari Tenkajin",
+      "group": {
+        "ko": "동방수왕원",
+        "ja": "東方獣王園",
+        "en": "Unfinished Dream of All Living Ghost"
+      },
+      "spriteRel": "1. Mainline Games/[19] Juuouen ~ Unfinished Dream of All Living Ghost/Chiyari Tenkajin.png"
+    },
+    {
+      "id": "hisami",
+      "ko": "요모츠 히사미",
+      "ja": "豫母都 日狭美",
+      "en": "Hisami Yomotsu",
+      "group": {
+        "ko": "동방수왕원",
+        "ja": "東方獣王園",
+        "en": "Unfinished Dream of All Living Ghost"
+      },
+      "spriteRel": "1. Mainline Games/[19] Juuouen ~ Unfinished Dream of All Living Ghost/Hisami Yomotsu.png"
+    },
+    {
+      "id": "zanmu",
+      "ko": "닛파쿠 잔무",
+      "ja": "日白 残無",
+      "en": "Zanmu Nippaku",
+      "group": {
+        "ko": "동방수왕원",
+        "ja": "東方獣王園",
+        "en": "Unfinished Dream of All Living Ghost"
+      },
+      "spriteRel": "1. Mainline Games/[19] Juuouen ~ Unfinished Dream of All Living Ghost/Zanmu Nippaku.png"
+    },
+    {
+      "id": "ubame",
+      "ko": "치리즈카 우바메",
+      "ja": "塵塚 ウバメ",
+      "en": "Ubame Chirizuka",
+      "group": {
+        "ko": "동방금상경",
+        "ja": "東方錦上京",
+        "en": "Fossilized Wonders"
+      },
+      "spriteRel": "1. Mainline Games/[20] Kinjoukyou ~ Fossilized Wonders/Ubame Chirizuka.png"
+    },
+    {
+      "id": "chimi",
+      "ko": "호쥬 치미",
+      "ja": "封獣 チミ",
+      "en": "Chimi Houju",
+      "group": {
+        "ko": "동방금상경",
+        "ja": "東方錦上京",
+        "en": "Fossilized Wonders"
+      },
+      "spriteRel": "1. Mainline Games/[20] Kinjoukyou ~ Fossilized Wonders/Chimi Houjuu.png"
+    },
+    {
+      "id": "nareko",
+      "ko": "미치가미 나레코",
+      "ja": "道神 馴子",
+      "en": "Nareko Michigami",
+      "group": {
+        "ko": "동방금상경",
+        "ja": "東方錦上京",
+        "en": "Fossilized Wonders"
+      },
+      "spriteRel": "1. Mainline Games/[20] Kinjoukyou ~ Fossilized Wonders/Nareko Michigami.png"
+    },
+    {
+      "id": "char-813578ea0eb6",
+      "ko": "유이만 아사마",
+      "ja": "ユイマン・ 浅間",
+      "en": "Yuiman Asama",
+      "group": {
+        "ko": "동방금상경",
+        "ja": "東方錦上京",
+        "en": "Fossilized Wonders"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-3e0a51698381",
+      "ko": "이와나가 아리야",
+      "ja": "磐永 阿梨夜",
+      "en": "Ariya Iwanaga",
+      "group": {
+        "ko": "동방금상경",
+        "ja": "東方錦上京",
+        "en": "Fossilized Wonders"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-ec992517a29c",
+      "ko": "와타리 니나",
+      "ja": "渡里 ニナ",
+      "en": "Nina Watari",
+      "group": {
+        "ko": "동방금상경",
+        "ja": "東方錦上京",
+        "en": "Fossilized Wonders"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-3b36085fb14b",
+      "ko": "신교쿠",
+      "ja": "シンギョク",
+      "en": "SinGyoku Gatekeeper",
+      "group": {
+        "ko": "동방영이전",
+        "ja": "東方靈異伝",
+        "en": "Highly Responsive to Prayers"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-8d776a8e0e35",
+      "ko": "유겐마간",
+      "ja": "ユウゲンマガン",
+      "en": "YuugenMagan Evil Eyes",
+      "group": {
+        "ko": "동방영이전",
+        "ja": "東方靈異伝",
+        "en": "Highly Responsive to Prayers"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-429c97e69b48",
+      "ko": "엘리스",
+      "ja": "エリス",
+      "en": "Elis Innocent Devil",
+      "group": {
+        "ko": "동방영이전",
+        "ja": "東方靈異伝",
+        "en": "Highly Responsive to Prayers"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-e83e9252afea",
+      "ko": "사리엘",
+      "ja": "サリエル",
+      "en": "Sariel Angel of Death",
+      "group": {
+        "ko": "동방영이전",
+        "ja": "東方靈異伝",
+        "en": "Highly Responsive to Prayers"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-04d822acfd10",
+      "ko": "키쿠리",
+      "ja": "キクリ",
+      "en": "Kikuri Hellish Moon",
+      "group": {
+        "ko": "동방영이전",
+        "ja": "東方靈異伝",
+        "en": "Highly Responsive to Prayers"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-c756921490b3",
+      "ko": "콘가라",
+      "ja": "コンガラ",
+      "en": "Konngara Astral Knight",
+      "group": {
+        "ko": "동방영이전",
+        "ja": "東方靈異伝",
+        "en": "Highly Responsive to Prayers"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-a6019b9a192e",
+      "ko": "겐 영감님",
+      "ja": "玄爺",
+      "en": "Genjii",
+      "group": {
+        "ko": "동방봉마록",
+        "ja": "東方封魔録",
+        "en": "Story of Eastern Wonderland"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-22d9dad798c7",
+      "ko": "리카",
+      "ja": "里香",
+      "en": "Rika",
+      "group": {
+        "ko": "동방봉마록",
+        "ja": "東方封魔録",
+        "en": "Story of Eastern Wonderland"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-17b5416b241a",
+      "ko": "메이라",
+      "ja": "明羅",
+      "en": "Meira",
+      "group": {
+        "ko": "동방봉마록",
+        "ja": "東方封魔録",
+        "en": "Story of Eastern Wonderland"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-00fff23aa4fd",
+      "ko": "미마",
+      "ja": "魅魔",
+      "en": "Mima Revengeful Ghost",
+      "group": {
+        "ko": "동방봉마록",
+        "ja": "東方封魔録",
+        "en": "Story of Eastern Wonderland"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-854e8a947ca2",
+      "ko": "엘렌",
+      "ja": "エレン",
+      "en": "Ellen",
+      "group": {
+        "ko": "동방몽시공",
+        "ja": "東方夢時空",
+        "en": "Phantasmagoria of Dim.Dream"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-1c55863b74d3",
+      "ko": "코토히메",
+      "ja": "小兎姫",
+      "en": "Kotohime",
+      "group": {
+        "ko": "동방몽시공",
+        "ja": "東方夢時空",
+        "en": "Phantasmagoria of Dim.Dream"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-e3bfc984c8a4",
+      "ko": "카나 아나베랄",
+      "ja": "カナ・アナベラル",
+      "en": "Kana Anaberal",
+      "group": {
+        "ko": "동방몽시공",
+        "ja": "東方夢時空",
+        "en": "Phantasmagoria of Dim.Dream"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-c9d959f58ab2",
+      "ko": "아사쿠라 리카코",
+      "ja": "朝倉 理香子",
+      "en": "Rikako Asakura",
+      "group": {
+        "ko": "동방몽시공",
+        "ja": "東方夢時空",
+        "en": "Phantasmagoria of Dim.Dream"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-d087be55bebc",
+      "ko": "키타시라카와 치유리",
+      "ja": "北白河 ちゆり",
+      "en": "Chiyuri Kitashirakawa",
+      "group": {
+        "ko": "동방몽시공",
+        "ja": "東方夢時空",
+        "en": "Phantasmagoria of Dim.Dream"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-e43d252b65ff",
+      "ko": "오카자키 유메미",
+      "ja": "岡崎 夢美",
+      "en": "Yumemi Okazaki",
+      "group": {
+        "ko": "동방몽시공",
+        "ja": "東方夢時空",
+        "en": "Phantasmagoria of Dim.Dream"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-0349fe3db634",
+      "ko": "오렌지",
+      "ja": "オレンジ",
+      "en": "Orange",
+      "group": {
+        "ko": "동방환상향",
+        "ja": "東方幻想郷",
+        "en": "Lotus Land Story"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-78cef29d6cd1",
+      "ko": "쿠루미",
+      "ja": "くるみ",
+      "en": "Kurumi",
+      "group": {
+        "ko": "동방환상향",
+        "ja": "東方幻想郷",
+        "en": "Lotus Land Story"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-154861e6bf69",
+      "ko": "엘리",
+      "ja": "エリー",
+      "en": "Elly",
+      "group": {
+        "ko": "동방환상향",
+        "ja": "東方幻想郷",
+        "en": "Lotus Land Story"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-875ead36bee0",
+      "ko": "무게츠",
+      "ja": "夢月",
+      "en": "Mugetsu",
+      "group": {
+        "ko": "동방환상향",
+        "ja": "東方幻想郷",
+        "en": "Lotus Land Story"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-d48f7e37f814",
+      "ko": "겐게츠",
+      "ja": "幻月",
+      "en": "Gengetsu",
+      "group": {
+        "ko": "동방환상향",
+        "ja": "東方幻想郷",
+        "en": "Lotus Land Story"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-9efa73ed4562",
+      "ko": "사라",
+      "ja": "サラ",
+      "en": "Sara",
+      "group": {
+        "ko": "동방괴기담",
+        "ja": "東方怪綺談",
+        "en": "Mystic Square"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-b97237b19893",
+      "ko": "루이즈",
+      "ja": "ルイズ",
+      "en": "Louise",
+      "group": {
+        "ko": "동방괴기담",
+        "ja": "東方怪綺談",
+        "en": "Mystic Square"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-c157d50efe0b",
+      "ko": "유키",
+      "ja": "ユキ",
+      "en": "Yuki",
+      "group": {
+        "ko": "동방괴기담",
+        "ja": "東方怪綺談",
+        "en": "Mystic Square"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-8c08177f8798",
+      "ko": "마이",
+      "ja": "マイ",
+      "en": "Mai",
+      "group": {
+        "ko": "동방괴기담",
+        "ja": "東方怪綺談",
+        "en": "Mystic Square"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-c57348ed45c5",
+      "ko": "유메코",
+      "ja": "夢子",
+      "en": "Yumeko",
+      "group": {
+        "ko": "동방괴기담",
+        "ja": "東方怪綺談",
+        "en": "Mystic Square"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-d520eadb6ffa",
+      "ko": "신키",
+      "ja": "神綺",
+      "en": "Shinki",
+      "group": {
+        "ko": "동방괴기담",
+        "ja": "東方怪綺談",
+        "en": "Mystic Square"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-582f3714d77a",
+      "ko": "자켓소녀",
+      "ja": "蓬莱人形ジャケットイラストの娘",
+      "en": "The girl on the Houral Doll jacket",
+      "group": {
+        "ko": "봉래인형",
+        "ja": "蓬莱人形",
+        "en": "Dolls in Pseudo Paradise"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-c97f05366336",
+      "ko": "라벨소녀",
+      "ja": "蓬莱人形レーベルイラストの娘",
+      "en": "The girl on the Houral Doll label",
+      "group": {
+        "ko": "봉래인형",
+        "ja": "蓬莱人形",
+        "en": "Dolls in Pseudo Paradise"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "renko",
+      "ko": "우사미 렌코",
+      "ja": "宇佐見 蓮子",
+      "en": "Renko Usami",
+      "group": {
+        "ko": "비봉구락부",
+        "ja": "秘封倶楽部",
+        "en": "Hifuu Club"
+      },
+      "spriteRel": "4. Other/[2] Hifuu Club/Renko Usami.png"
+    },
+    {
+      "id": "maribel",
+      "ko": "마에리베리 한",
+      "ja": "マエリベリー・ハーン",
+      "en": "Maribel Hearn",
+      "group": {
+        "ko": "비봉구락부",
+        "ja": "秘封倶楽部",
+        "en": "Hifuu Club"
+      },
+      "spriteRel": "4. Other/[2] Hifuu Club/Maribel Hearn.png"
+    },
+    {
+      "id": "akyuu",
+      "ko": "히에다노 아큐",
+      "ja": "稗田 阿求",
+      "en": "Hieda no Akyuu",
+      "group": {
+        "ko": "동방구문사기 / 동방구문구수",
+        "ja": "東方求聞史紀",
+        "en": "Touhou Gumon (Gensokyo Chronicle)"
+      },
+      "spriteRel": "3. Manga/[3] Suzunaan ~ Forbidden Scrollery/Hieda no Akyuu.png"
+    },
+    {
+      "id": "char-d9212a4e58b5",
+      "ko": "모리치카 린노스케",
+      "ja": "森近 霖之助",
+      "en": "Rinnosuke Morichika",
+      "group": {
+        "ko": "동방향림당",
+        "ja": "東方香霖堂",
+        "en": "Curiosities of Lotus Asia"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-edde0f5d138b",
+      "ko": "라이카",
+      "ja": "ライカ",
+      "en": "Laika",
+      "group": {
+        "ko": "동방향림당",
+        "ja": "東方香霖堂",
+        "en": "Curiosities of Lotus Asia"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-5f396801e890",
+      "ko": "서니 밀크",
+      "ja": "サニーミルク",
+      "en": "Sunny Milk",
+      "group": {
+        "ko": "동방삼월정",
+        "ja": "東方三月精",
+        "en": "Touhou Sangetsusei"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-c3f3ff61b7b7",
+      "ko": "루나 차일드",
+      "ja": "ルナチャイルド",
+      "en": "Luna Child",
+      "group": {
+        "ko": "동방삼월정",
+        "ja": "東方三月精",
+        "en": "Touhou Sangetsusei"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-461cb855b76e",
+      "ko": "스타 사파이어",
+      "ja": "スターサファイア",
+      "en": "Star Sapphire",
+      "group": {
+        "ko": "동방삼월정",
+        "ja": "東方三月精",
+        "en": "Touhou Sangetsusei"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "toyohime",
+      "ko": "와타츠키노 토요히메",
+      "ja": "綿月 豊姫",
+      "en": "Watatsuki no Toyohime",
+      "group": {
+        "ko": "동방맹월초",
+        "ja": "東方儚月抄",
+        "en": "Touhou Bougetsushou"
+      },
+      "spriteRel": "3. Manga/[1] Bougetsushou ~ Silent Sinner in Blue/Watatsuki no Toyohime.png"
+    },
+    {
+      "id": "yorihime",
+      "ko": "와타츠키노 요리히메",
+      "ja": "綿月 依姫",
+      "en": "Watatsuki no Yorihime",
+      "group": {
+        "ko": "동방맹월초",
+        "ja": "東方儚月抄",
+        "en": "Touhou Bougetsushou"
+      },
+      "spriteRel": "3. Manga/[1] Bougetsushou ~ Silent Sinner in Blue/Watatsuki no Yorihime.png"
+    },
+    {
+      "id": "char-8c682b0ac9c4",
+      "ko": "레이센",
+      "ja": "レイセン",
+      "en": "Reisen",
+      "group": {
+        "ko": "동방맹월초",
+        "ja": "東方儚月抄",
+        "en": "Touhou Bougetsushou"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "kasen",
+      "ko": "이바라키 카센",
+      "ja": "茨木 華扇",
+      "en": "Kasen Ibaraki",
+      "group": {
+        "ko": "동방자가선",
+        "ja": "東方茨歌仙",
+        "en": "Wild and Horned Hermit"
+      },
+      "spriteRel": "3. Manga/[2] Ibarakasen ~ Wild and Horned Hermit/Kasen Ibaraki.png"
+    },
+    {
+      "id": "char-1e1fc61db5c1",
+      "ko": "그림자 카센 (단선수악의 괴완, 이바라키도지의 팔)",
+      "ja": "影華扇（断善修悪の怪腕 - 茨木童子の腕）",
+      "en": "Kasen's arm",
+      "group": {
+        "ko": "동방자가선",
+        "ja": "東方茨歌仙",
+        "en": "Wild and Horned Hermit"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-127c202e2f41",
+      "ko": "오니 카센 (간녕사지의 오니)",
+      "ja": "鬼華扇（奸佞邪智の鬼）",
+      "en": "Kasen's true form",
+      "group": {
+        "ko": "동방자가선",
+        "ja": "東方茨歌仙",
+        "en": "Wild and Horned Hermit"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "kosuzu",
+      "ko": "모토오리 코스즈",
+      "ja": "本居 小鈴",
+      "en": "Kosuzu Motoori",
+      "group": {
+        "ko": "동방영나암",
+        "ja": "東方鈴奈庵",
+        "en": "Forbidden Scrollery"
+      },
+      "spriteRel": "3. Manga/[3] Suzunaan ~ Forbidden Scrollery/Kosuzu Motoori.png"
+    },
+    {
+      "id": "char-b55b01c39302",
+      "ko": "오쿠노다 미요이",
+      "ja": "奥野田 美宵",
+      "en": "Miyoi Okunoda",
+      "group": {
+        "ko": "동방취접화",
+        "ja": "東方酔蝶華",
+        "en": "Lotus Eaters"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-e4b22b563d8f",
+      "ko": "미야데구치 미즈치",
+      "ja": "宮出口瑞霊",
+      "en": "Mizuchi Miyadeguchi",
+      "group": {
+        "ko": "동방지령기전",
+        "ja": "東方智霊奇伝",
+        "en": "Touhou Chireikiden"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-d62c4b7c098d",
+      "ko": "선대 무녀",
+      "ja": "先代巫女",
+      "en": "Previous Hakurei Shrine Maiden",
+      "group": {
+        "ko": "동방지령기전",
+        "ja": "東方智霊奇伝",
+        "en": "Touhou Chireikiden"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-f517c50e54e2",
+      "ko": "루코토",
+      "ja": "るーこと",
+      "en": "Ruukoto",
+      "group": {
+        "ko": "기타(게임)",
+        "ja": "その他（ゲーム）",
+        "en": "Other (Games)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-8779994d51cc",
+      "ko": "미미쨩",
+      "ja": "ミミちゃん",
+      "en": "Mimi-Chan",
+      "group": {
+        "ko": "기타(게임)",
+        "ja": "その他（ゲーム）",
+        "en": "Other (Games)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-2e601e063bea",
+      "ko": "콘파쿠 요우키",
+      "ja": "魂魄 妖忌",
+      "en": "Youki Konpaku",
+      "group": {
+        "ko": "기타(게임)",
+        "ja": "その他（ゲーム）",
+        "en": "Other (Games)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-96159dd534cd",
+      "ko": "레이라 프리즘리버",
+      "ja": "レイラ・プリズムリバー",
+      "en": "Leila Prismriver",
+      "group": {
+        "ko": "기타(게임)",
+        "ja": "その他（ゲーム）",
+        "en": "Other (Games)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-696fbe4c5ad0",
+      "ko": "핵열조신 비상천칙",
+      "ja": "核熱造神ヒソウテンソク",
+      "en": "Hisoutensoku",
+      "group": {
+        "ko": "기타(게임)",
+        "ja": "その他（ゲーム）",
+        "en": "Other (Games)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-2018424931dc",
+      "ko": "묘렌",
+      "ja": "命蓮",
+      "en": "Myouren Hijiri",
+      "group": {
+        "ko": "기타(게임)",
+        "ja": "その他（ゲーム）",
+        "en": "Other (Games)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-3011068b06cf",
+      "ko": "비사문천",
+      "ja": "毘沙門天",
+      "en": "Bishamonten",
+      "group": {
+        "ko": "기타(게임)",
+        "ja": "その他（ゲーム）",
+        "en": "Other (Games)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-2149b25f34c1",
+      "ko": "상아",
+      "ja": "嫦娥",
+      "en": "Chang'e",
+      "group": {
+        "ko": "기타(게임)",
+        "ja": "その他（ゲーム）",
+        "en": "Other (Games)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-7e3db4aea761",
+      "ko": "이름없는 책읽는 요괴",
+      "ja": "名無しの本読み妖怪",
+      "en": "Unnamed Book-Reading Youkai",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-b4987ca22644",
+      "ko": "츠지노코",
+      "ja": "ツチノコ",
+      "en": "Tsuchinoko",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-d73e012dd6e2",
+      "ko": "술벌레",
+      "ja": "酒虫",
+      "en": "Shuchuu",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-a7b26eedc4f9",
+      "ko": "달의 도시의 문지기",
+      "ja": "月の都の門番",
+      "en": "Gateguards of the Lunar Capital",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-084accebf724",
+      "ko": "미즈에 우라시마코",
+      "ja": "水江浦島子",
+      "en": "Mizue no Uranoshimako",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-c04492596f0e",
+      "ko": "이와카사",
+      "ja": "岩笠",
+      "en": "Iwakasa",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-931f145e9bfd",
+      "ko": "코노하나사쿠야히메",
+      "ja": "木花咲耶姫",
+      "en": "Konohana-Sakuyahime",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-561618a51db0",
+      "ko": "센다이시로 (복의 신)",
+      "ja": "仙台四郎（福の神）",
+      "en": "Shirou Sendai",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-015e8aadf9b3",
+      "ko": "운쇼우",
+      "ja": "運松",
+      "en": "Unshou",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-460b2e69b019",
+      "ko": "자시키와라시",
+      "ja": "座敷童",
+      "en": "Zashiki-warashi",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-80a3b8aa4a4b",
+      "ko": "홉고블린",
+      "ja": "ホフゴブリン",
+      "en": "Hobgoblin",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-800e7f64db6b",
+      "ko": "만자이라쿠",
+      "ja": "万歳楽",
+      "en": "Manzairaku",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-7b23b5e32313",
+      "ko": "야마네",
+      "ja": "ヤマネ",
+      "en": "Yamane",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-982a735e80f3",
+      "ko": "케세란파사란",
+      "ja": "ケセランパサラン",
+      "en": "Kesaran Pasaran",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-804c968ea4c7",
+      "ko": "코스즈의 부모",
+      "ja": "小鈴の両親",
+      "en": "Kosuzu's parents",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-db09eae98b1d",
+      "ko": "엔엔라",
+      "ja": "煙々羅",
+      "en": "Enenra",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-cc0e2b5dbd68",
+      "ko": "츄파카브라",
+      "ja": "チュパカブラ",
+      "en": "Chupacabra",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-d03746ddc1ad",
+      "ko": "쿠츠츠라",
+      "ja": "沓頬",
+      "en": "Kutsutsura",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-f01cf18d3360",
+      "ko": "우와바미",
+      "ja": "ウワバミ",
+      "en": "Uwabami (large snake)",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-f76138826623",
+      "ko": "점쟁이",
+      "ja": "易者",
+      "en": "The Fortune-teller",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-b7f42243d209",
+      "ko": "항우울제 아저씨",
+      "ja": "抗鬱薬おじさん",
+      "en": "antidepressant uncle",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-5afdadfdd346",
+      "ko": "나메에몬",
+      "ja": "なめえもん",
+      "en": "Nameemon",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-fb153c835b12",
+      "ko": "소금저택의 주인",
+      "ja": "塩屋敷の旦那",
+      "en": "master of salt mansion",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-f2ca03625c45",
+      "ko": "예탄정의 점주",
+      "ja": "鯢呑亭の店主",
+      "en": "The owner of the Geidon pub",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-5e61ef5fb071",
+      "ko": "예탄정의 단골",
+      "ja": "鯢呑亭の常連",
+      "en": "Regular customers of the Guidon pub",
+      "group": {
+        "ko": "기타(서적)",
+        "ja": "その他（書籍）",
+        "en": "Other (Books)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-36e9f541915e",
+      "ko": "요정 (메이드 요정, 해바라기 요정 등)",
+      "ja": "妖精（メイド妖精・ひまわり妖精 他）",
+      "en": "Fairy (Fairy Maids, Sunflower Fairy etc.)",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-7846fe12c165",
+      "ko": "유령 (원령, 신령, 바케바케 포함)",
+      "ja": "幽霊（怨霊、神霊、化け化け含む）",
+      "en": "Phantom (Vengeful spirit, Divine Spirit, include Bakebake)",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-f8b89079593c",
+      "ko": "털뭉치",
+      "ja": "毛玉",
+      "en": "Kedama",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-85d694d21de4",
+      "ko": "UFO（빨강, 파랑, 초록, 기타）",
+      "ja": "UFO（赤・青・緑、その他）",
+      "en": "Undefined Fantastic Object（Red, Blue, Green etc.)",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-2792d57705b2",
+      "ko": "토끼 (달 토끼, 영원정의 요괴 토끼 등)",
+      "ja": "兎（玉兎、永遠亭の妖怪兎 他）",
+      "en": "Rabbits (Moon Rabbit, Eientei rabbits etc.)",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-4ef575c6cc9e",
+      "ko": "타누키 (변신 타누키, 노뎃포 등)",
+      "ja": "狸（化け狸、野鉄砲他）",
+      "en": "Tanuki (Bake-danuki, Nodeppou etc.)",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-9f5a918212cf",
+      "ko": "키츠네 (요괴 여우, 여우 새끼 등)",
+      "ja": "狐（妖怪狐、狐の子他）",
+      "en": "Kitsune (youkai kitsune, little fox etc.)",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-821d4b62215d",
+      "ko": "까마귀 (지옥 까마귀, 유카리/아야의 사역마 등)",
+      "ja": "カラス（地獄鴉、紫・文の使い魔 他）",
+      "en": "Crow, Raven (Hell ravens, Yukari's and Aya's familiar etc.)",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-238517d00a25",
+      "ko": "갓파 (야마와로/ 포함)",
+      "ja": "河童（山童含む）",
+      "en": "Kappa (include Yamawaro)",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-5b535fb2d051",
+      "ko": "텐구 (향림당의 텐구, 대텐구 등)",
+      "ja": "天狗（香霖堂の天狗、大天狗 他）",
+      "en": "Tengu (Kourindou Tengu, Great Tengu etc.)",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-0464d3ffb7ae",
+      "ko": "용 (어린 용, 사악한 용 등)",
+      "ja": "龍（子龍、邪龍 他）",
+      "en": "Dragon (small Dragon, Evil Dragon etc.)",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-f431f963fe16",
+      "ko": "마을 사람 (문화첩, 구문사기, 영나암 등에 등장한 인간)",
+      "ja": "里の人間（文花帖、求聞史紀、鈴奈庵などで登場した人間）",
+      "en": "Village human (Humans who appeared in Bunkachou, Fumiki Komon, Suzunaan, etc.)",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-7f95b5282f20",
+      "ko": "앨리스의 인형 (상하이, 봉래, 오에도 등)",
+      "ja": "アリスの人形（上海、蓬莱、大江戸 他）",
+      "en": "Alice's dolls (Shanghai, Horai, Oedo, etc.)",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-6cbd971704ff",
+      "ko": "카센의 동물 (쿠메, 사오우치, 뇌수, 팽조, 인면견 등)",
+      "ja": "華扇の動物（久米、竿打、雷獣、彭祖、人面犬 他）",
+      "en": "Kasen's animals (Kume, Kanda, Raijuu, Houso, Jinmenken etc.)",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-edd6dbd88673",
+      "ko": "신내림으로 불러낸 신령 (아마테라스, 이즈노메 등)",
+      "ja": "神降ろしの神霊（天照、伊豆能売 他）",
+      "en": "Haunted spirit (Amaterasu, Izunome, etc.)",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-59da96eeffb9",
+      "ko": "도시전설 괴의 (오키쿠상, 핫샤쿠님 등)",
+      "ja": "都市伝説の怪異（お菊さん、八尺さま 他）",
+      "en": "Urban legend (Okiku-san, Hasshaku-sama, etc.)",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-88400b69a89d",
+      "ko": "구작 이름 없는 보스",
+      "ja": "旧作名無し中ボス",
+      "en": "Old work nameless middle boss",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    },
+    {
+      "id": "char-684c71d89567",
+      "ko": "C62 서클 컷 소녀",
+      "ja": "C62サークルカットの娘",
+      "en": "The girl on the C62 circle cut for Comiket catalog",
+      "group": {
+        "ko": "기타(복합)",
+        "ja": "その他（複合）",
+        "en": "Other (Mixed)"
+      },
+      "spriteRel": null
+    }
+  ],
+  "works": [
+    {
+      "id": "th1",
+      "category": "game",
+      "ko": "동방영이전",
+      "ja": "東方靈異伝",
+      "en": "Highly Responsive to Prayers",
+      "group": {
+        "ko": "구작",
+        "ja": "旧作",
+        "en": "PC-98 Era Works"
+      }
+    },
+    {
+      "id": "th2",
+      "category": "game",
+      "ko": "동방봉마록",
+      "ja": "東方封魔録",
+      "en": "Story of Eastern Wonderland",
+      "group": {
+        "ko": "구작",
+        "ja": "旧作",
+        "en": "PC-98 Era Works"
+      }
+    },
+    {
+      "id": "th3",
+      "category": "game",
+      "ko": "동방몽시공",
+      "ja": "東方夢時空",
+      "en": "Phantasmagoria of Dim.Dream",
+      "group": {
+        "ko": "구작",
+        "ja": "旧作",
+        "en": "PC-98 Era Works"
+      }
+    },
+    {
+      "id": "th4",
+      "category": "game",
+      "ko": "동방환상향",
+      "ja": "東方幻想郷",
+      "en": "Lotus Land Story",
+      "group": {
+        "ko": "구작",
+        "ja": "旧作",
+        "en": "PC-98 Era Works"
+      }
+    },
+    {
+      "id": "th5",
+      "category": "game",
+      "ko": "동방괴기담",
+      "ja": "東方怪綺談",
+      "en": "Mystic Square",
+      "group": {
+        "ko": "구작",
+        "ja": "旧作",
+        "en": "PC-98 Era Works"
+      }
+    },
+    {
+      "id": "th6",
+      "category": "game",
+      "ko": "동방홍마향",
+      "ja": "東方紅魔郷",
+      "en": "Embodiment of Scarlet Devil",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "th7",
+      "category": "game",
+      "ko": "동방요요몽",
+      "ja": "東方妖々夢",
+      "en": "Perfect Cherry Blossom",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "th8",
+      "category": "game",
+      "ko": "동방영야초",
+      "ja": "東方永夜抄",
+      "en": "Imperishable Night",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "th9",
+      "category": "game",
+      "ko": "동방화영총",
+      "ja": "東方花映塚",
+      "en": "Phantasmagoria of Flower View",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "game-17f5487231cb",
+      "category": "game",
+      "ko": "동방문화첩",
+      "ja": "東方文花帖",
+      "en": "Shoot the Bullet",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "th10",
+      "category": "game",
+      "ko": "동방풍신록",
+      "ja": "東方風神録",
+      "en": "Mountain of Faith",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "th11",
+      "category": "game",
+      "ko": "동방지령전",
+      "ja": "東方地霊殿",
+      "en": "Subterranean Animism",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "th12",
+      "category": "game",
+      "ko": "동방성련선",
+      "ja": "東方星蓮船",
+      "en": "Undefined Fantastic Object",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "game-d1bdcbfc28d4",
+      "category": "game",
+      "ko": "더블 스포일러",
+      "ja": "ダブルスポイラー",
+      "en": "Double Spoiler",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "game-10f91c9982f7",
+      "category": "game",
+      "ko": "요정대전쟁",
+      "ja": "妖精大戦争",
+      "en": "Great Fairy Wars",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "th13",
+      "category": "game",
+      "ko": "동방신령묘",
+      "ja": "東方神霊廟",
+      "en": "Ten Desires",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "th14",
+      "category": "game",
+      "ko": "동방휘침성",
+      "ja": "東方輝針城",
+      "en": "Double Dealing Character",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "game-07bd92aa0dc1",
+      "category": "game",
+      "ko": "탄막 아마노자쿠",
+      "ja": "弾幕アマノジャク",
+      "en": "Impossible Spell Card",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "th15",
+      "category": "game",
+      "ko": "동방감주전",
+      "ja": "東方紺珠伝",
+      "en": "Legacy of Lunatic Kingdom",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "th16",
+      "category": "game",
+      "ko": "동방천공장",
+      "ja": "東方天空璋",
+      "en": "Hidden Star in Four Seasons",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "game-13f0d8f15e18",
+      "category": "game",
+      "ko": "비봉 나이트메어 다이어리",
+      "ja": "秘封ナイトメアダイアリー",
+      "en": "Violet Detector",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "th17",
+      "category": "game",
+      "ko": "동방귀형수",
+      "ja": "東方鬼形獣",
+      "en": "Wily Beast and Weakest Creature",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "th18",
+      "category": "game",
+      "ko": "동방홍룡동",
+      "ja": "東方虹龍洞",
+      "en": "Unconnected Marketeers",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "game-e9edaf587558",
+      "category": "game",
+      "ko": "불릿필리아들의 암시장",
+      "ja": "バレットフィリア達の闇市場",
+      "en": "100th Black Market",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "th19",
+      "category": "game",
+      "ko": "동방수왕원",
+      "ja": "東方獣王園",
+      "en": "Unfinished Dream of All Living Ghost",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "th20",
+      "category": "game",
+      "ko": "동방금상경",
+      "ja": "東方錦上京",
+      "en": "Fossilized Wonders",
+      "group": {
+        "ko": "WinSTG 작품",
+        "ja": "WinSTG作品",
+        "en": "Windows STG Works"
+      }
+    },
+    {
+      "id": "game-661f3ed5a6d9",
+      "category": "game",
+      "ko": "동방췌몽상",
+      "ja": "東方萃夢想",
+      "en": "Immaterial and Missing Power",
+      "group": {
+        "ko": "황혼 프론티어 작품",
+        "ja": "黄昏フロンティア作品",
+        "en": "Tasogare Frontier Works"
+      }
+    },
+    {
+      "id": "game-6cb4d8c0c3fc",
+      "category": "game",
+      "ko": "동방비상천",
+      "ja": "東方緋想天",
+      "en": "Scarlet Weather Rhapsody",
+      "group": {
+        "ko": "황혼 프론티어 작품",
+        "ja": "黄昏フロンティア作品",
+        "en": "Tasogare Frontier Works"
+      }
+    },
+    {
+      "id": "game-7fb7917fcc86",
+      "category": "game",
+      "ko": "동방비상천칙",
+      "ja": "東方非想天則",
+      "en": "Touhou Hisoutensoku",
+      "group": {
+        "ko": "황혼 프론티어 작품",
+        "ja": "黄昏フロンティア作品",
+        "en": "Tasogare Frontier Works"
+      }
+    },
+    {
+      "id": "game-652403404a13",
+      "category": "game",
+      "ko": "동방심기루",
+      "ja": "東方心綺楼",
+      "en": "Hopeless Masquerade",
+      "group": {
+        "ko": "황혼 프론티어 작품",
+        "ja": "黄昏フロンティア作品",
+        "en": "Tasogare Frontier Works"
+      }
+    },
+    {
+      "id": "game-10ad9119d21d",
+      "category": "game",
+      "ko": "동방심비록",
+      "ja": "東方深秘録",
+      "en": "Urban Legend in Limbo",
+      "group": {
+        "ko": "황혼 프론티어 작품",
+        "ja": "黄昏フロンティア作品",
+        "en": "Tasogare Frontier Works"
+      }
+    },
+    {
+      "id": "game-97008ea50c63",
+      "category": "game",
+      "ko": "동방빙의화",
+      "ja": "東方憑依華",
+      "en": "Antinomy of Common Flowers",
+      "group": {
+        "ko": "황혼 프론티어 작품",
+        "ja": "黄昏フロンティア作品",
+        "en": "Tasogare Frontier Works"
+      }
+    },
+    {
+      "id": "game-c7789b9b766d",
+      "category": "game",
+      "ko": "동방강욕이문",
+      "ja": "東方剛欲異聞",
+      "en": "Sunken Fossil World",
+      "group": {
+        "ko": "황혼 프론티어 작품",
+        "ja": "黄昏フロンティア作品",
+        "en": "Tasogare Frontier Works"
+      }
+    },
+    {
+      "id": "music-812bb1616299",
+      "category": "music",
+      "ko": "요악단의 역사",
+      "ja": "幺樂団の歴史",
+      "en": "Akyu's Untouched Score",
+      "group": {
+        "ko": "음악 작품",
+        "ja": "音楽作品",
+        "en": "Music Works"
+      }
+    },
+    {
+      "id": "music-f7541d390a0c",
+      "category": "music",
+      "ko": "봉래인형",
+      "ja": "蓬莱人形",
+      "en": "Dolls in Pseudo Paradise",
+      "group": {
+        "ko": "음악 작품",
+        "ja": "音楽作品",
+        "en": "Music Works"
+      }
+    },
+    {
+      "id": "music-c233d8c92e99",
+      "category": "music",
+      "ko": "렌다이노 야행",
+      "ja": "蓮台野夜行",
+      "en": "Ghostly Field Club",
+      "group": {
+        "ko": "음악 작품",
+        "ja": "音楽作品",
+        "en": "Music Works"
+      }
+    },
+    {
+      "id": "music-352e4ada578a",
+      "category": "music",
+      "ko": "몽위과학세기",
+      "ja": "夢違科学世紀",
+      "en": "Changeability of Strange Dream",
+      "group": {
+        "ko": "음악 작품",
+        "ja": "音楽作品",
+        "en": "Music Works"
+      }
+    },
+    {
+      "id": "music-3001228c1545",
+      "category": "music",
+      "ko": "묘유동해도",
+      "ja": "卯酉東海道",
+      "en": "Retrospective 53 minutes",
+      "group": {
+        "ko": "음악 작품",
+        "ja": "音楽作品",
+        "en": "Music Works"
+      }
+    },
+    {
+      "id": "music-11cd7e63b384",
+      "category": "music",
+      "ko": "대공마술",
+      "ja": "大空魔術",
+      "en": "Magical Astronomy",
+      "group": {
+        "ko": "음악 작품",
+        "ja": "音楽作品",
+        "en": "Music Works"
+      }
+    },
+    {
+      "id": "music-e39255d9c30d",
+      "category": "music",
+      "ko": "미지의 꽃 매지의 여행",
+      "ja": "未知の花　魅知の旅",
+      "en": "Unknown Flower, Mesmerizing Journey",
+      "group": {
+        "ko": "음악 작품",
+        "ja": "音楽作品",
+        "en": "Music Works"
+      }
+    },
+    {
+      "id": "music-31c4f717cb2f",
+      "category": "music",
+      "ko": "토리후네 유적",
+      "ja": "鳥船遺跡",
+      "en": "Trojan Green Asteroid",
+      "group": {
+        "ko": "음악 작품",
+        "ja": "音楽作品",
+        "en": "Music Works"
+      }
+    },
+    {
+      "id": "music-0c19c250bf3a",
+      "category": "music",
+      "ko": "이자나기 물질",
+      "ja": "伊弉諾物質",
+      "en": "Neo-traditionalism of Japan",
+      "group": {
+        "ko": "음악 작품",
+        "ja": "音楽作品",
+        "en": "Music Works"
+      }
+    },
+    {
+      "id": "music-f5ae3712b6ea",
+      "category": "music",
+      "ko": "연석박물지",
+      "ja": "燕石博物誌",
+      "en": "Dr. Latency's Freak Report",
+      "group": {
+        "ko": "음악 작품",
+        "ja": "音楽作品",
+        "en": "Music Works"
+      }
+    },
+    {
+      "id": "music-336f704637b0",
+      "category": "music",
+      "ko": "구약주점",
+      "ja": "旧約酒場",
+      "en": "Dateless Bar \"Old Adam\"",
+      "group": {
+        "ko": "음악 작품",
+        "ja": "音楽作品",
+        "en": "Music Works"
+      }
+    },
+    {
+      "id": "music-debc329b679e",
+      "category": "music",
+      "ko": "무지갯빛 셉텐트리온",
+      "ja": "虹色のセプテントリオン",
+      "en": "Rainbow-Colored Septentrion",
+      "group": {
+        "ko": "음악 작품",
+        "ja": "音楽作品",
+        "en": "Music Works"
+      }
+    },
+    {
+      "id": "music-331d379e24a3",
+      "category": "music",
+      "ko": "타나바타자카 무겐노",
+      "ja": "七夕坂夢幻能",
+      "en": "Taboo Japan Disentanglement",
+      "group": {
+        "ko": "음악 작품",
+        "ja": "音楽作品",
+        "en": "Music Works"
+      }
+    },
+    {
+      "id": "book-a25651d7162c",
+      "category": "book",
+      "ko": "동방향림당",
+      "ja": "東方香霖堂",
+      "en": "Curiosities of Lotus Asia",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    },
+    {
+      "id": "book-e9c222ac2afe",
+      "category": "book",
+      "ko": "동방삼월정",
+      "ja": "東方三月精",
+      "en": "Touhou Sangetsusei",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    },
+    {
+      "id": "book-aeaa7b88a68d",
+      "category": "book",
+      "ko": "동방문화첩(서적)",
+      "ja": "東方文花帖（書籍）",
+      "en": "Bohemian Archive in Japanese Red",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    },
+    {
+      "id": "book-perfect-memento",
+      "category": "book",
+      "ko": "동방구문사기",
+      "ja": "東方求聞史紀",
+      "en": "Perfect Memento in Strict Sense",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    },
+    {
+      "id": "book-symposium",
+      "category": "book",
+      "ko": "동방구문구수",
+      "ja": "東方求聞口授",
+      "en": "Symposium of Post-mysticism",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    },
+    {
+      "id": "book-3cac6f6a7f4c",
+      "category": "book",
+      "ko": "동방맹월초",
+      "ja": "東方儚月抄",
+      "en": "Touhou Bougetsushou",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    },
+    {
+      "id": "book-ecd0189d332b",
+      "category": "book",
+      "ko": "The Grimoire of Marisa",
+      "ja": "The Grimoire of Marisa",
+      "en": "The Grimoire of Marisa",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    },
+    {
+      "id": "book-6f0e94646a6d",
+      "category": "book",
+      "ko": "동방자가선",
+      "ja": "東方茨歌仙",
+      "en": "Wild and Horned Hermit",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    },
+    {
+      "id": "book-b036981ba92d",
+      "category": "book",
+      "ko": "동방영나암",
+      "ja": "東方鈴奈庵",
+      "en": "Forbidden Scrollery",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    },
+    {
+      "id": "book-cf28be624808",
+      "category": "book",
+      "ko": "동방문과진보",
+      "ja": "東方文果真報",
+      "en": "Alternative Facts in Eastern Utopia",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    },
+    {
+      "id": "book-ddddf21d11e4",
+      "category": "book",
+      "ko": "The Grimoire of Usami 비봉클럽이계촬영기록",
+      "ja": "The Grimoire of Usami 秘封倶楽部異界撮影記録",
+      "en": "The Grimoire of Usami",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    },
+    {
+      "id": "book-22a4c5f71f5c",
+      "category": "book",
+      "ko": "동방지령기전 반칙탐정 사토리",
+      "ja": "東方智霊奇伝 反則探偵さとり",
+      "en": "Foul Detective Satori",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    },
+    {
+      "id": "book-65450b4366e9",
+      "category": "book",
+      "ko": "동방취접화",
+      "ja": "東方酔蝶華",
+      "en": "Lotus Eaters",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    },
+    {
+      "id": "book-5923e710cae3",
+      "category": "book",
+      "ko": "동방Project 인요명감 어스름편",
+      "ja": "東方Project人妖名鑑 宵闇編",
+      "en": "Who's Who of Humans and Youkai - Dusk Edition",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    },
+    {
+      "id": "book-65400b7f3636",
+      "category": "book",
+      "ko": "동방Project 인요명감 저승편",
+      "ja": "東方Project人妖名鑑 常世編",
+      "en": "Who's Who of Humans and Youkai - Everlasting Edition",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    },
+    {
+      "id": "book-11ed4e5f75e8",
+      "category": "book",
+      "ko": "동방환존신첨",
+      "ja": "東方幻存神籤",
+      "en": "Whispered Oracle of Hakurei Shrine",
+      "group": {
+        "ko": "서적 작품",
+        "ja": "書籍作品",
+        "en": "Book Works"
+      }
+    }
+  ]
+}

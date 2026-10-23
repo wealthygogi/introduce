@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { loadInitialState, saveToStorage, stripShareParam } from '../lib/formStateCodec';
 import type { SocialPlatform } from '../lib/socialAccount';
+import { normalizeProfileSelection, PROFILE_CHARACTER_BY_ID, PROFILE_WORK_BY_ID, MAX_RANKED_CHARACTERS, MAX_FAVORITE_WORKS } from '../data/profileCatalog';
 
 export type FubChoice = 'free' | 'r4r';
 export type PartingChoice = 'unfollow' | 'blockunfollow' | 'block';
@@ -12,6 +13,8 @@ export interface FormState {
   selectedChar: string;
   selectedSeries: Set<string>;
   selectedAcct: Set<string>;
+  rankedCharacters: string[];
+  favoriteWorks: string[];
   fub: FubChoice;
   parting: PartingChoice;
   otherGenre: OtherGenreChoice;
@@ -42,6 +45,8 @@ export const defaultState: FormState = {
   selectedChar: 'reimu',
   selectedSeries: new Set(['th6', 'th7', 'th8']),
   selectedAcct: new Set(['daily', 'drawing']),
+  rankedCharacters: [],
+  favoriteWorks: [],
   fub: 'free',
   parting: 'unfollow',
   otherGenre: 'sometimes',
@@ -50,7 +55,7 @@ export const defaultState: FormState = {
   freeText: '',
   socialPlatform: 'none',
   socialAccount: '',
-  custom: {},
+  custom: { 'wide:pairing': '', 'wide:dislike': '', 'wide:freeText': '' },
   reroll: 0,
 };
 
@@ -79,7 +84,14 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
   }, [state]);
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) => {
-    setState((s) => ({ ...s, [key]: value }));
+    setState((s) => ({
+      ...s,
+      [key]: key === 'rankedCharacters'
+        ? normalizeProfileSelection(value, PROFILE_CHARACTER_BY_ID, MAX_RANKED_CHARACTERS)
+        : key === 'favoriteWorks'
+          ? normalizeProfileSelection(value, PROFILE_WORK_BY_ID, MAX_FAVORITE_WORKS)
+          : value,
+    }));
   };
 
   const setCustom = (key: string, value: string) => {

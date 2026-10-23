@@ -8,9 +8,11 @@
     "build": "tsc -b && vite build && cp dist/index.html dist/404.html",
     "preview": "vite preview",
     "qa:visual": "node tests/visual/capture.mjs",
+    "qa:modes": "node tests/visual/modes.mjs",
     "test:e2e": "playwright test",
     "build:site": "npm run build && sh scripts/build-v1.sh",
-    "test:share": "node --test tests/share-regression.mjs"
+    "test:share": "node --test tests/share-regression.mjs",
+    "test:profile": "node tests/profile-selection-regression.mjs"
   },
   "dependencies": {
     "modern-screenshot": "^4.7.0",

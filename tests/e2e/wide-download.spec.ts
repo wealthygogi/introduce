@@ -48,6 +48,67 @@ for (const theme of ['paper', 'hifuu']) {
   }
 }
 
+test('full Wide density wraps every field and exports all selected content', async ({ page }) => {
+  await page.setViewportSize({ width: 1512, height: 1100 });
+  await enterWide(page, 'hifuu');
+  for (let index = 1; index < 4; index++) await openGroup(page, index);
+
+  const intro = page.locator('details.wide-form-group').nth(0);
+  const accountButtons = intro.locator('.chip-group').nth(0).getByRole('button');
+  await expect(accountButtons).toHaveCount(11);
+  for (let index = 0; index < 11; index++) {
+    const button = accountButtons.nth(index);
+    if (await button.getAttribute('aria-pressed') !== 'true') await button.click();
+    await expect(button).toHaveAttribute('aria-pressed', 'true');
+  }
+  await intro.locator('.chip-group').nth(1).getByRole('button').last().click();
+  await intro.locator('.chip-group').nth(2).getByRole('button').last().click();
+  await intro.locator('details.social-settings summary').click();
+  await page.locator('#social-platform').selectOption('other');
+  await page.locator('#social-account').fill('https://example.com/full-density');
+  await page.locator('input[type="file"]').setInputFiles('public/Touhou 16x16 Mini Pack Full/4. Other/[2] Hifuu Club/Renko Usami.png');
+
+  const workIds = ['th10', 'th12', 'book-b036981ba92d', 'music-352e4ada578a', 'music-11cd7e63b384'];
+  await page.locator('[data-work-category="game"]').click();
+  for (const id of workIds.slice(0, 2)) await page.locator(`[data-work-choice="${id}"]`).click();
+  await page.locator('[data-work-category="book"]').click();
+  await page.locator(`[data-work-choice="${workIds[2]}"]`).click();
+  await page.locator('[data-work-category="music"]').click();
+  for (const id of workIds.slice(3)) await page.locator(`[data-work-choice="${id}"]`).click();
+  await page.locator('[data-work-category="all"]').click();
+
+  await page.locator('#wide-character-group').selectOption({ index: 1 });
+  const characterIds = ['reimu', 'marisa', 'sanae', 'aya', 'reisen', 'youmu', 'sakuya'];
+  for (const id of characterIds) {
+    await page.locator('#wide-character-group').selectOption('');
+    await page.locator(`[data-character-choice="${id}"]`).click();
+  }
+
+  const values = Object.fromEntries([
+    ['wide:handle', 400], ['wide:intro', 400], ['wide:keywords', 400],
+    ['wide:callname', 400], ['wide:age', 400], ['wide:workNote', 400],
+    ['wide:characterNote', 400], ['wide:pairing', 100], ['wide:activities', 400],
+    ['wide:otherGenre', 400], ['wide:dislike', 100], ['wide:boundaryMethod', 400],
+    ['wide:interaction', 400], ['wide:closing', 400], ['wide:freeText', 300],
+  ].map(([key, length]) => [key, `${key} 한글 English 日本語\n`.repeat(30).slice(0, length as number)]));
+  await page.locator('#wide-nickname').fill('全入力🙂');
+  for (const [key, value] of Object.entries(values)) await page.locator(`[id="${key}"]`).fill(value);
+  await page.locator('details.wide-form-group').nth(3).locator('.chip-group').getByRole('button').last().click();
+
+  const exportRoot = page.locator('#wide-export');
+  await expect(exportRoot.locator('.wide-checklist [data-selected="true"]')).toHaveCount(11);
+  await expect(exportRoot.locator('[data-ranked-character]')).toHaveCount(7);
+  await expect(exportRoot.locator('[data-favorite-work]')).toHaveCount(5);
+  await expect(exportRoot.locator('.wide-profile img')).toHaveCount(1);
+  await expect(exportRoot.locator('.social-qr-footer')).toHaveCount(1);
+  for (const [key, value] of Object.entries(values)) {
+    if (key === 'wide:keywords') await expect(exportRoot.locator('.wide-chips')).toContainText('wide:keywords');
+    else await expect(exportRoot).toContainText(value);
+  }
+  await page.screenshot({ path: test.info().outputPath('hifuu-full-density-screen.png'), fullPage: true });
+  await downloadPng(page, 'hifuu-full-density');
+});
+
 test('mobile Wide groups accept text and download the unscaled card', async ({ page }) => {
   for (const viewport of [{ width: 390, height: 844 }, { width: 320, height: 568 }]) {
     await page.setViewportSize(viewport);

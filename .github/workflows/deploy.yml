@@ -15,7 +15,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # 테스트한 dist 그대로를 배포한다: 빌드(v2 + v1 아카이브) → E2E → 통과 시에만 Pages 아티팩트 업로드
   build:
     runs-on: ubuntu-latest
     steps:
@@ -26,27 +25,25 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      # dist/ = v2, dist/v1/ = 태그 v1-final 빌드 (scripts/build-v1.sh)
       - run: npm run build:site
       - run: npm run test:share
-      # CI 의 webServer 는 vite preview(dist) 를 띄운다
-      - run: npm run test:e2e -- --project=chromium
-      - if: failure()
-        uses: actions/upload-artifact@v4
+      - run: npm run test:profile
+      - run: CI=1 npm run test:e2e -- --project=chromium
+      - run: npm run qa:modes
+      - uses: actions/upload-artifact@v4
+        if: success()
         with:
-          name: playwright-report
+          name: chromium-wide-png-evidence
           path: |
-            playwright-report
-            test-results
-            tests/e2e/output
-          retention-days: 7
+            tests/visual/output/modes/
+            test-results/
+            playwright-report/
+          if-no-files-found: error
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
-  # Safari(iPhone 포함) 다운로드 경로. Linux WebKit(WebKitGTK)은 Safari 와 그리기 경로가 다르고 arm Docker 에선
-  # 크래시했다 → 사용자 환경에 가까운 macOS WebKit 에서 다운로드 · 모바일 스펙만 돌린다.
   webkit:
     runs-on: macos-latest
     steps:
@@ -58,16 +55,15 @@ jobs:
       - run: npm ci
       - run: npx playwright install webkit
       - run: npm run build:site
-      - run: npm run test:e2e -- --project=webkit
-      - if: failure()
-        uses: actions/upload-artifact@v4
+      - run: CI=1 npm run test:e2e -- --project=webkit
+      - uses: actions/upload-artifact@v4
+        if: success()
         with:
-          name: playwright-report-webkit
+          name: webkit-wide-png-evidence
           path: |
-            playwright-report
-            test-results
-            tests/e2e/output
-          retention-days: 7
+            test-results/
+            playwright-report/
+          if-no-files-found: error
 
   deploy:
     needs: [build, webkit]

@@ -1,0 +1,17 @@
+export const WIDE_FIELD_RECOMMENDED_LENGTHS: Record<string, number> = {
+  'wide:handle': 40,
+  'wide:intro': 100,
+  'wide:keywords': 60,
+  'wide:callname': 20,
+  'wide:age': 20,
+  'wide:workNote': 160,
+  'wide:characterNote': 160,
+  'wide:activities': 80,
+  'wide:otherGenre': 80,
+  'wide:interaction': 160,
+  'wide:boundaryMethod': 100,
+  'wide:closing': 80,
+  'wide:pairing': 100,
+  'wide:dislike': 100,
+  'wide:freeText': 120,
+};

@@ -20,6 +20,8 @@
   잘못된 공유 데이터는 무시하고 기존 작성 내용을 유지합니다.
 - **반응형 편집**: 좁은 화면에서는 저장·공유 버튼을 여러 줄로 배치합니다.
   화면 크기·언어·QR 표시 변경 시 미리보기 높이를 다시 계산합니다.
+- **와이드 프로필**: 4개 테마(paper / album / terminal / hifuu), 2×2 또는 1×4 배치, 캐릭터 최대 7명·통합 작품 최대 5개. 비어 있는 작품·캐릭터·교류 구역은 PNG에서 생략되고, 입력량에 따라 높이가 달라집니다.
+- **접이식 입력 그룹**: 기본 소개·작품·캐릭터/커플링·교류 안내를 독립적으로 열고 닫으며, 입력하지 않은 구역은 저장·공유 내용에 영향을 주지 않습니다.
 - **최애 캐릭터 선택**: 75명 (touhouwiki-kr 표준명 검증). 검색·접기 가능
 - **프로필 사진 업로드**: 클라이언트에서 1024px로 리사이즈, 4MB 캡
 - **SNS QR 코드**: Twitter(X) / Instagram / Threads / 기타 HTTP(S) 링크 중 하나를 선택.
@@ -48,9 +50,11 @@ npm run dev       # 개발 서버
 npm run build     # 프로덕션 빌드 (dist/)
 npm run build:site  # 배포본 전체: build + v1 아카이브(dist/v1, scripts/build-v1.sh)
 npm run preview   # 빌드 결과 미리보기
-npm run test:e2e  # E2E: 데이터 표시·오버플로·PNG 크기·화면/PNG 픽셀 일치·글자 수 상한 (Playwright)
-npm run qa:visual # 포토카드 10종을 렌더→다운로드→PNG로 캡처해 화면과 육안 대조 (Playwright)
-npm run test:share # 잘못된 공유 링크의 초안 보호·공유 언어·이전 링크 호환 회귀 검증
+npm run test:e2e    # E2E: Compact, Wide, responsiveness, persistence and PNG dimensions (Playwright)
+npm run qa:visual   # Compact card renders and PNG comparisons
+npm run qa:modes    # 32 Wide PNG states × theme/layout/scenario plus Compact capture
+npm run test:share   # Shared drafts and legacy share compatibility
+npm run test:profile # Wide selection, migration, limits and storage regression checks
 ```
 
 `/introduce/` base path 때문에 로컬에서도 `http://localhost:5173/introduce/`로 접속합니다.

@@ -122,7 +122,12 @@ const CAPTURE_SCALE = 3;
  * 원본은 건드리지 않게 화면 밖에서 clone 을 찍는다. 모바일 transform:scale 의 영향을 받지
  * 않도록 clone 폭을 레이아웃 폭(offsetWidth)으로 고정하고 애니메이션을 끈다.
  */
-export async function captureCardBlob(targetId: string): Promise<Blob> {
+export async function captureCardBlob(
+  targetId: string,
+  options: { scale?: number; padding?: number } = {},
+): Promise<Blob> {
+  const scale = options.scale ?? CAPTURE_SCALE;
+  const padding = options.padding ?? 0;
   const el = document.getElementById(targetId);
   if (!el) throw new Error(`captureCardBlob: #${targetId} not found`);
 
@@ -133,7 +138,7 @@ export async function captureCardBlob(targetId: string): Promise<Blob> {
   const wrap = document.createElement('div');
   wrap.style.cssText =
     `position:fixed;left:-99999px;top:0;background:${bg};` +
-    `display:inline-block;box-sizing:border-box;`;
+    `display:inline-block;box-sizing:border-box;padding:${padding}px;`;
   const clone = el.cloneNode(true) as HTMLElement;
   clone.style.margin = '0';
   clone.style.width = `${el.offsetWidth}px`;
@@ -148,7 +153,7 @@ export async function captureCardBlob(targetId: string): Promise<Blob> {
 
   try {
     const blob = await domToBlob(wrap, {
-      scale: CAPTURE_SCALE,
+      scale,
       type: 'image/png',
       backgroundColor: bg,
       ...(fontCssText ? { font: { cssText: fontCssText } } : {}),

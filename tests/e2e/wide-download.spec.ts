@@ -129,6 +129,51 @@ test('full Wide density wraps every field and exports all selected content', asy
   await downloadPng(page, 'hifuu-full-density');
 });
 
+test('Korean labels and names stay together in the posted Wide card layout', async ({ page }) => {
+  await page.setViewportSize({ width: 1512, height: 1100 });
+  await enterWide(page, 'paper');
+  await page.evaluate(() => localStorage.setItem('introduce:lang', 'ko'));
+  await page.reload();
+  for (const index of [1, 2, 3]) await openGroup(page, index);
+
+  const basic = page.locator('details.wide-form-group').nth(0);
+  for (const label of ['썰', 'RT', '마음', '탐라대화', '앓이']) await basic.locator('.chip').filter({ hasText: label }).first().click();
+  await page.locator('#wide-nickname').fill('온리');
+  await page.locator('[id="wide:handle"]').fill('@vita_c0de1ia');
+  await page.locator('[id="wide:intro"]').fill('축배를 들어라 내가 돌아왔다');
+
+  for (const id of ['th6', 'th11', 'music-11cd7e63b384', 'book-22a4c5f71f5c']) {
+    await page.locator(`[data-work-choice="${id}"]`).click();
+  }
+  await page.locator('[id="wide:workNote"]').fill('Demystify Feast가 최애곡이에요');
+  for (const id of ['koishi', 'flandre']) await page.locator(`[data-character-choice="${id}"]`).click();
+  await page.locator('[id="wide:pairing"]').fill('♥코이플랑♥ / 레미사토');
+  await page.locator('[id="wide:activities"]').fill('일상 올리기');
+  await page.locator('[id="wide:dislike"]').fill('근친을 그다지 선호하지 않아요');
+  await page.locator('[id="wide:boundaryMethod"]').fill('그래도 꾸역꾸역 먹어봄');
+  await page.locator('details.wide-form-group').nth(3).locator('.chip-group').getByRole('button').first().click();
+
+  const lineCount = (selector: string) => page.locator(selector).evaluate(element => {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    return new Set(Array.from(range.getClientRects(), rect => Math.round(rect.top))).size;
+  });
+  await expect.poll(() => lineCount('[data-choice-id="rt"] .wide-check-label')).toBe(1);
+  for (const selector of [
+    '[data-wide-panel="profile"] .wide-profile .wide-detail span',
+    '[data-favorite-work="th6"] > span',
+    '[data-favorite-work="th11"] > span',
+    '[data-favorite-work="music-11cd7e63b384"] > span',
+    '[data-favorite-work="book-22a4c5f71f5c"] > span',
+    '[data-ranked-character="koishi"] > span',
+    '[data-ranked-character="flandre"] > span',
+  ]) await expect.poll(() => lineCount(selector)).toBe(1);
+  await expect.poll(() => lineCount('.wide-check-block h4 small')).toBe(1);
+
+  await page.screenshot({ path: test.info().outputPath('reported-korean-wrap-screen.png'), fullPage: true });
+  await downloadPng(page, 'reported-korean-wrap');
+});
+
 test('mobile Wide groups accept text and download the unscaled card', async ({ page }) => {
   for (const viewport of [{ width: 390, height: 844 }, { width: 320, height: 568 }]) {
     await page.setViewportSize(viewport);

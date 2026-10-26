@@ -6,7 +6,7 @@ import '../styles/modes.css';
 
 const copy = {
   ko: {
-    compactTitle: '콤팩트 자기소개표',
+    compactTitle: '컴팩트 자기소개표',
     compactDescription: '세로형 카드 디자인을 골라 나만의 동방 소개장을 만들어 보세요.',
     wideTitle: '와이드 자기소개표',
     wideDescription: '가로형 자기소개표를 취향에 맞게 구성해 보세요.',

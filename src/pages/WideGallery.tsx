@@ -4,7 +4,7 @@ import { WIDE_THEMES } from '../data/wideThemes';
 import '../styles/modes.css';
 
 const copy = {
-  ko: { title: '와이드 테마', desc: '한 장에 담을 나의 취향, 어울리는 분위기를 골라보세요.', switch: '콤팩트 디자인 보기', home: '모드 선택으로', cta: '이 테마로 시작', label: 'WIDE THEME' },
+  ko: { title: '와이드 테마', desc: '한 장에 담을 나의 취향, 어울리는 분위기를 골라보세요.', switch: '컴팩트 디자인 보기', home: '모드 선택으로', cta: '이 테마로 시작', label: 'WIDE THEME' },
   ja: { title: 'ワイドテーマ', desc: '一枚にまとめるあなたの好みに合うスタイルを選びましょう。', switch: 'コンパクトデザインを見る', home: 'モード選択へ', cta: 'このテーマで作る', label: 'WIDE THEME' },
   en: { title: 'Wide themes', desc: 'Choose a style for a single sheet filled with your favorites.', switch: 'Browse Compact designs', home: 'All modes', cta: 'Start with this theme', label: 'WIDE THEME' },
 };

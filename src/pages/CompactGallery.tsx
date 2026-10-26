@@ -5,7 +5,7 @@ import { spriteUrl } from '../data/characters';
 import '../styles/modes.css';
 
 const copy = {
-  ko: { title: '콤팩트 디자인', desc: '마음에 드는 디자인을 골라 나만의 소개장을 만들어 보세요.', switch: '와이드 디자인 보기', home: '모드 선택으로', legacy: '이전 디자인 15종 보기' },
+  ko: { title: '컴팩트 디자인', desc: '마음에 드는 디자인을 골라 나만의 소개장을 만들어 보세요.', switch: '와이드 디자인 보기', home: '모드 선택으로', legacy: '이전 디자인 15종 보기' },
   ja: { title: 'コンパクトデザイン', desc: 'お気に入りのデザインを選んでプロフィールを作りましょう。', switch: 'ワイドデザインを見る', home: 'モード選択へ', legacy: '以前のデザイン15種を見る' },
   en: { title: 'Compact designs', desc: 'Choose a design and make an introduction sheet of your own.', switch: 'Browse Wide designs', home: 'All modes', legacy: 'Browse 15 legacy designs' },
 };

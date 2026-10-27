@@ -206,7 +206,12 @@ test('whiteboard batch picker lists only characters with coupling face portraits
   await dialog.locator('select').selectOption('');
   const faceIds = await page.evaluate(async () => await (await fetch('/introduce/src/features/coupling/portraitIds.json')).json());
   await dialog.locator('input[type="search"]').fill('Alice Margatroid');
-  assert.equal(await dialog.locator('.coupling-batch-choice').count(), 0, 'characters without a coupling face are not selectable');
+  const aliceChoice = dialog.locator('.coupling-batch-choice').filter({ hasText: '앨리스 마가트로이드' });
+  assert.equal(await aliceChoice.count(), 1, 'Alice is selectable with her face portrait');
+  assert.equal(await aliceChoice.locator('.coupling-avatar').getAttribute('data-portrait-kind'), 'face');
+  const aliceImage = aliceChoice.locator('.coupling-avatar img');
+  assert.match(await aliceImage.getAttribute('src') ?? '', /\/coupling\/faces\/alice\.png$/);
+  await page.waitForFunction(image => image.complete && image.naturalWidth === 512, await aliceImage.elementHandle());
   await dialog.locator('input[type="search"]').fill('');
   const listedIds = await dialog.locator('.coupling-batch-choice img').evaluateAll(images => images.map(image => new URL(image.src).pathname.split('/').pop().replace(/\.png$/, '')));
   assert.deepEqual(listedIds.sort(), [...faceIds].sort());
@@ -306,6 +311,20 @@ test('batch selection preserves the board until confirm and commits as one undo 
   await page.waitForFunction(() => document.querySelectorAll('.coupling-board-node').length === 5);
 });
 
+
+test('keyboard relay displays Alice face portrait, not a pixel sprite', async t => {
+  const page = await pageFor(t, '/coupling/keyboard');
+  const search = page.locator('.coupling-keyboard-search input');
+  await search.fill('앨리스 마가트로이드');
+  const avatar = page.locator('.coupling-keyboard-destinations button')
+    .filter({ hasText: '앨리스 마가트로이드' })
+    .locator('.coupling-avatar');
+  const image = avatar.locator('img');
+  await image.waitFor({ state: 'visible' });
+  assert.equal(await avatar.getAttribute('data-portrait-kind'), 'face');
+  assert.match(await image.getAttribute('src') ?? '', /\/coupling\/faces\/alice\.png$/);
+  await page.waitForFunction(image => image.complete && image.naturalWidth === 512, await image.elementHandle());
+});
 
 test('keyboard relay handles the 1-1-Enter sequence, reverse updates, and IME events', async t => {
   const page = await pageFor(t, '/coupling/keyboard');

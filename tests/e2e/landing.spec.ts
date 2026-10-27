@@ -1,8 +1,19 @@
 import { existsSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { NEW_IDS, V1_IDS } from './fixtures';
-test('landing reaches the current Compact and Wide galleries', async ({ page }) => {
+test('landing routes into the sheet and coupling workspaces', async ({ page }) => {
   await page.goto('/introduce/');
+  const sheets = page.locator('main a[href$="/sheets"]');
+  const coupling = page.locator('main a[href$="/coupling"]');
+  await expect(sheets).toBeVisible();
+  await expect(coupling).toBeVisible();
+  await coupling.click();
+  await expect(page).toHaveURL(/\/coupling$/);
+  await expect(page.locator('main .coupling-hub-card')).toHaveCount(4);
+
+  await page.goto('/introduce/');
+  await sheets.click();
+  await expect(page).toHaveURL(/\/sheets$/);
   const compact = page.locator('main a[href$="/compact"]');
   const wide = page.locator('main a[href$="/wide"]');
   await expect(compact).toBeVisible();
@@ -14,8 +25,8 @@ test('landing reaches the current Compact and Wide galleries', async ({ page }) 
   await expect(legacy).toBeVisible();
   await expect(legacy).toHaveAttribute('href', /\/introduce\/v1\/$/);
 
-  await page.goto('/introduce/');
-  await page.locator('main a[href$="/wide"]').click();
+  await page.goto('/introduce/sheets');
+  await wide.click();
   await expect(page).toHaveURL(/\/wide$/);
   await expect(page.locator('main a[href*="/wide/"]')).toHaveCount(4);
 });

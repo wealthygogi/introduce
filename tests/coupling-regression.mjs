@@ -198,6 +198,23 @@ test('whiteboard batch is atomic, edges follow moved nodes, and full layout fits
   assert.deepEqual(await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('introduce:coupling:'))), ['introduce:coupling:whiteboard:v1']);
 });
 
+test('whiteboard batch picker lists only characters with coupling face portraits', async t => {
+  const page = await pageFor(t, '/coupling/whiteboard');
+  await page.locator('.coupling-whiteboard .coupling-toolbar button').first().click();
+  const dialog = page.locator('.coupling-batch-dialog');
+  await dialog.waitFor({ state: 'visible' });
+  await dialog.locator('select').selectOption('');
+  const faceIds = await page.evaluate(async () => await (await fetch('/introduce/src/features/coupling/portraitIds.json')).json());
+  await dialog.locator('input[type="search"]').fill('Alice Margatroid');
+  assert.equal(await dialog.locator('.coupling-batch-choice').count(), 0, 'characters without a coupling face are not selectable');
+  await dialog.locator('input[type="search"]').fill('');
+  const listedIds = await dialog.locator('.coupling-batch-choice img').evaluateAll(images => images.map(image => new URL(image.src).pathname.split('/').pop().replace(/\.png$/, '')));
+  assert.deepEqual(listedIds.sort(), [...faceIds].sort());
+  await dialog.locator('.coupling-batch-actions button').first().click();
+  const starter = ['reimu', 'marisa', 'sakuya', 'remilia', 'youmu', 'yuyuko'];
+  assert.equal(await dialog.locator('.coupling-batch-pending button').count(), faceIds.filter(id => !starter.includes(id)).length, 'select-all excludes portrait-less characters too');
+});
+
 test('batch selection preserves the board until confirm and commits as one undo step', async t => {
   const page = await pageFor(t, '/coupling/whiteboard');
   const toolbar = page.locator('.coupling-whiteboard .coupling-toolbar');

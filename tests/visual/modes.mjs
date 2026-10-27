@@ -70,6 +70,8 @@ try {
   page.on('dialog', d => { errors.push(d.message()); void d.dismiss(); });
   await page.goto(`${base}/`);
   await page.screenshot({ path: fileURLToPath(new URL('main-desktop.png', out)) });
+  await page.locator('main a[href$="/sheets"]').first().click();
+  await page.waitForURL('**/sheets');
   await page.locator('main a[href$="/compact"]').first().click();
   await page.waitForURL('**/compact');
   assert.equal(await page.locator('main a[href*="/concept/"]').count(), 10);
@@ -78,6 +80,8 @@ try {
   await page.locator('#card-export').waitFor();
   await png(page, '#card-export', 'compact-current-p', false);
   await page.locator('header a.brand').click();
+  await page.locator('main a[href$="/sheets"]').first().click();
+  await page.waitForURL('**/sheets');
   await page.locator('main a[href$="/wide"]').first().click();
   await page.waitForURL('**/wide');
   for (const theme of themes) {

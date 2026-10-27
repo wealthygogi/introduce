@@ -5,7 +5,8 @@ import { spriteUrl } from '../../data/characters';
 const FACE_IDS = new Set<string>(portraitIds);
 export { PROFILE_CHARACTERS, PROFILE_CHARACTER_BY_ID };
 export type { ProfileCharacter };
-export const COUPLING_WORKS = [...new Set(PROFILE_CHARACTERS.map(character => character.group.ko))];
+export const COUPLING_FACE_CHARACTERS = PROFILE_CHARACTERS.filter(character => FACE_IDS.has(character.id));
+export const COUPLING_WORKS = [...new Set(COUPLING_FACE_CHARACTERS.map(character => character.group.ko))];
 
 export function getCouplingPortrait(character: ProfileCharacter): { src: string | null; kind: 'face' | 'pixel' | 'initial' } {
   if (FACE_IDS.has(character.id)) return { src: `${import.meta.env.BASE_URL}coupling/faces/${character.id}.png`, kind: 'face' };

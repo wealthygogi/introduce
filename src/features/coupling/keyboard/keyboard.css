@@ -1,0 +1,85 @@
+.coupling-keyboard { --coupling-relay-ink: #27313a; color: var(--coupling-relay-ink); padding: 16px; background: #fff; }
+.coupling-keyboard button { min-height: 36px; cursor: pointer; }
+.coupling-keyboard button:disabled { cursor: not-allowed; opacity: .48; }
+.coupling-keyboard-intro { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 0 0 14px; font-size: 12px; line-height: 1.7; }
+.coupling-keyboard-intro p { margin: 0; }
+.coupling-keyboard-intro span, .coupling-keyboard-session span { color: #68737d; }
+.coupling-keyboard-layout { display: grid; grid-template-columns: minmax(0, 1fr) 354px; gap: 16px; align-items: start; }
+.coupling-keyboard-graph-panel, .coupling-keyboard-command { min-width: 0; border: 1px solid #dfe3e7; border-radius: 10px; background: #fff; overflow: hidden; }
+.coupling-keyboard-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border-bottom: 1px solid #e6e8eb; font-size: 12px; }
+.coupling-keyboard-toolbar > strong { flex: 1 1 220px; overflow-wrap: anywhere; }
+.coupling-keyboard-zoom { display: flex; align-items: center; gap: 6px; }
+.coupling-keyboard-zoom button, .coupling-keyboard-graph-footer button, .coupling-keyboard-pagination button { padding: 5px 9px; }
+.coupling-keyboard-zoom span, .coupling-keyboard-graph-footer, .coupling-keyboard-pagination { color: #66717b; font-size: 11px; }
+.coupling-keyboard-graph-viewport { height: 650px; max-height: 76vh; min-height: 350px; overflow: auto; background: radial-gradient(#e4e4e7 .75px, transparent .75px) 0 0 / 18px 18px; }
+.coupling-keyboard-graph-stage { position: relative; margin: 0 auto; }
+.coupling-keyboard-graph-scene { position: relative; display: grid; grid-template-columns: 230px 230px 230px; grid-auto-rows: minmax(100px, auto); align-items: center; justify-content: center; column-gap: 83px; row-gap: 22px; padding: 32px 22px; }
+.coupling-keyboard-lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.coupling-keyboard-lines line { stroke-width: 2; opacity: .58; }
+.coupling-keyboard-node { position: relative; z-index: 1; min-width: 0; border: 1px solid #dfe3e7; border-radius: 12px; padding: 13px; background: #fff; box-shadow: 0 4px 15px #24263008; }
+.coupling-keyboard-node.is-center { grid-column: 2; grid-row: 1 / span 4; border: 2px solid #76828c; padding: 20px 14px; text-align: center; }
+.coupling-keyboard-identity { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.coupling-keyboard-node.is-center .coupling-keyboard-identity { flex-direction: column; }
+.coupling-keyboard-identity > div { min-width: 0; }
+.coupling-keyboard-identity strong { display: block; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+.coupling-keyboard-identity small { display: block; color: #68737d; font-size: 10px; line-height: 1.7; overflow-wrap: anywhere; }
+.coupling-keyboard-node.is-center > p { color: #68737d; font-size: 11px; }
+.coupling-keyboard-caption { margin-bottom: 12px; color: #68737d; font-size: 10px; letter-spacing: .1em; }
+.coupling-keyboard-relation { margin: 11px 0 7px; color: var(--coupling-rel); font-size: 11px; }
+.coupling-keyboard-node-actions { display: flex; gap: 5px; }
+.coupling-keyboard-node-actions button { flex: 1; padding: 6px; font-size: 11px; }
+.coupling-keyboard-empty { grid-column: 1 / -1; grid-row: 5; margin: 0; color: #68737d; text-align: center; font-size: 12px; line-height: 1.9; }
+.coupling-keyboard-graph-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 11px 13px; border-top: 1px solid #e6e8eb; }
+.coupling-keyboard-graph-footer > div, .coupling-keyboard-pagination { display: flex; align-items: center; gap: 8px; }
+.coupling-keyboard-roster { border-top: 1px solid #e6e8eb; padding: 14px; }
+.coupling-keyboard-roster h2 { margin: 0 0 10px; font-size: 12px; }
+.coupling-keyboard-roster h2 small { color: #68737d; font-weight: 400; }
+.coupling-keyboard-roster > button { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; margin: 0 7px 7px 0; padding: 5px 8px; text-align: left; font-size: 11px; }
+.coupling-keyboard-roster > button[aria-pressed="true"] { outline: 2px solid #76828c; }
+.coupling-keyboard-command { display: grid; gap: 12px; border: 0; background: transparent; overflow: visible; }
+.coupling-keyboard-rail, .coupling-keyboard-library { padding: 16px; border: 1px solid #dfe3e7; border-radius: 10px; background: #fff; min-width: 0; }
+.coupling-keyboard-rail > h2 { margin: 0 0 8px; font-size: 19px; }
+.coupling-keyboard-stage-help { min-height: 38px; margin: 0 0 12px; color: #68737d; font-size: 12px; line-height: 1.7; }
+.coupling-keyboard-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 0; margin: 0 0 16px; list-style: none; }
+.coupling-keyboard-steps li { padding: 8px 3px; border-bottom: 2px solid #e6e8eb; color: #7c838a; font-size: 10px; overflow-wrap: anywhere; }
+.coupling-keyboard-steps li[aria-current="step"] { border-color: #566675; color: #27313a; font-weight: 700; }
+.coupling-keyboard-source-slot { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 11px; background: #f6f7f8; border-radius: 7px; }
+.coupling-keyboard-source-slot > small { grid-column: 1 / -1; color: #68737d; font-size: 10px; }
+.coupling-keyboard-source-slot > div { display: flex; align-items: center; gap: 8px; min-width: 0; overflow-wrap: anywhere; font-size: 12px; }
+.coupling-keyboard-source-slot > button { padding: 6px 8px; font-size: 10px; }
+.coupling-keyboard-relations { margin: 16px 0; }
+.coupling-keyboard-relations h3, .coupling-keyboard-suggestion-heading h3 { margin: 0; font-size: 12px; }
+.coupling-keyboard-relations > button { display: inline-flex; align-items: center; gap: 5px; margin: 8px 5px 0 0; padding: 6px 8px; border-left: 3px solid var(--coupling-rel); font-size: 11px; }
+.coupling-keyboard-relations > button[aria-pressed="true"] { background: #f1f3f5; }
+.coupling-keyboard-relations kbd { margin-left: 3px; }
+.coupling-keyboard-search { display: grid; grid-template-columns: 1fr auto; gap: 7px; align-items: end; }
+.coupling-keyboard-search label { display: grid; gap: 5px; font-size: 11px; }
+.coupling-keyboard-search input { width: 100%; min-width: 0; }
+.coupling-keyboard-search button { font-size: 11px; }
+.coupling-keyboard-suggestions { margin-top: 15px; outline: none; }
+.coupling-keyboard-suggestion-heading { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 8px; }
+.coupling-keyboard-suggestion-heading span { color: #68737d; font-size: 10px; }
+.coupling-keyboard-destinations { display: grid; gap: 4px; }
+.coupling-keyboard-destinations > button { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; padding: 6px; text-align: left; }
+.coupling-keyboard-destinations > button[aria-pressed="true"] { outline: 1px solid #76828c; }
+.coupling-keyboard-destinations > button > span:not(.coupling-avatar) { flex: 1; min-width: 0; }
+.coupling-keyboard-destinations strong, .coupling-keyboard-destinations small { display: block; overflow-wrap: anywhere; }
+.coupling-keyboard-destinations strong { font-size: 11px; line-height: 1.5; }
+.coupling-keyboard-destinations small { color: #68737d; font-size: 9px; line-height: 1.5; }
+.coupling-keyboard-destinations kbd { flex: 0 0 22px; text-align: center; }
+.coupling-keyboard-destinations > p { color: #68737d; font-size: 12px; }
+.coupling-keyboard-pagination { justify-content: center; margin-top: 8px; }
+.coupling-keyboard-pending { display: grid; gap: 4px; margin: 14px 0 10px; padding: 10px; border: 1px dashed #c9cfd5; border-radius: 8px; font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+.coupling-keyboard-pending small { color: #68737d; }
+.coupling-keyboard-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.coupling-keyboard-actions button { flex: 1 1 100px; font-size: 11px; }
+.coupling-keyboard-library > summary { cursor: pointer; padding: 2px; font-size: 12px; }
+.coupling-keyboard-library-mode { display: flex; gap: 7px; margin-top: 12px; }
+.coupling-keyboard-library-mode button { flex: 1; font-size: 11px; }
+.coupling-keyboard-library > p { color: #68737d; font-size: 11px; line-height: 1.6; }
+.coupling-keyboard-session { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; padding: 10px 14px; border: 1px solid #dfe3e7; border-radius: 9px; font-size: 12px; }
+.coupling-keyboard-session p { margin: 0; overflow-wrap: anywhere; }
+.coupling-keyboard-session small { display: block; }
+@media (max-width: 1100px) { .coupling-keyboard-layout { grid-template-columns: minmax(0, 1fr) 320px; gap: 12px; } }
+@media (max-width: 850px) { .coupling-keyboard-layout { display: flex; flex-direction: column; } .coupling-keyboard-command { order: -1; width: 100%; } .coupling-keyboard-graph-panel { width: 100%; } .coupling-keyboard-destinations { grid-template-columns: repeat(3, minmax(0, 1fr)); } .coupling-keyboard-destinations > button { align-items: flex-start; } .coupling-keyboard-graph-viewport { height: 620px; } .coupling-keyboard-session { align-items: flex-start; flex-direction: column; } }
+@media (max-width: 600px) { .coupling-keyboard { padding: 10px; } .coupling-keyboard-intro { gap: 4px; font-size: 11px; } .coupling-keyboard-destinations { grid-template-columns: minmax(0, 1fr); } .coupling-keyboard-graph-viewport { height: 650px; max-height: 78vh; } .coupling-keyboard-graph-scene.is-mobile { display: flex; flex-direction: column; gap: 14px; min-height: 0; padding: 18px; } .coupling-keyboard-graph-scene.is-mobile .coupling-keyboard-node { width: 100%; } .coupling-keyboard-graph-scene.is-mobile .coupling-keyboard-node.is-center { order: -1; text-align: left; } .coupling-keyboard-graph-scene.is-mobile .coupling-keyboard-node.is-center .coupling-keyboard-identity { flex-direction: row; } .coupling-keyboard-graph-scene.is-mobile .coupling-keyboard-lines { display: none; } .coupling-keyboard-graph-scene.is-mobile .coupling-keyboard-node.is-partner { border-left: 3px solid var(--coupling-rel); } .coupling-keyboard-empty { padding: 15px 0; } .coupling-keyboard-toolbar { gap: 6px; } .coupling-keyboard-toolbar > strong { flex-basis: 60%; } .coupling-keyboard-source-slot { padding: 9px; } .coupling-keyboard-session { overflow-wrap: anywhere; } }

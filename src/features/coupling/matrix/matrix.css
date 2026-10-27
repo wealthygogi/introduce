@@ -1,0 +1,71 @@
+.coupling-root .coupling-matrix-editor { display: grid; gap: 14px; min-width: 0; }
+.coupling-root .coupling-matrix-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.coupling-root .coupling-matrix-heading h1 { margin: 0; font-size: clamp(20px, 3vw, 28px); }
+.coupling-root .coupling-matrix-heading p { margin: 6px 0 0; color: var(--coupling-muted); }
+.coupling-root .coupling-matrix-save { color: var(--coupling-muted); font-size: 13px; }
+.coupling-root .coupling-matrix-controls { display: grid; gap: 12px; }
+.coupling-root .coupling-matrix-mode { display: flex; flex-wrap: wrap; gap: 7px; margin-left: auto; }
+.coupling-root .coupling-matrix-mode [aria-pressed='true'] { background: #303b47; color: white; border-color: #303b47; }
+.coupling-root .coupling-matrix-palette { padding-top: 10px; border-top: 1px solid var(--coupling-line); }
+.coupling-root .coupling-matrix-palette button { min-height: 40px; }
+.coupling-root .coupling-matrix-palette button > span { color: var(--relation-color); font-size: 17px; }
+.coupling-root .coupling-matrix-palette kbd { color: var(--coupling-muted); font-size: 10px; }
+.coupling-root .coupling-matrix-density { justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--coupling-line); color: var(--coupling-muted); font-size: 12px; }
+.coupling-root .coupling-matrix-density .coupling-field { min-width: 150px; }
+.coupling-root .coupling-matrix-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 340px); align-items: start; gap: 14px; }
+.coupling-root .coupling-matrix-workspace { overflow: hidden; padding: 0; }
+.coupling-root .coupling-matrix-workspace > h2,
+.coupling-root .coupling-matrix-roster > h2,
+.coupling-root .coupling-matrix-summary > h2 { margin: 0; padding: 14px 16px; border-bottom: 1px solid var(--coupling-line); font-size: 15px; }
+.coupling-root .coupling-matrix-workspace > h2 small,
+.coupling-root .coupling-matrix-roster > h2 small,
+.coupling-root .coupling-matrix-summary > h2 small { display: block; margin-top: 4px; color: var(--coupling-muted); font-size: 11px; font-weight: 400; }
+.coupling-root .coupling-matrix-scroll { width: 100%; max-width: 100%; max-height: min(72vh, 760px); overflow: auto; overscroll-behavior: contain; }
+.coupling-root .coupling-relationship-matrix { table-layout: fixed; border-spacing: 0; background: #fff; font-size: 12px; }
+.coupling-root .coupling-relationship-matrix th,
+.coupling-root .coupling-relationship-matrix td { padding: 0; border-right: 1px solid var(--coupling-line); border-bottom: 1px solid var(--coupling-line); }
+.coupling-root .coupling-relationship-matrix thead th { position: sticky; top: 0; z-index: 3; vertical-align: top; background: #f8f8f9; }
+.coupling-root .coupling-relationship-matrix tbody th { position: sticky; left: 0; z-index: 2; text-align: left; background: #f8f8f9; }
+.coupling-root .coupling-relationship-matrix .coupling-matrix-corner { left: 0; z-index: 4; padding: 12px; text-align: left; vertical-align: bottom; background: #f0f0f2; }
+.coupling-root .coupling-matrix-column { display: flex; min-height: 112px; flex-direction: column; align-items: center; justify-content: center; gap: 7px; padding: 8px 6px; }
+.coupling-root .coupling-matrix-row { display: flex; min-height: 66px; align-items: center; gap: 8px; padding: 8px; }
+.coupling-root .coupling-matrix-column strong,
+.coupling-root .coupling-matrix-row strong { overflow-wrap: anywhere; font-size: 11px; font-weight: 550; line-height: 1.45; }
+.coupling-root .coupling-matrix-cell { display: flex; width: 100%; min-height: 66px; height: 100%; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 7px 3px; border: 0; border-radius: 0; background: #fff; }
+.coupling-root .coupling-matrix-cell > span { color: var(--relation-color, #d3cfd7); font-size: 22px; line-height: 1; }
+.coupling-root .coupling-matrix-cell small { font-size: 10px; line-height: 1.3; }
+.coupling-root .coupling-matrix-cell.has-relation { background: var(--relation-background); }
+.coupling-root .coupling-matrix-cell:hover:not(:disabled) { background: #f1eff4; }
+.coupling-root .coupling-matrix-cell:focus-visible { position: relative; z-index: 1; outline: 3px solid #594968; outline-offset: -4px; }
+.coupling-root .coupling-matrix-self { background: repeating-linear-gradient(135deg, #f4f4f5 0, #f4f4f5 5px, #ededf0 5px, #ededf0 6px); }
+.coupling-root .coupling-matrix-self .coupling-matrix-cell { background: transparent; opacity: 1; color: #aaa5af; }
+.coupling-root .coupling-matrix-self .coupling-matrix-cell > span { font-size: 15px; }
+.coupling-root .coupling-matrix-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.coupling-root .coupling-matrix-help { padding: 10px 14px; border-top: 1px solid var(--coupling-line); }
+.coupling-root .coupling-matrix-help p { margin: 3px 0; color: var(--coupling-muted); font-size: 11px; line-height: 1.6; }
+.coupling-root .coupling-matrix-sidebar { display: grid; gap: 12px; min-width: 0; }
+.coupling-root .coupling-matrix-roster { padding: 0; }
+.coupling-root .coupling-matrix-chips { display: flex; flex-wrap: wrap; gap: 7px; padding: 12px; }
+.coupling-root .coupling-matrix-chip { display: flex; align-items: center; gap: 7px; max-width: 100%; padding: 5px; border: 1px solid var(--coupling-line); border-radius: 8px; }
+.coupling-root .coupling-matrix-chip > span { overflow-wrap: anywhere; font-size: 11px; }
+.coupling-root .coupling-matrix-chip button { min-height: 34px; padding: 4px 7px; }
+.coupling-root .coupling-matrix-roster > .coupling-status { padding: 0 12px 12px; }
+.coupling-root .coupling-matrix-confirm { margin: 0 12px 12px; padding: 12px; border: 1px solid #c8bbc9; border-radius: 8px; background: #faf8fb; }
+.coupling-root .coupling-matrix-confirm p { font-size: 12px; line-height: 1.6; }
+.coupling-root .coupling-matrix-library { padding: 0; overflow: hidden; }
+.coupling-root .coupling-matrix-library > summary { padding: 14px 16px; border-bottom: 1px solid var(--coupling-line); cursor: pointer; font-weight: 650; }
+.coupling-root .coupling-matrix-library .coupling-picker { padding: 12px; }
+.coupling-root .coupling-matrix-library .coupling-picker-results { max-height: 440px; }
+.coupling-root .coupling-matrix-note { padding: 0 12px; color: var(--coupling-muted); font-size: 12px; }
+.coupling-root .coupling-matrix-summary { padding: 0; overflow: hidden; }
+.coupling-root .coupling-matrix-summary ul { max-height: 420px; margin: 0; padding: 0; overflow-y: auto; list-style: none; }
+.coupling-root .coupling-matrix-summary li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--coupling-line); }
+.coupling-root .coupling-matrix-summary li > button { min-height: 36px; padding: 5px 8px; }
+.coupling-root .coupling-matrix-pair { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; }
+.coupling-root .coupling-matrix-pair > span { display: inline-flex; align-items: center; gap: 5px; min-width: 0; }
+.coupling-root .coupling-matrix-pair strong { overflow-wrap: anywhere; font-size: 11px; font-weight: 550; }
+.coupling-root .coupling-matrix-pair small { flex-basis: 100%; color: var(--relation-color); }
+.coupling-root .coupling-matrix-roster .coupling-empty-note,
+.coupling-root .coupling-matrix-summary > .coupling-empty-note { padding: 16px; }
+@media (max-width: 980px) { .coupling-root .coupling-matrix-layout { grid-template-columns: minmax(0, 1fr); } .coupling-root .coupling-matrix-sidebar { grid-template-columns: repeat(2, minmax(0, 1fr)); } .coupling-root .coupling-matrix-roster { grid-row: span 2; } }
+@media (max-width: 600px) { .coupling-root .coupling-matrix-heading { flex-direction: column; } .coupling-root .coupling-matrix-sidebar { grid-template-columns: minmax(0, 1fr); } .coupling-root .coupling-matrix-roster { grid-row: auto; } .coupling-root .coupling-matrix-mode { margin-left: 0; } .coupling-root .coupling-matrix-density { align-items: flex-start; flex-direction: column; } .coupling-root .coupling-matrix-column { min-height: 96px; } }

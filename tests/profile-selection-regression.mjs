@@ -27,6 +27,8 @@ async function pageFor(t) {
   await page.goto(base);
   await page.locator('details.wide-form-group').nth(1).locator('summary').click();
   await page.locator('details.wide-form-group').nth(2).locator('summary').click();
+  await page.locator('[data-character-choice="reimu"]').waitFor({ state: 'visible' });
+  await page.locator('[data-work-choice="th10"]').waitFor({ state: 'visible' });
   return page;
 }
 
@@ -64,6 +66,37 @@ test('empty selections survive reload and theme/layout navigation', async t => {
   await page.reload();
   assert.equal(await page.locator('#wide-export [data-ranked-character]').count(), 0);
   assert.equal(await page.locator('#wide-export [data-favorite-work]').count(), 0);
+});
+
+test('Wide profile fields survive coupling navigation and reload without changing profile keys', async t => {
+  const page = await pageFor(t);
+  const storedBefore = await page.evaluate(() => localStorage.getItem('introduce:form:v2'));
+  const legacyBefore = await page.evaluate(() => localStorage.getItem('introduce:form:v1'));
+  const nickname = 'RoundTrip';
+  const freeText = 'Wide profile content survives coupling navigation.';
+  await page.locator('#wide-nickname').fill(nickname);
+  await page.locator('details.wide-form-group').nth(3).locator('summary').click();
+  await page.locator('[id="wide:freeText"]').fill(freeText);
+  await page.waitForFunction(({ nickname, freeText }) => {
+    const stored = localStorage.getItem('introduce:form:v2') ?? '';
+    return stored.includes(nickname) && stored.includes(freeText);
+  }, { nickname, freeText });
+  const profileDraft = await page.evaluate(() => localStorage.getItem('introduce:form:v2'));
+  assert.notEqual(profileDraft, storedBefore);
+
+  await page.goto(new URL('/introduce/coupling/whiteboard', base).toString());
+  await page.waitForSelector('.coupling-whiteboard');
+  assert.equal(await page.evaluate(() => localStorage.getItem('introduce:form:v2')), profileDraft);
+  assert.equal(await page.evaluate(() => localStorage.getItem('introduce:form:v1')), legacyBefore);
+  await page.goto(base);
+  await page.waitForSelector('#wide-nickname');
+  assert.equal(await page.locator('#wide-nickname').inputValue(), nickname);
+  assert.equal(await page.locator('[id="wide:freeText"]').inputValue(), freeText);
+  await page.reload();
+  await page.waitForSelector('#wide-nickname');
+  assert.equal(await page.locator('#wide-nickname').inputValue(), nickname);
+  assert.equal(await page.locator('[id="wide:freeText"]').inputValue(), freeText);
+  assert.equal(await page.evaluate(() => localStorage.getItem('introduce:form:v2')), profileDraft);
 });
 
 test('normalizes malformed persisted selections without navigation races', async t => {

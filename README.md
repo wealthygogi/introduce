@@ -18,6 +18,7 @@
 - **카드 공유 링크**: 작성 내용·선택한 SNS·표시 언어를 함께 복원합니다(업로드 사진 제외).
   언어가 없는 이전 링크는 받는 사람의 언어 설정을 유지합니다.
   잘못된 공유 데이터는 무시하고 기존 작성 내용을 유지합니다.
+- **캐릭터 커플링 워크스페이스**: 자유 캔버스, 키보드 릴레이, 커플 카드, 관계 매트릭스의 네 편집기를 제공합니다. 각 편집기의 초안은 이 브라우저에 별도 저장되며 자기소개표 데이터와 분리됩니다.
 - **반응형 편집**: 좁은 화면에서는 저장·공유 버튼을 여러 줄로 배치합니다.
   화면 크기·언어·QR 표시 변경 시 미리보기 높이를 다시 계산합니다.
 - **와이드 프로필**: 4개 테마(paper / album / terminal / hifuu), 2×2 또는 1×4 배치, 캐릭터 최대 7명·통합 작품 최대 5개. 비어 있는 작품·캐릭터·교류 구역은 PNG에서 생략되고, 입력량에 따라 높이가 달라지며, 한국어 이름은 가능한 한 단어 단위로 줄바꿈합니다.
@@ -55,6 +56,7 @@ npm run qa:visual   # Compact card renders and PNG comparisons
 npm run qa:modes    # 32 Wide PNG states × theme/layout/scenario plus Compact capture
 npm run test:share   # Shared drafts and legacy share compatibility
 npm run test:profile # Wide selection, migration, limits and storage regression checks
+npm run test:coupling # 커플링 편집·저장·반응형 회귀 검증
 ```
 
 `/introduce/` base path 때문에 로컬에서도 `http://localhost:5173/introduce/`로 접속합니다.
@@ -119,9 +121,11 @@ scripts/
   build-v1.sh  # 태그 v1-final 을 .v1/ worktree 에서 빌드해 dist/v1 로 복사
 public/
   Touhou 16x16 Mini Pack Full/  # 캐릭터 스프라이트 (Majstek)
+  coupling/faces/  # 커플링 편집기용 소형 캐릭터 초상
 tests/
   e2e/         # Playwright E2E 스펙 (게이트)
   visual/      # 비주얼 QA 하네스 (capture.mjs)
+  coupling-regression.mjs # 커플링 편집기 브라우저 회귀 검증
 prototype/     # 초기 정적 HTML 프로토타입 (참고용)
 ```
 

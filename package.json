@@ -12,7 +12,8 @@
     "test:e2e": "playwright test",
     "build:site": "npm run build && sh scripts/build-v1.sh",
     "test:share": "node --test tests/share-regression.mjs",
-    "test:profile": "node tests/profile-selection-regression.mjs"
+    "test:profile": "node tests/profile-selection-regression.mjs",
+    "test:coupling": "node --test tests/coupling-regression.mjs"
   },
   "dependencies": {
     "modern-screenshot": "^4.7.0",

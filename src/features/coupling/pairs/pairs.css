@@ -47,6 +47,9 @@
 .coupling-root .coupling-pairs-feedback[data-tone='error'] { color: #9b3c50; }
 .coupling-root .coupling-pairs-feedback .coupling-save-warning { display: block; margin-top: 4px; }
 .coupling-root .coupling-pairs-count { color: var(--coupling-muted); font: 12px ui-monospace, monospace; }
+.coupling-root .coupling-pairs-collection-controls { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px 0 0; }
+.coupling-root .coupling-pairs-collection-controls label { display: flex; align-items: center; gap: 8px; color: var(--coupling-muted); font-size: 12px; }
+.coupling-root .coupling-pairs-collection-controls select { min-height: 44px; }
 .coupling-root .coupling-pairs-empty { padding: 36px 16px; color: var(--coupling-muted); text-align: center; line-height: 1.7; }
 .coupling-root .coupling-pairs-empty strong { display: block; margin-bottom: 6px; color: var(--coupling-ink); }
 .coupling-root .coupling-pairs-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: 18px 0 0; margin: 0; list-style: none; }
@@ -62,7 +65,10 @@
 .coupling-root .coupling-pair-memo { min-height: 18px; margin: 14px 0; padding: 0 14px; font-size: 12px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
 .coupling-root .coupling-pair-no-memo { color: #8a919b; font-size: 11px; }
 .coupling-root .coupling-pair-card-actions { display: flex; flex-wrap: wrap; gap: 5px; padding: 9px; border-top: 1px solid var(--coupling-line); }
-.coupling-root .coupling-pair-card-actions .coupling-btn { min-height: 40px; padding: 6px 8px; font-size: 11px; }
+.coupling-root .coupling-pair-card-actions .coupling-btn { min-height: 44px; padding: 6px 8px; font-size: 11px; }
+.coupling-root .coupling-pair-secondary-actions { margin-left: auto; }
+.coupling-root .coupling-pair-secondary-actions > summary { min-height: 44px; display: flex; align-items: center; padding: 0 9px; border: 1px solid var(--coupling-line); border-radius: 8px; color: var(--coupling-ink); cursor: pointer; font-size: 11px; }
+.coupling-root .coupling-pair-secondary-actions > div { display: grid; gap: 4px; padding-top: 6px; }
 .coupling-root .coupling-pair-delete { margin-left: auto; color: #8e5b64 !important; }
 .coupling-root .coupling-pairs-picker-dialog { width: min(840px, calc(100vw - 32px)); height: min(760px, calc(100dvh - 32px)); max-height: none; margin: auto; padding: 0; border: 1px solid var(--coupling-line); border-radius: 16px; background: #fff; color: var(--coupling-ink); box-shadow: 0 20px 70px #17212b35; }
 .coupling-root .coupling-pairs-picker-dialog::backdrop { background: rgb(18 24 31 / 54%); }

@@ -6,6 +6,7 @@ import PreferencePicker from '../components/PreferencePicker';
 import { PROFILE_CHARACTER_BY_ID } from '../data';
 import { PREFERENCE_BY_ID, RELATIONS } from '../relations';
 import { useCouplingDraft } from '../CouplingDraftProvider';
+import CouplingSnackbar from '../components/CouplingSnackbar';
 import type { MatrixDraft, PreferenceId, RelationId } from '../types';
 import copy from '../copy';
 import '../matrix/matrix.css';
@@ -16,9 +17,9 @@ type Snapshot = MatrixDraft;
 const copyPair = (pair: Pair) => JSON.stringify([pair.from, pair.to]);
 const unpack = (key: string): Pair => { const [from, to] = JSON.parse(key) as [string, string]; return { from, to }; };
 const names: Record<string, Record<string, string>> = {
-  ko: { title: '관계 매트릭스', intro: '행에서 열로 읽어 관계를 빠르게 기록하세요.', roster: '비교 명단', count: '명', density: '칸 크기', remove: '제거', confirmTitle: '캐릭터 제거 확인', confirmText: '두 모드의 관련 관계도 함께 삭제됩니다. 실행 취소로 모두 복구할 수 있습니다.', confirmRemove: '캐릭터와 관계 제거', cancel: '취소', emptyRoster: '캐릭터를 추가해 관계표를 시작하세요.', emptyRelations: '아직 관계가 없습니다. 관계 종류를 선택한 뒤 칸을 누르세요.', self: '자기 관계 사용 불가', noRelation: '관계 없음', added: '추가했습니다.', max: '최대 16명까지 비교할 수 있습니다. 먼저 캐릭터를 제거하세요.', select: '관계 종류', matrixDesc: '행은 출발, 열은 도착입니다.', symmetric: '대칭 칸은 같은 관계 한 건입니다.', independent: '반대 방향 관계는 각각 저장됩니다.', details: '선택한 모드의 관계', noUndo: '되돌릴 편집이 없습니다.', undoDone: '마지막 편집을 되돌렸습니다.', directed: '방향 있음', unordered: '방향 없음', records: '건', row: '출발', col: '도착', statusSaved: '자동 저장됨', statusSaving: '저장 중…', statusMemory: '현재 탭에서만 유지' },
-  ja: { title: '関係マトリクス', intro: '行から列へ読み、関係をすばやく記録します。', roster: '比較するキャラクター', count: '人', density: 'セルサイズ', remove: '削除', confirmTitle: 'キャラクターの削除確認', confirmText: '両モードの関連関係も削除されます。元に戻すとすべて復元できます。', confirmRemove: 'キャラクターと関係を削除', cancel: 'キャンセル', emptyRoster: 'キャラクターを追加して関係表を始めましょう。', emptyRelations: '関係はまだありません。種類を選び、セルを押してください。', self: '自分との関係は使用できません', noRelation: '関係なし', added: '追加しました。', max: '比較できるのは最大16人です。先にキャラクターを削除してください。', select: '関係の種類', matrixDesc: '行は出発、列は到着です。', symmetric: '対称セルは同じ1件の関係です。', independent: '逆方向の関係は別々に保存されます。', details: '選択モードの関係', noUndo: '元に戻す編集はありません。', undoDone: '最後の編集を元に戻しました。', directed: '方向あり', unordered: '方向なし', records: '件', row: '出発', col: '到着', statusSaved: '自動保存済み', statusSaving: '保存中…', statusMemory: 'このタブのみ' },
-  en: { title: 'Relationship matrix', intro: 'Read from row to column to record relationships quickly.', roster: 'Roster', count: 'characters', density: 'Cell size', remove: 'Remove', confirmTitle: 'Confirm character removal', confirmText: 'Related relationships in both modes will also be deleted. Undo restores everything.', confirmRemove: 'Remove character and relationships', cancel: 'Cancel', emptyRoster: 'Add characters to start the matrix.', emptyRelations: 'No relationships yet. Choose a type, then select a cell.', self: 'Self-relationships are unavailable', noRelation: 'No relationship', added: ' added.', max: 'Compare up to 16 characters. Remove one before adding another.', select: 'Relationship type', matrixDesc: 'Rows are sources and columns are targets.', symmetric: 'Symmetric cells represent one shared relationship.', independent: 'Opposite directions are stored independently.', details: 'Relationships in this mode', noUndo: 'There is nothing to undo.', undoDone: 'Last edit undone.', directed: 'Directed', unordered: 'Undirected', records: 'records', row: 'From', col: 'To', statusSaved: 'Saved automatically', statusSaving: 'Saving…', statusMemory: 'Kept in this tab only' },
+  ko: { title: '관계 매트릭스', intro: '행에서 열로 읽어 관계를 빠르게 기록하세요.', roster: '비교 명단', count: '명', density: '칸 크기', remove: '제거', confirmTitle: '캐릭터 제거 확인', confirmText: '두 모드의 관련 관계도 함께 삭제됩니다. 실행 취소로 모두 복구할 수 있습니다.', confirmRemove: '캐릭터와 관계 제거', cancel: '취소', emptyRoster: '캐릭터를 추가해 관계표를 시작하세요.', emptyRelations: '아직 관계가 없습니다. 관계 종류를 선택한 뒤 칸을 누르세요.', self: '자기 관계 사용 불가', noRelation: '관계 없음', added: '추가했습니다.', applied: '관계를 적용했습니다.', removed: '관계를 제거했습니다.', modeStorage: '각 모드의 관계는 별도로 저장됩니다.', matrixView: '행렬 보기', pairView: '짝 입력', from: '출발 캐릭터', to: '도착 캐릭터', apply: '관계 적용', max: '최대 16명까지 비교할 수 있습니다. 먼저 캐릭터를 제거하세요.', select: '관계 종류', matrixDesc: '행은 출발, 열은 도착입니다.', symmetric: '대칭 칸은 같은 관계 한 건입니다.', independent: '반대 방향 관계는 각각 저장됩니다.', details: '선택한 모드의 관계', noUndo: '되돌릴 편집이 없습니다.', undoDone: '마지막 편집을 되돌렸습니다.', directed: '방향 있음', unordered: '방향 없음', records: '건', row: '출발', col: '도착', statusSaved: '자동 저장됨', statusSaving: '저장 중…', statusMemory: '현재 탭에서만 유지' },
+  ja: { title: '関係マトリクス', intro: '行から列へ読み、関係をすばやく記録します。', roster: '比較するキャラクター', count: '人', density: 'セルサイズ', remove: '削除', confirmTitle: 'キャラクターの削除確認', confirmText: '両モードの関連関係も削除されます。元に戻すとすべて復元できます。', confirmRemove: 'キャラクターと関係を削除', cancel: 'キャンセル', emptyRoster: 'キャラクターを追加して関係表を始めましょう。', emptyRelations: '関係はまだありません。種類を選び、セルを押してください。', self: '自分との関係は使用できません', noRelation: '関係なし', added: '追加しました。', applied: '関係を適用しました。', removed: '関係を削除しました。', modeStorage: '各モードの関係は別々に保存されます。', matrixView: 'マトリクス', pairView: 'ペア入力', from: '出発キャラクター', to: '到着キャラクター', apply: '関係を適用', max: '比較できるのは最大16人です。先にキャラクターを削除してください。', select: '関係の種類', matrixDesc: '行は出発、列は到着です。', symmetric: '対称セルは同じ1件の関係です。', independent: '逆方向の関係は別々に保存されます。', details: '選択モードの関係', noUndo: '元に戻す編集はありません。', undoDone: '最後の編集を元に戻しました。', directed: '方向あり', unordered: '方向なし', records: '件', row: '出発', col: '到着', statusSaved: '自動保存済み', statusSaving: '保存中…', statusMemory: 'このタブのみ' },
+  en: { title: 'Relationship matrix', intro: 'Read from row to column to record relationships quickly.', roster: 'Roster', count: 'characters', density: 'Cell size', remove: 'Remove', confirmTitle: 'Confirm character removal', confirmText: 'Related relationships in both modes will also be deleted. Undo restores everything.', confirmRemove: 'Remove character and relationships', cancel: 'Cancel', emptyRoster: 'Add characters to start the matrix.', emptyRelations: 'No relationships yet. Choose a type, then select a cell.', self: 'Self-relationships are unavailable', noRelation: 'No relationship', added: ' added.', applied: 'Relationship applied.', removed: 'Relationship removed.', modeStorage: 'Each mode keeps a separate set of relationships.', matrixView: 'Matrix', pairView: 'Pair entry', from: 'From character', to: 'To character', apply: 'Apply relationship', max: 'Compare up to 16 characters. Remove one before adding another.', select: 'Relationship type', matrixDesc: 'Rows are sources and columns are targets.', symmetric: 'Symmetric cells represent one shared relationship.', independent: 'Opposite directions are stored independently.', details: 'Relationships in this mode', noUndo: 'There is nothing to undo.', undoDone: 'Last edit undone.', directed: 'Directed', unordered: 'Undirected', records: 'records', row: 'From', col: 'To', statusSaved: 'Saved automatically', statusSaving: 'Saving…', statusMemory: 'Kept in this tab only' },
 };
 
 export default function MatrixEditor() {
@@ -31,6 +32,10 @@ export default function MatrixEditor() {
   const [pendingRemoval, setPendingRemoval] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState('');
   const [history, setHistory] = useState<Snapshot[]>([]);
+  const historyRef = useRef<Snapshot[]>([]);
+  const [entryMode, setEntryMode] = useState<'matrix' | 'pair'>('matrix');
+  const [entryPair, setEntryPair] = useState<Pair>(() => ({ from: draft.roster[0] ?? '', to: draft.roster[1] ?? '' }));
+  const [snackbar, setSnackbar] = useState<{ message: string; onAction: () => void } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const focusRef = useRef<Pair>({ from: draft.roster[0] ?? '', to: draft.roster[1] ?? '' });
   const [focusedCell, setFocusedCell] = useState<Pair>(() => ({ ...focusRef.current }));
@@ -40,13 +45,13 @@ export default function MatrixEditor() {
   const arrow = draft.mode === 'directed' ? '→' : '↔';
   const relationMap = useMemo(() => new Map(RELATIONS.map(relation => [relation.id, relation])), []);
   const recordKey = (from: string, to: string) => JSON.stringify(draft.mode === 'unordered' && from > to ? [to, from] : [from, to]);
-  const commit = (next: MatrixDraft, previous = draft) => { setHistory(items => [...items.slice(-99), structuredClone(previous)]); setDraft(next); };
+  const commit = (next: MatrixDraft, previous = draft, message = t.applied) => { historyRef.current = [...historyRef.current.slice(-99), structuredClone(previous)]; setHistory(historyRef.current); setDraft(next); setSnackbar({ message, onAction: undo }); };
   const cellValue = (from: string, to: string) => store.find(item => item.from === (draft.mode === 'unordered' && from > to ? to : from) && item.to === (draft.mode === 'unordered' && from > to ? from : to));
 
   const addCharacter = (character: { id: string; ko: string }) => {
     if (roster.includes(character.id)) return;
     if (roster.length >= MAX_ROSTER) { setAnnouncement(t.max); return; }
-    commit({ ...draft, roster: [...roster, character.id] });
+    commit({ ...draft, roster: [...roster, character.id] }, draft, t.added);
     setAnnouncement(`${character.ko}${t.added}`);
   };
   const changeRelation = (from: string, to: string, toggle = false) => {
@@ -58,7 +63,7 @@ export default function MatrixEditor() {
     if (old?.relation === next?.relation && old?.preference === next?.preference) return;
     const records = store.filter(item => JSON.stringify([item.from, item.to]) !== key);
     if (next) records.push(draft.mode === 'directed' ? { from, to, ...next } : { ...unpack(key), ...next });
-    commit({ ...draft, [draft.mode]: records } as MatrixDraft);
+    commit({ ...draft, [draft.mode]: records } as MatrixDraft, draft, next ? t.applied : t.removed);
     const relationLabel = next ? relationMap.get(next.relation)?.label[lang] : t.noRelation;
     const preferenceLabel = next?.preference ? PREFERENCE_BY_ID.get(next.preference)?.label[lang] : null;
     setAnnouncement(`${PROFILE_CHARACTER_BY_ID.get(from)?.[lang]} ${arrow} ${PROFILE_CHARACTER_BY_ID.get(to)?.[lang]}: ${relationLabel ?? t.noRelation}${preferenceLabel ? ` · ${preferenceLabel}` : ''}${draft.mode === 'unordered' ? ` · ${t.symmetric}` : ''}`);
@@ -66,7 +71,7 @@ export default function MatrixEditor() {
   const deleteRelation = (from: string, to: string) => {
     const key = recordKey(from, to);
     if (!store.some(item => JSON.stringify([item.from, item.to]) === key)) return;
-    commit({ ...draft, [draft.mode]: store.filter(item => JSON.stringify([item.from, item.to]) !== key) });
+    commit({ ...draft, [draft.mode]: store.filter(item => JSON.stringify([item.from, item.to]) !== key) }, draft, t.removed);
   };
   const affectedCount = (id: string) => {
     const includes = (item: { from: string; to: string }) => item.from === id || item.to === id;
@@ -81,19 +86,28 @@ export default function MatrixEditor() {
       roster: roster.filter(id => id !== pendingRemoval),
       directed: withoutCharacter(draft.directed),
       unordered: withoutCharacter(draft.unordered),
-    });
+    }, draft, t.confirmRemove);
     setPendingRemoval(null);
     setAnnouncement(`${removedName}: ${t.confirmRemove}`);
   };
   const undo = () => {
-    const previous = history[history.length - 1];
+    const previous = historyRef.current[historyRef.current.length - 1];
     if (!previous) return;
-    setHistory(items => items.slice(0, -1)); setDraft(previous); setPendingRemoval(null); setAnnouncement(t.undoDone);
+    historyRef.current = historyRef.current.slice(0, -1);
+    setHistory(historyRef.current); setDraft(previous); setPendingRemoval(null); setSnackbar(null); setAnnouncement(t.undoDone);
   };
+  useEffect(() => {
+    setEntryPair(current => {
+      const from = roster.includes(current.from) ? current.from : roster[0] ?? '';
+      const to = roster.includes(current.to) && current.to !== from ? current.to : roster.find(id => id !== from) ?? '';
+      return from === current.from && to === current.to ? current : { from, to };
+    });
+  }, [roster]);
+  const applyPairEntry = () => { if (entryPair.from && entryPair.to && entryPair.from !== entryPair.to) changeRelation(entryPair.from, entryPair.to); };
   const resetMatrix = () => {
     if (!window.confirm(t.resetConfirm)) return;
     const initial = resetDraft();
-    setHistory([]); setSelectedRelation('love'); setSelectedPreference(null); setDensity(76); setPendingRemoval(null);
+    historyRef.current = []; setHistory([]); setSelectedRelation('love'); setSelectedPreference(null); setDensity(76); setPendingRemoval(null); setSnackbar(null);
     focusRef.current = { from: initial.roster[0] ?? '', to: initial.roster[1] ?? '' };
     setFocusedCell({ ...focusRef.current }); scrollRef.current?.scrollTo({ top: 0, left: 0 });
     setAnnouncement(t.resetDone);
@@ -170,14 +184,17 @@ export default function MatrixEditor() {
     <header className="coupling-panel coupling-matrix-heading"><div><h1>{t.title}</h1><p>{t.intro}</p></div><div className="coupling-matrix-save" aria-live="polite">{warning ? <span className="coupling-save-warning">{warning}</span> : saveStatus === 'saving' ? t.statusSaving : saveStatus === 'memory-only' ? t.statusMemory : t.statusSaved}</div></header>
     <section className="coupling-panel coupling-matrix-controls" aria-label={t.select}>
       <div className="coupling-toolbar"><button className="coupling-btn" type="button" onClick={undo} disabled={!history.length}>{t.undo}</button><button className="coupling-btn" type="button" onClick={resetMatrix}>{t.reset}</button><span className="coupling-status">{roster.length} × {roster.length} · {store.length} {t.records}</span>
-        <div className="coupling-matrix-mode" role="group" aria-label={t.matrixDesc}>{(['directed', 'unordered'] as const).map(mode => <button className="coupling-btn" type="button" key={mode} aria-pressed={draft.mode === mode} onClick={() => { if (draft.mode !== mode) { setDraft({ ...draft, mode }); setPendingRemoval(null); } }}>{mode === 'directed' ? t.directed : t.unordered} ({draft[mode].length})</button>)}</div>
+        <div className="coupling-matrix-mode" role="group" aria-label={t.matrixDesc}>{(['directed', 'unordered'] as const).map(mode => <button className="coupling-btn" type="button" key={mode} aria-pressed={draft.mode === mode} onClick={() => { if (draft.mode !== mode) { setDraft({ ...draft, mode }); setPendingRemoval(null); setSnackbar(null); } }}>{mode === 'directed' ? t.directed : t.unordered} ({draft[mode].length})</button>)}</div>
         <label className="coupling-field coupling-matrix-density">{t.density}<select value={density} onChange={event => setDensity(Number(event.target.value))}><option value={56}>{copy[lang].densityCompact}</option><option value={76}>{copy[lang].densityStandard}</option><option value={104}>{copy[lang].densityWide}</option></select></label>
       </div>
       <div className="coupling-toolbar coupling-matrix-palette" role="group" aria-label={t.select}>{RELATIONS.map((relation, index) => <button className="coupling-btn coupling-relation-button" style={{ '--relation-color': relation.color } as React.CSSProperties} type="button" key={relation.id} aria-pressed={selectedRelation === relation.id} onClick={() => setSelectedRelation(relation.id)}><span>{relation.symbol}</span>{relation.label[lang]} <kbd>{index + 1}</kbd></button>)}</div>
       <div className="coupling-matrix-preference"><strong>{t.personalPreference}</strong><PreferencePicker value={selectedPreference} onChange={setSelectedPreference} label={t.personalPreference}/></div>
+      <div className="coupling-matrix-context" aria-live="polite" style={{ '--relation-color': relationMap.get(selectedRelation)?.color } as React.CSSProperties}><strong>{relationMap.get(selectedRelation)?.symbol} {relationMap.get(selectedRelation)?.label[lang]} · {PREFERENCE_BY_ID.get(selectedPreference)?.symbol} {PREFERENCE_BY_ID.get(selectedPreference)?.label[lang]}</strong><span>{modeLabel} · {t.modeStorage}</span></div>
+      <div className="coupling-matrix-view-toggle" role="group" aria-label={t.title}><button className="coupling-btn" type="button" aria-pressed={entryMode === 'matrix'} onClick={() => setEntryMode('matrix')}>{t.matrixView}</button><button className="coupling-btn" type="button" aria-pressed={entryMode === 'pair'} onClick={() => setEntryMode('pair')}>{t.pairView}</button></div>
     </section>
     <div className="coupling-matrix-layout">
-      <section className="coupling-panel coupling-matrix-workspace"><h2>{t.title} <small>{modeLabel} · {store.length} {t.records}</small></h2>
+      <section className="coupling-panel coupling-matrix-workspace" data-entry-mode={entryMode}><h2>{t.title} <small>{modeLabel} · {store.length} {t.records}</small></h2>
+        <div className="coupling-matrix-pair-entry"><label className="coupling-field">{t.from}<select className="coupling-matrix-pair-entry-from" value={entryPair.from} onChange={event => { const from = event.target.value; setEntryPair(current => ({ from, to: current.to === from ? roster.find(id => id !== from) ?? '' : current.to })); }}>{roster.map(id => <option key={id} value={id}>{PROFILE_CHARACTER_BY_ID.get(id)?.[lang]}</option>)}</select></label><span aria-hidden="true">{arrow}</span><label className="coupling-field">{t.to}<select className="coupling-matrix-pair-entry-to" value={entryPair.to} onChange={event => setEntryPair(current => ({ ...current, to: event.target.value }))}>{roster.filter(id => id !== entryPair.from).map(id => <option key={id} value={id}>{PROFILE_CHARACTER_BY_ID.get(id)?.[lang]}</option>)}</select></label><button className="coupling-btn coupling-btn-primary" type="button" disabled={!entryPair.from || !entryPair.to || entryPair.from === entryPair.to} onClick={applyPairEntry}>{t.apply}</button></div>
         <div ref={scrollRef} className="coupling-matrix-scroll" onKeyDown={handleGridKey} tabIndex={-1}>
           {roster.length === 0 ? <p className="coupling-empty-note">{t.emptyRoster}</p> : <table className="coupling-relationship-matrix" role="grid" aria-labelledby="coupling-matrix-caption" aria-describedby="coupling-matrix-help" style={{ width: 180 + roster.length * density }}>
             <caption id="coupling-matrix-caption" className="coupling-matrix-sr">{modeLabel}. {t.matrixDesc} {draft.mode === 'unordered' ? t.symmetric : t.independent}</caption>
@@ -193,5 +210,6 @@ export default function MatrixEditor() {
         <section className="coupling-panel coupling-matrix-summary"><h2>{t.details} <small>{modeLabel} · {store.length} {t.records}</small></h2>{store.length ? <ul>{store.map(item => { const from = PROFILE_CHARACTER_BY_ID.get(item.from)!, to = PROFILE_CHARACTER_BY_ID.get(item.to)!, relation = relationMap.get(item.relation)!, preference = item.preference ? PREFERENCE_BY_ID.get(item.preference) : undefined; return <li key={JSON.stringify([item.from, item.to])}><div className="coupling-matrix-pair"><span><CharacterAvatar character={from} size={26} decorative /><strong>{from[lang]}</strong></span><span>{arrow}</span><span><CharacterAvatar character={to} size={26} decorative /><strong>{to[lang]}</strong></span><small style={{ '--relation-color': relation.color } as React.CSSProperties}>{relation.symbol} {relation.label[lang]}</small>{preference && <small className="coupling-matrix-preference-mark">{preference.symbol} {preference.label[lang]}</small>}</div><button className="coupling-btn" type="button" aria-label={`${from[lang]} ${arrow} ${to[lang]} ${t.remove}`} onClick={() => deleteRelation(item.from, item.to)}>{t.remove}</button></li>})}</ul> : <p className="coupling-empty-note">{t.emptyRelations}</p>}</section>
       </aside>
     </div>
+    {snackbar&&<CouplingSnackbar message={snackbar.message} actionLabel={copy[lang].undo} dismissLabel={copy[lang].close} onAction={snackbar.onAction} onDismiss={()=>setSnackbar(null)}/>}
   </section>;
 }

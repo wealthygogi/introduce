@@ -1,10 +1,11 @@
-import { useMemo, useState, type RefObject } from 'react';
+import { useEffect, useMemo, useState, type RefObject } from 'react';
 import { useLang } from '../../../contexts/LangContext';
 import { PROFILE_CHARACTERS, type ProfileCharacter } from '../data';
 import { normalizeCouplingSearch } from '../relations';
 import copy from '../copy';
 import CharacterAvatar from './CharacterAvatar';
 
+const EMPTY_IDS: readonly string[] = [];
 type Props = {
   onSelect: (character: ProfileCharacter) => void;
   selectedIds?: readonly string[];
@@ -13,8 +14,9 @@ type Props = {
   autoFocus?: boolean;
   label?: string;
   searchRef?: RefObject<HTMLInputElement>;
+  onResultsChange?: (ids: readonly string[]) => void;
 };
-export default function CharacterPicker({ onSelect, selectedIds = [], disabledIds = [], initialGroup = '', autoFocus = false, label, searchRef }: Props) {
+export default function CharacterPicker({ onSelect, selectedIds = EMPTY_IDS, disabledIds = EMPTY_IDS, initialGroup = '', autoFocus = false, label, searchRef, onResultsChange }: Props) {
   const { lang } = useLang();
   const t = copy[lang];
   const [query, setQuery] = useState('');
@@ -23,11 +25,14 @@ export default function CharacterPicker({ onSelect, selectedIds = [], disabledId
   const disabled = useMemo(() => new Set(disabledIds), [disabledIds]);
   const works = useMemo(() => [...new Map(PROFILE_CHARACTERS.map(character => [character.group[lang], character.group[lang]])).values()], [lang]);
   const normalizedQuery = normalizeCouplingSearch(query);
-  const results = PROFILE_CHARACTERS.filter(character =>
+  const results = useMemo(() => PROFILE_CHARACTERS.filter(character =>
     (!group || character.group[lang] === group) && (!normalizedQuery || normalizeCouplingSearch(
       `${character.ko}${character.ja}${character.en}${character.group.ko}${character.group.ja}${character.group.en}`,
     ).includes(normalizedQuery)),
-  );
+  ), [group, lang, normalizedQuery]);
+  useEffect(() => {
+    onResultsChange?.(results.filter(character => !disabled.has(character.id) && !selected.has(character.id)).map(character => character.id));
+  }, [disabled, onResultsChange, results, selected]);
   return <section className="coupling-picker" aria-label={label ?? t.pickerTitle}>
     <div className="coupling-picker-top">
       <h2>{t.pickerTitle} <small>{PROFILE_CHARACTERS.length}</small></h2>

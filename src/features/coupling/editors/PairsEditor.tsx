@@ -6,6 +6,7 @@ import CharacterPicker from '../components/CharacterPicker';
 import { PREFERENCE_BY_ID, RELATIONS } from '../relations';
 import PreferencePicker from '../components/PreferencePicker';
 import { useCouplingDraft } from '../CouplingDraftProvider';
+import CouplingSnackbar from '../components/CouplingSnackbar';
 import copy from '../copy';
 import type { PairCard, PairFields, PairsDraft, RelationId } from '../types';
 import '../coupling.css';
@@ -18,6 +19,11 @@ const strings = {
   ja: { title: 'カップリングカード', subtitle: 'AとBを選び、関係とメモをカードにまとめます。', new: '新しいカード', slot: 'スロット', empty: 'キャラクターを選択', clearA: 'Aをクリア', clearB: 'Bをクリア', swap: 'AとBを入れ替え', relation: '関係の種類', direction: '関係の向き', forward: 'A → B · AからBへ', mutual: 'A ↔ B · 双方向', reverse: 'B → A · BからAへ', memo: 'メモ · 任意', memoPlaceholder: '二人の関係、好きな場面…\n複数行で自由に書けます。', save: 'カードを保存', editSave: '変更を保存', search: 'キャラクター検索', undo: '元に戻す', collection: 'カップリングカード', emptyCards: 'カードはまだありません。', first: '前へ', last: '後へ', edit: '編集', remove: '削除', noMemo: 'メモなし', saveHint: '個人の解釈用 · このブラウザーに自動保存します。', active: 'ライブラリーで選ぶと{slot}に入ります。', aRequired: 'AとBのキャラクターを選んでください。', self: '異なる二人を選んでください。', duplicate: '同じ人物と方向のカードがあります。既存カードを編集するか方向を変更してください。', saved: 'カードをコレクションに保存しました。', updated: '既存カードを更新しました。複製は作成していません。', selected: 'スロットを選択しました。キャラクターを選んでください。', selectDone: '選択しました。', emptyUndo: '元に戻す変更はありません。', undoDone: '操作を元に戻しました。', searchLabel: '選択するスロット', workSentence: '前後ボタンでカードの順序を変更できます。' },
   en: { title: 'Pair card studio', subtitle: 'Choose A and B, then collect their relationships and notes as cards.', new: 'New card', slot: 'slot', empty: 'Choose a character', clearA: 'Clear A', clearB: 'Clear B', swap: 'Swap A and B', relation: 'Relationship', direction: 'Direction', forward: 'A → B · A to B', mutual: 'A ↔ B · Mutual', reverse: 'B → A · B to A', memo: 'Memo · optional', memoPlaceholder: 'Their relationship, a favorite scene…\nWrite freely across multiple lines.', save: 'Save card', editSave: 'Save changes', search: 'Search characters', undo: 'Undo', collection: 'Pair cards', emptyCards: 'No pair cards yet.', first: 'Move earlier', last: 'Move later', edit: 'Edit', remove: 'Delete', noMemo: 'No memo', saveHint: 'For personal interpretation · saved automatically in this browser.', active: 'Choosing from the library will fill slot {slot}.', aRequired: 'Choose a character for both A and B.', self: 'Choose two different characters.', duplicate: 'A card with the same people and direction already exists. Edit it or change the direction.', saved: 'Saved a new card to your collection.', updated: 'Updated the existing card without making a copy.', selected: 'Slot selected. Choose a character from the library.', selectDone: 'Selected.', emptyUndo: 'There is nothing to undo.', undoDone: 'Undid the action.', searchLabel: 'Choose slot', workSentence: 'Use the move buttons to arrange card order.' },
 } as const;
+const collectionWords = {
+  ko: { filter: '관계 필터', allRelations: '모든 관계', sort: '정렬', orderCreated: '추가한 순서', sortAZ: '캐릭터 이름 A–Z', sortZA: '캐릭터 이름 Z–A', noMatches: '조건에 맞는 카드가 없어요.', moreActions: '카드 작업' },
+  ja: { filter: '関係で絞り込み', allRelations: 'すべての関係', sort: '並び替え', orderCreated: '追加順', sortAZ: 'キャラクター名 A–Z', sortZA: 'キャラクター名 Z–A', noMatches: '一致するカードはありません。', moreActions: 'カード操作' },
+  en: { filter: 'Filter by relationship', allRelations: 'All relationships', sort: 'Sort', orderCreated: 'Date added', sortAZ: 'Character names A–Z', sortZA: 'Character names Z–A', noMatches: 'No cards match these filters.', moreActions: 'Card actions' },
+} as const;
 function pairKey(pair: Pick<PairFields, 'a' | 'b' | 'direction'>) {
   if (!pair.a || !pair.b) return '';
   return pair.direction === 'mutual' ? JSON.stringify(['mutual', ...[pair.a, pair.b].sort()]) : JSON.stringify(['directed', ...(pair.direction === 'reverse' ? [pair.b, pair.a] : [pair.a, pair.b])]);
@@ -26,7 +32,7 @@ function directionSymbol(direction: PairFields['direction']) { return direction 
 
 export default function PairsEditor() {
   const { lang } = useLang();
-  const t = { ...copy[lang], ...strings[lang] };
+  const t = { ...copy[lang], ...strings[lang], ...collectionWords[lang] };
   const { draft, setDraft, resetDraft, hasDraft, saveStatus, warning } = useCouplingDraft('pairs');
   const rootRef = useRef<HTMLElement>(null);
   const pickerDialogRef = useRef<HTMLDialogElement>(null);
@@ -35,6 +41,9 @@ export default function PairsEditor() {
   const [feedback, setFeedback] = useState('');
   const [error, setError] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [collectionRelation, setCollectionRelation] = useState<RelationId | 'all'>('all');
+  const [collectionSort, setCollectionSort] = useState<'created' | 'az' | 'za'>('created');
+  const [snackbar, setSnackbar] = useState<{ message: string; onAction: () => void } | null>(null);
   const historyRef = useRef(history);
   historyRef.current = history;
   useEffect(() => {
@@ -114,7 +123,17 @@ export default function PairsEditor() {
   };
   const directionSentence = (pair: PairFields) => pair.direction === 'mutual' ? `${text(pair.a)} ↔ ${text(pair.b)}` : pair.direction === 'reverse' ? `${text(pair.b)} → ${text(pair.a)}` : `${text(pair.a)} → ${text(pair.b)}`;
   const editCard = (pair: PairCard) => { const { id, ...fields } = pair; update({ draft: { ...fields }, activeSlot: 'a', editingId: id }); announce(`${text(pair.a)} / ${text(pair.b)} · ${t.edit}`); };
-  const removeCard = (id: string) => { const index = draft.pairs.findIndex(pair => pair.id === id); if (index < 0) return; remember('delete'); const pairs = draft.pairs.filter(pair => pair.id !== id); setDraft({ pairs, draft: draft.editingId === id ? blankFields() : draft.draft, activeSlot: draft.editingId === id ? 'a' : draft.activeSlot, editingId: draft.editingId === id ? null : draft.editingId }); announce(t.remove); };
+  const removeCard = (id: string) => { const index = draft.pairs.findIndex(pair => pair.id === id); if (index < 0) return; remember('delete'); const pairs = draft.pairs.filter(pair => pair.id !== id); setDraft({ pairs, draft: draft.editingId === id ? blankFields() : draft.draft, activeSlot: draft.editingId === id ? 'a' : draft.activeSlot, editingId: draft.editingId === id ? null : draft.editingId }); announce(t.remove); setSnackbar({ message: t.remove, onAction: undo }); };
+  const visiblePairs = useMemo(() => {
+    const pairs = draft.pairs.filter(pair => collectionRelation === 'all' || pair.relation === collectionRelation);
+    if (collectionSort === 'created') return pairs;
+    return pairs.sort((left, right) => {
+      const leftNames = `${text(left.a)} ${text(left.b)}`;
+      const rightNames = `${text(right.a)} ${text(right.b)}`;
+      const order = leftNames.localeCompare(rightNames, lang);
+      return collectionSort === 'az' ? order : -order;
+    });
+  }, [collectionRelation, collectionSort, draft.pairs, lang]);
   const moveCard = (id: string, offset: number) => { const index = draft.pairs.findIndex(pair => pair.id === id); const target = index + offset; if (target < 0 || target >= draft.pairs.length) return; remember('reorder'); const pairs = [...draft.pairs]; [pairs[index], pairs[target]] = [pairs[target], pairs[index]]; update({ pairs }); };
   const saveLabel = !hasDraft ? t.draftNew : saveStatus === 'saving' ? (lang === 'ko' ? '저장 중…' : lang === 'ja' ? '保存中…' : 'Saving…') : saveStatus === 'memory-only' ? t.memoryOnly : t.saved;
 
@@ -166,18 +185,20 @@ export default function PairsEditor() {
         </div>
       </dialog>
       <section className="coupling-panel coupling-pairs-collection" aria-labelledby="pairs-collection-title">
-        <header className="coupling-pairs-collection-heading"><div><h2 id="pairs-collection-title">{t.collection} <span className="coupling-pairs-count">{draft.pairs.length}</span></h2><p>{t.workSentence}</p></div><button type="button" className="coupling-btn" disabled={!history.length} onClick={undo}>{t.undo}</button></header>
-        {draft.pairs.length === 0 ? <div className="coupling-pairs-empty"><strong>{t.emptyCards}</strong>{t.subtitle}</div> : <ol className="coupling-pairs-list" aria-label={t.collection}>{draft.pairs.map((pair, index) => {
+        <header className="coupling-pairs-collection-heading"><div><h2 id="pairs-collection-title">{t.collection} <span className="coupling-pairs-count">{visiblePairs.length} / {draft.pairs.length}</span></h2><p>{t.workSentence}</p></div><button type="button" className="coupling-btn" disabled={!history.length} onClick={undo}>{t.undo}</button></header>
+        <div className="coupling-pairs-collection-controls"><label className="coupling-field">{t.filter}<select className="coupling-pairs-filter" value={collectionRelation} onChange={event => setCollectionRelation(event.target.value as RelationId | 'all')}><option value="all">{t.allRelations}</option>{RELATIONS.map(relation => <option key={relation.id} value={relation.id}>{relation.label[lang]}</option>)}</select></label><label className="coupling-field">{t.sort}<select className="coupling-pairs-sort" value={collectionSort} onChange={event => setCollectionSort(event.target.value as 'created' | 'az' | 'za')}><option value="created">{t.orderCreated}</option><option value="az">{t.sortAZ}</option><option value="za">{t.sortZA}</option></select></label></div>
+        {draft.pairs.length === 0 ? <div className="coupling-pairs-empty"><strong>{t.emptyCards}</strong>{t.subtitle}</div> : visiblePairs.length === 0 ? <div className="coupling-pairs-empty">{t.noMatches}</div> : <ol className="coupling-pairs-list" aria-label={t.collection}>{visiblePairs.map((pair, index) => {
           const a = character(pair.a); const b = character(pair.b); const relation = RELATIONS.find(item => item.id === pair.relation)!;
           if (!a || !b) return null;
           return <li className="coupling-pair-card" data-editing={pair.id === draft.editingId} key={pair.id} style={{ '--coupling-pair-color': relation.color } as CSSProperties}>
             <div className="coupling-pair-card-top"><span>PAIR {String(index + 1).padStart(2, '0')}</span><span>{relation.symbol} {relation.label[lang]}{pair.preference && <span className="coupling-preference-label"> · {PREFERENCE_BY_ID.get(pair.preference)?.symbol} {PREFERENCE_BY_ID.get(pair.preference)?.label[lang]}</span>}</span></div>
             <div className="coupling-pair-couple"><div><CharacterAvatar character={a} size={60} /><strong>{a[lang]}</strong></div><span aria-hidden="true">{directionSymbol(pair.direction)}</span><div><CharacterAvatar character={b} size={60} /><strong>{b[lang]}</strong></div></div>
             <p className="coupling-pair-caption">{directionSentence(pair)}</p><p className={`coupling-pair-memo${pair.memo ? '' : ' coupling-pair-no-memo'}`}>{pair.memo || t.noMemo}</p>
-            <div className="coupling-pair-card-actions"><button type="button" className="coupling-btn" disabled={index === 0} aria-label={t.first} onClick={() => moveCard(pair.id, -1)}>↑ {t.first}</button><button type="button" className="coupling-btn" disabled={index === draft.pairs.length - 1} aria-label={t.last} onClick={() => moveCard(pair.id, 1)}>↓ {t.last}</button><button type="button" className="coupling-btn" onClick={() => editCard(pair)}>{t.edit}</button><button type="button" className="coupling-btn coupling-pair-delete" onClick={() => removeCard(pair.id)}>{t.remove}</button></div>
+             <div className="coupling-pair-card-actions"><button type="button" className="coupling-btn" onClick={() => editCard(pair)}>{t.edit}</button><details className="coupling-pair-secondary-actions"><summary>{t.moreActions}</summary><div><button type="button" className="coupling-btn" disabled={collectionSort !== 'created' || collectionRelation !== 'all' || index === 0} aria-label={t.first} onClick={() => moveCard(pair.id, -1)}>↑ {t.first}</button><button type="button" className="coupling-btn" disabled={collectionSort !== 'created' || collectionRelation !== 'all' || index === visiblePairs.length - 1} aria-label={t.last} onClick={() => moveCard(pair.id, 1)}>↓ {t.last}</button><button type="button" className="coupling-btn coupling-pair-delete" onClick={() => removeCard(pair.id)}>{t.remove}</button></div></details></div>
           </li>;
         })}</ol>}
       </section>
     </div>
+    {snackbar&&<CouplingSnackbar message={snackbar.message} actionLabel={t.undo} dismissLabel={copy[lang].close} onAction={snackbar.onAction} onDismiss={()=>setSnackbar(null)}/>}
   </section>;
 }

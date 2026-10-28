@@ -75,6 +75,9 @@
 .coupling-keyboard-pagination { justify-content: center; margin-top: 8px; }
 .coupling-keyboard-pending { display: grid; gap: 4px; margin: 14px 0 10px; padding: 10px; border: 1px dashed #c9cfd5; border-radius: 8px; font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
 .coupling-keyboard-pending small { color: #68737d; }
+.coupling-keyboard-confirm-settings { display: grid; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid #e6e8eb; }
+.coupling-keyboard-confirm-settings .coupling-keyboard-relations { margin: 0; }
+.coupling-keyboard-confirm-settings .coupling-keyboard-relations > button { min-height: 44px; }
 .coupling-keyboard-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 .coupling-keyboard-actions button { flex: 1 1 100px; font-size: 11px; }
 .coupling-keyboard-actions > button { min-height: 48px; }

@@ -91,3 +91,9 @@
   .coupling-root .coupling-hub-grid { grid-template-columns: minmax(0, 1fr); }
   .coupling-root .coupling-hub-card { padding: 15px; }
 }
+.coupling-snackbar { position: fixed; z-index: 1200; inset: auto 16px 20px auto; display: flex; max-width: min(560px, calc(100vw - 32px)); align-items: center; gap: 12px; padding: 10px 12px 10px 16px; border: 1px solid #d5d9de; border-radius: 12px; background: #252a31; color: #fff; box-shadow: 0 6px 24px #0003; font-size: 14px; line-height: 1.5; }
+.coupling-snackbar > span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.coupling-snackbar button { min-height: 44px; padding: 7px 10px; border: 0; border-radius: 8px; background: transparent; color: #cbb5ff; cursor: pointer; font: inherit; font-weight: 700; }
+.coupling-snackbar button:last-child { width: 44px; padding: 0; color: #fff; font-size: 22px; }
+.coupling-snackbar button:focus-visible { outline: 3px solid #d7c7ff; outline-offset: 2px; }
+@media (max-width: 600px) { .coupling-snackbar { inset-inline: 12px; bottom: max(12px, env(safe-area-inset-bottom)); max-width: none; } }

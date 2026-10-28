@@ -1,20 +1,22 @@
-export type RelationId = 'love' | 'favorite' | 'friend' | 'complex' | 'avoid';
+export type RelationId = 'love' | 'friend' | 'ally' | 'rival' | 'complex';
+export type PreferenceId = 'favorite' | 'avoid' | null;
 export type EditorId = 'whiteboard' | 'keyboard' | 'pairs' | 'matrix';
 export type View = { x: number; y: number; zoom: number };
 
 export type WhiteboardDraft = {
   nodes: Array<{ id: string; x: number; y: number }>;
-  edges: Array<{ id: string; from: string; to: string; type: RelationId; direction: 'both' | 'forward' }>;
+  edges: Array<{ id: string; from: string; to: string; type: RelationId; preference: PreferenceId; direction: 'both' | 'forward' }>;
   view: View;
 };
 export type KeyboardDraft = {
   sourceId: string;
-  edges: Array<{ a: string; b: string; relation: RelationId }>;
+  edges: Array<{ a: string; b: string; relation: RelationId; preference: PreferenceId }>;
 };
 export type PairFields = {
   a: string | null;
   b: string | null;
   relation: RelationId;
+  preference: PreferenceId;
   direction: 'forward' | 'mutual' | 'reverse';
   memo: string;
 };
@@ -28,8 +30,8 @@ export type PairsDraft = {
 export type MatrixDraft = {
   roster: string[];
   mode: 'directed' | 'unordered';
-  directed: Array<{ from: string; to: string; relation: RelationId }>;
-  unordered: Array<{ from: string; to: string; relation: RelationId }>;
+  directed: Array<{ from: string; to: string; relation: RelationId; preference: PreferenceId }>;
+  unordered: Array<{ from: string; to: string; relation: RelationId; preference: PreferenceId }>;
 };
 export type Drafts = {
   whiteboard: WhiteboardDraft;

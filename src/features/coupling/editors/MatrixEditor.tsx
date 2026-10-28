@@ -2,10 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLang } from '../../../contexts/LangContext';
 import CharacterPicker from '../components/CharacterPicker';
 import CharacterAvatar from '../components/CharacterAvatar';
+import PreferencePicker from '../components/PreferencePicker';
 import { PROFILE_CHARACTER_BY_ID } from '../data';
-import { RELATIONS } from '../relations';
+import { PREFERENCE_BY_ID, RELATIONS } from '../relations';
 import { useCouplingDraft } from '../CouplingDraftProvider';
-import type { MatrixDraft, RelationId } from '../types';
+import type { MatrixDraft, PreferenceId, RelationId } from '../types';
 import copy from '../copy';
 import '../matrix/matrix.css';
 
@@ -23,14 +24,16 @@ const names: Record<string, Record<string, string>> = {
 export default function MatrixEditor() {
   const { lang } = useLang();
   const t: Record<string, string> = { ...copy[lang], ...names[lang] };
-  const { draft, setDraft, saveStatus, warning } = useCouplingDraft('matrix');
+  const { draft, setDraft, resetDraft, saveStatus, warning } = useCouplingDraft('matrix');
   const [selectedRelation, setSelectedRelation] = useState<RelationId>('love');
+  const [selectedPreference, setSelectedPreference] = useState<PreferenceId>(null);
   const [density, setDensity] = useState(76);
   const [pendingRemoval, setPendingRemoval] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState('');
   const [history, setHistory] = useState<Snapshot[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const focusRef = useRef<Pair>({ from: draft.roster[0] ?? '', to: draft.roster[1] ?? '' });
+  const [focusedCell, setFocusedCell] = useState<Pair>(() => ({ ...focusRef.current }));
   const roster = draft.roster;
   const store = draft[draft.mode];
   const modeLabel = draft.mode === 'directed' ? t.directed : t.unordered;
@@ -38,7 +41,7 @@ export default function MatrixEditor() {
   const relationMap = useMemo(() => new Map(RELATIONS.map(relation => [relation.id, relation])), []);
   const recordKey = (from: string, to: string) => JSON.stringify(draft.mode === 'unordered' && from > to ? [to, from] : [from, to]);
   const commit = (next: MatrixDraft, previous = draft) => { setHistory(items => [...items.slice(-99), structuredClone(previous)]); setDraft(next); };
-  const cellValue = (from: string, to: string) => store.find(item => item.from === (draft.mode === 'unordered' && from > to ? to : from) && item.to === (draft.mode === 'unordered' && from > to ? from : to))?.relation;
+  const cellValue = (from: string, to: string) => store.find(item => item.from === (draft.mode === 'unordered' && from > to ? to : from) && item.to === (draft.mode === 'unordered' && from > to ? from : to));
 
   const addCharacter = (character: { id: string; ko: string }) => {
     if (roster.includes(character.id)) return;
@@ -49,33 +52,55 @@ export default function MatrixEditor() {
   const changeRelation = (from: string, to: string, toggle = false) => {
     if (from === to || !roster.includes(from) || !roster.includes(to)) return;
     const key = recordKey(from, to), old = cellValue(from, to);
-    const nextValue = toggle && old === selectedRelation ? undefined : selectedRelation;
-    if (old === nextValue) return;
+    const next = toggle && old?.relation === selectedRelation && old.preference === selectedPreference
+      ? undefined
+      : { relation: selectedRelation, preference: selectedPreference };
+    if (old?.relation === next?.relation && old?.preference === next?.preference) return;
     const records = store.filter(item => JSON.stringify([item.from, item.to]) !== key);
-    if (nextValue) records.push(draft.mode === 'directed' ? { from, to, relation: nextValue } : { ...unpack(key), relation: nextValue });
+    if (next) records.push(draft.mode === 'directed' ? { from, to, ...next } : { ...unpack(key), ...next });
     commit({ ...draft, [draft.mode]: records } as MatrixDraft);
-    const relation = relationMap.get(nextValue ?? selectedRelation)?.label[lang];
-    setAnnouncement(`${PROFILE_CHARACTER_BY_ID.get(from)?.[lang]} ${arrow} ${PROFILE_CHARACTER_BY_ID.get(to)?.[lang]}: ${relation ?? t.noRelation}${draft.mode === 'unordered' ? ` · ${t.symmetric}` : ''}`);
+    const relationLabel = next ? relationMap.get(next.relation)?.label[lang] : t.noRelation;
+    const preferenceLabel = next?.preference ? PREFERENCE_BY_ID.get(next.preference)?.label[lang] : null;
+    setAnnouncement(`${PROFILE_CHARACTER_BY_ID.get(from)?.[lang]} ${arrow} ${PROFILE_CHARACTER_BY_ID.get(to)?.[lang]}: ${relationLabel ?? t.noRelation}${preferenceLabel ? ` · ${preferenceLabel}` : ''}${draft.mode === 'unordered' ? ` · ${t.symmetric}` : ''}`);
   };
   const deleteRelation = (from: string, to: string) => {
     const key = recordKey(from, to);
     if (!store.some(item => JSON.stringify([item.from, item.to]) === key)) return;
     commit({ ...draft, [draft.mode]: store.filter(item => JSON.stringify([item.from, item.to]) !== key) });
   };
-  const affectedCount = (id: string) => [...draft.directed, ...draft.unordered].filter(item => item.from === id || item.to === id).length;
+  const affectedCount = (id: string) => {
+    const includes = (item: { from: string; to: string }) => item.from === id || item.to === id;
+    return draft.directed.filter(includes).length + draft.unordered.filter(includes).length;
+  };
   const confirmRemove = () => {
     if (!pendingRemoval) return;
-    const id = pendingRemoval;
-    commit({ ...draft, roster: roster.filter(item => item !== id), directed: draft.directed.filter(item => item.from !== id && item.to !== id), unordered: draft.unordered.filter(item => item.from !== id && item.to !== id) });
-    setPendingRemoval(null); setAnnouncement(`${PROFILE_CHARACTER_BY_ID.get(id)?.[lang]} · ${t.remove}`);
+    const removedName = PROFILE_CHARACTER_BY_ID.get(pendingRemoval)?.[lang] ?? pendingRemoval;
+    const withoutCharacter = (items: MatrixDraft['directed']) => items.filter(item => item.from !== pendingRemoval && item.to !== pendingRemoval);
+    commit({
+      ...draft,
+      roster: roster.filter(id => id !== pendingRemoval),
+      directed: withoutCharacter(draft.directed),
+      unordered: withoutCharacter(draft.unordered),
+    });
+    setPendingRemoval(null);
+    setAnnouncement(`${removedName}: ${t.confirmRemove}`);
   };
   const undo = () => {
     const previous = history[history.length - 1];
     if (!previous) return;
     setHistory(items => items.slice(0, -1)); setDraft(previous); setPendingRemoval(null); setAnnouncement(t.undoDone);
   };
+  const resetMatrix = () => {
+    if (!window.confirm(t.resetConfirm)) return;
+    const initial = resetDraft();
+    setHistory([]); setSelectedRelation('love'); setSelectedPreference(null); setDensity(76); setPendingRemoval(null);
+    focusRef.current = { from: initial.roster[0] ?? '', to: initial.roster[1] ?? '' };
+    setFocusedCell({ ...focusRef.current }); scrollRef.current?.scrollTo({ top: 0, left: 0 });
+    setAnnouncement(t.resetDone);
+  };
   const focusCell = (from: string, to: string) => {
     focusRef.current = { from, to };
+    setFocusedCell({ from, to });
     const root = scrollRef.current;
     if (!root) return;
     const button = root.querySelector<HTMLButtonElement>(`button[data-from="${CSS.escape(from)}"][data-to="${CSS.escape(to)}"]`);
@@ -86,50 +111,86 @@ export default function MatrixEditor() {
     const root = scrollRef.current;
     if (!root) return;
     const onFocus = (event: FocusEvent) => {
-      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-from][data-to]:not(:disabled)');
-      if (button) focusRef.current = { from: button.dataset.from ?? '', to: button.dataset.to ?? '' };
+      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-from][data-to]');
+      if (!button) return;
+      const next = { from: button.dataset.from ?? '', to: button.dataset.to ?? '' };
+      focusRef.current = next;
+      setFocusedCell(next);
     };
     root.addEventListener('focusin', onFocus);
     return () => root.removeEventListener('focusin', onFocus);
   }, []);
+  useEffect(() => {
+    if (roster.length < 2 || (roster.includes(focusedCell.from) && roster.includes(focusedCell.to) && focusedCell.from !== focusedCell.to)) return;
+    const next = { from: roster[0], to: roster[1] };
+    focusRef.current = next;
+    setFocusedCell(next);
+  }, [focusedCell, roster]);
   const handleGridKey = (event: React.KeyboardEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement;
-    if (target.matches('input,textarea,select,[contenteditable="true"]') || event.nativeEvent.isComposing || event.keyCode === 229 || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+    if (target.matches('input,textarea,select,[contenteditable="true"]') || event.nativeEvent.isComposing || event.keyCode === 229 || event.metaKey || event.altKey || event.shiftKey || (event.ctrlKey && !['Home', 'End'].includes(event.key))) return;
     const button = target.closest<HTMLButtonElement>('[data-from][data-to]:not(:disabled)');
     if (!button) return;
-    const from = button.dataset.from!, to = button.dataset.to!;
+    const row = roster.indexOf(button.dataset.from!);
+    const column = roster.indexOf(button.dataset.to!);
     if (event.key.startsWith('Arrow')) {
       event.preventDefault();
       const rowStep = event.key === 'ArrowUp' ? -1 : event.key === 'ArrowDown' ? 1 : 0;
-      const colStep = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0;
-      let row = roster.indexOf(from), col = roster.indexOf(to);
-      do { row += rowStep; col += colStep; } while (row >= 0 && col >= 0 && row < roster.length && col < roster.length && row === col);
-      if (row >= 0 && col >= 0 && row < roster.length && col < roster.length) focusCell(roster[row], roster[col]);
+      const columnStep = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0;
+      let nextRow = row, nextColumn = column;
+      do {
+        nextRow += rowStep;
+        nextColumn += columnStep;
+      } while (nextRow >= 0 && nextColumn >= 0 && nextRow < roster.length && nextColumn < roster.length && nextRow === nextColumn);
+      if (nextRow >= 0 && nextColumn >= 0 && nextRow < roster.length && nextColumn < roster.length) focusCell(roster[nextRow], roster[nextColumn]);
+    } else if (event.key === 'Home' || event.key === 'End') {
+      event.preventDefault();
+      if (event.ctrlKey) {
+        const cells = roster.flatMap((from, fromIndex) => roster.flatMap((to, toIndex) => fromIndex === toIndex ? [] : [{ from, to }]));
+        const destination = event.key === 'Home' ? cells[0] : cells[cells.length - 1];
+        if (destination) focusCell(destination.from, destination.to);
+      } else {
+        let nextColumn = event.key === 'Home' ? 0 : roster.length - 1;
+        const step = event.key === 'Home' ? 1 : -1;
+        while (nextColumn >= 0 && nextColumn < roster.length && nextColumn === row) nextColumn += step;
+        if (nextColumn >= 0 && nextColumn < roster.length) focusCell(roster[row], roster[nextColumn]);
+      }
     } else if (/^[1-5]$/.test(event.key)) {
       event.preventDefault(); setSelectedRelation(RELATIONS[Number(event.key) - 1].id);
       setAnnouncement(`${t.select}: ${RELATIONS[Number(event.key) - 1].label[lang]}`);
-    } else if (event.key === 'Delete' || event.key === 'Backspace') { event.preventDefault(); deleteRelation(from, to); }
-    else if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); if (!event.repeat) changeRelation(from, to, event.key === ' '); }
+    } else if (['f', 'x', '0'].includes(event.key.toLowerCase())) {
+      const key = event.key.toLowerCase();
+      const preference: PreferenceId = key === 'f' ? 'favorite' : key === 'x' ? 'avoid' : null;
+      event.preventDefault(); setSelectedPreference(preference);
+      setAnnouncement(`${t.personalPreference}: ${PREFERENCE_BY_ID.get(preference)?.label[lang]}`);
+    } else if (event.key === 'Delete' || event.key === 'Backspace') { event.preventDefault(); deleteRelation(button.dataset.from!, button.dataset.to!); }
+    else if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); if (!event.repeat) changeRelation(button.dataset.from!, button.dataset.to!, event.key === ' '); }
   };
   return <section className="coupling-matrix-editor">
     <header className="coupling-panel coupling-matrix-heading"><div><h1>{t.title}</h1><p>{t.intro}</p></div><div className="coupling-matrix-save" aria-live="polite">{warning ? <span className="coupling-save-warning">{warning}</span> : saveStatus === 'saving' ? t.statusSaving : saveStatus === 'memory-only' ? t.statusMemory : t.statusSaved}</div></header>
     <section className="coupling-panel coupling-matrix-controls" aria-label={t.select}>
-      <div className="coupling-toolbar"><button className="coupling-btn" type="button" onClick={undo} disabled={!history.length}>{t.undo}</button><span className="coupling-status">{roster.length} × {roster.length} · {store.length} {t.records}</span>
+      <div className="coupling-toolbar"><button className="coupling-btn" type="button" onClick={undo} disabled={!history.length}>{t.undo}</button><button className="coupling-btn" type="button" onClick={resetMatrix}>{t.reset}</button><span className="coupling-status">{roster.length} × {roster.length} · {store.length} {t.records}</span>
         <div className="coupling-matrix-mode" role="group" aria-label={t.matrixDesc}>{(['directed', 'unordered'] as const).map(mode => <button className="coupling-btn" type="button" key={mode} aria-pressed={draft.mode === mode} onClick={() => { if (draft.mode !== mode) { setDraft({ ...draft, mode }); setPendingRemoval(null); } }}>{mode === 'directed' ? t.directed : t.unordered} ({draft[mode].length})</button>)}</div>
+        <label className="coupling-field coupling-matrix-density">{t.density}<select value={density} onChange={event => setDensity(Number(event.target.value))}><option value={56}>{copy[lang].densityCompact}</option><option value={76}>{copy[lang].densityStandard}</option><option value={104}>{copy[lang].densityWide}</option></select></label>
       </div>
-      <div className="coupling-toolbar coupling-matrix-palette" aria-label={t.select}>{RELATIONS.map((relation, index) => <button className="coupling-btn coupling-relation-button" style={{ '--relation-color': relation.color } as React.CSSProperties} type="button" key={relation.id} aria-pressed={selectedRelation === relation.id} onClick={() => setSelectedRelation(relation.id)}><span>{relation.symbol}</span>{relation.label[lang]} <kbd>{index + 1}</kbd></button>)}</div>
-      <div className="coupling-toolbar coupling-matrix-density"><label className="coupling-field">{t.density}<select value={density} onChange={event => setDensity(Number(event.target.value))}><option value={56}>{copy[lang].densityCompact}</option><option value={76}>{copy[lang].densityStandard}</option><option value={104}>{copy[lang].densityWide}</option></select></label><span>{t.matrixDesc} {draft.mode === 'unordered' ? t.symmetric : t.independent}</span></div>
+      <div className="coupling-toolbar coupling-matrix-palette" role="group" aria-label={t.select}>{RELATIONS.map((relation, index) => <button className="coupling-btn coupling-relation-button" style={{ '--relation-color': relation.color } as React.CSSProperties} type="button" key={relation.id} aria-pressed={selectedRelation === relation.id} onClick={() => setSelectedRelation(relation.id)}><span>{relation.symbol}</span>{relation.label[lang]} <kbd>{index + 1}</kbd></button>)}</div>
+      <div className="coupling-matrix-preference"><strong>{t.personalPreference}</strong><PreferencePicker value={selectedPreference} onChange={setSelectedPreference} label={t.personalPreference}/></div>
     </section>
     <div className="coupling-matrix-layout">
       <section className="coupling-panel coupling-matrix-workspace"><h2>{t.title} <small>{modeLabel} · {store.length} {t.records}</small></h2>
         <div ref={scrollRef} className="coupling-matrix-scroll" onKeyDown={handleGridKey} tabIndex={-1}>
-          {roster.length === 0 ? <p className="coupling-empty-note">{t.emptyRoster}</p> : <table className="coupling-relationship-matrix" style={{ width: 180 + roster.length * density }} aria-describedby="coupling-matrix-help"><caption className="coupling-matrix-sr">{modeLabel}. {t.matrixDesc} {draft.mode === 'unordered' ? t.symmetric : t.independent}</caption><colgroup><col style={{ width: 180 }} />{roster.map(id => <col key={id} style={{ width: density }} />)}</colgroup><thead><tr><th className="coupling-matrix-corner" scope="col">{t.row} ↓ / {t.col} →</th>{roster.map(id => { const c = PROFILE_CHARACTER_BY_ID.get(id)!; return <th scope="col" key={id}><div className="coupling-matrix-column"><CharacterAvatar character={c} size={36} decorative /><strong>{c[lang]}</strong></div></th>})}</tr></thead><tbody>{roster.map(from => { const c = PROFILE_CHARACTER_BY_ID.get(from)!; return <tr key={from}><th scope="row"><div className="coupling-matrix-row"><CharacterAvatar character={c} size={32} decorative /><strong>{c[lang]}</strong></div></th>{roster.map(to => { const self = from === to, value = self ? undefined : cellValue(from, to), relation = value ? relationMap.get(value) : undefined, target = PROFILE_CHARACTER_BY_ID.get(to)!; return <td key={to} className={self ? 'coupling-matrix-self' : undefined}><button type="button" className={`coupling-matrix-cell${relation ? ' has-relation' : ''}`} data-from={from} data-to={to} disabled={self} tabIndex={!self && focusRef.current.from === from && focusRef.current.to === to ? 0 : -1} aria-label={`${c[lang]} ${arrow} ${target[lang]}: ${self ? t.self : relation?.label[lang] ?? t.noRelation}`} aria-pressed={Boolean(relation)} style={relation ? { '--relation-color': relation.color, '--relation-background': `${relation.color}13` } as React.CSSProperties : undefined} onClick={() => { focusRef.current = { from, to }; changeRelation(from, to, true); }}><span aria-hidden="true">{self ? '—' : relation?.symbol ?? '·'}</span>{relation && <small>{relation.label[lang]}</small>}</button></td>})}</tr>})}</tbody></table>}
+          {roster.length === 0 ? <p className="coupling-empty-note">{t.emptyRoster}</p> : <table className="coupling-relationship-matrix" role="grid" aria-labelledby="coupling-matrix-caption" aria-describedby="coupling-matrix-help" style={{ width: 180 + roster.length * density }}>
+            <caption id="coupling-matrix-caption" className="coupling-matrix-sr">{modeLabel}. {t.matrixDesc} {draft.mode === 'unordered' ? t.symmetric : t.independent}</caption>
+            <colgroup><col style={{ width: 180 }} />{roster.map(id => <col key={id} style={{ width: density }} />)}</colgroup>
+            <thead><tr><th className="coupling-matrix-corner" scope="col">{t.row} ↓ / {t.col} →</th>{roster.map(id => { const c = PROFILE_CHARACTER_BY_ID.get(id)!; return <th scope="col" key={id} data-focused-axis={focusedCell.to === id ? 'column' : undefined}><div className="coupling-matrix-column"><CharacterAvatar character={c} size={36} decorative /><strong>{c[lang]}</strong></div></th>})}</tr></thead>
+            <tbody>{roster.map(from => { const c = PROFILE_CHARACTER_BY_ID.get(from)!; return <tr key={from} data-focused-row={focusedCell.from === from ? 'true' : undefined}><th scope="row" data-focused-axis={focusedCell.from === from ? 'row' : undefined}><div className="coupling-matrix-row"><CharacterAvatar character={c} size={32} decorative /><strong>{c[lang]}</strong></div></th>{roster.map(to => { const self = from === to, value = self ? undefined : cellValue(from, to), relation = value ? relationMap.get(value.relation) : undefined, preference = value?.preference ? PREFERENCE_BY_ID.get(value.preference) : undefined, target = PROFILE_CHARACTER_BY_ID.get(to)!; return <td key={to} className={self ? 'coupling-matrix-self' : undefined}><button type="button" className={`coupling-matrix-cell${relation ? ' has-relation' : ''}`} data-from={from} data-to={to} disabled={self} tabIndex={!self && focusedCell.from === from && focusedCell.to === to ? 0 : -1} aria-label={`${c[lang]} ${arrow} ${target[lang]}: ${self ? t.self : relation?.label[lang] ?? t.noRelation}${preference ? ` · ${preference.label[lang]}` : ''}`} aria-pressed={Boolean(relation)} style={relation ? { '--relation-color': relation.color, '--relation-background': `${relation.color}13` } as React.CSSProperties : undefined} onClick={() => { focusRef.current = { from, to }; setFocusedCell({ from, to }); changeRelation(from, to, true); }}><span aria-hidden="true">{self ? '—' : relation?.symbol ?? '·'}</span>{relation && <small>{relation.label[lang]}</small>}{preference && <small className="coupling-matrix-preference-mark">{preference.symbol} {preference.label[lang]}</small>}</button></td>})}</tr>})}</tbody>
+          </table>}
         </div><div id="coupling-matrix-help" className="coupling-matrix-help"><p>{t.matrixDesc} {draft.mode === 'unordered' ? t.symmetric : t.independent} {copy[lang].matrixShortcuts.replace('{select}',t.select)}</p><p className="coupling-status" aria-live="polite">{announcement}</p></div>
       </section>
       <aside className="coupling-matrix-sidebar">
         <section className="coupling-panel coupling-matrix-roster"><h2>{t.roster} <small>{roster.length} / {MAX_ROSTER} {t.count}</small></h2><div className="coupling-matrix-chips">{roster.length ? roster.map(id => { const c = PROFILE_CHARACTER_BY_ID.get(id)!; return <div className="coupling-matrix-chip" key={id}><CharacterAvatar character={c} size={28} decorative /><span>{c[lang]}</span><button type="button" className="coupling-btn" aria-label={`${c[lang]} ${t.remove}`} onClick={() => { setPendingRemoval(id); }}>{t.remove}</button></div>}) : <p className="coupling-empty-note">{t.emptyRoster}</p>}</div>{pendingRemoval && <div className="coupling-matrix-confirm" role="group" aria-label={t.confirmTitle}><p><strong>{PROFILE_CHARACTER_BY_ID.get(pendingRemoval)?.[lang]}</strong>: {t.confirmText} ({affectedCount(pendingRemoval)} {t.records})</p><div className="coupling-toolbar"><button className="coupling-btn coupling-btn-primary" type="button" onClick={confirmRemove}>{t.confirmRemove}</button><button className="coupling-btn" type="button" onClick={() => setPendingRemoval(null)}>{t.cancel}</button></div></div>}<p className="coupling-status">{roster.length} / {MAX_ROSTER}</p></section>
         <details className="coupling-panel coupling-matrix-library"><summary>{t.addCharacter}</summary>{roster.length >= MAX_ROSTER && <p className="coupling-matrix-note">{t.max}</p>}<CharacterPicker onSelect={addCharacter} disabledIds={roster} label={t.pickerTitle} /></details>
-        <section className="coupling-panel coupling-matrix-summary"><h2>{t.details} <small>{modeLabel} · {store.length} {t.records}</small></h2>{store.length ? <ul>{store.map(item => { const from = PROFILE_CHARACTER_BY_ID.get(item.from)!, to = PROFILE_CHARACTER_BY_ID.get(item.to)!, relation = relationMap.get(item.relation)!; return <li key={JSON.stringify([item.from, item.to])}><div className="coupling-matrix-pair"><span><CharacterAvatar character={from} size={26} decorative /><strong>{from[lang]}</strong></span><span>{arrow}</span><span><CharacterAvatar character={to} size={26} decorative /><strong>{to[lang]}</strong></span><small style={{ '--relation-color': relation.color } as React.CSSProperties}>{relation.symbol} {relation.label[lang]}</small></div><button className="coupling-btn" type="button" aria-label={`${from[lang]} ${arrow} ${to[lang]} ${t.remove}`} onClick={() => deleteRelation(item.from, item.to)}>{t.remove}</button></li>})}</ul> : <p className="coupling-empty-note">{t.emptyRelations}</p>}</section>
+        <section className="coupling-panel coupling-matrix-summary"><h2>{t.details} <small>{modeLabel} · {store.length} {t.records}</small></h2>{store.length ? <ul>{store.map(item => { const from = PROFILE_CHARACTER_BY_ID.get(item.from)!, to = PROFILE_CHARACTER_BY_ID.get(item.to)!, relation = relationMap.get(item.relation)!, preference = item.preference ? PREFERENCE_BY_ID.get(item.preference) : undefined; return <li key={JSON.stringify([item.from, item.to])}><div className="coupling-matrix-pair"><span><CharacterAvatar character={from} size={26} decorative /><strong>{from[lang]}</strong></span><span>{arrow}</span><span><CharacterAvatar character={to} size={26} decorative /><strong>{to[lang]}</strong></span><small style={{ '--relation-color': relation.color } as React.CSSProperties}>{relation.symbol} {relation.label[lang]}</small>{preference && <small className="coupling-matrix-preference-mark">{preference.symbol} {preference.label[lang]}</small>}</div><button className="coupling-btn" type="button" aria-label={`${from[lang]} ${arrow} ${to[lang]} ${t.remove}`} onClick={() => deleteRelation(item.from, item.to)}>{t.remove}</button></li>})}</ul> : <p className="coupling-empty-note">{t.emptyRelations}</p>}</section>
       </aside>
     </div>
   </section>;

@@ -4,9 +4,10 @@ import { useCouplingDraft } from '../CouplingDraftProvider';
 import { PROFILE_CHARACTERS, PROFILE_CHARACTER_BY_ID } from '../data';
 import CharacterAvatar from '../components/CharacterAvatar';
 import CharacterPicker from '../components/CharacterPicker';
-import { RELATIONS, RELATION_BY_ID, normalizeCouplingSearch } from '../relations';
+import PreferencePicker from '../components/PreferencePicker';
+import { PREFERENCE_BY_ID, RELATIONS, RELATION_BY_ID, normalizeCouplingSearch } from '../relations';
 import copy from '../copy';
-import type { KeyboardDraft, RelationId } from '../types';
+import type { KeyboardDraft, PreferenceId, RelationId } from '../types';
 import '../keyboard/keyboard.css';
 
 const STARTER = ['reimu', 'marisa', 'sakuya', 'remilia', 'youmu', 'yuyuko'];
@@ -22,12 +23,13 @@ export default function KeyboardEditor() {
   const { lang } = useLang();
   const t = copy[lang];
   const words = text[lang];
-  const { draft, setDraft, hasDraft, saveStatus, warning } = useCouplingDraft('keyboard');
+  const { draft, setDraft, resetDraft, hasDraft, saveStatus, warning } = useCouplingDraft('keyboard');
   const source = PROFILE_CHARACTER_BY_ID.get(draft.sourceId) ?? PROFILE_CHARACTER_BY_ID.get('reimu')!;
   const byId = PROFILE_CHARACTER_BY_ID;
   const [stage, setStage] = useState<Stage>('relation');
   const [targetId, setTargetId] = useState<string | null>(null);
   const [relation, setRelation] = useState<RelationId>('love');
+  const [preference, setPreference] = useState<PreferenceId>(null);
   const [libraryMode, setLibraryMode] = useState<'source' | 'target'>('source');
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -85,7 +87,7 @@ export default function KeyboardEditor() {
     if (!character) return;
     setTargetId(id);
     const prior = draft.edges.find(edge => pairKey(edge.a, edge.b) === pairKey(source.id, id));
-    if (prior) setRelation(prior.relation);
+    if (prior) { setRelation(prior.relation); setPreference(prior.preference); }
     setStage('confirm'); setLibraryOpen(false);
     setFeedback(`${character[lang]}${prior ? ` — ${words.update}` : ''}`);
   }, [byId, draft.edges, lang, source.id, words.noResults, words.update]);
@@ -105,15 +107,15 @@ export default function KeyboardEditor() {
     if (stage !== 'confirm' || !target || target.id === source.id) return;
     const key = pairKey(source.id, target.id);
     const prior = draft.edges.find(edge => pairKey(edge.a, edge.b) === key);
-    if (prior?.relation === relation) { setFeedback(words.same); return; }
+    if (prior?.relation === relation && prior.preference === preference) { setFeedback(words.same); return; }
     setHistory(stack => [...stack.slice(-99), draft.edges.map(edge => ({ ...edge }))]);
-    const nextEdge = { a: source.id, b: target.id, relation };
+    const nextEdge = { a: source.id, b: target.id, relation, preference };
     const edges = prior ? draft.edges.map(edge => pairKey(edge.a, edge.b) === key ? nextEdge : edge) : [...draft.edges, nextEdge];
     setDraft(current => ({ ...current, edges }));
     const index = edges.filter(edge => edge.a === source.id || edge.b === source.id).findIndex(edge => pairKey(edge.a, edge.b) === key);
     setGraphPage(Math.floor(index / 8)); setTargetId(null); setStage('target'); setFeedback(words.confirm);
     destinationRef.current?.focus();
-  }, [draft.edges, relation, setDraft, source.id, stage, target, words.confirm, words.same]);
+  }, [draft.edges, preference, relation, setDraft, source.id, stage, target, words.confirm, words.same]);
   const remove = useCallback(() => {
     if (!target || !existing) return;
     setHistory(stack => [...stack.slice(-99), draft.edges.map(edge => ({ ...edge }))]);
@@ -130,6 +132,12 @@ export default function KeyboardEditor() {
     if (!draft.edges.length) return;
     setHistory(stack => [...stack.slice(-99), draft.edges.map(edge => ({ ...edge }))]);
     setDraft(current => ({ ...current, edges: [] })); setFeedback(words.clear);
+  };
+  const resetEditor = () => {
+    if (!window.confirm(t.resetConfirm)) return;
+    resetDraft(); setHistory([]); setStage('relation'); setTargetId(null); setRelation('love'); setPreference(null);
+    setLibraryMode('source'); setLibraryOpen(false); setQuery(''); setTargetPage(0); setGraphPage(0); setZoom(1);
+    setFeedback(t.resetDone); sourceButtonRef.current?.focus();
   };
   const searchTarget = useCallback(() => {
     if (stage === 'source') { setLibraryOpen(true); return; }
@@ -174,9 +182,9 @@ export default function KeyboardEditor() {
         <div className="coupling-keyboard-graph-viewport" ref={viewportRef}>
           <div className="coupling-keyboard-graph-stage" style={{ width: viewportWidth * actualZoom, minHeight: 560 * actualZoom }}>
             <div className={`coupling-keyboard-graph-scene${viewportWidth <= 600 ? ' is-mobile' : ''}`} ref={sceneRef} style={{ width: viewportWidth <= 600 ? viewportWidth : 900, transform: `scale(${actualZoom})`, transformOrigin: 'top left', minHeight: viewportWidth <= 600 ? undefined : 560 }}>
-              <svg className="coupling-keyboard-lines" aria-hidden="true" viewBox="0 0 900 560" preserveAspectRatio="none">{visibleEdges.map((edge, index) => <line key={pairKey(edge.a, edge.b)} x1={viewportWidth <= 600 ? 0 : 450} y1={viewportWidth <= 600 ? 0 : 280} x2={viewportWidth <= 600 ? 0 : (index % 2 === 0 ? 145 : 755)} y2={viewportWidth <= 600 ? 0 : 70 + Math.floor(index / 2) * 140} stroke={relationFor(edge.relation).color} />)}</svg>
+              <svg className="coupling-keyboard-lines" aria-hidden="true" viewBox="0 0 900 560" preserveAspectRatio="none">{visibleEdges.map((edge, index) => <line key={pairKey(edge.a, edge.b)} x1={viewportWidth <= 600 ? 0 : 450} y1={viewportWidth <= 600 ? 0 : 280} x2={viewportWidth <= 600 ? 0 : (index % 2 === 0 ? 145 : 755)} y2={viewportWidth <= 600 ? 0 : 70 + Math.floor(index / 2) * 140} stroke={relationFor(edge.relation).color} strokeDasharray={edge.preference === 'avoid' ? '5 4' : undefined} />)}</svg>
               <article className="coupling-keyboard-node is-center"><div className="coupling-keyboard-caption">{words.focus}</div><div className="coupling-keyboard-identity"><CharacterAvatar character={source} size={70} /><div><strong>{source[lang]}</strong><small>{source.group[lang]}</small></div></div><p>{connected.length}{words.partners}</p></article>
-              {visibleEdges.map((edge, index) => { const character = byId.get(edge.a === source.id ? edge.b : edge.a); if (!character) return null; const rel = relationFor(edge.relation); return <article className="coupling-keyboard-node is-partner" key={pairKey(edge.a, edge.b)} style={{ gridColumn: index % 2 === 0 ? 1 : 3, gridRow: Math.floor(index / 2) + 1, '--coupling-rel': rel.color } as React.CSSProperties}><div className="coupling-keyboard-identity"><CharacterAvatar character={character} size={40} /><div><strong>{character[lang]}</strong><small>{character.group[lang]}</small></div></div><p className="coupling-keyboard-relation">{rel.symbol} {rel.label[lang]}</p><div className="coupling-keyboard-node-actions"><button type="button" onClick={() => chooseSource(character.id)}>{words.center}</button><button type="button" onClick={() => chooseTarget(character.id)}>{words.edit}</button></div></article>; })}
+              {visibleEdges.map((edge, index) => { const character = byId.get(edge.a === source.id ? edge.b : edge.a); if (!character) return null; const rel = relationFor(edge.relation), pref = edge.preference ? PREFERENCE_BY_ID.get(edge.preference) : null; return <article className="coupling-keyboard-node is-partner" key={pairKey(edge.a, edge.b)} style={{ gridColumn: index % 2 === 0 ? 1 : 3, gridRow: Math.floor(index / 2) + 1, '--coupling-rel': rel.color } as React.CSSProperties}><div className="coupling-keyboard-identity"><CharacterAvatar character={character} size={40} /><div><strong>{character[lang]}</strong><small>{character.group[lang]}</small></div></div><p className="coupling-keyboard-relation">{rel.symbol} {rel.label[lang]}{pref && <span className="coupling-preference-label"> · {pref.symbol} {pref.label[lang]}</span>}</p><div className="coupling-keyboard-node-actions"><button type="button" onClick={() => chooseSource(character.id)}>{words.center}</button><button type="button" onClick={() => chooseTarget(character.id)}>{words.edit}</button></div></article>; })}
               {visibleEdges.length === 0 && <p className="coupling-keyboard-empty">{words.empty}<br />{words.emptyGraph}</p>}
             </div>
           </div>
@@ -185,13 +193,13 @@ export default function KeyboardEditor() {
         <div className="coupling-keyboard-roster"><h2>{words.source} <small>{t.start}</small></h2>{STARTER.map(id => { const character = byId.get(id)!; return <button type="button" key={id} aria-pressed={id === source.id} onClick={() => chooseSource(id)}><CharacterAvatar character={character} size={26} decorative /><span>{character[lang]}</span></button>; })}</div>
       </section>
       <aside className="coupling-keyboard-command">
-        <section className="coupling-keyboard-rail"><h2>{t.keyboard}</h2><p className="coupling-keyboard-stage-help">{stage === 'source' ? words.sourceHint : stage === 'relation' ? words.relation : stage === 'target' ? words.target : words.stepConfirm}</p><ol className="coupling-keyboard-steps">{(['source', 'relation', 'target', 'confirm'] as Stage[]).map(item => <li key={item} aria-current={stage === item ? 'step' : undefined}>{({ source: words.source, relation: words.relation, target: words.target, confirm: words.stepConfirm })[item]}</li>)}</ol>
+        <section className="coupling-keyboard-rail"><h2>{t.keyboard}</h2><p className="coupling-keyboard-stage-help">{stage === 'source' ? words.sourceHint : stage === 'relation' ? words.relation : stage === 'target' ? words.target : words.stepConfirm}</p><ol className="coupling-keyboard-steps">{(['source', 'relation', 'target', 'confirm'] as Stage[]).map(item => <li key={item} aria-current={stage === item ? 'step' : undefined} data-complete={['source', 'relation', 'target', 'confirm'].indexOf(item) < ['source', 'relation', 'target', 'confirm'].indexOf(stage) || undefined}>{({ source: words.source, relation: words.relation, target: words.target, confirm: words.stepConfirm })[item]}</li>)}</ol>
           <div className="coupling-keyboard-source-slot"><small>{words.focus}</small><div><CharacterAvatar character={source} size={36} /><strong>{source[lang]}</strong></div><button ref={sourceButtonRef} type="button" onClick={() => openLibrary('source')}>{words.changeSource}</button></div>
-          <div className="coupling-keyboard-relations"><h3>{words.relationship}</h3>{RELATIONS.map((item, index) => <button type="button" key={item.id} aria-pressed={relation === item.id} style={{ '--coupling-rel': item.color } as React.CSSProperties} onClick={() => chooseRelation(item.id)}><span>{item.symbol}</span> {item.label[lang]}{stage !== 'target' && <kbd>{index + 1}</kbd>}</button>)}</div>
-          <form className="coupling-keyboard-search" onSubmit={submitSearch}><label>{words.search}<input ref={searchRef} type="search" value={query} onFocus={() => { if (stage !== 'target') { setTargetId(null); setStage('target'); } }} onChange={event => { setQuery(event.target.value); setTargetPage(0); }} placeholder={t.searchPlaceholder} /></label><button type="submit">{words.searchDone}</button></form>
-          <section className="coupling-keyboard-suggestions" ref={destinationRef} tabIndex={-1} aria-label={words.suggestions}><div className="coupling-keyboard-suggestion-heading"><h3>{words.suggestions}</h3><span>{suggestions.length} / {PROFILE_CHARACTERS.length}</span></div><div className="coupling-keyboard-destinations">{visibleSuggestions.map((character, index) => <button type="button" key={character.id} aria-pressed={targetId === character.id} onClick={() => chooseTarget(character.id)}><kbd>{index + 1}</kbd><CharacterAvatar character={character} size={28} decorative /><span><strong>{character[lang]}</strong><small>{character.group[lang]}</small></span></button>)}{suggestions.length === 0 && <p>{words.noResults}</p>}</div><div className="coupling-keyboard-pagination"><button type="button" disabled={targetPage === 0} onClick={() => setTargetPage(page => Math.max(0, page - 1))}>{words.prev}</button><span>{Math.min(targetPage + 1, pages)} / {pages}</span><button type="button" disabled={targetPage >= pages - 1} onClick={() => setTargetPage(page => page + 1)}>{words.next}</button></div></section>
-          {target && <div className="coupling-keyboard-pending"><strong>{source[lang]} → {target[lang]}</strong><span style={{ color: relationFor(relation).color }}>{relationFor(relation).symbol} {relationFor(relation).label[lang]}</span><small>{existing ? words.savedExists : words.notSaved}</small></div>}
-          <div className="coupling-keyboard-actions"><button ref={confirmRef} type="button" disabled={stage !== 'confirm' || !target} onClick={confirm}>{existing ? words.update : words.confirm}</button><button type="button" disabled={stage === 'relation'} onClick={cancel}>{words.cancel}</button><button type="button" disabled={!existing} onClick={remove}>{words.remove}</button><button type="button" disabled={!history.length} onClick={undo}>{t.undo}</button><button type="button" disabled={!draft.edges.length} onClick={clear}>{words.clear}</button></div>
+          {(stage === 'relation' || stage === 'confirm') && <><div className="coupling-keyboard-relations" role="group" aria-label={words.relationship}><h3>{words.relationship}</h3>{RELATIONS.map((item, index) => <button type="button" key={item.id} aria-pressed={relation === item.id} style={{ '--coupling-rel': item.color } as React.CSSProperties} onClick={() => chooseRelation(item.id)}><span>{item.symbol}</span> {item.label[lang]}<kbd>{index + 1}</kbd></button>)}</div><div className="coupling-keyboard-preference-setting"><strong>{t.personalPreference}</strong><PreferencePicker value={preference} onChange={setPreference} label={t.personalPreference} /></div></>}
+          {stage === 'target' && <><form className="coupling-keyboard-search" onSubmit={submitSearch}><label>{words.search}<input ref={searchRef} type="search" value={query} onFocus={() => { if (stage !== 'target') { setTargetId(null); setStage('target'); } }} onChange={event => { setQuery(event.target.value); setTargetPage(0); }} placeholder={t.searchPlaceholder} /></label><button type="submit">{words.searchDone}</button></form>
+          <section className="coupling-keyboard-suggestions" ref={destinationRef} tabIndex={-1} aria-label={words.suggestions}><div className="coupling-keyboard-suggestion-heading"><h3>{words.suggestions}</h3><span>{suggestions.length} / {PROFILE_CHARACTERS.length}</span></div><div className="coupling-keyboard-destinations">{visibleSuggestions.map((character, index) => <button type="button" key={character.id} aria-pressed={targetId === character.id} onClick={() => chooseTarget(character.id)}><kbd>{index + 1}</kbd><CharacterAvatar character={character} size={28} decorative /><span><strong>{character[lang]}</strong><small>{character.group[lang]}</small></span></button>)}{suggestions.length === 0 && <p>{words.noResults}</p>}</div><div className="coupling-keyboard-pagination"><button type="button" disabled={targetPage === 0} onClick={() => setTargetPage(page => Math.max(0, page - 1))}>{words.prev}</button><span>{Math.min(targetPage + 1, pages)} / {pages}</span><button type="button" disabled={targetPage >= pages - 1} onClick={() => setTargetPage(page => page + 1)}>{words.next}</button></div></section></>}
+          {stage === 'confirm' && target && <div className="coupling-keyboard-pending"><strong>{source[lang]} → {target[lang]}</strong><span style={{ color: relationFor(relation).color }}>{relationFor(relation).symbol} {relationFor(relation).label[lang]}{preference && <span className="coupling-preference-label"> · {PREFERENCE_BY_ID.get(preference)?.symbol} {PREFERENCE_BY_ID.get(preference)?.label[lang]}</span>}</span><small>{existing ? words.savedExists : words.notSaved}</small><button type="button" className="coupling-btn" onClick={() => { setTargetId(null); setStage('target'); setFeedback(words.targetHint); requestAnimationFrame(() => searchRef.current?.focus()); }}>{words.target}</button></div>}
+          <div className="coupling-keyboard-actions">{stage === 'confirm' && <button ref={confirmRef} className="coupling-btn coupling-btn-primary" type="button" disabled={!target} onClick={confirm}>{existing ? words.update : words.confirm}</button>}{stage !== 'relation' && <button className="coupling-btn" type="button" onClick={cancel}>{words.cancel}</button>}{stage === 'confirm' && existing && <button className="coupling-btn" type="button" onClick={remove}>{words.remove}</button>}{history.length > 0 && <button className="coupling-btn" type="button" onClick={undo}>{t.undo}</button>}{draft.edges.length > 0 && <button className="coupling-btn" type="button" onClick={clear}>{words.clear}</button>}<button className="coupling-btn" type="button" onClick={resetEditor}>{t.reset}</button></div>
         </section>
         <details className="coupling-keyboard-library" open={libraryOpen} onToggle={event => setLibraryOpen(event.currentTarget.open)}><summary>{words.allLibrary}</summary><div className="coupling-keyboard-library-mode"><button type="button" aria-pressed={libraryMode === 'source'} onClick={() => { setLibraryMode('source'); setStage('source'); }}>{words.sourceMode}</button><button type="button" aria-pressed={libraryMode === 'target'} onClick={() => { setLibraryMode('target'); setStage('target'); }}>{words.targetMode}</button></div><p>{libraryMode === 'source' ? words.sourceHint : words.targetHint}</p><CharacterPicker label={words.allLibrary} initialGroup="" autoFocus={libraryOpen} onSelect={character => libraryMode === 'source' ? chooseSource(character.id) : chooseTarget(character.id)} /></details>
       </aside>

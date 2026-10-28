@@ -12,6 +12,7 @@ type Entries = { [K in EditorId]: DraftEntry<K> };
 type CouplingDraftContextValue = {
   entries: Entries;
   setDraft: <K extends EditorId>(id: K, action: SetStateAction<Drafts[K]>) => void;
+  resetDraft: <K extends EditorId>(id: K) => Drafts[K];
   flush: () => void;
 };
 const CouplingDraftContext = createContext<CouplingDraftContextValue | null>(null);
@@ -19,7 +20,7 @@ const ids: EditorId[] = ['whiteboard', 'keyboard', 'pairs', 'matrix'];
 
 function readEntry<K extends EditorId>(id: K, fallback: Drafts[K]): DraftEntry<K> {
   const result = readDraft(id);
-  if (result.kind === 'valid') return { draft: result.data, hasDraft: true, dirty: false, saveStatus: 'saved', restoreError: false, storageError: false };
+  if (result.kind === 'valid') return { draft: result.data, hasDraft: true, dirty: result.migrated, saveStatus: result.migrated ? 'saving' : 'saved', restoreError: false, storageError: false };
   return {
     draft: fallback, hasDraft: false, dirty: false,
     saveStatus: result.kind === 'unavailable' ? 'memory-only' : 'saved',
@@ -68,6 +69,24 @@ export function CouplingDraftProvider({ children }: { children: ReactNode }) {
       return { ...previous, [id]: { ...entry, draft: next, hasDraft: true, dirty: true, saveStatus: 'saving', restoreError: false } } as Entries;
     });
   }, []);
+  const resetDraft = useCallback(<K extends EditorId,>(id: K): Drafts[K] => {
+    const initial = createDefaultDrafts()[id];
+    let storageError = false;
+    try {
+      window.localStorage.removeItem(DRAFT_KEYS[id]);
+    } catch {
+      storageError = true;
+    }
+    setEntries(previous => ({
+      ...previous,
+      [id]: {
+        draft: initial, hasDraft: false, dirty: false,
+        saveStatus: storageError ? 'memory-only' : 'saved', restoreError: false, storageError,
+      },
+    } as Entries));
+    return initial;
+  }, []);
+
 
   useEffect(() => {
     if (!ids.some(id => entries[id].dirty && entries[id].saveStatus === 'saving')) return;
@@ -81,19 +100,20 @@ export function CouplingDraftProvider({ children }: { children: ReactNode }) {
     return () => { window.removeEventListener('pagehide', onPageHide); flush(); };
   }, [flush]);
 
-  const value = useMemo(() => ({ entries, setDraft, flush }), [entries, setDraft, flush]);
+  const value = useMemo(() => ({ entries, setDraft, resetDraft, flush }), [entries, setDraft, resetDraft, flush]);
   return <CouplingDraftContext.Provider value={value}>{children}</CouplingDraftContext.Provider>;
 }
 
 export function useCouplingDraft<K extends EditorId>(id: K): {
-  draft: Drafts[K]; setDraft: Dispatch<SetStateAction<Drafts[K]>>; hasDraft: boolean; saveStatus: DraftSaveStatus; warning: string | null;
+  draft: Drafts[K]; setDraft: Dispatch<SetStateAction<Drafts[K]>>; resetDraft: () => Drafts[K]; hasDraft: boolean; saveStatus: DraftSaveStatus; warning: string | null;
 } {
   const context = useContext(CouplingDraftContext);
   const { lang } = useLang();
   if (!context) throw new Error('useCouplingDraft must be used inside CouplingDraftProvider');
   const entry = context.entries[id];
   const setDraft = useCallback<Dispatch<SetStateAction<Drafts[K]>>>(action => context.setDraft(id, action), [context.setDraft, id]);
+  const resetDraft = useCallback(() => context.resetDraft(id), [context.resetDraft, id]);
   const warning = entry.storageError ? copy[lang].saveFailed
     : entry.restoreError ? copy[lang].restoreFailed : null;
-  return { draft: entry.draft, setDraft, hasDraft: entry.hasDraft, saveStatus: entry.saveStatus, warning };
+  return { draft: entry.draft, setDraft, resetDraft, hasDraft: entry.hasDraft, saveStatus: entry.saveStatus, warning };
 }

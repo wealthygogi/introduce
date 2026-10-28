@@ -112,6 +112,10 @@ test('whiteboard batch is atomic, edges follow moved nodes, and full layout fits
   const tipBox = await tooltip.boundingBox();
   assert.ok(tipBox.x >= 0 && tipBox.y >= 0 && tipBox.x + tipBox.width <= viewport.width && tipBox.y + tipBox.height <= viewport.height);
 
+  await page.locator('.coupling-board-line-toggle').click();
+  assert.deepEqual(await page.locator('.coupling-board-relation-choice small').allTextContents(), ['커플링', '친구·가족', '동료·동맹', '라이벌·앙숙', '복잡·미정']);
+  await page.locator('.coupling-board-preference [data-preference="favorite"]').click();
+  await page.locator('.coupling-board-line-toggle').click();
   await page.locator('.coupling-board-fab[aria-label="연결"]').click();
   const reimuRing = page.locator('[data-node="reimu"] .coupling-node-ring');
   const marisaRing = page.locator('[data-node="marisa"] .coupling-node-ring');
@@ -122,6 +126,8 @@ test('whiteboard batch is atomic, edges follow moved nodes, and full layout fits
   const pathBefore = await edge.getAttribute('d');
   assert.match(pathBefore, /^M .* L /, 'a single mutual relation is rendered as a straight path');
   assert.ok(await page.locator('.coupling-board-edges g .coupling-edge-line').first().getAttribute('marker-start'));
+  assert.equal(await page.locator('.coupling-edge-preference').textContent(), '✦', 'favorite preference is shown separately from relationship type');
+  assert.match(await page.locator('.coupling-edge-list').innerText(), /커플링[\s\S]*최애/);
 
   await page.locator('.coupling-board-fab[aria-label="선택 / 이동"]').click();
   await page.locator('.coupling-whiteboard').focus();
@@ -204,6 +210,8 @@ test('whiteboard batch is atomic, edges follow moved nodes, and full layout fits
   await page.waitForFunction(() => JSON.parse(localStorage.getItem('introduce:coupling:whiteboard:v1') ?? '{}').data?.edges?.length === 1);
   const stored = await readDraft(page, 'introduce:coupling:whiteboard:v1');
   assert.equal(stored.version, 1);
+  assert.equal(stored.data.edges[0].type, 'love');
+  assert.equal(stored.data.edges[0].preference, 'favorite');
   assert.deepEqual(await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('introduce:coupling:'))), ['introduce:coupling:whiteboard:v1']);
 });
 
@@ -327,7 +335,7 @@ test('whiteboard FAB menus expand, select relation and direction, and affect new
   await more.click();
   await morePanel.waitFor({ state: 'visible' });
   assert.equal(await more.getAttribute('aria-expanded'), 'true');
-  assert.deepEqual(await morePanel.locator('.coupling-board-mini-fab').allInnerTexts(), ['실행 취소', '다시 실행', '전체 배치'], 'history and full layout stay in the More palette');
+  assert.deepEqual(await morePanel.locator('.coupling-board-mini-fab').evaluateAll(buttons => buttons.map(button => button.getAttribute('aria-label'))), ['실행 취소', '다시 실행', '전체 배치', '초기화'], 'history, full layout, and reset stay in the More palette');
   assert.equal(await morePanel.getByRole('button', { name: '실행 취소' }).isDisabled(), true);
   await more.click();
   await morePanel.waitFor({ state: 'hidden' });
@@ -417,15 +425,17 @@ test('keyboard relay handles the 1-1-Enter sequence, reverse updates, and IME ev
   await page.locator('.coupling-keyboard-destinations button').first().click();
   assert.equal(await root.getAttribute('data-stage'), 'confirm');
   await page.keyboard.press('2');
-  await page.keyboard.press('Enter');
-  await page.waitForFunction(() => JSON.parse(localStorage.getItem('introduce:coupling:keyboard:v1') ?? '{}').data?.edges?.[0]?.relation === 'favorite');
+  await page.locator('.coupling-keyboard-preference-setting [data-preference="favorite"]').click();
+  await page.locator('.coupling-keyboard-actions .coupling-btn-primary').click();
+  await page.waitForFunction(() => JSON.parse(localStorage.getItem('introduce:coupling:keyboard:v1') ?? '{}').data?.edges?.[0]?.relation === 'friend' && JSON.parse(localStorage.getItem('introduce:coupling:keyboard:v1') ?? '{}').data?.edges?.[0]?.preference === 'favorite');
   assert.equal(await page.locator('.coupling-keyboard-relation').count(), 1, 'reversing the center updates the existing unordered pair');
-  assert.match(await page.locator('.coupling-keyboard-relation').first().innerText(), /최애 커플링/);
+  assert.match(await page.locator('.coupling-keyboard-relation').first().innerText(), /친구·가족.*최애/);
 
   await page.evaluate(() => window.dispatchEvent(new Event('pagehide')));
   const stored = await readDraft(page, 'introduce:coupling:keyboard:v1');
   assert.equal(stored.data.edges.length, 1);
-  assert.equal(stored.data.edges[0].relation, 'favorite');
+  assert.equal(stored.data.edges[0].relation, 'friend');
+  assert.equal(stored.data.edges[0].preference, 'favorite');
   assert.deepEqual(new Set([stored.data.edges[0].a, stored.data.edges[0].b]), new Set(['reimu', 'marisa']));
   assert.deepEqual(await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('introduce:coupling:'))), ['introduce:coupling:keyboard:v1']);
   await page.reload();
@@ -461,11 +471,14 @@ test('pair cards prevent self-pairs, preserve direction and memo, deduplicate, e
   assert.equal(slotWidths.length, 2);
   assert.ok(slotWidths.every(width => width >= 200), `both character slots remain usable at desktop width: ${slotWidths.join(', ')}`);
   assert.ok(Math.abs(slotWidths[0] - slotWidths[1]) < 1, 'the A and B character slots have matching widths');
+  await page.locator('.coupling-pairs-controls input[name="pairRelation"][value="ally"]').check();
+  await page.locator('.coupling-pairs-preference-group [data-preference="favorite"]').click();
   await page.locator('.coupling-pairs-fields textarea').fill('favorite scene\nfirst note');
   await save('카드 저장');
   assert.equal(await count(), 1);
   assert.match(await page.locator('.coupling-pair-card').first().innerText(), /레이무.*마리사|레이무[\s\S]*마리사/);
   assert.match(await page.locator('.coupling-pair-card').first().innerText(), /favorite scene\nfirst note/);
+  assert.match(await page.locator('.coupling-pair-card').first().locator('.coupling-pair-card-top').innerText(), /동료·동맹.*최애/);
 
   await save('새 카드');
   await choosePair('reimu', 'marisa');
@@ -530,6 +543,8 @@ test('pair cards prevent self-pairs, preserve direction and memo, deduplicate, e
   assert.match(await page.locator('.coupling-pair-card').first().innerText(), /edited memo/);
   const stored = await readDraft(page, 'introduce:coupling:pairs:v1');
   assert.equal(stored.data.pairs.length, 3);
+  assert.equal(stored.data.pairs[0].relation, 'ally');
+  assert.equal(stored.data.pairs[0].preference, 'favorite');
   assert.deepEqual(await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('introduce:coupling:'))), ['introduce:coupling:pairs:v1']);
 });
 
@@ -551,8 +566,18 @@ test('matrix keeps directed records independent, unordered records symmetric, an
   assert.equal(await page.locator('.coupling-relationship-matrix thead th[data-focused-axis="column"]').count(), 1);
   const forward = page.locator('button[data-from="reimu"][data-to="marisa"]');
   const reverse = page.locator('button[data-from="marisa"][data-to="reimu"]');
-  await forward.click();
-  await reverse.click();
+  await page.locator('.coupling-matrix-palette').getByRole('button', { name: /동료·동맹/ }).click();
+  await forward.focus();
+  await page.keyboard.press('x');
+  assert.equal(await page.locator('.coupling-matrix-preference [data-preference="avoid"]').getAttribute('aria-pressed'), 'true', 'X selects the not-for-me preference');
+  await page.keyboard.press('0');
+  await page.keyboard.press('f');
+  await page.keyboard.press('Enter');
+  await page.waitForFunction(() => JSON.parse(localStorage.getItem('introduce:coupling:matrix:v1') ?? '{}').data?.directed?.[0]?.preference === 'favorite');
+  await page.locator('.coupling-matrix-palette').getByRole('button', { name: /친구·가족/ }).click();
+  await reverse.focus();
+  await page.keyboard.press('0');
+  await page.keyboard.press('Enter');
   assert.equal(await forward.getAttribute('aria-pressed'), 'true');
   assert.equal(await reverse.getAttribute('aria-pressed'), 'true');
   await page.locator('.coupling-matrix-mode button:nth-child(2)').click();
@@ -582,6 +607,11 @@ test('matrix keeps directed records independent, unordered records symmetric, an
   assert.equal(await page.locator('.coupling-matrix-mode button:first-child').innerText(), '방향 있음 (2)');
   assert.equal(await page.locator('.coupling-matrix-mode button:nth-child(2)').innerText(), '방향 없음 (1)');
   assert.deepEqual(await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('introduce:coupling:'))), ['introduce:coupling:matrix:v1']);
+  const stored = await readDraft(page, 'introduce:coupling:matrix:v1');
+  assert.equal(stored.data.directed.find(edge => edge.from === 'reimu' && edge.to === 'marisa').relation, 'ally');
+  assert.equal(stored.data.directed.find(edge => edge.from === 'reimu' && edge.to === 'marisa').preference, 'favorite');
+  assert.equal(stored.data.directed.find(edge => edge.from === 'marisa' && edge.to === 'reimu').relation, 'friend');
+  assert.equal(stored.data.directed.find(edge => edge.from === 'marisa' && edge.to === 'reimu').preference, null);
 });
 
 
@@ -687,6 +717,127 @@ test('matrix roster caps at sixteen and reports the blocked addition', async t =
   assert.equal(await page.locator('.coupling-matrix-chip').count(), 16);
   assert.match(await page.locator('.coupling-matrix-note').innerText(), /최대 16명/);
   assert.match(await page.locator('.coupling-matrix-help .coupling-status').innerText(), /최대 16명/);
+});
+
+
+test('legacy favorite and avoid relationship types migrate to preference markers in every editor', async t => {
+  const page = await pageFor(t, '/coupling/whiteboard', { width: 1280, height: 900 }, () => {
+    const save = (key, data) => localStorage.setItem(key, JSON.stringify({ version: 1, data }));
+    save('introduce:coupling:whiteboard:v1', { nodes: [{ id: 'reimu', x: 0, y: 0 }, { id: 'marisa', x: 128, y: 0 }], edges: [{ id: 'edge-1', from: 'reimu', to: 'marisa', type: 'favorite', direction: 'both' }], view: { x: 0, y: 0, zoom: 1 } });
+    save('introduce:coupling:keyboard:v1', { sourceId: 'reimu', edges: [{ a: 'reimu', b: 'marisa', relation: 'avoid' }] });
+    save('introduce:coupling:pairs:v1', { pairs: [{ id: 'pair-1', a: 'reimu', b: 'marisa', relation: 'favorite', direction: 'mutual', memo: 'keep memo' }], draft: { a: 'sakuya', b: 'youmu', relation: 'avoid', direction: 'forward', memo: 'keep draft' }, activeSlot: 'a', editingId: 'pair-1' });
+    save('introduce:coupling:matrix:v1', { roster: ['reimu', 'marisa'], mode: 'directed', directed: [{ from: 'reimu', to: 'marisa', relation: 'favorite' }], unordered: [{ from: 'reimu', to: 'marisa', relation: 'avoid' }] });
+  });
+  await page.waitForFunction(() => {
+    const data = key => JSON.parse(localStorage.getItem(key) ?? 'null')?.data;
+    const whiteboard = data('introduce:coupling:whiteboard:v1'), keyboard = data('introduce:coupling:keyboard:v1');
+    const pairs = data('introduce:coupling:pairs:v1'), matrix = data('introduce:coupling:matrix:v1');
+    return whiteboard?.edges?.[0]?.type === 'complex' && whiteboard.edges[0].preference === 'favorite'
+      && keyboard?.edges?.[0]?.relation === 'complex' && keyboard.edges[0].preference === 'avoid'
+      && pairs?.pairs?.[0]?.relation === 'complex' && pairs.pairs[0].preference === 'favorite'
+      && pairs.draft.relation === 'complex' && pairs.draft.preference === 'avoid'
+      && matrix?.directed?.[0]?.relation === 'complex' && matrix.directed[0].preference === 'favorite'
+      && matrix.unordered?.[0]?.relation === 'complex' && matrix.unordered[0].preference === 'avoid';
+  });
+  const whiteboard = await readDraft(page, 'introduce:coupling:whiteboard:v1');
+  assert.deepEqual(whiteboard.data.nodes.map(node => [node.id, node.x, node.y]), [['reimu', 0, 0], ['marisa', 128, 0]]);
+  assert.match(await page.locator('.coupling-edge-list').innerText(), /복잡·미정.*최애/);
+  await page.goto(`${base}/coupling/keyboard`);
+  await page.waitForSelector('.coupling-keyboard');
+  assert.match(await page.locator('.coupling-keyboard-relation').innerText(), /복잡·미정[\s\S]*취향 아님/);
+  await page.goto(`${base}/coupling/pairs`);
+  await page.waitForSelector('.coupling-pairs');
+  assert.match(await page.locator('.coupling-pair-card').innerText(), /복잡·미정[\s\S]*최애/);
+  assert.equal(await page.locator('.coupling-pairs-preference-group [data-preference="avoid"]').getAttribute('aria-pressed'), 'true');
+  assert.equal(await page.locator('.coupling-pairs-fields textarea').inputValue(), 'keep draft');
+  await page.goto(`${base}/coupling/matrix`);
+  await page.waitForSelector('.coupling-matrix-editor');
+  assert.match(await page.locator('.coupling-matrix-summary li').innerText(), /복잡·미정[\s\S]*최애/);
+  await page.locator('.coupling-matrix-mode button:nth-child(2)').click();
+  assert.match(await page.locator('.coupling-matrix-summary li').innerText(), /복잡·미정[\s\S]*취향 아님/);
+});
+
+test('all four editors reset only their own draft to first-use state', async t => {
+  const keys = {
+    whiteboard: 'introduce:coupling:whiteboard:v1',
+    keyboard: 'introduce:coupling:keyboard:v1',
+    pairs: 'introduce:coupling:pairs:v1',
+    matrix: 'introduce:coupling:matrix:v1',
+  };
+  const page = await pageFor(t, '/coupling/whiteboard', undefined, () => {
+    if (localStorage.getItem('test:coupling-reset-seeded')) return;
+    localStorage.setItem('test:coupling-reset-seeded', '1');
+    const save = (key, data) => localStorage.setItem(key, JSON.stringify({ version: 1, data }));
+    save('introduce:coupling:whiteboard:v1', {
+      nodes: [{ id: 'reimu', x: 0, y: 0 }, { id: 'marisa', x: 128, y: 0 }, { id: 'sakuya', x: 256, y: 0 }],
+      edges: [{ id: 'edge-1', from: 'reimu', to: 'marisa', type: 'love', preference: null, direction: 'both' }],
+      view: { x: 0, y: 0, zoom: 1 },
+    });
+    save('introduce:coupling:keyboard:v1', { sourceId: 'marisa', edges: [{ a: 'marisa', b: 'reimu', relation: 'rival', preference: 'avoid' }] });
+    save('introduce:coupling:pairs:v1', {
+      pairs: [{ id: 'pair-1', a: 'reimu', b: 'marisa', relation: 'ally', preference: 'favorite', direction: 'mutual', memo: 'saved memo' }],
+      draft: { a: 'sakuya', b: 'youmu', relation: 'rival', preference: 'avoid', direction: 'forward', memo: 'unsaved memo' },
+      activeSlot: 'b',
+      editingId: 'pair-1',
+    });
+    save('introduce:coupling:matrix:v1', {
+      roster: ['reimu', 'marisa', 'sakuya'],
+      mode: 'unordered',
+      directed: [{ from: 'reimu', to: 'marisa', relation: 'friend', preference: null }],
+      unordered: [{ from: 'reimu', to: 'sakuya', relation: 'rival', preference: 'avoid' }],
+    });
+  });
+  const stored = key => page.evaluate(storageKey => localStorage.getItem(storageKey), key);
+  const confirmReset = async button => {
+    let message = '';
+    page.once('dialog', async dialog => { message = dialog.message(); await dialog.accept(); });
+    await button.click();
+    assert.match(message, /이 편집기의 초안/);
+  };
+
+  await page.waitForSelector('.coupling-whiteboard');
+  assert.equal(await page.locator('.coupling-board-node').count(), 3);
+  assert.equal(await page.locator('.coupling-edge-list button').count(), 1);
+  await page.locator('.coupling-board-more-toggle').click();
+  const whiteboardReset = page.locator('.coupling-board-more-panel').getByRole('button', { name: '초기화' });
+  page.once('dialog', dialog => dialog.dismiss());
+  await whiteboardReset.click();
+  assert.equal(await page.locator('.coupling-board-node').count(), 3, 'cancelling reset leaves the current board intact');
+  assert.equal((await stored(keys.whiteboard)) !== null, true);
+  await confirmReset(whiteboardReset);
+  await page.waitForFunction(() => document.querySelectorAll('.coupling-board-node').length === 6 && document.querySelectorAll('.coupling-edge-list button').length === 0);
+  assert.deepEqual(await page.locator('.coupling-board-node').evaluateAll(nodes => nodes.map(node => node.dataset.node)), ['reimu', 'marisa', 'sakuya', 'remilia', 'youmu', 'yuyuko']);
+  assert.equal(await stored(keys.whiteboard), null);
+  assert.notEqual(await stored(keys.keyboard), null, 'reset leaves other editor drafts untouched');
+
+  await page.goto(`${base}/coupling/keyboard`);
+  await page.waitForSelector('.coupling-keyboard');
+  assert.equal(await page.locator('.coupling-keyboard-node.is-partner').count(), 1);
+  await confirmReset(page.getByRole('button', { name: '초기화' }));
+  assert.equal(await page.locator('.coupling-keyboard-node.is-partner').count(), 0);
+  assert.match(await page.locator('.coupling-keyboard-graph-panel .coupling-keyboard-toolbar > strong').innerText(), /하쿠레이 레이무/);
+  assert.equal(await stored(keys.keyboard), null);
+  assert.notEqual(await stored(keys.pairs), null);
+
+  await page.goto(`${base}/coupling/pairs`);
+  await page.waitForSelector('.coupling-pairs');
+  assert.equal(await page.locator('.coupling-pair-card').count(), 1);
+  assert.equal(await page.locator('.coupling-pairs-fields textarea').inputValue(), 'unsaved memo');
+  await confirmReset(page.getByRole('button', { name: '초기화' }));
+  assert.equal(await page.locator('.coupling-pair-card').count(), 0);
+  assert.equal(await page.locator('.coupling-pairs-fields textarea').inputValue(), '');
+  assert.equal(await stored(keys.pairs), null);
+  assert.notEqual(await stored(keys.matrix), null);
+
+  await page.goto(`${base}/coupling/matrix`);
+  await page.waitForSelector('.coupling-matrix-editor');
+  assert.equal(await page.locator('.coupling-matrix-summary li').count(), 1);
+  await confirmReset(page.getByRole('button', { name: '초기화' }));
+  assert.equal(await page.locator('.coupling-matrix-mode button:nth-child(1)').getAttribute('aria-pressed'), 'true');
+  assert.equal(await page.locator('.coupling-matrix-chip').count(), 6);
+  assert.equal(await page.locator('.coupling-matrix-summary li').count(), 0);
+  assert.equal(await stored(keys.matrix), null);
+  await page.evaluate(() => localStorage.removeItem('test:coupling-reset-seeded'));
 });
 
 

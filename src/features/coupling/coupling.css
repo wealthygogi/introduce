@@ -56,6 +56,11 @@
 .coupling-root .coupling-choice-mark { margin-left: auto; color: var(--coupling-muted); }
 .coupling-root .coupling-empty-note { grid-column: 1 / -1; padding: 20px 8px; color: var(--coupling-muted); text-align: center; }
 .coupling-root .coupling-relation-button { border-left: 3px solid var(--relation-color, #999); }
+.coupling-root .coupling-preference-picker { display: flex; flex-wrap: wrap; gap: 6px; }
+.coupling-root .coupling-preference-option { min-height: 34px; padding: 5px 9px; border-color: var(--preference-color); color: var(--preference-color); font-size: 12px; }
+.coupling-root .coupling-preference-option > span:first-child { font-size: 15px; line-height: 1; }
+.coupling-root .coupling-preference-option[aria-pressed='true'] { border-color: var(--preference-color); background: color-mix(in srgb, var(--preference-color) 12%, white); }
+.coupling-root .coupling-preference-label { color:#7852a5; font-weight:650; }
 .coupling-root .coupling-relation-button[aria-pressed='true'] { background: #f2f3f5; font-weight: 700; }
 .coupling-root .coupling-save-warning { color: #963b42; font-size: 13px; }
 @media (min-width: 761px) {

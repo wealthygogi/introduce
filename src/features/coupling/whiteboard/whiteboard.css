@@ -1,8 +1,27 @@
 .coupling-whiteboard { display:grid; gap:12px; min-width:0; color:#20252d; }
-.coupling-whiteboard .coupling-toolbar { display:flex; align-items:end; flex-wrap:wrap; gap:7px; padding:10px; border:1px solid #dce1e7; border-radius:10px; background:#fff; }
-.coupling-whiteboard .coupling-toolbar .coupling-field { min-width:110px; }
-.coupling-whiteboard kbd { padding:1px 4px; border:1px solid #cbd1d8; border-radius:4px; font-size:11px; }
 .coupling-board-viewport { position:relative; height:min(70vh,720px); min-height:380px; overflow:hidden; border:1px solid #dce1e7; border-radius:12px; background-color:#fff; background-image:radial-gradient(#e6e9ed 1px,transparent 1px); background-size:20px 20px; touch-action:none; user-select:none; }
+.coupling-whiteboard .coupling-board-fabs { position:absolute; z-index:5; top:10px; left:10px; display:flex; align-items:center; gap:6px; padding:6px; border:1px solid #dce1e7; border-radius:22px; background:rgba(255,255,255,.96); box-shadow:0 4px 16px #17212b24; backdrop-filter:blur(8px); }
+.coupling-whiteboard .coupling-board-fab { width:48px; min-width:48px; height:48px; min-height:48px; padding:0; border-radius:50%; }
+.coupling-whiteboard .coupling-board-fab svg { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.coupling-whiteboard .coupling-board-fab:nth-child(2) svg path { fill:currentColor; }
+.coupling-whiteboard .coupling-board-fab[aria-pressed="true"],.coupling-whiteboard .coupling-board-fab[aria-expanded="true"],.coupling-whiteboard .coupling-board-fab-primary { border-color:#20252d; background:#20252d; color:#fff; }
+.coupling-whiteboard .coupling-board-fab:hover:not(:disabled) { background:#f0f3f6; }
+.coupling-whiteboard .coupling-board-fab[aria-pressed="true"]:hover:not(:disabled),.coupling-whiteboard .coupling-board-fab[aria-expanded="true"]:hover:not(:disabled),.coupling-whiteboard .coupling-board-fab-primary:hover:not(:disabled) { background:#38434f; }
+.coupling-whiteboard .coupling-board-more-panel,.coupling-whiteboard .coupling-board-line-settings,.coupling-whiteboard .coupling-board-view-panel { position:absolute; z-index:5; top:80px; left:10px; gap:6px; padding:8px; border:1px solid #dce1e7; border-radius:12px; background:rgba(255,255,255,.96); box-shadow:0 4px 16px #17212b24; backdrop-filter:blur(8px); }
+.coupling-whiteboard .coupling-board-more-panel,.coupling-whiteboard .coupling-board-view-panel { display:grid; width:284px; max-width:calc(100% - 16px); grid-template-columns:repeat(4,minmax(0,1fr)); }
+.coupling-whiteboard .coupling-board-mini-fab { display:flex; width:100%; min-width:0; height:46px; min-height:46px; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:3px 2px; border-radius:12px; font-size:9px; line-height:1.1; white-space:nowrap; }
+.coupling-whiteboard .coupling-board-mini-fab svg { flex:0 0 16px; width:16px; height:16px; }
+.coupling-whiteboard .coupling-board-line-settings { display:grid; width:284px; max-width:calc(100% - 16px); gap:4px; padding:6px; }
+.coupling-whiteboard .coupling-board-line-settings>strong,.coupling-whiteboard .coupling-board-view-panel>strong { grid-column:1/-1; color:#56606c; font-size:10px; line-height:12px; }
+.coupling-whiteboard .coupling-board-relation-options { display:flex; grid-column:1/-1; justify-content:space-between; gap:4px; }
+.coupling-whiteboard .coupling-board-relation-choice { display:flex; flex-direction:column; align-items:center; justify-content:center; width:48px; min-width:48px; height:46px; min-height:46px; padding:2px; border-radius:9px; color:var(--relation-color); }
+.coupling-whiteboard .coupling-board-relation-choice span { font-size:16px; line-height:1.1; }
+.coupling-whiteboard .coupling-board-relation-choice small { font-size:8px; line-height:1.1; text-align:center; }
+.coupling-whiteboard .coupling-board-relation-choice[aria-pressed="true"] { border-color:var(--relation-color); background:var(--relation-color); color:#fff; }
+.coupling-whiteboard .coupling-board-line-toggle { border-color:var(--relation-color); color:var(--relation-color); }
+.coupling-whiteboard .coupling-board-settings-direction { display:flex; grid-column:1/-1; align-items:center; justify-content:center; gap:6px; width:100%; min-height:30px; padding:4px; border-radius:9px; font-size:10px; }
+.coupling-whiteboard .coupling-board-settings-direction[aria-pressed="true"] { border-color:#384b61; background:#eef2f7; color:#20252d; }
+.coupling-whiteboard .coupling-board-more-toggle>span { font-size:22px; line-height:1; }
 .coupling-board-world { position:absolute; inset:0 auto auto 0; transform-origin:0 0; width:0; height:0; will-change:transform; }
 .coupling-board-edges { position:absolute; inset:0; width:1px; height:1px; overflow:visible; z-index:1; pointer-events:none; }
 .coupling-board-edges g { pointer-events:auto; cursor:pointer; outline:none; }
@@ -20,7 +39,11 @@
 .coupling-board-zoom { position:absolute; z-index:4; right:10px; bottom:10px; display:flex; align-items:center; gap:5px; padding:5px; border:1px solid #dce1e7; border-radius:9px; background:#fffffff2; }
 .coupling-board-zoom output { min-width:45px; text-align:center; font-size:12px; }
 .coupling-edge-list { display:flex; flex-wrap:wrap; gap:6px; }
-.coupling-selection-info { position:absolute; z-index:4; left:12px; bottom:44px; max-width:calc(100% - 24px); padding:7px 10px; border:1px solid #dce1e7; border-radius:8px; background:#fffffff2; overflow-wrap:anywhere; pointer-events:none; }
+.coupling-selection-info { position:absolute; z-index:4; left:12px; bottom:44px; display:flex; align-items:center; gap:8px; width:max-content; max-width:calc(100% - 24px); padding:7px 10px; border:1px solid #dce1e7; border-radius:8px; background:#fffffff2; overflow-wrap:anywhere; pointer-events:auto; }
+.coupling-selection-info>span { min-width:0; flex:1 1 auto; overflow-wrap:anywhere; }
+.coupling-selection-delete { display:flex; flex:0 0 auto; align-items:center; gap:5px; min-height:36px; padding:5px 9px; border-color:#d5aaaa; background:#fff; color:#9e2f2f; font-size:12px; }
+.coupling-selection-delete:hover:not(:disabled) { background:#fff1f1; }
+.coupling-selection-delete svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .coupling-batch-dialog { width:min(840px,calc(100vw - 16px)); max-width:none; max-height:calc(100vh - 16px); margin:auto; padding:0; border:1px solid #dce1e7; border-radius:14px; background:#fff; color:#20252d; }
 .coupling-batch-dialog::backdrop { background:#17202b88; }
 .coupling-batch-shell { display:grid; grid-template-rows:auto auto minmax(120px,1fr) auto; gap:12px; height:min(88vh,900px); padding:16px; }
@@ -41,4 +64,15 @@
 .coupling-batch-pending { display:flex; flex:1 1 100%; flex-wrap:wrap; gap:4px; max-height:54px; overflow:auto; }
 .coupling-batch-pending button { border:1px solid #dce1e7; border-radius:20px; padding:4px 8px; background:#f4f6f8; font-size:11px; }
 @media(max-width:760px) { .coupling-batch-dialog { position:fixed; inset:8px; width:auto; max-width:none; max-height:none; height:calc(100dvh - 16px); margin:0; border-radius:14px; } .coupling-batch-shell { height:100%; padding:12px; } .coupling-batch-grid { grid-template-columns:repeat(4,minmax(0,1fr)); } }
-@media(max-width:480px) { .coupling-batch-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .coupling-board-viewport { min-height:340px; height:65vh; } .coupling-whiteboard .coupling-toolbar { align-items:stretch; } }
+@media(max-width:480px) {
+  .coupling-batch-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .coupling-board-viewport { min-height:340px; height:65vh; }
+  .coupling-whiteboard .coupling-board-fabs { top:8px; left:8px; gap:4px; padding:5px; }
+  .coupling-whiteboard .coupling-board-fab { width:44px; min-width:44px; height:44px; min-height:44px; }
+  .coupling-whiteboard .coupling-board-more-panel,.coupling-whiteboard .coupling-board-line-settings,.coupling-whiteboard .coupling-board-view-panel { top:70px; left:8px; }
+}
+@media(max-width:360px) {
+  .coupling-whiteboard .coupling-board-fabs { gap:2px; padding:4px; }
+  .coupling-whiteboard .coupling-board-fab { width:42px; min-width:42px; height:42px; min-height:42px; }
+  .coupling-whiteboard .coupling-board-more-panel,.coupling-whiteboard .coupling-board-line-settings,.coupling-whiteboard .coupling-board-view-panel { top:66px; }
+}

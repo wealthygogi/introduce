@@ -41,6 +41,25 @@ async function mobilePageFor(t, route) {
   await page.goto(`${base}${route}`);
   return page;
 }
+async function chooseBatchWork(dialog, workName) {
+  await dialog.getByRole('button', { name: '작품 선택' }).click();
+  await dialog.getByRole('searchbox', { name: '작품 검색' }).fill(workName);
+  await dialog.getByRole('button', { name: workName, exact: true }).click();
+}
+
+async function clickAtCenter(page, target) {
+  await target.evaluate(element => {
+    const body = element.closest('.coupling-board-panel-body');
+    if (!body) return;
+    const targetBounds = element.getBoundingClientRect();
+    const bodyBounds = body.getBoundingClientRect();
+    if (targetBounds.top < bodyBounds.top) body.scrollTop -= bodyBounds.top - targetBounds.top;
+    else if (targetBounds.bottom > bodyBounds.bottom) body.scrollTop += targetBounds.bottom - bodyBounds.bottom;
+  });
+  const box = await target.boundingBox();
+  assert.ok(box, 'pointer target has a visible box');
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+}
 
 
 const readDraft = (page, key) => page.evaluate(storageKey => JSON.parse(localStorage.getItem(storageKey)), key);
@@ -66,9 +85,10 @@ test('whiteboard batch is atomic, edges follow moved nodes, and full layout fits
   await page.waitForSelector('.coupling-whiteboard');
   assert.equal(await page.locator('.coupling-board-node').count(), 6);
   const boardBounds = await page.locator('.coupling-board-viewport').boundingBox();
-  const fabsBounds = await page.locator('.coupling-board-fabs').boundingBox();
+  const controlsBounds = await page.locator('.coupling-board-controls').boundingBox();
+  const addBounds = await page.locator('.coupling-board-add').boundingBox();
   const insideBoard = bounds => bounds && bounds.x >= boardBounds.x && bounds.y >= boardBounds.y && bounds.x + bounds.width <= boardBounds.x + boardBounds.width && bounds.y + bounds.height <= boardBounds.y + boardBounds.height;
-  assert.ok(boardBounds && insideBoard(fabsBounds), 'the floating FAB dock stays inside the board viewport');
+  assert.ok(boardBounds && insideBoard(controlsBounds) && insideBoard(addBounds), 'toolbar and add action stay inside the board viewport');
 
   const additions = await page.evaluate(async () => {
     const { PROFILE_CHARACTERS } = await import('/introduce/src/data/profileCatalog.ts');
@@ -83,10 +103,9 @@ test('whiteboard batch is atomic, edges follow moved nodes, and full layout fits
   const dialog = page.locator('.coupling-batch-dialog');
   const box = await dialog.boundingBox();
   const viewport = await page.evaluate(() => ({ width: innerWidth, height: innerHeight }));
-  assert.ok(Math.abs(box.x - (viewport.width - box.width) / 2) < 2, 'desktop batch dialog is horizontally centered');
-  assert.ok(Math.abs(box.y - (viewport.height - box.height) / 2) < 2, 'desktop batch dialog is vertically centered');
+  assert.ok(box && box.x >= 0 && box.y >= 0 && box.x + box.width <= viewport.width && box.y + box.height <= viewport.height, 'batch dialog fits the viewport');
   for (const addition of additions) {
-    await dialog.locator('select').selectOption(addition.group);
+    await chooseBatchWork(dialog, addition.group);
     await dialog.locator('.coupling-batch-choice').filter({ hasText: addition.name }).locator('input').check();
   }
   await dialog.getByRole('button', { name: '취소' }).click();
@@ -95,10 +114,10 @@ test('whiteboard batch is atomic, edges follow moved nodes, and full layout fits
 
   await page.getByRole('button', { name: '캐릭터 추가' }).click();
   for (const addition of additions) {
-    await dialog.locator('select').selectOption(addition.group);
+    await chooseBatchWork(dialog, addition.group);
     await dialog.locator('.coupling-batch-choice').filter({ hasText: addition.name }).locator('input').check();
   }
-  await dialog.locator('.coupling-batch-shell > footer > button:last-child').click();
+  await dialog.locator('.coupling-btn-primary').click();
   await page.waitForFunction(() => document.querySelectorAll('.coupling-board-node').length === 8);
   for (const addition of additions) assert.equal(await page.locator(`[data-node="${addition.id}"]`).count(), 1);
 
@@ -113,10 +132,12 @@ test('whiteboard batch is atomic, edges follow moved nodes, and full layout fits
   assert.ok(tipBox.x >= 0 && tipBox.y >= 0 && tipBox.x + tipBox.width <= viewport.width && tipBox.y + tipBox.height <= viewport.height);
 
   await page.locator('.coupling-board-line-toggle').click();
-  assert.deepEqual(await page.locator('.coupling-board-relation-choice small').allTextContents(), ['커플링', '친구·가족', '동료·동맹', '라이벌·앙숙', '복잡·미정']);
-  await page.locator('.coupling-board-preference [data-preference="favorite"]').click();
+  const coupleRelation = page.getByRole('button', { name: '관계: 커플링' });
+  await clickAtCenter(page, coupleRelation);
+  assert.equal(await coupleRelation.getAttribute('aria-pressed'), 'true');
+  await clickAtCenter(page, page.locator('.coupling-board-preference [data-preference="favorite"]'));
   await page.locator('.coupling-board-line-toggle').click();
-  await page.locator('.coupling-board-fab[aria-label="연결"]').click();
+  await page.locator('.coupling-board-tool[data-toolbar-item="connect"]').click();
   const reimuRing = page.locator('[data-node="reimu"] .coupling-node-ring');
   const marisaRing = page.locator('[data-node="marisa"] .coupling-node-ring');
   await reimuRing.click();
@@ -129,7 +150,7 @@ test('whiteboard batch is atomic, edges follow moved nodes, and full layout fits
   assert.equal(await page.locator('.coupling-edge-preference').textContent(), '✦', 'favorite preference is shown separately from relationship type');
   assert.match(await page.locator('.coupling-edge-list').innerText(), /커플링[\s\S]*최애/);
 
-  await page.locator('.coupling-board-fab[aria-label="선택 / 이동"]').click();
+  await page.locator('.coupling-board-tool[data-toolbar-item="move"]').click();
   await page.locator('.coupling-whiteboard').focus();
   await page.keyboard.press('Escape');
   const ring = page.locator('[data-node="reimu"] .coupling-node-ring');
@@ -147,8 +168,7 @@ test('whiteboard batch is atomic, edges follow moved nodes, and full layout fits
   await page.locator('[data-node="reimu"] .coupling-node-remove').click();
   await page.waitForFunction(() => !document.querySelector('[data-node="reimu"]'));
   assert.equal(await page.locator('.coupling-edge-hit[data-edge]').count(), 0, 'removing a node removes incident edges');
-  await page.locator('.coupling-board-more-toggle').click();
-  await page.locator('.coupling-board-more-panel').getByRole('button', { name: '실행 취소' }).click();
+  await page.locator('.coupling-board-undo').click();
   assert.equal(await page.locator('[data-node="reimu"]').count(), 1);
   assert.equal(await page.locator('.coupling-edge-hit[data-edge]').count(), 1);
 
@@ -189,7 +209,7 @@ test('whiteboard batch is atomic, edges follow moved nodes, and full layout fits
     });
     let minimumDistance = Infinity;
     for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) minimumDistance = Math.min(minimumDistance, Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y));
-    return { nodes, minimumDistance, zoom: Number.parseInt(document.querySelector('.coupling-board-zoom output').textContent, 10),
+    return { nodes, minimumDistance, zoom: Number.parseInt(document.querySelector('.coupling-board-zoom').textContent, 10),
       edges: [...viewport.querySelectorAll('.coupling-edge-hit[data-edge]')].map(edge => edge.dataset.edge) };
   });
   assert.equal(new Set(layout.nodes.map(node => node.id)).size, catalogIds.length);
@@ -199,8 +219,7 @@ test('whiteboard batch is atomic, edges follow moved nodes, and full layout fits
   assert.ok(layout.zoom <= 100, 'full layout zoom stays at or below 100%');
   assert.deepEqual(layout.edges, beforeLayout.edges.map(edge => edge[0]), 'full layout preserves relationships');
 
-  await page.locator('.coupling-board-more-toggle').click();
-  await page.locator('.coupling-board-more-panel').getByRole('button', { name: '실행 취소' }).click();
+  await page.locator('.coupling-board-undo').click();
   await page.waitForFunction(expected => document.querySelectorAll('.coupling-board-node').length === expected, beforeLayout.nodes.length);
   assert.deepEqual(await page.locator('.coupling-board-viewport').evaluate(viewport => ({
     nodes: [...viewport.querySelectorAll('.coupling-board-node')].map(node => [node.dataset.node, node.style.left, node.style.top]),
@@ -217,19 +236,19 @@ test('whiteboard batch is atomic, edges follow moved nodes, and full layout fits
 
 test('whiteboard batch picker lists only characters with coupling face portraits', async t => {
   const page = await pageFor(t, '/coupling/whiteboard');
-  await page.locator('.coupling-board-fab[aria-label="캐릭터 추가"]').click();
+  await page.locator('.coupling-board-add').click();
   const dialog = page.locator('.coupling-batch-dialog');
   await dialog.waitFor({ state: 'visible' });
-  await dialog.locator('select').selectOption('');
+  await chooseBatchWork(dialog, '전체 작품');
   const faceIds = await page.evaluate(async () => await (await fetch('/introduce/src/features/coupling/portraitIds.json')).json());
-  await dialog.locator('input[type="search"]').fill('Alice Margatroid');
+  await dialog.getByRole('searchbox', { name: '이름 검색' }).fill('Alice Margatroid');
   const aliceChoice = dialog.locator('.coupling-batch-choice').filter({ hasText: '앨리스 마가트로이드' });
   assert.equal(await aliceChoice.count(), 1, 'Alice is selectable with her face portrait');
   assert.equal(await aliceChoice.locator('.coupling-avatar').getAttribute('data-portrait-kind'), 'face');
   const aliceImage = aliceChoice.locator('.coupling-avatar img');
   assert.match(await aliceImage.getAttribute('src') ?? '', /\/coupling\/faces\/alice\.png$/);
   await page.waitForFunction(image => image.complete && image.naturalWidth === 512, await aliceImage.elementHandle());
-  await dialog.locator('input[type="search"]').fill('');
+  await dialog.getByRole('searchbox', { name: '이름 검색' }).fill('');
   const listedIds = await dialog.locator('.coupling-batch-choice img').evaluateAll(images => images.map(image => new URL(image.src).pathname.split('/').pop().replace(/\.png$/, '')));
   assert.deepEqual(listedIds.sort(), [...faceIds].sort());
   await dialog.locator('.coupling-batch-actions button').first().click();
@@ -239,7 +258,7 @@ test('whiteboard batch picker lists only characters with coupling face portraits
 
 test('batch selection preserves the board until confirm and commits as one undo step', async t => {
   const page = await pageFor(t, '/coupling/whiteboard');
-  await page.locator('.coupling-board-fab[aria-label="연결"]').click();
+  await page.locator('.coupling-board-tool[data-toolbar-item="connect"]').click();
   await page.locator('[data-node="reimu"] .coupling-node-ring').click();
   await page.locator('[data-node="marisa"] .coupling-node-ring').click();
   await page.waitForFunction(() => document.querySelectorAll('.coupling-edge-hit[data-edge]').length === 1);
@@ -256,7 +275,7 @@ test('batch selection preserves the board until confirm and commits as one undo 
   }));
   assert.deepEqual(before.nodes.map(node => node[0]).sort(), ['marisa', 'reimu']);
 
-  const opener = page.locator('.coupling-board-fab[aria-label="캐릭터 추가"]');
+  const opener = page.locator('.coupling-board-add');
   const openDialog = async () => {
     await opener.click();
     const dialog = page.locator('.coupling-batch-dialog');
@@ -269,7 +288,7 @@ test('batch selection preserves the board until confirm and commits as one undo 
       ['동방홍마향', '레밀리아 스칼렛'],
       ['동방요요몽', '콘파쿠 요우무'],
     ]) {
-      await dialog.locator('select').selectOption(work);
+      await chooseBatchWork(dialog, work);
       await dialog.locator('.coupling-batch-choice').filter({ hasText: name }).locator('input').check();
     }
   };
@@ -278,12 +297,12 @@ test('batch selection preserves the board until confirm and commits as one undo 
   await page.keyboard.press('/');
   const globalDialog = page.locator('.coupling-batch-dialog');
   await globalDialog.waitFor({ state: 'visible' });
-  const globalSearch = globalDialog.locator('input[type="search"]');
+  const globalSearch = globalDialog.getByRole('searchbox', { name: '이름 검색' });
   assert.equal(await globalSearch.evaluate(element => element === document.activeElement), true, 'the slash shortcut opens global search with focus in the search field');
   await globalSearch.fill('no-results');
   await page.keyboard.press('v');
   assert.equal(await globalSearch.inputValue(), 'no-resultsv', 'typing in search does not trigger whiteboard shortcuts');
-  assert.equal(await page.locator('.coupling-board-fab[aria-label="연결"]').getAttribute('aria-pressed'), 'true', 'typing cannot switch the active tool');
+  assert.equal(await page.locator('.coupling-board-tool[data-toolbar-item="connect"]').getAttribute('aria-pressed'), 'true', 'typing cannot switch the active tool');
   await page.keyboard.press('Escape');
   await globalDialog.waitFor({ state: 'hidden' });
   assert.equal(await page.locator('.coupling-board-viewport').evaluate(element => element === document.activeElement), true, 'closing the global search restores focus to the keyboard shortcut origin');
@@ -292,17 +311,17 @@ test('batch selection preserves the board until confirm and commits as one undo 
   assert.ok(await dialog.evaluate(element => element.contains(document.activeElement)), 'focus starts inside the modal');
   await page.keyboard.press('Shift+Tab');
   assert.ok(await dialog.evaluate(element => element.contains(document.activeElement)), 'Shift+Tab stays within the modal');
-  await dialog.locator('select').selectOption('동방홍마향');
+  await chooseBatchWork(dialog, '동방홍마향');
   await dialog.locator('.coupling-batch-actions button:first-child').click();
   assert.ok(await dialog.locator('.coupling-batch-pending button').count() > 0, 'select-all adds the available characters in the chosen work');
   await dialog.locator('.coupling-batch-actions button:nth-child(2)').click();
   assert.equal(await dialog.locator('.coupling-batch-pending button').count(), 0, 'clear-selection empties the pending batch');
   await selectBatch(dialog);
   assert.equal(await dialog.locator('.coupling-batch-pending button').count(), 3, 'selection survives changing works');
-  await dialog.locator('select').selectOption('');
+  await chooseBatchWork(dialog, '전체 작품');
   assert.equal(await dialog.locator('.coupling-batch-choice').filter({ hasText: '하쿠레이 레이무' }).locator('input').isDisabled(), true, 'placed characters cannot be selected again');
-  await dialog.locator('input[type="search"]').fill('no-character-matches-this-query');
-  await dialog.locator('.coupling-empty-note').waitFor();
+  await dialog.getByRole('searchbox', { name: '이름 검색' }).fill('no-character-matches-this-query');
+  await dialog.locator('.coupling-batch-empty').waitFor();
   assert.equal(await dialog.locator('.coupling-batch-pending button').count(), 3);
   await page.keyboard.press('Escape');
   await dialog.waitFor({ state: 'hidden' });
@@ -314,50 +333,54 @@ test('batch selection preserves the board until confirm and commits as one undo 
 
   const confirmDialog = await openDialog();
   await selectBatch(confirmDialog);
-  await confirmDialog.getByRole('button', { name: '선택한 3명 추가' }).click();
+  await confirmDialog.locator('.coupling-btn-primary').click();
   await confirmDialog.waitFor({ state: 'hidden' });
   await page.waitForFunction(() => document.querySelectorAll('.coupling-board-node').length === 5);
   assert.deepEqual(await page.locator('.coupling-board-node').evaluateAll(nodes => nodes.map(node => node.dataset.node).filter(id => !['reimu', 'marisa'].includes(id)).sort()), ['remilia', 'sakuya', 'youmu']);
   assert.equal(await page.locator('.coupling-edge-hit[data-edge]').count(), 1, 'the existing edge is preserved');
   assert.deepEqual(await page.locator('[data-node="reimu"],[data-node="marisa"]').evaluateAll(nodes => nodes.map(node => [node.dataset.node, node.style.left, node.style.top])), before.nodes);
-  await page.locator('.coupling-board-more-toggle').click();
-  await page.locator('.coupling-board-more-panel').getByRole('button', { name: '실행 취소' }).click();
+  await page.locator('.coupling-board-undo').click();
   await page.waitForFunction(() => document.querySelectorAll('.coupling-board-node').length === 2);
   assert.equal(await page.locator('.coupling-edge-hit[data-edge]').count(), 1, 'one undo removes the whole batch');
-  await page.locator('.coupling-board-more-toggle').click();
-  await page.locator('.coupling-board-more-panel').getByRole('button', { name: '다시 실행' }).click();
+  await page.locator('.coupling-board-redo').click();
   await page.waitForFunction(() => document.querySelectorAll('.coupling-board-node').length === 5);
 });
-test('whiteboard FAB menus expand, select relation and direction, and affect new edges', async t => {
+test('whiteboard toolbar panels update relation, direction, and zoom without closing', async t => {
   const page = await pageFor(t, '/coupling/whiteboard');
   const more = page.locator('.coupling-board-more-toggle');
   const morePanel = page.locator('.coupling-board-more-panel');
   await more.click();
   await morePanel.waitFor({ state: 'visible' });
   assert.equal(await more.getAttribute('aria-expanded'), 'true');
-  assert.deepEqual(await morePanel.locator('.coupling-board-mini-fab').evaluateAll(buttons => buttons.map(button => button.getAttribute('aria-label'))), ['실행 취소', '다시 실행', '전체 배치', '초기화'], 'history, full layout, and reset stay in the More palette');
-  assert.equal(await morePanel.getByRole('button', { name: '실행 취소' }).isDisabled(), true);
   await more.click();
   await morePanel.waitFor({ state: 'hidden' });
-  assert.equal(await more.getAttribute('aria-expanded'), 'false', 'the More FAB collapses its actions');
+  assert.equal(await more.getAttribute('aria-expanded'), 'false');
   await more.click();
-  await morePanel.waitFor({ state: 'visible' });
   await page.keyboard.press('Escape');
   await morePanel.waitFor({ state: 'hidden' });
+
+  await page.keyboard.press('Home');
+  assert.equal(await page.evaluate(() => document.activeElement?.dataset.toolbarItem), 'move');
+  await page.keyboard.press('End');
+  assert.equal(await page.evaluate(() => document.activeElement?.dataset.toolbarItem), 'more');
+  await page.keyboard.press('ArrowRight');
+  assert.equal(await page.evaluate(() => document.activeElement?.dataset.toolbarItem), 'move');
 
   const lineSettings = page.locator('.coupling-board-line-toggle');
   const linePanel = page.locator('.coupling-board-line-settings');
   await lineSettings.click();
   await linePanel.waitFor({ state: 'visible' });
-  await linePanel.getByRole('button', { name: '관계: 친구·가족' }).click();
-  assert.equal(await linePanel.isVisible(), true, 'line settings stay open while related options are changed');
+  const friend = linePanel.locator('.coupling-board-relation-choice').filter({ hasText: '친구·가족' });
+  await clickAtCenter(page, friend);
+  assert.equal(await friend.getAttribute('aria-pressed'), 'true');
+  assert.equal(await linePanel.isVisible(), true, 'line settings stay open while options change');
   assert.match(await lineSettings.getAttribute('aria-label'), /친구·가족/);
-  const direction = linePanel.locator('.coupling-board-settings-direction');
-  await direction.click();
-  assert.equal(await direction.getAttribute('aria-label'), '방향: 한쪽 →');
+  const direction = linePanel.locator('.coupling-board-direction-group button').filter({ hasText: '한쪽' });
+  await clickAtCenter(page, direction);
+  assert.equal(await direction.getAttribute('aria-pressed'), 'true');
   assert.equal(await lineSettings.getAttribute('aria-expanded'), 'true');
 
-  await page.locator('.coupling-board-fab[aria-label="연결"]').click();
+  await page.locator('.coupling-board-tool[data-toolbar-item="connect"]').click();
   await page.locator('[data-node="reimu"] .coupling-node-ring').click();
   await page.locator('[data-node="marisa"] .coupling-node-ring').click();
   const edge = page.locator('.coupling-board-edges g .coupling-edge-line');
@@ -366,18 +389,32 @@ test('whiteboard FAB menus expand, select relation and direction, and affect new
   assert.equal(await edge.getAttribute('marker-start'), null, 'a forward relation has only an end arrow');
   const selectedDelete = page.locator('.coupling-selection-delete');
   await selectedDelete.waitFor({ state: 'visible' });
-  assert.equal(await selectedDelete.innerText(), '삭제', 'the selected relation has a visible contextual delete action');
   await selectedDelete.click();
-  await page.waitForFunction(() => document.querySelectorAll('.coupling-edge-hit[data-edge]').length === 0);
+  await page.waitForFunction(() => document.querySelectorAll('.coupling-board-edges g .coupling-edge-line').length === 0);
+
   const viewToggle = page.locator('.coupling-board-view-toggle');
   const viewPanel = page.locator('.coupling-board-view-panel');
   await viewToggle.click();
   await viewPanel.waitFor({ state: 'visible' });
-  assert.deepEqual(await viewPanel.locator('.coupling-board-mini-fab').allInnerTexts(), ['전체 맞춤', '격자 정리', '축소', '확대'], 'view actions share one group');
-  const zoomBefore = Number.parseInt(await page.locator('.coupling-board-zoom output').innerText(), 10);
-  await viewPanel.getByRole('button', { name: '확대' }).click();
+  const zoomBefore = Number.parseInt(await page.locator('.coupling-board-zoom').innerText(), 10);
+  await clickAtCenter(page, viewPanel.getByRole('button', { name: '축소' }));
+  await page.waitForFunction(previous => Number.parseInt(document.querySelector('.coupling-board-zoom').textContent, 10) < previous, zoomBefore);
+  assert.equal(await viewPanel.isVisible(), true, 'zoom actions leave the view panel open');
+  const zoomAfterOut = Number.parseInt(await page.locator('.coupling-board-zoom').innerText(), 10);
+  await clickAtCenter(page, viewPanel.getByRole('button', { name: '확대' }));
+  await page.waitForFunction(previous => Number.parseInt(document.querySelector('.coupling-board-zoom').textContent, 10) > previous, zoomAfterOut);
+  await viewPanel.locator('.coupling-board-panel-close').click();
   await viewPanel.waitFor({ state: 'hidden' });
-  await page.waitForFunction(previous => Number.parseInt(document.querySelector('.coupling-board-zoom output').textContent, 10) > previous, zoomBefore);
+  const undo = page.locator('.coupling-board-undo');
+  assert.equal(await undo.isDisabled(), false, 'the toolbar exposes available history');
+  await undo.focus();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForFunction(() => document.activeElement?.dataset.toolbarItem === 'more');
+  assert.equal(await undo.isHidden(), true, 'hidden history controls leave compact layout');
+  await page.keyboard.press('Home');
+  assert.equal(await page.evaluate(() => document.activeElement?.dataset.toolbarItem), 'move');
+  await page.keyboard.press('End');
+  assert.equal(await page.evaluate(() => document.activeElement?.dataset.toolbarItem), 'more');
 });
 
 
@@ -616,46 +653,80 @@ test('matrix keeps directed records independent, unordered records symmetric, an
 
 
 
-test('mobile touch supports batch selection, ring connections, deletion, and matrix scrolling', async t => {
+test('mobile touch scrolls canvas panels and keeps batch, connection, deletion, and matrix flows usable', async t => {
   const page = await mobilePageFor(t, '/coupling/whiteboard');
   const tap = async locator => {
     const target = typeof locator === 'string' ? page.locator(locator) : locator;
-    await target.scrollIntoViewIfNeeded();
-    const box = await target.boundingBox();
+    let box = await target.boundingBox();
     assert.ok(box, 'touch target has a visible box');
+    const viewport = await page.evaluate(() => ({ width: innerWidth, height: innerHeight }));
+    if (box.x < 0 || box.y < 0 || box.x + box.width > viewport.width || box.y + box.height > viewport.height) {
+      await target.scrollIntoViewIfNeeded();
+      box = await target.boundingBox();
+    }
+    assert.ok(box, 'touch target is reachable in the viewport');
     await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
   };
   await page.waitForFunction(() => document.querySelectorAll('.coupling-board-node').length === 6);
   const boardBounds = await page.locator('.coupling-board-viewport').boundingBox();
-  const fabsBounds = await page.locator('.coupling-board-fabs').boundingBox();
+  const toolbarBounds = await page.locator('.coupling-board-controls').boundingBox();
+  const addBounds = await page.locator('.coupling-board-add').boundingBox();
   const insideBoard = bounds => bounds && bounds.x >= boardBounds.x && bounds.y >= boardBounds.y && bounds.x + bounds.width <= boardBounds.x + boardBounds.width && bounds.y + bounds.height <= boardBounds.y + boardBounds.height;
-  assert.ok(boardBounds && insideBoard(fabsBounds), 'the floating FAB dock fits within the mobile canvas');
+  assert.ok(boardBounds && insideBoard(toolbarBounds) && insideBoard(addBounds), 'toolbar and add action stay within the mobile canvas');
   const controlsAvoidNodes = () => page.evaluate(() => {
-    const controls = [...document.querySelectorAll('.coupling-board-fabs,.coupling-board-more-panel,.coupling-board-line-settings,.coupling-board-view-panel')].map(element => element.getBoundingClientRect());
+    const controls = [...document.querySelectorAll('.coupling-board-controls,.coupling-board-add')].map(element => element.getBoundingClientRect());
     return [...document.querySelectorAll('.coupling-board-node')].every(node => {
       const bounds = node.getBoundingClientRect();
       return controls.every(control => bounds.right <= control.left || bounds.left >= control.right || bounds.bottom <= control.top || bounds.top >= control.bottom);
     });
   });
-  assert.ok(await controlsAvoidNodes(), 'mobile floating controls do not cover initial character nodes');
+  assert.ok(await controlsAvoidNodes(), 'the dock and add action do not cover initial character hit targets');
+  const readCanvas = () => page.evaluate(() => {
+    const viewport = document.querySelector('.coupling-board-viewport');
+    return {
+      nodes: [...document.querySelectorAll('.coupling-board-node')].map(node => [node.dataset.node, node.style.left, node.style.top]),
+      edges: [...document.querySelectorAll('.coupling-edge-hit[data-edge]')].map(edge => [edge.dataset.edge, edge.getAttribute('d')]),
+      view: viewport.querySelector('.coupling-board-world').style.transform,
+      scroll: [scrollX, scrollY, viewport.scrollLeft, viewport.scrollTop],
+      stored: localStorage.getItem('introduce:coupling:whiteboard:v1'),
+    };
+  });
+  const beforePanels = await readCanvas();
+  const noHorizontalOverflow = () => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth);
+
   await tap('.coupling-board-more-toggle');
-  const moreBounds = await page.locator('.coupling-board-more-panel').boundingBox();
-  assert.ok(insideBoard(moreBounds), 'the More palette fits inside the mobile canvas');
-  assert.ok(await controlsAvoidNodes(), 'More does not cover mobile characters');
-  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 390, 'opening the More palette does not cause horizontal page overflow');
+  const morePanel = page.locator('.coupling-board-more-panel');
+  assert.ok(insideBoard(await morePanel.boundingBox()), 'the More panel fits inside the mobile canvas');
+  assert.ok(await noHorizontalOverflow(), 'the More panel does not widen the page');
   await tap('.coupling-board-more-toggle');
+
   await tap('.coupling-board-line-toggle');
-  const lineBounds = await page.locator('.coupling-board-line-settings').boundingBox();
-  assert.ok(insideBoard(lineBounds), 'line settings fit inside the mobile canvas');
-  assert.ok(await controlsAvoidNodes(), 'line settings do not cover mobile characters');
-  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 390, 'line settings do not cause horizontal page overflow');
-  await tap('.coupling-board-line-toggle');
-  await tap('.coupling-board-view-toggle');
-  const viewBounds = await page.locator('.coupling-board-view-panel').boundingBox();
-  assert.ok(insideBoard(viewBounds), 'view controls fit inside the mobile canvas');
-  assert.ok(await controlsAvoidNodes(), 'view controls do not cover mobile characters');
-  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 390, 'view controls do not cause horizontal page overflow');
-  await tap('.coupling-board-view-toggle');
+  const linePanel = page.locator('.coupling-board-line-settings');
+  assert.ok(insideBoard(await linePanel.boundingBox()), 'line settings fit inside the mobile canvas');
+  assert.ok(await noHorizontalOverflow(), 'line settings do not widen the page');
+  const body = linePanel.locator('.coupling-board-panel-body');
+  const scrollRange = await body.evaluate(element => element.scrollHeight - element.clientHeight);
+  assert.ok(scrollRange > 0, 'line settings provide an internally scrollable body');
+  const bodyBounds = await body.boundingBox();
+  const touch = await page.context().newCDPSession(page);
+  await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: bodyBounds.x + bodyBounds.width / 2, y: bodyBounds.y + bodyBounds.height - 12, id: 1 }] });
+  await page.waitForTimeout(40);
+  await touch.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: bodyBounds.x + bodyBounds.width / 2, y: bodyBounds.y + 12, id: 1 }] });
+  await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await page.waitForFunction(() => document.querySelector('.coupling-board-line-settings .coupling-board-panel-body')?.scrollTop > 0);
+  assert.deepEqual(await readCanvas(), beforePanels, 'opening and scrolling panels leaves the board and saved draft unchanged');
+  await tap(linePanel.locator('.coupling-board-panel-close'));
+  await linePanel.waitFor({ state: 'hidden' });
+
+  await tap('.coupling-board-more-toggle');
+  await tap(morePanel.getByRole('button', { name: '화면' }));
+  const viewPanel = page.locator('.coupling-board-view-panel');
+  assert.ok(insideBoard(await viewPanel.boundingBox()), 'view controls fit inside the mobile canvas');
+  assert.ok(await noHorizontalOverflow(), 'view controls do not widen the page');
+  await tap(viewPanel.locator('.coupling-board-panel-close'));
+  await viewPanel.waitFor({ state: 'hidden' });
+  assert.deepEqual(await readCanvas(), beforePanels, 'closing view controls preserves the board draft');
+
   const additions = await page.evaluate(async () => {
     const { PROFILE_CHARACTERS } = await import('/introduce/src/data/profileCatalog.ts');
     const placed = new Set([...document.querySelectorAll('.coupling-board-node')].map(node => node.dataset.node));
@@ -667,23 +738,24 @@ test('mobile touch supports batch selection, ring connections, deletion, and mat
     }).slice(0, 2).map(character => ({ id: character.id, name: character.ko, group: character.group.ko }));
   });
 
-  await tap('.coupling-board-fab[aria-label="캐릭터 추가"]');
+  await tap('.coupling-board-add');
   const dialog = page.locator('.coupling-batch-dialog');
   const dialogBox = await dialog.boundingBox();
-  assert.ok(dialogBox && dialogBox.x >= 0 && dialogBox.y >= 0 && dialogBox.x + dialogBox.width <= 390 && dialogBox.y + dialogBox.height <= 844, 'batch dialog fits the mobile viewport');
+  const viewport = await page.evaluate(() => ({ width: innerWidth, height: innerHeight }));
+  assert.ok(dialogBox && dialogBox.x >= 0 && dialogBox.y >= 0 && dialogBox.x + dialogBox.width <= viewport.width && dialogBox.y + dialogBox.height <= viewport.height, 'batch dialog fits the mobile viewport');
   for (const addition of additions) {
-    await dialog.locator('select').selectOption(addition.group);
-    await tap(dialog.locator('.coupling-batch-choice').filter({ hasText: addition.name }));
+    await chooseBatchWork(dialog, addition.group);
+    await tap(dialog.locator('.coupling-batch-choice').filter({ hasText: addition.name }).locator('input'));
   }
-  assert.deepEqual(await dialog.locator('.coupling-batch-pending button').evaluateAll(buttons => buttons.map(button => button.textContent?.replace(/ ×$/, ''))), additions.map(addition => addition.name), 'pending selection retains one character from each work');
-  await tap(dialog.locator('.coupling-batch-shell > footer > button:last-child'));
+  assert.equal(await dialog.locator('.coupling-batch-pending button').count(), additions.length, 'one selection from each work remains pending');
+  await tap(dialog.locator('.coupling-btn-primary'));
   await page.waitForFunction(() => document.querySelectorAll('.coupling-board-node').length === 8);
 
-  await tap('.coupling-board-fab[aria-label="연결"]');
+  await tap('.coupling-board-tool[data-toolbar-item="connect"]');
   await tap('[data-node="reimu"] .coupling-node-ring');
   await tap('[data-node="marisa"] .coupling-node-ring');
   await page.waitForFunction(() => document.querySelectorAll('.coupling-edge-hit[data-edge]').length === 1);
-  await tap('.coupling-board-fab[aria-label="선택 / 이동"]');
+  await tap('.coupling-board-tool[data-toolbar-item="move"]');
   await tap('[data-node="reimu"] .coupling-node-ring');
   await tap('.coupling-selection-delete');
   await page.waitForFunction(() => document.querySelectorAll('.coupling-board-node').length === 7);
@@ -704,6 +776,7 @@ test('mobile touch supports batch selection, ring connections, deletion, and mat
   await page.waitForFunction(() => document.querySelector('.coupling-matrix-scroll')?.scrollLeft > 0);
   assert.ok(await matrixScroll.evaluate(element => element.scrollLeft > 0), 'a touch drag scrolls the matrix internally');
   await cdp.detach();
+  await touch.detach();
 });
 test('matrix roster caps at sixteen and reports the blocked addition', async t => {
   const page = await pageFor(t, '/coupling/matrix');

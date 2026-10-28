@@ -1,5 +1,5 @@
 .coupling-keyboard { --coupling-relay-ink: #27313a; color: var(--coupling-relay-ink); padding: 16px; background: #fff; }
-.coupling-keyboard button { min-height: 36px; cursor: pointer; }
+.coupling-keyboard button { min-height: 44px; cursor: pointer; }
 .coupling-keyboard button:disabled { cursor: not-allowed; opacity: .48; }
 .coupling-keyboard-intro { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 0 0 14px; font-size: 12px; line-height: 1.7; }
 .coupling-keyboard-intro p { margin: 0; }
@@ -31,11 +31,6 @@
 .coupling-keyboard-empty { grid-column: 1 / -1; grid-row: 5; margin: 0; color: #68737d; text-align: center; font-size: 12px; line-height: 1.9; }
 .coupling-keyboard-graph-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 11px 13px; border-top: 1px solid #e6e8eb; }
 .coupling-keyboard-graph-footer > div, .coupling-keyboard-pagination { display: flex; align-items: center; gap: 8px; }
-.coupling-keyboard-roster { border-top: 1px solid #e6e8eb; padding: 14px; }
-.coupling-keyboard-roster h2 { margin: 0 0 10px; font-size: 12px; }
-.coupling-keyboard-roster h2 small { color: #68737d; font-weight: 400; }
-.coupling-keyboard-roster > button { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; margin: 0 7px 7px 0; padding: 5px 8px; text-align: left; font-size: 11px; }
-.coupling-keyboard-roster > button[aria-pressed="true"] { outline: 2px solid #76828c; }
 .coupling-keyboard-command { display: grid; gap: 12px; border: 0; background: transparent; overflow: visible; }
 .coupling-keyboard-rail, .coupling-keyboard-library { padding: 16px; border: 1px solid #dfe3e7; border-radius: 10px; background: #fff; min-width: 0; }
 .coupling-keyboard-rail > h2 { margin: 0 0 8px; font-size: 19px; }
@@ -48,6 +43,10 @@
 .coupling-keyboard-source-slot > small { grid-column: 1 / -1; color: #68737d; font-size: 10px; }
 .coupling-keyboard-source-slot > div { display: flex; align-items: center; gap: 8px; min-width: 0; overflow-wrap: anywhere; font-size: 12px; }
 .coupling-keyboard-source-slot > button { padding: 6px 8px; font-size: 10px; }
+.coupling-keyboard-step { min-width: 0; }
+.coupling-keyboard-step-picker .coupling-picker { padding: 0; border: 0; background: transparent; }
+.coupling-keyboard-step-picker .coupling-picker-top { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.coupling-keyboard-step-picker .coupling-picker-results { grid-template-columns: minmax(0, 1fr); max-height: 300px; }
 .coupling-keyboard-relations { margin: 16px 0; }
 .coupling-keyboard-relations h3, .coupling-keyboard-suggestion-heading h3 { margin: 0; font-size: 12px; }
 .coupling-keyboard-relations > button { display: inline-flex; align-items: center; gap: 5px; margin: 8px 5px 0 0; padding: 6px 8px; border-left: 3px solid var(--coupling-rel); font-size: 11px; }
@@ -76,8 +75,13 @@
 .coupling-keyboard-pagination { justify-content: center; margin-top: 8px; }
 .coupling-keyboard-pending { display: grid; gap: 4px; margin: 14px 0 10px; padding: 10px; border: 1px dashed #c9cfd5; border-radius: 8px; font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
 .coupling-keyboard-pending small { color: #68737d; }
-.coupling-keyboard-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.coupling-keyboard-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 .coupling-keyboard-actions button { flex: 1 1 100px; font-size: 11px; }
+.coupling-keyboard-actions > button { min-height: 48px; }
+.coupling-keyboard-management { flex: 1 1 100%; margin-top: 4px; border-top: 1px solid #e6e8eb; }
+.coupling-keyboard-management > summary { padding: 10px 2px; color: #53616d; cursor: pointer; font-size: 12px; font-weight: 600; }
+.coupling-keyboard-management > div { display: flex; flex-wrap: wrap; gap: 6px; }
+.coupling-keyboard-management > div button { min-height: 44px; }
 .coupling-keyboard-library > summary { cursor: pointer; padding: 2px; font-size: 12px; }
 .coupling-keyboard-library-mode { display: flex; gap: 7px; margin-top: 12px; }
 .coupling-keyboard-library-mode button { flex: 1; font-size: 11px; }

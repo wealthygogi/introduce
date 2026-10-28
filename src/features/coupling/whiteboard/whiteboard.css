@@ -40,8 +40,8 @@
   left: 24px;
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 8px;
+  gap: 3px;
+  padding: 6px;
   border: 1px solid var(--board-outline-variant);
   border-radius: 999px;
   background: var(--board-surface-container);
@@ -61,20 +61,26 @@
   display: inline-flex;
   width: auto;
   min-width: 48px;
-  height: 56px;
+  height: 48px;
   min-height: 48px;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 2px 12px;
+  gap: 4px;
+  padding: 2px 6px;
   border: 0;
   border-radius: 14px;
   background: transparent;
   color: var(--board-on-surface-variant);
-  font-size: 14px;
+  font-size: 12px;
   line-height: 20px;
   white-space: nowrap;
   cursor: pointer;
+}
+
+.coupling-whiteboard .coupling-board-line-toggle .coupling-board-tool-summary {
+  color: var(--board-primary);
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .coupling-whiteboard .coupling-board-tool:hover:not(:disabled),
@@ -109,6 +115,12 @@
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.coupling-whiteboard .coupling-board-tool svg {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
 }
 
 .coupling-whiteboard .coupling-board-add svg {
@@ -1083,31 +1095,36 @@
   .coupling-whiteboard .coupling-board-controls {
     bottom: 16px;
     left: 16px;
-    gap: 4px;
+    gap: 3px;
+    padding: 6px;
   }
 
   .coupling-whiteboard .coupling-board-tool {
-    min-width: 56px;
-    width: 56px;
-    height: 56px;
+    min-width: 48px;
+    width: 48px;
+    height: 48px;
     flex-direction: column;
-    gap: 2px;
-    padding: 4px;
-    border-radius: 12px;
-  }
-
-  .coupling-whiteboard .coupling-board-undo,
-  .coupling-whiteboard .coupling-board-redo {
-    display: none;
+    gap: 0;
+    padding: 2px;
+    border-radius: 10px;
   }
 
   .coupling-whiteboard .coupling-board-tool svg {
-    flex: 0 0 24px;
+    flex: 0 0 20px;
   }
 
   .coupling-whiteboard .coupling-board-tool > span:not(.coupling-board-tooltip) {
-    font-size: 12px;
-    line-height: 16px;
+    font-size: 11px;
+    line-height: 13px;
+  }
+
+  .coupling-whiteboard .coupling-board-line-toggle > span:not(.coupling-board-tool-summary) {
+    display: none;
+  }
+
+  .coupling-whiteboard .coupling-board-line-toggle .coupling-board-tool-summary {
+    font-size: 10px;
+    line-height: 12px;
   }
 
   .coupling-whiteboard .coupling-board-more-toggle {

@@ -2,21 +2,21 @@
 
 ## Goals
 
-- Make the floating character-add action on the whiteboard feel less oversized without harming touch usability or discoverability.
+- Reduce the whiteboard's floating tool-menu clutter without harming touch usability or discoverability.
 - Make the keyboard editor's center-character selection unambiguous and guide users through one clear relationship-entry flow.
 
 ## Design
 
-### Whiteboard FAB
+### Whiteboard floating tool menu
 
-Keep the existing labeled extended FAB. Retain its label, reduce the mobile horizontal padding, icon size, and icon/label gap, and keep the touch target at least 48px high. Keep the desktop button's minimum touch target intact. This preserves discoverability while reducing visual bulk.
+Keep move, connect, line settings, undo, and more in the primary floating toolbar. Move view controls, redo, full layout, and reset into the more panel. Show the active relationship and direction in the line-settings control, keep the add-character action separate, and preserve 48px toolbar touch targets and accessible names.
 
 ### Keyboard editor
 
-Use the right-side input rail as the only place to change the center character. Remove the separate starter-character roster beneath the graph, while keeping the graph's center node as a read-only visualization of the current center. Present the workflow as center selection, relationship selection, partner selection, and confirmation. Keep existing relationship data, automatic saving, editing, and keyboard shortcuts intact.
+Use one right-side step panel for center selection → relationship and preference → partner selection → confirmation. The center picker appears in the first step; do not display the draft's default center as selected before a user chooses one. Relationship choice does not advance automatically. Keep the selected center and relationship settings after connecting a partner. Move reset and clear actions into a management disclosure, retain the graph as a preview, and preserve existing draft data and autosave.
 
 ## Constraints and verification
 
 - Do not change draft storage format or data migration behavior.
 - Preserve responsive behavior, accessible labels/focus, and all existing relationship actions.
-- Update coupling regression assertions for the FAB sizing and keyboard selection flow, then run the coupling tests and project checks relevant to the changed files.
+- Verify toolbar overflow actions, relationship edits, cancellation/back/reset rules, consecutive partner entry, persistence, undo, mobile targets, and the production build.

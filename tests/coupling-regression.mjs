@@ -87,6 +87,7 @@ test('whiteboard batch is atomic, edges follow moved nodes, and full layout fits
   const boardBounds = await page.locator('.coupling-board-viewport').boundingBox();
   const controlsBounds = await page.locator('.coupling-board-controls').boundingBox();
   const addBounds = await page.locator('.coupling-board-add').boundingBox();
+  assert.ok(controlsBounds && controlsBounds.width <= 520 && controlsBounds.height <= 64, 'the floating tool menu stays compact on desktop');
   const insideBoard = bounds => bounds && bounds.x >= boardBounds.x && bounds.y >= boardBounds.y && bounds.x + bounds.width <= boardBounds.x + boardBounds.width && bounds.y + bounds.height <= boardBounds.y + boardBounds.height;
   assert.ok(boardBounds && insideBoard(controlsBounds) && insideBoard(addBounds), 'toolbar and add action stay inside the board viewport');
 
@@ -348,11 +349,17 @@ test('batch selection preserves the board until confirm and commits as one undo 
   await page.locator('.coupling-board-undo').click();
   await page.waitForFunction(() => document.querySelectorAll('.coupling-board-node').length === 2);
   assert.equal(await page.locator('.coupling-edge-hit[data-edge]').count(), 1, 'one undo removes the whole batch');
-  await page.locator('.coupling-board-redo').click();
+  await page.locator('.coupling-board-more-toggle').click();
+  await page.locator('.coupling-board-more-panel').getByRole('button', { name: '다시 실행' }).click();
   await page.waitForFunction(() => document.querySelectorAll('.coupling-board-node').length === 5);
 });
 test('whiteboard toolbar panels update relation, direction, and zoom without closing', async t => {
   const page = await pageFor(t, '/coupling/whiteboard');
+  await page.waitForSelector('.coupling-board-controls [data-toolbar-item="move"]');
+  const toolbarItems = await page.locator('.coupling-board-controls [data-toolbar-item]').evaluateAll(items => items.map(item => item.dataset.toolbarItem));
+  assert.deepEqual(toolbarItems, ['move', 'connect', 'line', 'undo', 'more'], 'only the five primary canvas actions stay in the floating toolbar');
+  assert.equal(await page.locator('.coupling-board-view-toggle').count(), 0, 'view actions are available from overflow');
+  assert.equal(await page.locator('.coupling-board-redo').count(), 0, 'redo is available from overflow');
   const more = page.locator('.coupling-board-more-toggle');
   const morePanel = page.locator('.coupling-board-more-panel');
   await more.click();
@@ -361,6 +368,13 @@ test('whiteboard toolbar panels update relation, direction, and zoom without clo
   await more.click();
   await morePanel.waitFor({ state: 'hidden' });
   assert.equal(await more.getAttribute('aria-expanded'), 'false');
+  await more.click();
+  await morePanel.getByRole('button', { name: '화면' }).click();
+  const viewPanel = page.locator('.coupling-board-view-panel');
+  await viewPanel.waitFor({ state: 'visible' });
+  await viewPanel.locator('.coupling-board-panel-close').click();
+  await more.click();
+  await morePanel.getByRole('button', { name: '다시 실행' }).waitFor({ state: 'visible' });
   await more.click();
   await page.keyboard.press('Escape');
   await morePanel.waitFor({ state: 'hidden' });
@@ -377,14 +391,16 @@ test('whiteboard toolbar panels update relation, direction, and zoom without clo
   await lineSettings.click();
   await linePanel.waitFor({ state: 'visible' });
   const friend = linePanel.locator('.coupling-board-relation-choice').filter({ hasText: '친구·가족' });
-  await clickAtCenter(page, friend);
+  await friend.click();
   assert.equal(await friend.getAttribute('aria-pressed'), 'true');
   assert.equal(await linePanel.isVisible(), true, 'line settings stay open while options change');
   assert.match(await lineSettings.getAttribute('aria-label'), /친구·가족/);
+  assert.match(await lineSettings.innerText(), /친구·가족/, 'the current relationship is summarized visually in the toolbar');
   const direction = linePanel.locator('.coupling-board-direction-group button').filter({ hasText: '한쪽' });
   await clickAtCenter(page, direction);
   assert.equal(await direction.getAttribute('aria-pressed'), 'true');
   assert.equal(await lineSettings.getAttribute('aria-expanded'), 'true');
+  assert.match(await lineSettings.innerText(), /→/, 'the current direction is summarized visually in the toolbar');
 
   await page.locator('.coupling-board-tool[data-toolbar-item="connect"]').click();
   await page.locator('[data-node="reimu"] .coupling-node-ring').click();
@@ -398,9 +414,8 @@ test('whiteboard toolbar panels update relation, direction, and zoom without clo
   await selectedDelete.click();
   await page.waitForFunction(() => document.querySelectorAll('.coupling-board-edges g .coupling-edge-line').length === 0);
 
-  const viewToggle = page.locator('.coupling-board-view-toggle');
-  const viewPanel = page.locator('.coupling-board-view-panel');
-  await viewToggle.click();
+  await more.click();
+  await morePanel.getByRole('button', { name: '화면' }).click();
   await viewPanel.waitFor({ state: 'visible' });
   const zoomBefore = Number.parseInt(await page.locator('.coupling-board-zoom').innerText(), 10);
   await clickAtCenter(page, viewPanel.getByRole('button', { name: '축소' }));
@@ -415,8 +430,8 @@ test('whiteboard toolbar panels update relation, direction, and zoom without clo
   assert.equal(await undo.isDisabled(), false, 'the toolbar exposes available history');
   await undo.focus();
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.waitForFunction(() => document.activeElement?.dataset.toolbarItem === 'more');
-  assert.equal(await undo.isHidden(), true, 'hidden history controls leave compact layout');
+  await page.waitForFunction(() => document.activeElement?.dataset.toolbarItem === 'undo');
+  assert.equal(await undo.isVisible(), true, 'undo stays among the primary mobile tools');
   await page.keyboard.press('Home');
   assert.equal(await page.evaluate(() => document.activeElement?.dataset.toolbarItem), 'move');
   await page.keyboard.press('End');
@@ -426,11 +441,13 @@ test('whiteboard toolbar panels update relation, direction, and zoom without clo
 
 test('keyboard relay displays Alice face portrait, not a pixel sprite', async t => {
   const page = await pageFor(t, '/coupling/keyboard');
+  await page.waitForSelector('.coupling-keyboard');
+  await page.locator('.coupling-keyboard-step-picker [data-character="reimu"]').click();
   await page.locator('.coupling-keyboard-relations button').first().click();
-  const search = page.locator('.coupling-keyboard-search input');
+  await page.locator('.coupling-keyboard-actions').getByRole('button', { name: '다음' }).click();
+  const search = page.locator('.coupling-keyboard-step-picker input[type="search"]');
   await search.fill('앨리스 마가트로이드');
-  const avatar = page.locator('.coupling-keyboard-destinations button')
-    .filter({ hasText: '앨리스 마가트로이드' })
+  const avatar = page.locator('.coupling-keyboard-step-picker [data-character="alice"]')
     .locator('.coupling-avatar');
   const image = avatar.locator('img');
   await image.waitFor({ state: 'visible' });
@@ -439,19 +456,66 @@ test('keyboard relay displays Alice face portrait, not a pixel sprite', async t 
   await page.waitForFunction(image => image.complete && image.naturalWidth === 512, await image.elementHandle());
 });
 
+test('keyboard relay starts at center selection with the picker open', async t => {
+  const page = await pageFor(t, '/coupling/keyboard');
+  await page.waitForSelector('.coupling-keyboard');
+  assert.equal(await page.locator('.coupling-keyboard').getAttribute('data-stage'), 'source');
+  assert.equal(await page.locator('.coupling-keyboard-step .coupling-picker').count(), 1, 'the center picker is inside the active workflow step');
+  assert.equal(await page.locator('.coupling-keyboard-library').count(), 0, 'there is no separate library panel or center/partner mode switch');
+  assert.equal(await page.locator('.coupling-keyboard-toolbar strong').innerText(), '현재 중심을 선택하세요', 'an unselected default character is not presented as the current center');
+});
+
+test('keyboard relay keeps relationship and preference in one explicit step and reset returns to center selection', async t => {
+  const page = await pageFor(t, '/coupling/keyboard');
+  const root = page.locator('.coupling-keyboard');
+  await page.locator('.coupling-keyboard-step-picker [data-character="reimu"]').click();
+  assert.equal(await root.getAttribute('data-stage'), 'relation');
+  const relationChoice = page.locator('.coupling-keyboard-relations button').first();
+  await relationChoice.click();
+  assert.equal(await root.getAttribute('data-stage'), 'relation', 'choosing a relationship does not skip its preference controls');
+  assert.equal(await page.locator('.coupling-keyboard-preference-setting').isVisible(), true);
+  await page.locator('.coupling-keyboard-actions').getByRole('button', { name: '다음' }).click();
+  assert.equal(await root.getAttribute('data-stage'), 'target');
+  assert.equal(await page.locator('.coupling-keyboard-step .coupling-picker').count(), 1, 'the same step body hosts partner selection');
+  await page.locator('.coupling-keyboard-actions').getByRole('button', { name: '이전' }).click();
+  assert.equal(await root.getAttribute('data-stage'), 'relation', 'previous returns to relationship settings');
+  await page.locator('.coupling-keyboard-management summary').click();
+  const reset = page.getByRole('button', { name: '초기화' });
+  const confirmation = page.waitForEvent('dialog');
+  const resetClick = reset.click();
+  (await confirmation).accept();
+  await resetClick;
+  assert.equal(await root.getAttribute('data-stage'), 'source', 'reset returns to the true first step');
+  assert.equal(await page.locator('.coupling-keyboard-step-picker [data-character="reimu"]').count(), 1);
+});
+
+test('keyboard relay has one center-selection control and updates the graph preview', async t => {
+  const page = await pageFor(t, '/coupling/keyboard');
+  await page.waitForSelector('.coupling-keyboard');
+  assert.equal(await page.locator('.coupling-keyboard-roster').count(), 0, 'the graph has no duplicate center roster');
+  await page.locator('.coupling-keyboard-step-picker [data-character="marisa"]').click();
+  await page.waitForFunction(() => document.querySelector('.coupling-keyboard-graph-panel .coupling-keyboard-toolbar strong')?.textContent?.includes('마리사'));
+  assert.equal(await page.locator('.coupling-keyboard-source-slot').count(), 1, 'the side rail is the single center-selection control');
+});
+
 test('keyboard relay handles the 1-1-Enter sequence, reverse updates, and IME events', async t => {
   const page = await pageFor(t, '/coupling/keyboard');
   const root = page.locator('.coupling-keyboard');
+  await page.waitForSelector('.coupling-keyboard');
+  await page.locator('.coupling-keyboard-step-picker [data-character="reimu"]').click();
   await root.focus();
   await root.evaluate(element => element.dispatchEvent(new KeyboardEvent('keydown', { key: '1', keyCode: 229, bubbles: true, isComposing: true })));
   assert.equal(await root.getAttribute('data-stage'), 'relation', 'IME composition does not advance the relay');
   await page.keyboard.press('1');
+  assert.equal(await root.getAttribute('data-stage'), 'relation', 'relationship shortcuts select without advancing');
+  await page.locator('.coupling-keyboard-actions').getByRole('button', { name: '다음' }).click();
   assert.equal(await root.getAttribute('data-stage'), 'target');
+  await root.focus();
   await page.keyboard.press('1');
   assert.equal(await root.getAttribute('data-stage'), 'confirm');
   await page.keyboard.press('Enter');
   await page.waitForFunction(() => document.querySelectorAll('.coupling-keyboard-relation').length === 1);
-  const search = page.locator('.coupling-keyboard-search input');
+  const search = page.locator('.coupling-keyboard-step-picker input[type="search"]');
   await search.fill('레이무');
   await search.dispatchEvent('compositionstart');
   const stageBeforeComposition = await root.getAttribute('data-stage');
@@ -462,15 +526,22 @@ test('keyboard relay handles the 1-1-Enter sequence, reverse updates, and IME ev
   await search.fill('');
 
   await page.getByRole('button', { name: '중심 변경' }).click();
-  await page.locator('.coupling-keyboard-library [data-character="marisa"]').click();
+  await page.locator('.coupling-keyboard-step-picker [data-character="marisa"]').click();
   await page.locator('.coupling-keyboard-relations button').first().click();
-  await page.locator('.coupling-keyboard-search input').fill('레이무');
-  await page.locator('.coupling-keyboard-destinations button').first().click();
-  assert.equal(await root.getAttribute('data-stage'), 'confirm');
   await page.keyboard.press('2');
   await page.locator('.coupling-keyboard-preference-setting [data-preference="favorite"]').click();
+  await page.locator('.coupling-keyboard-actions').getByRole('button', { name: '다음' }).click();
+  await page.locator('.coupling-keyboard-step-picker input[type="search"]').fill('레이무');
+  await page.locator('.coupling-keyboard-step-picker [data-character="reimu"]').click();
+  assert.equal(await root.getAttribute('data-stage'), 'confirm');
   await page.locator('.coupling-keyboard-actions .coupling-btn-primary').click();
   await page.waitForFunction(() => JSON.parse(localStorage.getItem('introduce:coupling:keyboard:v1') ?? '{}').data?.edges?.[0]?.relation === 'friend' && JSON.parse(localStorage.getItem('introduce:coupling:keyboard:v1') ?? '{}').data?.edges?.[0]?.preference === 'favorite');
+  assert.equal(await root.getAttribute('data-stage'), 'target', 'confirmation returns directly to partner selection for consecutive entry');
+  assert.match(await page.locator('.coupling-keyboard-source-slot').innerText(), /마리사/, 'the center remains selected');
+  await page.locator('.coupling-keyboard-actions').getByRole('button', { name: '이전' }).click();
+  assert.equal(await page.locator('.coupling-keyboard-relations button').filter({ hasText: '친구·가족' }).getAttribute('aria-pressed'), 'true', 'the relationship setting remains selected after saving');
+  assert.equal(await page.locator('.coupling-keyboard-preference-setting [data-preference="favorite"]').getAttribute('aria-pressed'), 'true', 'the preference remains selected after saving');
+  await page.locator('.coupling-keyboard-actions').getByRole('button', { name: '다음' }).click();
   assert.equal(await page.locator('.coupling-keyboard-relation').count(), 1, 'reversing the center updates the existing unordered pair');
   assert.match(await page.locator('.coupling-keyboard-relation').first().innerText(), /친구·가족.*최애/);
 
@@ -482,7 +553,7 @@ test('keyboard relay handles the 1-1-Enter sequence, reverse updates, and IME ev
   assert.deepEqual(new Set([stored.data.edges[0].a, stored.data.edges[0].b]), new Set(['reimu', 'marisa']));
   assert.deepEqual(await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('introduce:coupling:'))), ['introduce:coupling:keyboard:v1']);
   await page.reload();
-  await page.waitForSelector('.coupling-keyboard-relation');
+  await page.waitForSelector('.coupling-keyboard');
   assert.equal(await page.locator('.coupling-keyboard-relation').count(), 1);
 });
 
@@ -677,6 +748,11 @@ test('mobile touch scrolls canvas panels and keeps batch, connection, deletion, 
   const boardBounds = await page.locator('.coupling-board-viewport').boundingBox();
   const toolbarBounds = await page.locator('.coupling-board-controls').boundingBox();
   const addBounds = await page.locator('.coupling-board-add').boundingBox();
+  assert.ok(toolbarBounds && toolbarBounds.width <= 300 && toolbarBounds.height <= 64, 'the mobile floating tool menu is compact');
+  assert.ok(await page.locator('.coupling-board-controls .coupling-board-tool:visible').evaluateAll(buttons => buttons.every(button => {
+    const rect = button.getBoundingClientRect();
+    return rect.width >= 48 && rect.height >= 48;
+  })), 'compact toolbar controls preserve accessible touch targets');
   const insideBoard = bounds => bounds && bounds.x >= boardBounds.x && bounds.y >= boardBounds.y && bounds.x + bounds.width <= boardBounds.x + boardBounds.width && bounds.y + bounds.height <= boardBounds.y + boardBounds.height;
   assert.ok(boardBounds && insideBoard(toolbarBounds) && insideBoard(addBounds), 'toolbar and add action stay within the mobile canvas');
   const controlsAvoidNodes = () => page.evaluate(() => {
@@ -823,6 +899,7 @@ test('legacy favorite and avoid relationship types migrate to preference markers
   assert.match(await page.locator('.coupling-edge-list').innerText(), /복잡·미정.*최애/);
   await page.goto(`${base}/coupling/keyboard`);
   await page.waitForSelector('.coupling-keyboard');
+  await page.locator('.coupling-keyboard-step-picker [data-character="reimu"]').click();
   assert.match(await page.locator('.coupling-keyboard-relation').innerText(), /복잡·미정[\s\S]*취향 아님/);
   await page.goto(`${base}/coupling/pairs`);
   await page.waitForSelector('.coupling-pairs');
@@ -892,9 +969,10 @@ test('all four editors reset only their own draft to first-use state', async t =
   await page.goto(`${base}/coupling/keyboard`);
   await page.waitForSelector('.coupling-keyboard');
   assert.equal(await page.locator('.coupling-keyboard-node.is-partner').count(), 1);
+  await page.locator('.coupling-keyboard-management summary').click();
   await confirmReset(page.getByRole('button', { name: '초기화' }));
   assert.equal(await page.locator('.coupling-keyboard-node.is-partner').count(), 0);
-  assert.match(await page.locator('.coupling-keyboard-graph-panel .coupling-keyboard-toolbar > strong').innerText(), /하쿠레이 레이무/);
+  assert.match(await page.locator('.coupling-keyboard-graph-panel .coupling-keyboard-toolbar > strong').innerText(), /중심을 선택/);
   assert.equal(await stored(keys.keyboard), null);
   assert.notEqual(await stored(keys.pairs), null);
 
@@ -927,11 +1005,12 @@ test('malformed drafts remain untouched until edit, pagehide flushes, and blocke
   await malformed.waitForSelector('.coupling-keyboard');
   assert.match(await malformed.locator('.coupling-keyboard-session').innerText(), /저장된 초안을 복원하지 못했습니다/);
   assert.equal(await malformed.evaluate(() => localStorage.getItem('introduce:coupling:keyboard:v1')), '{broken');
-  await malformed.locator('.coupling-keyboard').focus();
-  await malformed.keyboard.press('1');
-  await malformed.keyboard.press('1');
-  await malformed.keyboard.press('Enter');
-  await malformed.waitForSelector('.coupling-keyboard-relation');
+  await malformed.locator('.coupling-keyboard-step-picker [data-character="reimu"]').click();
+  await malformed.locator('.coupling-keyboard-relations button').first().click();
+  await malformed.locator('.coupling-keyboard-actions').getByRole('button', { name: '다음' }).click();
+  await malformed.locator('.coupling-keyboard-step-picker [data-character="marisa"]').click();
+  await malformed.locator('.coupling-keyboard-actions .coupling-btn-primary').click();
+  await malformed.waitForFunction(() => document.querySelectorAll('.coupling-keyboard-relation').length === 1);
   await malformed.evaluate(() => window.dispatchEvent(new Event('pagehide')));
   const repaired = await readDraft(malformed, 'introduce:coupling:keyboard:v1');
   assert.equal(repaired.version, 1);

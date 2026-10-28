@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type RefObject } from 'react';
 import { useLang } from '../../../contexts/LangContext';
 import { PROFILE_CHARACTERS, type ProfileCharacter } from '../data';
 import { normalizeCouplingSearch } from '../relations';
@@ -12,8 +12,9 @@ type Props = {
   initialGroup?: string;
   autoFocus?: boolean;
   label?: string;
+  searchRef?: RefObject<HTMLInputElement>;
 };
-export default function CharacterPicker({ onSelect, selectedIds = [], disabledIds = [], initialGroup = '', autoFocus = false, label }: Props) {
+export default function CharacterPicker({ onSelect, selectedIds = [], disabledIds = [], initialGroup = '', autoFocus = false, label, searchRef }: Props) {
   const { lang } = useLang();
   const t = copy[lang];
   const [query, setQuery] = useState('');
@@ -30,7 +31,7 @@ export default function CharacterPicker({ onSelect, selectedIds = [], disabledId
   return <section className="coupling-picker" aria-label={label ?? t.pickerTitle}>
     <div className="coupling-picker-top">
       <h2>{t.pickerTitle} <small>{PROFILE_CHARACTERS.length}</small></h2>
-      <label className="coupling-field">{t.search}<input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder={t.searchPlaceholder} autoFocus={autoFocus} /></label>
+      <label className="coupling-field">{t.search}<input ref={searchRef} type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder={t.searchPlaceholder} autoFocus={autoFocus} /></label>
       <label className="coupling-field">{t.work}<select value={group} onChange={event => setGroup(event.target.value)}><option value="">{t.allWorks}</option>{works.map(work => <option key={work} value={work}>{work}</option>)}</select></label>
       <p className="coupling-picker-count" aria-live="polite">{results.length} / {PROFILE_CHARACTERS.length}</p>
     </div>

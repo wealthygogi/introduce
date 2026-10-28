@@ -111,6 +111,12 @@
   stroke-linejoin: round;
 }
 
+.coupling-whiteboard .coupling-board-add svg {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+}
+
 .coupling-whiteboard .coupling-board-tool[aria-keyshortcuts="V"] svg path {
   fill: currentColor;
 }
@@ -122,13 +128,13 @@
   bottom: 24px;
   display: inline-flex;
   min-width: 48px;
-  min-height: 56px;
+  min-height: 48px;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 0 20px;
+  gap: 8px;
+  padding: 0 12px;
   border: 0;
-  border-radius: 16px;
+  border-radius: 12px;
   background: var(--board-primary);
   box-shadow: 0 3px 8px #1d1b2033;
   color: var(--board-on-primary);
@@ -778,12 +784,13 @@
 .coupling-whiteboard .coupling-batch-controls {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-  align-items: end;
+  align-items: start;
   gap: 12px;
 }
 
 .coupling-whiteboard .coupling-batch-controls.is-work-picker {
   grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
 }
 
 .coupling-whiteboard .coupling-batch-work-select > button svg {
@@ -1111,6 +1118,16 @@
   .coupling-whiteboard .coupling-board-add {
     right: 16px;
     bottom: 106px;
+    min-height: 56px;
+    gap: 12px;
+    padding: 0 20px;
+    border-radius: 16px;
+  }
+
+  .coupling-whiteboard .coupling-board-add svg {
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
   }
 
   .coupling-whiteboard .coupling-board-panel {

@@ -239,6 +239,12 @@ test('whiteboard batch picker lists only characters with coupling face portraits
   await page.locator('.coupling-board-add').click();
   const dialog = page.locator('.coupling-batch-dialog');
   await dialog.waitFor({ state: 'visible' });
+  const controlTops = await dialog.evaluate(element => ({
+    work: element.querySelector('.coupling-batch-work-select > button').getBoundingClientRect().top,
+    search: element.querySelector('.coupling-batch-field input').getBoundingClientRect().top,
+  }));
+  assert.ok(Math.abs(controlTops.work - controlTops.search) < 1,
+    `desktop work and search controls share a top edge: ${controlTops.work}, ${controlTops.search}`);
   await chooseBatchWork(dialog, '전체 작품');
   const faceIds = await page.evaluate(async () => await (await fetch('/introduce/src/features/coupling/portraitIds.json')).json());
   await dialog.getByRole('searchbox', { name: '이름 검색' }).fill('Alice Margatroid');

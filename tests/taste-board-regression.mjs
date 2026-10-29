@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+import { PNG } from 'pngjs';
 import { createServer } from 'vite';
 
 let server;
@@ -43,6 +44,7 @@ test('taste board offers editable grid presets and keeps empty positions', async
   await page.locator('.taste-board-cell').first().waitFor();
   assert.equal(await page.locator('.taste-board-cell').count(), 3);
   assert.equal(await page.locator('.taste-board-cell').nth(1).getAttribute('data-empty'), 'false');
+  await page.locator('.taste-custom-grid summary').click();
   await page.getByLabel('행 수').selectOption('2');
   await page.getByLabel('열 수').selectOption('5');
   assert.equal(await page.locator('.taste-board-cell').count(), 10);
@@ -54,7 +56,7 @@ test('taste board supports groups and independent visual themes on a mobile view
   assert.equal(await page.locator('.taste-board-group').count(), 2);
   await page.locator('.taste-group-heading input').nth(1).fill('작품별 분류');
   assert.equal(await page.locator('.taste-group-heading input').nth(1).inputValue(), '작품별 분류');
-  await page.getByRole('button', { name: '나이트 테마' }).click();
+  await page.getByRole('button', { name: '나이트' }).click();
   assert.equal(await page.locator('.taste-board').getAttribute('data-theme'), 'night');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
   assert.equal(overflow, false);
@@ -68,6 +70,47 @@ test('shrinking a populated grid requires confirmation and can be cancelled with
   await page.getByRole('button', { name: '한 줄 · 3칸' }).click();
   assert.equal(await page.locator('.taste-board-cell').count(), 9);
   assert.equal(await page.locator('.taste-board-cell').nth(8).getAttribute('data-empty'), 'false');
+});
+
+test('a cell image is stored separately and restored after reload', async t => {
+  const page = await pageFor(t);
+  const image = new PNG({ width: 1, height: 1 });
+  image.data = Buffer.from([120, 80, 200, 255]);
+  await page.locator('.taste-board-cell').first().click();
+  await page.getByRole('button', { name: '하쿠레이 레이무' }).click();
+  await page.locator('.taste-board-cell').first().click();
+  await page.getByRole('button', { name: '사진 업로드' }).click();
+  await page.locator('input[type="file"]').setInputFiles({
+    name: 'custom.png',
+    mimeType: 'image/png',
+    buffer: PNG.sync.write(image),
+  });
+  await page.locator('.taste-character-avatar img[src^="blob:"]').first().waitFor();
+  await page.locator('[role="dialog"] footer').getByText('완료').click();
+  await page.reload();
+  await page.locator('.taste-character-avatar img[src^="blob:"]').first().waitFor();
+  const imageId = await page.evaluate(() => {
+    const saved = JSON.parse(localStorage.getItem('introduce:characters:taste-board:v1'));
+    return saved.data.groups[0].cells[0].imageId;
+  });
+  assert.ok(imageId);
+  await page.locator('.taste-board-cell').first().click();
+  await page.getByRole('button', { name: '사진 제거' }).click();
+  await page.locator('[role="dialog"] footer').getByText('완료').click();
+  await page.getByRole('button', { name: '실행 취소' }).click();
+  await page.locator('.taste-character-avatar img[src^="blob:"]').first().waitFor();
+});
+
+test('work group creation adds multiple selected characters together', async t => {
+  const page = await pageFor(t);
+  await page.getByRole('button', { name: '작품 그룹 만들기' }).click();
+  await page.getByLabel('작품명 / 그룹 이름').fill('홍마향');
+  await page.getByRole('button', { name: '하쿠레이 레이무' }).click();
+  await page.getByRole('button', { name: '키리사메 마리사' }).click();
+  await page.getByRole('button', { name: '선택한 캐릭터 담기' }).click();
+  assert.equal(await page.locator('.taste-board-group').count(), 2);
+  assert.equal(await page.locator('.taste-board-group').nth(1).locator('.taste-board-cell[data-empty="false"]').count(), 2);
+  assert.equal(await page.locator('.taste-group-heading input').nth(1).inputValue(), '홍마향');
 });
 
 test('grid editing and character dialog stay usable without horizontal overflow at mobile, tablet, and desktop widths', async t => {

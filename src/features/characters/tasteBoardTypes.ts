@@ -1,8 +1,9 @@
-export type TasteTheme = 'minimal' | 'album' | 'night';
+export type TasteTheme = 'minimal' | 'paper' | 'album' | 'terminal' | 'night';
 
 export interface TasteCell {
   characters: string[];
   label: string;
+  imageId?: string;
 }
 
 export interface TasteGroup {

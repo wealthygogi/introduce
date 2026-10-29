@@ -32,17 +32,38 @@ test('taste-board PNG downloads decode at fixed dimensions on desktop and mobile
   const output = await mkdtemp(join(tmpdir(), 'taste-board-export-'));
   t.after(() => rm(output, { recursive: true, force: true }));
   const dimensions = [];
+  const customImage = new PNG({ width: 8, height: 8 });
+  for (let index = 0; index < customImage.data.length; index += 4) customImage.data.set([0, 255, 0, 255], index);
+  const customImageBase64 = PNG.sync.write(customImage).toString('base64');
   for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
     const context = await browser.newContext({ acceptDownloads: true, locale: 'ko-KR', viewport });
     t.after(() => context.close());
     await context.addInitScript(() => localStorage.setItem('introduce:characters:taste-board:v1', JSON.stringify({
       version: 1,
-      data: { title: 'PNG 검증 모음표', theme: 'album', showNames: true, groups: [{ id: 'g', title: '마지막 그룹', rows: 3, columns: 3, cells: [null, null, null, null, null, null, null, null, { characters: ['reimu', 'marisa'], label: '마지막 칸' }] }] },
+      data: { title: 'PNG 검증 모음표', theme: 'album', showNames: true, groups: [{ id: 'g', title: '마지막 그룹', rows: 3, columns: 3, cells: [{ characters: ['reimu', 'marisa'], label: '사용자 사진', imageId: 'export-image' }, null, null, null, null, null, null, null, { characters: ['reimu', 'marisa'], label: '마지막 칸' }] }] },
     })));
     const page = await context.newPage();
     await page.route('https://fonts.googleapis.com/**', route => route.fulfill({ body: '', contentType: 'text/css' }));
     await page.goto(`${base}/characters/tastes`);
+    await page.evaluate(async imageBase64 => {
+      const database = await new Promise((resolve, reject) => {
+        const request = indexedDB.open('introduce-taste-board-images', 1);
+        request.onupgradeneeded = () => request.result.createObjectStore('images');
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      const bytes = Uint8Array.from(atob(imageBase64), char => char.charCodeAt(0));
+      await new Promise((resolve, reject) => {
+        const transaction = database.transaction('images', 'readwrite');
+        transaction.objectStore('images').put(new Blob([bytes], { type: 'image/png' }), 'export-image');
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = () => reject(transaction.error);
+      });
+      database.close();
+    }, customImageBase64);
+    await page.reload();
     await page.locator('#taste-board-export').waitFor({ state: 'attached' });
+    await page.locator('#taste-board-export img[src^="blob:"]').first().waitFor();
     assert.match(await page.locator('#taste-board-export').innerText(), /마지막 그룹[\s\S]*마지막 칸/);
     if (viewport.width > 1000) {
       await page.locator('#taste-board-export').evaluate(element => { element.style.height = '20000px'; });
@@ -64,6 +85,7 @@ test('taste-board PNG downloads decode at fixed dimensions on desktop and mobile
     assert.equal(png.width, 1200, 'export width is independent of the viewport');
     assert.ok(png.height > 0);
     assert.ok(png.data.some((channel, index) => index % 4 !== 3 && channel !== 255), 'PNG contains rendered non-white board content');
+    assert.ok(png.data.some((_, index) => index % 4 === 0 && png.data[index] < 80 && png.data[index + 1] > 200 && png.data[index + 2] < 80), 'PNG includes the custom green image pixels');
     dimensions.push([png.width, png.height]);
   }
   assert.deepEqual(dimensions[0], dimensions[1]);

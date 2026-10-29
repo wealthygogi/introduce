@@ -4,15 +4,16 @@ export const TASTE_BOARD_STORAGE_KEY = 'introduce:characters:taste-board:v1';
 export const MAX_CELLS_PER_GROUP = 100;
 export const MAX_CELLS_TOTAL = 300;
 export const MAX_GROUPS = 20;
-const THEMES = new Set<TasteTheme>(['minimal', 'album', 'night']);
+const THEMES = new Set<TasteTheme>(['minimal', 'paper', 'album', 'terminal', 'night']);
 
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value);
 const isText = (value: unknown, maxLength: number): value is string => typeof value === 'string' && value.length <= maxLength;
+const isImageId = (value: unknown): value is string => typeof value === 'string' && /^[A-Za-z0-9_-]{1,120}$/.test(value);
 
 export function createDefaultTasteBoard(): TasteBoard {
   return {
     title: '내 캐릭터 취향',
-    theme: 'minimal',
+    theme: 'paper',
     showNames: true,
     groups: [{ id: 'group-1', title: 'Favorites', rows: 3, columns: 3, cells: Array(9).fill(null) }],
   };
@@ -20,6 +21,7 @@ export function createDefaultTasteBoard(): TasteBoard {
 
 function isTasteCell(value: unknown, characters: ReadonlySet<string>): value is TasteCell {
   if (!isRecord(value) || !Array.isArray(value.characters) || value.characters.length < 1 || value.characters.length > 2 || !isText(value.label, 80)) return false;
+  if ('imageId' in value && !isImageId(value.imageId)) return false;
   const ids = value.characters;
   return ids.every(id => typeof id === 'string' && characters.has(id)) && new Set(ids).size === ids.length;
 }

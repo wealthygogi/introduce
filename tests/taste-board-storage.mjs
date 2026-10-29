@@ -47,6 +47,21 @@ test('same character may appear in different cells while a cell cannot duplicate
   assert.equal(parseTasteBoard(serializeTasteBoard(board), characters).kind, 'invalid');
 });
 
+test('cells may reference a custom image while old cells remain valid without one', () => {
+  const board = createDefaultTasteBoard();
+  board.groups[0].cells[0] = { characters: ['reimu'], label: '' };
+  const legacy = parseTasteBoard(serializeTasteBoard(board), characters);
+  assert.equal(legacy.kind, 'valid');
+
+  board.groups[0].cells[0] = { characters: ['reimu'], label: '', imageId: 'image-reimu-1' };
+  const restored = parseTasteBoard(serializeTasteBoard(board), characters);
+  assert.equal(restored.kind, 'valid');
+  if (restored.kind === 'valid') assert.equal(restored.data.groups[0].cells[0]?.imageId, 'image-reimu-1');
+
+  board.groups[0].cells[0] = { characters: ['reimu'], label: '', imageId: '' };
+  assert.equal(parseTasteBoard(serializeTasteBoard(board), characters).kind, 'invalid');
+});
+
 test('storage uses an independent versioned key and reports blocked storage', () => {
   const values = new Map();
   const storage = {

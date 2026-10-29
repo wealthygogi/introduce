@@ -14,7 +14,7 @@
     "test:share": "node --test tests/share-regression.mjs",
     "test:profile": "node tests/profile-selection-regression.mjs",
     "test:coupling": "node --test tests/coupling-regression.mjs",
-    "test:taste-board": "node --experimental-strip-types --test tests/taste-board-storage.mjs tests/taste-board-regression.mjs tests/taste-board-export.mjs",
+    "test:taste-board": "node --experimental-strip-types --test tests/taste-board-storage.mjs tests/taste-board-image-storage.mjs tests/taste-board-regression.mjs tests/taste-board-export.mjs",
     "test:coupling-export": "node --test tests/coupling-export-regression.mjs"
   },
   "dependencies": {

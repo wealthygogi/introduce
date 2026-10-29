@@ -21,6 +21,11 @@ const resetCopy = {
   ja: { action: 'キャラクターをリセット', confirm: 'すべてのグループのキャラクターと写真を消去しますか？タイトル、テーマ、グループ構成は保持されます。', actions: '操作' },
   en: { action: 'Clear characters', confirm: 'Clear characters and photos from all groups? The title, theme, and group layouts will be kept.', actions: 'Actions' },
 } as const;
+const downloadCopy = {
+  ko: { preparing: '이미지를 준비하고 있습니다…', started: '다운로드를 시작했습니다. 브라우저의 다운로드 목록을 확인해 주세요.', failed: '다운로드를 시작하지 못했습니다. 다시 시도해 주세요.' },
+  ja: { preparing: '画像を準備しています…', started: 'ダウンロードを開始しました。ブラウザーのダウンロード一覧をご確認ください。', failed: 'ダウンロードを開始できませんでした。もう一度お試しください。' },
+  en: { preparing: 'Preparing your image…', started: 'Download started. Check your browser’s downloads.', failed: 'Could not start the download. Please try again.' },
+} as const;
 
 async function resizeImageFile(file: File): Promise<Blob> {
   if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) throw new Error('Unsupported image');
@@ -57,6 +62,7 @@ export default function TasteBoardEditor() {
   const [restoreWarning, setRestoreWarning] = useState(false);
   const [boardLimitError, setBoardLimitError] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [downloadStatus, setDownloadStatus] = useState<'preparing' | 'started' | 'failed' | null>(null);
   const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
   const [workGroupOpen, setWorkGroupOpen] = useState(false);
   const [workGroupTitle, setWorkGroupTitle] = useState('');
@@ -187,7 +193,8 @@ export default function TasteBoardEditor() {
         <button type="button" className="taste-secondary-action taste-create-action" disabled={board.groups.length >= MAX_GROUPS} onClick={() => { setWorkGroupError(false); setWorkGroupOpen(true); }}>{t.workGroup}</button>
         <div className="taste-action-group" aria-label={resetText.actions}>
           <strong>{resetText.actions}</strong>
-          <DownloadButton targetId="taste-board-export" filename="character-taste-board.png" captureOptions={{ scale: 1, resetPosition: true, maxPixelArea: 16_000_000 }} />
+          <DownloadButton targetId="taste-board-export" filename="character-taste-board.png" captureOptions={{ scale: 1, resetPosition: true, maxPixelArea: 16_000_000 }} onStatusChange={setDownloadStatus} />
+          <p className="taste-download-status" role="status" aria-live="polite">{downloadStatus ? downloadCopy[lang][downloadStatus] : ''}</p>
           <button type="button" className="taste-secondary-action" disabled={!undoStack.length} onClick={() => { setBoard(undoStack[undoStack.length - 1]); setUndoStack(stack => stack.slice(0, -1)); }}>{t.undo}</button>
           <button type="button" className="taste-secondary-action taste-reset-action" disabled={!board.groups.some(group => group.cells.some(Boolean))} onClick={() => { if (window.confirm(resetText.confirm)) update(current => ({ ...current, groups: current.groups.map(group => ({ ...group, cells: group.cells.map(() => null) })) })); }}>{resetText.action}</button>
         </div>

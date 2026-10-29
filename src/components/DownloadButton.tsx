@@ -6,20 +6,24 @@ interface Props {
   targetId: string;
   filename: string;
   captureOptions?: { scale?: number; padding?: number; resetPosition?: boolean; maxPixelArea?: number };
+  onStatusChange?: (status: 'preparing' | 'started' | 'failed') => void;
 }
 
-export default function DownloadButton({ targetId, filename, captureOptions }: Props) {
+export default function DownloadButton({ targetId, filename, captureOptions, onStatusChange }: Props) {
   const { t } = useLang();
   const [busy, setBusy] = useState(false);
 
   const run = async () => {
     if (busy) return;
     setBusy(true);
+    onStatusChange?.('preparing');
     try {
       const blob = await captureCardBlob(targetId, captureOptions);
       saveBlob(blob, filename);
+      onStatusChange?.('started');
     } catch (e) {
       console.error('Save failed', e);
+      onStatusChange?.('failed');
       alert(t.saveFailed);
     } finally {
       setBusy(false);

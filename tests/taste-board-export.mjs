@@ -77,6 +77,7 @@ test('taste-board PNG downloads decode at fixed dimensions on desktop and mobile
     }
     let download;
     [download] = await Promise.all([page.waitForEvent('download', { timeout: 120_000 }), page.locator('.download-btn').click()]);
+    await page.getByText('다운로드를 시작했습니다. 브라우저의 다운로드 목록을 확인해 주세요.').waitFor({ timeout: 5000 });
     const path = join(output, `${viewport.width}.png`);
     await download.saveAs(path);
     const data = await readFile(path);

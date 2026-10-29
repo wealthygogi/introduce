@@ -98,6 +98,8 @@
 .taste-action-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-top: 16px; border-top: 1px solid #e8e4ef; }
 .taste-action-group > strong { grid-column: 1 / -1; font-size: .88rem; }
 .taste-action-group .download-btn { grid-column: 1 / -1; width: 100%; min-height: 48px; justify-content: center; border-radius: 14px; }
+.taste-download-status { grid-column: 1 / -1; margin: 0; color: var(--taste-muted); font-size: .8rem; line-height: 1.45; }
+.taste-download-status:empty { display: none; }
 .taste-action-group .taste-secondary-action { min-width: 0; min-height: 44px; font-size: .84rem; transition: border-color .18s, transform .18s; }
 .taste-reset-action { color: #8a5263; }
 .taste-secondary-action:disabled { opacity: .45; cursor: not-allowed; }
@@ -118,6 +120,13 @@
   .taste-toggle, .taste-secondary-action, .taste-save-status { grid-column: 1 / -1; }
   .taste-action-group { grid-column: 1 / -1; }
   .taste-action-group .taste-secondary-action { grid-column: auto; }
+  .taste-controls { gap: 10px; padding: 12px; }
+  .taste-theme-option { min-height: 62px !important; gap: 3px; padding: 5px !important; }
+  .taste-theme-swatch { height: 26px; }
+  .taste-toggle, .taste-create-action, .taste-action-group .download-btn { min-height: 44px; }
+  .taste-action-group { padding-top: 10px; }
+  .taste-group-heading { gap: 6px; padding: 8px; }
+  .taste-group-heading button, .taste-custom-grid summary { min-height: 44px; padding: 5px 8px; font-size: .84rem; }
   .taste-board { padding: 12px; border-radius: 20px; }
   .taste-board-cell { padding: 4px; border-radius: 10px; }
   .taste-character { display: grid; justify-items: center; }

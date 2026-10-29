@@ -6,7 +6,7 @@
 .taste-board-workspace { display: grid; grid-template-columns: minmax(220px, 280px) minmax(0, 1fr); gap: 24px; align-items: start; max-width: 1100px; margin: auto; }
 .taste-controls { position: sticky; top: 16px; display: grid; gap: 16px; padding: 20px; border: 1px solid var(--taste-line); border-radius: 24px; background: var(--taste-surface); }
 .taste-field { display: grid; gap: 7px; color: var(--taste-muted); font-size: .84rem; font-weight: 650; }
-.taste-field input, .taste-group-heading input { min-width: 0; min-height: 48px; padding: 10px 12px; border: 1px solid var(--taste-line); border-radius: 12px; background: var(--taste-surface); color: var(--taste-ink); font: inherit; }
+.taste-field input, .taste-field select, .taste-group-heading input { min-width: 0; min-height: 48px; padding: 10px 12px; border: 1px solid var(--taste-line, #d8d9dc); border-radius: 12px; background: var(--taste-surface, #fff); color: var(--taste-ink, #292a2e); font: inherit; }
 .taste-control-block { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .taste-control-block strong { grid-column: 1 / -1; font-size: .88rem; }
 .taste-control-block button, .taste-secondary-action, .taste-add-group { min-height: 48px; padding: 8px 10px; border: 1px solid var(--taste-line); border-radius: 14px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
@@ -66,8 +66,10 @@
 .taste-export.theme-terminal .taste-export-cell { border-color: #3d6252; background: #1e3029; color: #e0f4e8; }
 .taste-export-cell small { color: inherit; font-size: 16px; }
 .taste-dialog-scrim { position: fixed; z-index: 1000; inset: 0; display: grid; place-items: center; padding: 20px; background: #12121ab0; }
-.taste-character-dialog { display: grid; width: min(620px, 100%); max-height: min(760px, 90dvh); grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 14px; padding: 20px; border-radius: 24px; background: #fff; color: #292a2e; box-shadow: 0 20px 80px #0004; }
-.taste-character-dialog header, .taste-character-dialog footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.taste-character-dialog { display: grid; width: min(620px, calc(100% - 40px)); max-height: min(760px, 90dvh); grid-template-rows: auto auto auto minmax(0, 1fr) auto; gap: 14px; margin: auto; padding: 20px; border: 0; border-radius: 24px; background: #fff; color: #292a2e; box-shadow: 0 20px 80px #0004; }
+.taste-character-dialog::backdrop { background: #12121ab0; }
+.taste-picker-empty { grid-column: 1 / -1; padding: 20px; color: #62636a; text-align: center; }
+.taste-character-dialog header, .taste-character-dialog footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
 .taste-character-dialog h2 { margin: 0; }
 .taste-character-dialog header button, .taste-character-dialog footer button { min-width: 48px; min-height: 48px; border: 1px solid #d8d9dc; border-radius: 12px; background: white; color: inherit; cursor: pointer; }
 .taste-character-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; overflow: auto; overscroll-behavior: contain; }
@@ -89,6 +91,7 @@
 .taste-work-dialog { grid-template-rows: auto auto auto auto minmax(0, 1fr) auto; }
 .taste-work-dialog .taste-character-list { min-height: 0; }
 .taste-work-dialog .taste-character-list button[aria-pressed="true"] { border-color: var(--taste-accent); background: color-mix(in srgb, var(--taste-accent) 12%, white); }
+.taste-work-dialog .taste-character-list button[aria-pressed="true"]::after { content: '✓'; color: #59418a; font-weight: 800; }
 .taste-controls { gap: 18px; border-color: #e8e4ef; background: linear-gradient(155deg, #fff 35%, #f9f7fd); box-shadow: 0 12px 32px #4032650a; }
 .taste-field input:focus-visible, .taste-group-heading input:focus-visible, .taste-board-page button:focus-visible, .taste-custom-grid summary:focus-visible, .taste-custom-grid select:focus-visible { outline: 3px solid color-mix(in srgb, var(--taste-accent) 55%, white); outline-offset: 2px; }
 .taste-theme-option { transition: border-color .18s, background .18s, transform .18s; }
@@ -112,6 +115,7 @@
 @media (max-width: 760px) {
   .taste-board-page { padding: 20px 14px 44px; }
   .taste-board-workspace { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .taste-board { grid-row: 1; }
   .taste-controls { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 14px; border-radius: 20px; }
   .taste-field:first-child { grid-column: 1 / -1; }
   .taste-control-block { grid-template-columns: 1fr 1fr; }
@@ -141,3 +145,32 @@
   .taste-custom-grid { grid-column: 1 / -1; grid-row: 3; }
 }
 @media (max-width: 360px) { .taste-controls { grid-template-columns: 1fr; } .taste-field:first-child, .taste-toggle, .taste-secondary-action, .taste-save-status, .taste-action-group, .taste-theme-options { grid-column: auto; } }
+@media (prefers-reduced-motion: reduce) { .taste-board-page *, .taste-character-dialog * { transition: none !important; animation: none !important; } }
+
+/* Desktop character library: filters support the portrait grid, not the reverse. */
+@media (min-width: 761px) {
+  .taste-character-dialog {
+    width: min(1040px, calc(100vw - 64px)); height: min(760px, 86dvh); max-width: none;
+    grid-template-columns: 220px minmax(0, 1fr); grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+    gap: 16px 24px; padding: 28px; border-radius: 28px; background: #fcfaff;
+  }
+  .taste-character-dialog > header { grid-column: 1 / -1; grid-row: 1; padding-bottom: 16px; border-bottom: 1px solid #e9e3f0; }
+  .taste-character-dialog > header h2 { font-size: 24px; letter-spacing: -.03em; }
+  .taste-character-dialog > .taste-field { grid-column: 1; align-content: start; }
+  .taste-character-dialog > .taste-field:nth-of-type(1) { grid-row: 2; }
+  .taste-character-dialog > .taste-field:nth-of-type(2) { grid-row: 3; }
+  .taste-character-dialog > .taste-character-list { grid-column: 2; grid-row: 2 / 5; min-height: 0; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); align-content: start; gap: 10px; padding: 2px 6px 4px 2px; }
+  .taste-character-dialog > footer { grid-column: 1 / -1; grid-row: 5; padding-top: 16px; border-top: 1px solid #e9e3f0; }
+  .taste-character-dialog > footer button { padding: 8px 16px; border-radius: 16px; }
+  .taste-character-dialog > footer button:last-of-type { border-color: #6750a4; background: #6750a4; color: #fff; }
+  .taste-character-dialog .taste-character-list button { position: relative; display: flex; min-height: 166px; flex-direction: column; justify-content: center; gap: 8px; padding: 16px 10px; border: 1px solid #ede7f3; border-radius: 20px; background: #f5f1fa; text-align: center; }
+  .taste-character-dialog .taste-character-list button:hover { border-color: #a997c5; background: #eee7f7; }
+  .taste-character-dialog .taste-character-list button > span:nth-child(2) { max-width: 100%; white-space: normal; overflow-wrap: anywhere; font-weight: 700; }
+  .taste-character-dialog .taste-character-list small { margin: 0; color: #61596a; }
+  .taste-character-dialog .taste-character-list .taste-character-avatar { width: 72px; border-radius: 24px; }
+  .taste-work-dialog { grid-template-rows: auto auto auto auto minmax(0, 1fr) auto; }
+  .taste-work-dialog > .taste-roster-note { grid-column: 1; grid-row: 4; line-height: 1.5; }
+  .taste-work-dialog > .taste-character-list { grid-row: 2 / 6; }
+  .taste-work-dialog > footer { grid-row: 6; }
+  .taste-work-dialog .taste-character-list button[aria-pressed="true"]::after { position: absolute; top: 10px; right: 12px; }
+}

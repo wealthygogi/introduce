@@ -47,6 +47,25 @@ async function chooseBatchWork(dialog, workName) {
   await dialog.getByRole('button', { name: workName, exact: true }).click();
 }
 
+test('desktop character dialogs use portrait cards and a supporting filter pane', async t => {
+  const page = await pageFor(t, '/coupling/whiteboard');
+  await page.locator('.coupling-board-add').click();
+  const batch = page.locator('.coupling-batch-dialog');
+  const filter = await batch.locator('.coupling-batch-controls').boundingBox();
+  const cards = await batch.locator('.coupling-batch-content').boundingBox();
+  const avatar = await batch.locator('.coupling-batch-choice .coupling-avatar').first().boundingBox();
+  assert.ok(filter && cards && filter.x + filter.width <= cards.x, 'batch filter pane is beside cards');
+  assert.ok(avatar && avatar.width >= 64, 'batch cards use prominent portraits');
+  await page.goto(`${base}/coupling/pairs`);
+  await page.locator('.coupling-pairs-slot').first().click();
+  const picker = page.locator('.coupling-pairs-picker-dialog');
+  const pairFilter = await picker.locator('.coupling-picker-top').boundingBox();
+  const pairCards = await picker.locator('.coupling-picker-results').boundingBox();
+  const pairAvatar = await picker.locator('.coupling-avatar').first().boundingBox();
+  assert.ok(pairFilter && pairCards && pairFilter.x + pairFilter.width <= pairCards.x, 'pair filter pane is beside cards');
+  assert.ok(pairAvatar && pairAvatar.width >= 64, 'pair cards use prominent portraits');
+});
+
 async function clickAtCenter(page, target) {
   await target.evaluate(element => {
     const body = element.closest('.coupling-board-panel-body');
@@ -256,12 +275,12 @@ test('whiteboard batch picker lists only characters with coupling face portraits
   await page.locator('.coupling-board-add').click();
   const dialog = page.locator('.coupling-batch-dialog');
   await dialog.waitFor({ state: 'visible' });
-  const controlTops = await dialog.evaluate(element => ({
-    work: element.querySelector('.coupling-batch-work-select > button').getBoundingClientRect().top,
-    search: element.querySelector('.coupling-batch-field input').getBoundingClientRect().top,
+  const controlBounds = await dialog.evaluate(element => ({
+    work: element.querySelector('.coupling-batch-work-select > button').getBoundingClientRect().toJSON(),
+    search: element.querySelector('.coupling-batch-field input').getBoundingClientRect().toJSON(),
   }));
-  assert.ok(Math.abs(controlTops.work - controlTops.search) < 1,
-    `desktop work and search controls share a top edge: ${controlTops.work}, ${controlTops.search}`);
+  assert.ok(controlBounds.work.bottom <= controlBounds.search.top && Math.abs(controlBounds.work.left - controlBounds.search.left) < 1,
+    'desktop work and search controls are aligned without overlap in the filter pane');
   await chooseBatchWork(dialog, '전체 작품');
   const faceIds = await page.evaluate(async () => await (await fetch('/introduce/src/features/coupling/portraitIds.json')).json());
   await dialog.getByRole('searchbox', { name: '이름 검색' }).fill('Alice Margatroid');

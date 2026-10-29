@@ -29,6 +29,40 @@ async function pageFor(t, route = '/characters/tastes', viewport = { width: 1280
   return page;
 }
 
+test('desktop taste picker shows large portrait cards beside its filters', async t => {
+  const page = await pageFor(t);
+  await page.locator('.taste-board-cell').first().click();
+  const dialog = page.getByRole('dialog', { name: '캐릭터 선택' });
+  const filter = await dialog.getByLabel('작품 분류').boundingBox();
+  const list = await dialog.locator('.taste-character-list').boundingBox();
+  const avatar = await dialog.locator('.taste-character-avatar').first().boundingBox();
+  assert.ok(filter && list && filter.x + filter.width <= list.x, 'filters sit beside character cards');
+  assert.ok(avatar && avatar.width >= 64, 'portraits are large enough to browse');
+});
+
+test('mobile workspace presents the board before its supporting settings', async t => {
+  const page = await pageFor(t, '/characters/tastes', { width: 390, height: 844 });
+  const board = await page.locator('.taste-board').boundingBox();
+  const controls = await page.locator('.taste-controls').boundingBox();
+  assert.ok(board && controls && board.y < controls.y, 'board precedes settings');
+  assert.ok(board.y < 844, 'board appears in the initial viewport');
+});
+
+test('character selection supports group filtering, empty results and keyboard dismissal', async t => {
+  const page = await pageFor(t);
+  const cell = page.locator('.taste-board-cell').first();
+  await cell.click();
+  const dialog = page.getByRole('dialog', { name: '캐릭터 선택' });
+  await page.getByLabel('작품 분류').selectOption({ label: '동방홍마향' });
+  assert.equal(await dialog.getByRole('button', { name: '하쿠레이 레이무' }).count(), 0);
+  await page.getByLabel('캐릭터 검색').fill('no-such-character-xyz');
+  assert.equal(await dialog.getByText('검색 결과가 없습니다.').count(), 1);
+  await page.getByLabel('캐릭터 검색').fill('');
+  await page.keyboard.press('Escape');
+  await dialog.waitFor({ state: 'detached' });
+  assert.equal(await cell.evaluate(el => document.activeElement === el), true);
+});
+
 test('taste board offers editable grid presets and keeps empty positions', async t => {
   const page = await pageFor(t);
   await page.getByRole('heading', { level: 1, name: '캐릭터 취향 모음표' }).waitFor();

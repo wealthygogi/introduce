@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { PROFILE_CHARACTERS, PROFILE_CHARACTER_BY_ID } from '../../data/profileCatalog';
 import { getCouplingPortrait } from '../coupling/data';
 import { useLang } from '../../contexts/LangContext';
@@ -15,6 +15,21 @@ const copy = {
 } as const;
 
 const characterIds = new Set(PROFILE_CHARACTERS.map(character => character.id));
+const pickerCopy = {
+  ko: { group: '작품 분류', all: '모든 작품', empty: '검색 결과가 없습니다.' },
+  ja: { group: '作品分類', all: 'すべての作品', empty: '検索結果がありません。' },
+  en: { group: 'Work category', all: 'All works', empty: 'No characters found.' },
+} as const;
+
+function TasteDialog({ label, className = '', onClose, opener, children }: { label: string; className?: string; onClose: () => void; opener: HTMLElement | null; children: ReactNode }) {
+  const ref = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const dialog = ref.current;
+    dialog?.showModal();
+    return () => { dialog?.close(); opener?.focus(); };
+  }, []);
+  return <dialog ref={ref} role="dialog" className={`taste-character-dialog ${className}`} aria-label={label} onCancel={event => { if (event.target === event.currentTarget) { event.preventDefault(); onClose(); } }} onClick={event => { if (event.target === event.currentTarget) onClose(); }}>{children}</dialog>;
+}
 const themes: TasteTheme[] = ['paper', 'album', 'terminal', 'night'];
 const resetCopy = {
   ko: { action: '캐릭터 초기화', confirm: '모든 그룹의 캐릭터와 사진을 비울까요? 제목, 테마와 그룹 구성은 유지됩니다.', actions: '작업' },
@@ -58,6 +73,7 @@ export default function TasteBoardEditor() {
   const [undoStack, setUndoStack] = useState<TasteBoard[]>([]);
   const [activeCell, setActiveCell] = useState<{ groupId: string; index: number; adding: boolean } | null>(null);
   const [query, setQuery] = useState('');
+  const [pickerGroup, setPickerGroup] = useState('');
   const [storageAvailable, setStorageAvailable] = useState(true);
   const [restoreWarning, setRestoreWarning] = useState(false);
   const [boardLimitError, setBoardLimitError] = useState(false);
@@ -70,6 +86,7 @@ export default function TasteBoardEditor() {
   const [workSelection, setWorkSelection] = useState<Set<string>>(new Set());
   const [workGroupError, setWorkGroupError] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const dialogOpener = useRef<HTMLElement | null>(null);
   const imageStorage = useMemo(() => createTasteBoardImageStorage(), []);
 
   useEffect(() => {
@@ -96,7 +113,8 @@ export default function TasteBoardEditor() {
     };
   }, [board, undoStack, imageStorage]);
 
-  const visibleCharacters = useMemo(() => PROFILE_CHARACTERS.filter(character => `${character[lang]} ${character.ko} ${character.ja} ${character.en}`.toLocaleLowerCase().includes(query.toLocaleLowerCase())), [lang, query]);
+  const pickerGroups = useMemo(() => [...new Map(PROFILE_CHARACTERS.map(character => [character.group.ko, character.group])).values()], []);
+  const visibleCharacters = useMemo(() => PROFILE_CHARACTERS.filter(character => (!pickerGroup || character.group.ko === pickerGroup) && `${character[lang]} ${character.ko} ${character.ja} ${character.en}`.toLocaleLowerCase().includes(query.toLocaleLowerCase())), [lang, query, pickerGroup]);
   const renderAvatar = (character: (typeof PROFILE_CHARACTERS)[number], size: number, imageId?: string) => {
     const portrait = getCouplingPortrait(character);
     const src = imageId ? imageUrls[imageId] : undefined;
@@ -190,7 +208,7 @@ export default function TasteBoardEditor() {
         <label className="taste-field">{t.title}<input value={board.title} maxLength={120} onChange={event => update(current => ({ ...current, title: event.target.value }))} /></label>
         <div className="taste-control-block taste-theme-options"><strong>{t.themes}</strong>{themes.map(theme => <button key={theme} type="button" className={`taste-theme-option theme-${theme}`} aria-pressed={board.theme === theme} onClick={() => update(current => ({ ...current, theme }))}><span className="taste-theme-swatch" aria-hidden="true"><i /><i /><i /><i /></span><span>{t[theme]}</span></button>)}</div>
         <label className="taste-toggle"><input type="checkbox" checked={board.showNames} onChange={event => update(current => ({ ...current, showNames: event.target.checked }))} />{t.showNames}</label>
-        <button type="button" className="taste-secondary-action taste-create-action" disabled={board.groups.length >= MAX_GROUPS} onClick={() => { setWorkGroupError(false); setWorkGroupOpen(true); }}>{t.workGroup}</button>
+        <button type="button" className="taste-secondary-action taste-create-action" disabled={board.groups.length >= MAX_GROUPS} onClick={event => { dialogOpener.current = event.currentTarget; setWorkGroupError(false); setWorkGroupOpen(true); }}>{t.workGroup}</button>
         <div className="taste-action-group" aria-label={resetText.actions}>
           <strong>{resetText.actions}</strong>
           <DownloadButton targetId="taste-board-export" filename="character-taste-board.png" captureOptions={{ scale: 1, resetPosition: true, maxPixelArea: 16_000_000 }} onStatusChange={setDownloadStatus} />
@@ -215,7 +233,7 @@ export default function TasteBoardEditor() {
             <div className="taste-group-actions"><button type="button" onClick={() => update(current => ({ ...current, groups: current.groups.filter(item => item.id !== group.id) }))} disabled={board.groups.length === 1} aria-label={t.remove}>×</button><button type="button" aria-label={t.up} disabled={groupIndex === 0} onClick={() => update(current => ({ ...current, groups: [current.groups[groupIndex - 1], current.groups[groupIndex], ...current.groups.filter((_, i) => i !== groupIndex && i !== groupIndex - 1)] }))}>↑</button><button type="button" aria-label={t.down} disabled={groupIndex === board.groups.length - 1} onClick={() => update(current => ({ ...current, groups: [current.groups[groupIndex], current.groups[groupIndex + 1], ...current.groups.filter((_, i) => i !== groupIndex && i !== groupIndex + 1)] }))}>↓</button></div>
           </div>
           <div className="taste-board-grid" style={{ '--taste-columns': group.columns } as React.CSSProperties}>
-            {group.cells.map((cell, index) => <button key={index} type="button" className="taste-board-cell" data-empty={!cell} aria-label={`${group.title} ${index + 1}: ${cell ? cell.characters.map(id => PROFILE_CHARACTER_BY_ID.get(id)?.[lang]).join(' + ') : t.empty}`} onClick={() => setActiveCell({ groupId: group.id, index, adding: false })}>
+            {group.cells.map((cell, index) => <button key={index} type="button" className="taste-board-cell" data-empty={!cell} aria-label={`${group.title} ${index + 1}: ${cell ? cell.characters.map(id => PROFILE_CHARACTER_BY_ID.get(id)?.[lang]).join(' + ') : t.empty}`} onClick={event => { dialogOpener.current = event.currentTarget; setActiveCell({ groupId: group.id, index, adding: false }); }}>
               {cell ? <><span className="taste-cell-characters">{cell.characters.map((id, characterIndex) => { const character = PROFILE_CHARACTER_BY_ID.get(id)!; return <span className="taste-character" key={id}>{renderAvatar(character, 72, characterIndex === 0 ? cell.imageId : undefined)}{board.showNames && <span>{character[lang]}</span>}</span>; })}</span><span className="taste-cell-edit">{t.change}</span></> : <span className="taste-cell-empty"><b>＋</b>{t.empty}</span>}
             </button>)}
           </div>
@@ -233,19 +251,20 @@ export default function TasteBoardEditor() {
         </div>)}</div>
       </section>)}
     </section>
-    {activeCell && <div className="taste-dialog-scrim" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) setActiveCell(null); }}><section className="taste-character-dialog" role="dialog" aria-modal="true" aria-label={t.choose}>
+    {activeCell && <TasteDialog label={t.choose} opener={dialogOpener.current} onClose={() => setActiveCell(null)}>
       <header><h2>{t.choose}</h2><button type="button" aria-label={t.close} onClick={() => setActiveCell(null)}>×</button></header>
       <label className="taste-field">{t.search}<input autoFocus type="search" value={query} onChange={event => setQuery(event.target.value)} /></label>
-      <div className="taste-character-list">{visibleCharacters.map(character => { const activeGroup = activeCell && board.groups.find(group => group.id === activeCell.groupId); const currentIds = activeGroup?.cells[activeCell?.index ?? -1]?.characters ?? []; return <button key={character.id} type="button" disabled={activeCell.adding && currentIds.includes(character.id)} onClick={() => chooseCharacter(character.id)}>{renderAvatar(character, 36)}<span>{character[lang]}</span><small>{character.group[lang]}</small></button>; })}</div>
+      <label className="taste-field">{pickerCopy[lang].group}<select value={pickerGroup} onChange={event => setPickerGroup(event.target.value)}><option value="">{pickerCopy[lang].all}</option>{pickerGroups.map(group => <option key={group.ko} value={group.ko}>{group[lang]}</option>)}</select></label>
+      <div className="taste-character-list">{visibleCharacters.length === 0 && <p className="taste-picker-empty" role="status">{pickerCopy[lang].empty}</p>}{visibleCharacters.map(character => { const activeGroup = activeCell && board.groups.find(group => group.id === activeCell.groupId); const currentIds = activeGroup?.cells[activeCell?.index ?? -1]?.characters ?? []; return <button key={character.id} type="button" disabled={activeCell.adding && currentIds.includes(character.id)} onClick={() => chooseCharacter(character.id)}>{renderAvatar(character, 36)}<span>{character[lang]}</span><small>{character.group[lang]}</small></button>; })}</div>
       <footer>{activeCell && board.groups.find(group => group.id === activeCell.groupId)?.cells[activeCell.index] && <><button type="button" onClick={() => { setCell(activeCell.groupId, activeCell.index, null); setActiveCell(null); }}>{t.clear}</button><button type="button" disabled={(board.groups.find(item => item.id === activeCell.groupId)?.cells[activeCell.index]?.characters.length ?? 0) >= 2} onClick={() => setActiveCell({ ...activeCell, adding: true })}>{t.addSecond}</button><button type="button" onClick={() => imageInputRef.current?.click()}>{board.groups.find(group => group.id === activeCell.groupId)?.cells[activeCell.index]?.imageId ? t.replaceImage : t.upload}</button>{board.groups.find(group => group.id === activeCell.groupId)?.cells[activeCell.index]?.imageId && <button type="button" onClick={removeCellImage}>{t.removeImage}</button>}</>}<button type="button" onClick={() => setActiveCell(null)}>{t.close}</button><input ref={imageInputRef} type="file" accept="image/png,image/jpeg,image/webp" onChange={uploadCellImage} hidden aria-label={t.upload} />{imageError && <span role="alert">{t.invalidImage}</span>}</footer>
-    </section></div>}
-    {workGroupOpen && <div className="taste-dialog-scrim" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) setWorkGroupOpen(false); }}><section className="taste-character-dialog taste-work-dialog" role="dialog" aria-modal="true" aria-label={t.workGroup}>
+    </TasteDialog>}
+    {workGroupOpen && <TasteDialog label={t.workGroup} className="taste-work-dialog" opener={dialogOpener.current} onClose={() => setWorkGroupOpen(false)}>
       <header><h2>{t.workGroup}</h2><button type="button" aria-label={t.close} onClick={() => setWorkGroupOpen(false)}>×</button></header>
       <label className="taste-field">{t.workTitle}<input autoFocus value={workGroupTitle} maxLength={100} onChange={event => setWorkGroupTitle(event.target.value)} /></label>
       <label className="taste-field">{t.search}<input type="search" value={workQuery} onChange={event => setWorkQuery(event.target.value)} /></label>
       <p className="taste-roster-note">{t.rosterNote}{workGroupError && <> <span role="alert">{t.workLimit}</span></>}</p>
       <div className="taste-character-list">{PROFILE_CHARACTERS.filter(character => `${character[lang]} ${character.ko} ${character.ja} ${character.en} ${character.group[lang]}`.toLocaleLowerCase().includes(workQuery.toLocaleLowerCase())).map(character => <button key={character.id} type="button" aria-pressed={workSelection.has(character.id)} onClick={() => setWorkSelection(current => { const next = new Set(current); if (next.has(character.id)) next.delete(character.id); else next.add(character.id); return next; })}>{renderAvatar(character, 36)}<span>{character[lang]}</span><small>{character.group[lang]}</small></button>)}</div>
       <footer><span>{workSelection.size} {t.selected}</span><button type="button" disabled={!workGroupTitle.trim() || workSelection.size === 0 || board.groups.length >= MAX_GROUPS} onClick={createWorkGroup}>{t.addSelected}</button><button type="button" onClick={() => setWorkGroupOpen(false)}>{t.close}</button></footer>
-    </section></div>}
+    </TasteDialog>}
   </main>;
 }

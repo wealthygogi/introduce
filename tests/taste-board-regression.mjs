@@ -62,6 +62,15 @@ test('taste board supports groups and independent visual themes on a mobile view
   assert.equal(overflow, false);
 });
 
+test('custom grid controls expand above the board instead of covering cells on mobile', async t => {
+  const page = await pageFor(t, '/characters/tastes', { width: 390, height: 844 });
+  await page.locator('.taste-custom-grid summary').click();
+  const lastControl = await page.locator('.taste-custom-grid-fields > label').last().boundingBox();
+  const grid = await page.locator('.taste-board-grid').first().boundingBox();
+  assert.ok(lastControl && grid && lastControl.y + lastControl.height <= grid.y, 'custom controls must take space before the character grid');
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, 'custom controls must not cause horizontal page overflow');
+});
+
 test('shrinking a populated grid requires confirmation and can be cancelled without data loss', async t => {
   const page = await pageFor(t);
   await page.locator('.taste-board-cell').nth(8).click();

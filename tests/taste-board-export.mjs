@@ -18,7 +18,8 @@ before(async () => {
   await server.listen();
   base = `http://127.0.0.1:${server.httpServer.address().port}/introduce`;
   browser = await chromium.launch();
-  webkitBrowser = await webkit.launch();
+  try { webkitBrowser = await webkit.launch(); }
+  catch { webkitBrowser = null; }
 });
 
 after(async () => {
@@ -69,6 +70,7 @@ test('taste-board PNG downloads decode at fixed dimensions on desktop and mobile
 });
 
 test('WebKit mobile export produces a decodable fixed-width PNG', async t => {
+  if (!webkitBrowser) { t.skip('Playwright WebKit browser binary is not installed in this environment'); return; }
   const context = await webkitBrowser.newContext({ acceptDownloads: true, locale: 'ko-KR', viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   t.after(() => context.close());
   const page = await context.newPage();

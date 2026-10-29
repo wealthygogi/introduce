@@ -1,0 +1,64 @@
+.taste-board-page { --taste-ink: #292a2e; --taste-muted: #6b6d72; --taste-line: #d8d9dc; --taste-surface: #fff; --taste-accent: #6f57a5; color: var(--taste-ink); max-width: 1440px; margin: 0 auto; padding: 28px clamp(16px, 4vw, 52px) 64px; }
+.taste-board-header { margin: 0 auto 28px; max-width: 1100px; }
+.taste-eyebrow { color: var(--taste-accent); font-size: .72rem; font-weight: 800; letter-spacing: .16em; }
+.taste-board-header h1 { margin: 8px 0; font-size: clamp(1.65rem, 3vw, 2.4rem); }
+.taste-board-header p { margin: 0; color: var(--taste-muted); }
+.taste-board-workspace { display: grid; grid-template-columns: minmax(220px, 280px) minmax(0, 1fr); gap: 24px; align-items: start; max-width: 1100px; margin: auto; }
+.taste-controls { position: sticky; top: 16px; display: grid; gap: 16px; padding: 20px; border: 1px solid var(--taste-line); border-radius: 24px; background: var(--taste-surface); }
+.taste-field { display: grid; gap: 7px; color: var(--taste-muted); font-size: .84rem; font-weight: 650; }
+.taste-field input, .taste-group-heading input { min-width: 0; min-height: 48px; padding: 10px 12px; border: 1px solid var(--taste-line); border-radius: 12px; background: var(--taste-surface); color: var(--taste-ink); font: inherit; }
+.taste-control-block { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.taste-control-block strong { grid-column: 1 / -1; font-size: .88rem; }
+.taste-control-block button, .taste-secondary-action, .taste-add-group { min-height: 48px; padding: 8px 10px; border: 1px solid var(--taste-line); border-radius: 14px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.taste-control-block button[aria-pressed="true"] { border-color: var(--taste-accent); background: color-mix(in srgb, var(--taste-accent) 12%, transparent); color: var(--taste-accent); }
+.taste-toggle { display: flex; align-items: center; gap: 10px; min-height: 48px; }
+.taste-toggle input { width: 20px; height: 20px; accent-color: var(--taste-accent); }
+.taste-save-status { margin: 0; color: var(--taste-muted); font-size: .82rem; }
+.taste-board { --taste-board-bg: #fff; --taste-cell-bg: #fbfbfc; --taste-cell-ink: #292a2e; padding: clamp(16px, 3vw, 34px); border: 1px solid var(--taste-line); border-radius: 28px; background: var(--taste-board-bg); box-shadow: 0 12px 32px #25243312; }
+.taste-board.theme-album { --taste-board-bg: #f5eddf; --taste-cell-bg: #fffaf1; --taste-cell-ink: #44392d; --taste-line: #d9cbb5; --taste-accent: #9c653a; }
+.taste-board.theme-night { --taste-board-bg: #20212a; --taste-cell-bg: #2c2e3a; --taste-cell-ink: #f4f2fa; --taste-line: #484a58; --taste-muted: #c0bfd0; --taste-accent: #c1a9ff; color: #f4f2fa; }
+.taste-board > h2 { margin: 0 0 24px; font-size: clamp(1.25rem, 2.5vw, 1.9rem); text-align: center; overflow-wrap: anywhere; }
+.taste-board-group + .taste-board-group { margin-top: 24px; }
+.taste-group-heading { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.taste-group-heading input { flex: 1; min-height: 42px; background: var(--taste-cell-bg); color: var(--taste-cell-ink); }
+.taste-group-heading label { display: flex; align-items: center; gap: 4px; color: var(--taste-muted); font-size: .75rem; }
+.taste-group-heading select { min-height: 42px; border: 1px solid var(--taste-line); border-radius: 10px; background: var(--taste-cell-bg); color: var(--taste-cell-ink); }
+.taste-group-heading button { min-width: 40px; min-height: 42px; border: 1px solid var(--taste-line); border-radius: 10px; background: var(--taste-cell-bg); color: var(--taste-cell-ink); cursor: pointer; }
+.taste-board-grid { display: grid; grid-template-columns: repeat(var(--taste-columns), minmax(0, 1fr)); gap: clamp(5px, 1vw, 10px); }
+.taste-board-cell { position: relative; display: flex; min-width: 0; aspect-ratio: 1 / 1; align-items: center; justify-content: center; overflow: hidden; padding: 8px; border: 1px solid var(--taste-line); border-radius: 14px; background: var(--taste-cell-bg); color: var(--taste-cell-ink); cursor: pointer; }
+.theme-album .taste-board-cell { border-width: 4px; border-radius: 8px; box-shadow: inset 0 0 0 2px var(--taste-board-bg); }
+.taste-cell-characters { display: grid; width: 100%; gap: 5px; }
+.taste-character { display: flex; min-width: 0; align-items: center; justify-content: center; gap: 5px; flex-wrap: wrap; font-size: clamp(.58rem, 1.3vw, .9rem); line-height: 1.2; text-align: center; overflow-wrap: anywhere; }
+.taste-character-avatar { display: inline-grid; flex: 0 0 auto; width: min(var(--taste-avatar-size, 52px), 12vw); aspect-ratio: 1; place-items: center; overflow: hidden; border-radius: 50%; background: color-mix(in srgb, var(--taste-accent) 15%, var(--taste-cell-bg)); color: var(--taste-accent); font-size: 1.25rem; font-weight: 800; }
+.taste-character-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.taste-cell-empty { display: grid; justify-items: center; gap: 4px; color: var(--taste-muted); font-size: clamp(.58rem, 1.2vw, .8rem); text-align: center; }
+.taste-cell-empty b { font-size: 1.5rem; font-weight: 400; }
+.taste-cell-edit { position: absolute; right: 5px; bottom: 4px; left: 5px; opacity: 0; color: var(--taste-accent); font-size: .7rem; text-align: center; }
+.taste-board-cell:hover .taste-cell-edit, .taste-board-cell:focus-visible .taste-cell-edit { opacity: 1; }
+.taste-add-group { width: 100%; margin-top: 18px; border-style: dashed; color: var(--taste-accent); }
+.taste-add-group:disabled { opacity: .5; cursor: not-allowed; }
+.taste-dialog-scrim { position: fixed; z-index: 1000; inset: 0; display: grid; place-items: center; padding: 20px; background: #12121ab0; }
+.taste-character-dialog { display: grid; width: min(620px, 100%); max-height: min(760px, 90dvh); grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 14px; padding: 20px; border-radius: 24px; background: #fff; color: #292a2e; box-shadow: 0 20px 80px #0004; }
+.taste-character-dialog header, .taste-character-dialog footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.taste-character-dialog h2 { margin: 0; }
+.taste-character-dialog header button, .taste-character-dialog footer button { min-width: 48px; min-height: 48px; border: 1px solid #d8d9dc; border-radius: 12px; background: white; color: inherit; cursor: pointer; }
+.taste-character-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; overflow: auto; overscroll-behavior: contain; }
+.taste-character-list button { display: flex; min-width: 0; min-height: 56px; align-items: center; gap: 10px; padding: 8px; border: 1px solid #e0e0e4; border-radius: 12px; background: white; text-align: left; cursor: pointer; }
+.taste-character-list button > span:nth-child(2) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.taste-character-list small { margin-left: auto; color: #777; }
+.taste-character-list .taste-character-avatar { width: 36px; }
+@media (max-width: 760px) {
+  .taste-board-page { padding: 20px 14px 44px; }
+  .taste-board-workspace { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .taste-controls { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 14px; border-radius: 20px; }
+  .taste-field:first-child { grid-column: 1 / -1; }
+  .taste-control-block { grid-template-columns: 1fr 1fr; }
+  .taste-toggle, .taste-secondary-action, .taste-save-status { grid-column: 1 / -1; }
+  .taste-board { padding: 12px; border-radius: 20px; }
+  .taste-board-cell { padding: 4px; border-radius: 10px; }
+  .taste-character { display: grid; justify-items: center; }
+  .taste-character-avatar { width: clamp(24px, 9vw, 44px); }
+  .taste-cell-edit { display: none; }
+  .taste-character-list { grid-template-columns: 1fr; }
+}
+@media (max-width: 360px) { .taste-controls { grid-template-columns: 1fr; } .taste-field:first-child, .taste-toggle, .taste-secondary-action, .taste-save-status { grid-column: auto; } }

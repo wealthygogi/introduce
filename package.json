@@ -13,7 +13,8 @@
     "build:site": "npm run build && sh scripts/build-v1.sh",
     "test:share": "node --test tests/share-regression.mjs",
     "test:profile": "node tests/profile-selection-regression.mjs",
-    "test:coupling": "node --test tests/coupling-regression.mjs"
+    "test:coupling": "node --test tests/coupling-regression.mjs",
+    "test:taste-board": "node --experimental-strip-types --test tests/taste-board-storage.mjs"
   },
   "dependencies": {
     "modern-screenshot": "^4.7.0",

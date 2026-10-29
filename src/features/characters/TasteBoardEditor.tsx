@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { PROFILE_CHARACTERS, PROFILE_CHARACTER_BY_ID } from '../../data/profileCatalog';
 import { getCouplingPortrait } from '../coupling/data';
 import { useLang } from '../../contexts/LangContext';
+import DownloadButton from '../../components/DownloadButton';
 import { createDefaultTasteBoard, MAX_GROUPS, parseTasteBoard, readTasteBoard, TASTE_BOARD_STORAGE_KEY, writeTasteBoard } from './tasteBoardStorage';
 import type { TasteBoard, TasteCell, TasteGroup, TasteTheme } from './tasteBoardTypes';
 import './taste-board.css';
@@ -78,6 +79,7 @@ export default function TasteBoardEditor() {
         <div className="taste-control-block"><strong>{t.themes}</strong>{themes.map(theme => <button key={theme} type="button" aria-pressed={board.theme === theme} onClick={() => update(current => ({ ...current, theme }))}>{t[theme]}</button>)}</div>
         <label className="taste-toggle"><input type="checkbox" checked={board.showNames} onChange={event => update(current => ({ ...current, showNames: event.target.checked }))} />{t.showNames}</label>
         <button type="button" className="taste-secondary-action" disabled={!undoStack.length} onClick={() => { setBoard(undoStack[undoStack.length - 1]); setUndoStack(stack => stack.slice(0, -1)); }}>{t.undo}</button>
+        <DownloadButton targetId="taste-board-export" filename="character-taste-board.png" captureOptions={{ scale: 1, resetPosition: true, maxPixelArea: 16_000_000 }} />
         <p className="taste-save-status" role="status">{storageAvailable ? t.saved : t.storageWarning}</p>
         {restoreWarning && <p role="alert">{t.invalid}</p>}
       </aside>
@@ -91,9 +93,19 @@ export default function TasteBoardEditor() {
             </button>)}
           </div>
         </section>)}
-        <button type="button" className="taste-add-group" disabled={board.groups.length >= MAX_GROUPS} onClick={addGroup}>{t.addGroup}</button>
+      <button type="button" className="taste-add-group" disabled={board.groups.length >= MAX_GROUPS} onClick={addGroup}>{t.addGroup}</button>
       </section>
     </div>
+    <section id="taste-board-export" className={`taste-export theme-${board.theme}`} aria-hidden="true">
+      <h1>{board.title || t.heading}</h1>
+      {board.groups.map(group => <section className="taste-export-group" key={group.id}>
+        <h2>{group.title}</h2>
+        <div className="taste-export-grid" style={{ '--taste-columns': group.columns } as React.CSSProperties}>{group.cells.map((cell, index) => <div className="taste-export-cell" key={index}>
+          {cell?.characters.map(id => <div className="taste-export-character" key={id}>{renderAvatar(PROFILE_CHARACTER_BY_ID.get(id)!, 72)}{board.showNames && <span>{PROFILE_CHARACTER_BY_ID.get(id)![lang]}</span>}</div>)}
+          {cell?.label && <small>{cell.label}</small>}
+        </div>)}</div>
+      </section>)}
+    </section>
     {activeCell && <div className="taste-dialog-scrim" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) setActiveCell(null); }}><section className="taste-character-dialog" role="dialog" aria-modal="true" aria-label={t.choose}>
       <header><h2>{t.choose}</h2><button type="button" aria-label={t.close} onClick={() => setActiveCell(null)}>×</button></header>
       <label className="taste-field">{t.search}<input autoFocus type="search" value={query} onChange={event => setQuery(event.target.value)} /></label>

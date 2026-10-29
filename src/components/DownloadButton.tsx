@@ -5,7 +5,7 @@ import { captureCardBlob, saveBlob } from '../lib/captureCard';
 interface Props {
   targetId: string;
   filename: string;
-  captureOptions?: { scale?: number; padding?: number };
+  captureOptions?: { scale?: number; padding?: number; resetPosition?: boolean; maxPixelArea?: number };
 }
 
 export default function DownloadButton({ targetId, filename, captureOptions }: Props) {

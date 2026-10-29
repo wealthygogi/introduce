@@ -37,6 +37,19 @@
 .taste-board-cell:hover .taste-cell-edit, .taste-board-cell:focus-visible .taste-cell-edit { opacity: 1; }
 .taste-add-group { width: 100%; margin-top: 18px; border-style: dashed; color: var(--taste-accent); }
 .taste-add-group:disabled { opacity: .5; cursor: not-allowed; }
+.taste-export { position: fixed; z-index: -1; top: 0; left: -20000px; box-sizing: border-box; width: 1200px; padding: 64px; background: #fff; color: #292a2e; font-family: inherit; }
+.taste-export.theme-album { background: #f5eddf; color: #44392d; }
+.taste-export.theme-night { background: #20212a; color: #f4f2fa; }
+.taste-export > h1 { margin: 0 0 44px; font-size: 48px; line-height: 1.2; overflow-wrap: anywhere; text-align: center; }
+.taste-export-group + .taste-export-group { margin-top: 42px; }
+.taste-export-group h2 { margin: 0 0 16px; color: inherit; font-size: 28px; line-height: 1.25; overflow-wrap: anywhere; }
+.taste-export-grid { display: grid; grid-template-columns: repeat(var(--taste-columns), minmax(0, 1fr)); gap: 12px; }
+.taste-export-cell { display: flex; min-width: 0; min-height: 160px; align-items: center; justify-content: center; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid #d8d9dc; border-radius: 12px; background: #fbfbfc; color: #292a2e; text-align: center; overflow-wrap: anywhere; }
+.taste-export.theme-album .taste-export-cell { border: 5px solid #d9cbb5; border-radius: 8px; background: #fffaf1; color: #44392d; }
+.taste-export.theme-night .taste-export-cell { border-color: #484a58; background: #2c2e3a; color: #f4f2fa; }
+.taste-export-character { display: flex; min-width: 0; align-items: center; gap: 12px; font-size: 21px; line-height: 1.25; overflow-wrap: anywhere; }
+.taste-export .taste-character-avatar { width: 72px; }
+.taste-export-cell small { color: inherit; font-size: 16px; }
 .taste-dialog-scrim { position: fixed; z-index: 1000; inset: 0; display: grid; place-items: center; padding: 20px; background: #12121ab0; }
 .taste-character-dialog { display: grid; width: min(620px, 100%); max-height: min(760px, 90dvh); grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 14px; padding: 20px; border-radius: 24px; background: #fff; color: #292a2e; box-shadow: 0 20px 80px #0004; }
 .taste-character-dialog header, .taste-character-dialog footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }

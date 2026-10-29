@@ -124,12 +124,16 @@ const CAPTURE_SCALE = 3;
  */
 export async function captureCardBlob(
   targetId: string,
-  options: { scale?: number; padding?: number } = {},
+  options: { scale?: number; padding?: number; resetPosition?: boolean; maxPixelArea?: number } = {},
 ): Promise<Blob> {
   const scale = options.scale ?? CAPTURE_SCALE;
   const padding = options.padding ?? 0;
   const el = document.getElementById(targetId);
   if (!el) throw new Error(`captureCardBlob: #${targetId} not found`);
+  const pixelArea = Math.ceil((el.offsetWidth + padding * 2) * (el.offsetHeight + padding * 2) * scale * scale);
+  if (options.maxPixelArea !== undefined && pixelArea > options.maxPixelArea) {
+    throw new Error(`captureCardBlob: output is too large (${pixelArea} pixels)`);
+  }
 
   await Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 800))]).catch(() => undefined);
   const fontCssText = await buildFontEmbedCss(el).catch(() => '');
@@ -144,6 +148,11 @@ export async function captureCardBlob(
   clone.style.width = `${el.offsetWidth}px`;
   clone.style.maxWidth = 'none';
   clone.style.animation = 'none';
+  if (options.resetPosition) {
+    clone.style.position = 'relative';
+    clone.style.inset = 'auto';
+    clone.style.zIndex = 'auto';
+  }
   clone.querySelectorAll<HTMLElement>('*').forEach((n) => {
     n.style.animation = 'none';
     n.style.transition = 'none';

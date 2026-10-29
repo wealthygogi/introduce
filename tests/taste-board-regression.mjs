@@ -69,3 +69,20 @@ test('shrinking a populated grid requires confirmation and can be cancelled with
   assert.equal(await page.locator('.taste-board-cell').count(), 9);
   assert.equal(await page.locator('.taste-board-cell').nth(8).getAttribute('data-empty'), 'false');
 });
+
+test('grid editing and character dialog stay usable without horizontal overflow at mobile, tablet, and desktop widths', async t => {
+  for (const width of [360, 390, 430, 768, 1440]) {
+    const context = await browser.newContext({ locale: 'ko-KR', viewport: { width, height: 844 }, hasTouch: width <= 390, isMobile: width <= 390 });
+    t.after(() => context.close());
+    const page = await context.newPage();
+    await page.goto(`${base}/characters/tastes`);
+    await page.getByRole('button', { name: '5 × 5' }).click();
+    assert.equal(await page.locator('.taste-board-cell').count(), 25);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true, `${width}px layout has no horizontal overflow`);
+    await page.locator('.taste-board-cell').last().click();
+    const dialog = await page.locator('[role="dialog"]').boundingBox();
+    assert.ok(dialog && dialog.x >= 0 && dialog.x + dialog.width <= width && dialog.y >= 0 && dialog.y + dialog.height <= 844, `${width}px character picker fits the viewport`);
+    await page.getByRole('button', { name: '하쿠레이 레이무' }).click();
+    assert.equal(await page.locator('.taste-board-cell').last().getAttribute('data-empty'), 'false');
+  }
+});

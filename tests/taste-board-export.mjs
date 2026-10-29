@@ -4,12 +4,13 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium } from 'playwright';
+import { chromium, webkit } from 'playwright';
 import { PNG } from 'pngjs';
 import { createServer } from 'vite';
 
 let server;
 let browser;
+let webkitBrowser;
 let base;
 
 before(async () => {
@@ -17,10 +18,12 @@ before(async () => {
   await server.listen();
   base = `http://127.0.0.1:${server.httpServer.address().port}/introduce`;
   browser = await chromium.launch();
+  webkitBrowser = await webkit.launch();
 });
 
 after(async () => {
   await browser?.close();
+  await webkitBrowser?.close();
   await server?.close();
 });
 
@@ -63,4 +66,26 @@ test('taste-board PNG downloads decode at fixed dimensions on desktop and mobile
     dimensions.push([png.width, png.height]);
   }
   assert.deepEqual(dimensions[0], dimensions[1]);
+});
+
+test('WebKit mobile export produces a decodable fixed-width PNG', async t => {
+  const context = await webkitBrowser.newContext({ acceptDownloads: true, locale: 'ko-KR', viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  t.after(() => context.close());
+  const page = await context.newPage();
+  await page.route('https://fonts.googleapis.com/**', route => route.fulfill({ body: '', contentType: 'text/css' }));
+  await page.goto(`${base}/characters/tastes`);
+  await page.getByRole('heading', { level: 1, name: '캐릭터 취향 모음표' }).waitFor();
+  await page.getByRole('button', { name: '5 × 5' }).click();
+  await page.locator('.taste-board-cell').last().click();
+  await page.getByRole('button', { name: '하쿠레이 레이무' }).click();
+  const [download] = await Promise.all([page.waitForEvent('download', { timeout: 120_000 }), page.locator('.download-btn').click()]);
+  const path = join(tmpdir(), `taste-board-webkit-${process.pid}.png`);
+  try {
+    await download.saveAs(path);
+    const png = PNG.sync.read(await readFile(path));
+    assert.equal(png.width, 1200);
+    assert.ok(png.height > 900, 'the full fixed 5 by 5 export is represented');
+  } finally {
+    await rm(path, { force: true });
+  }
 });

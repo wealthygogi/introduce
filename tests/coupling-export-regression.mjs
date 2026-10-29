@@ -47,6 +47,7 @@ for (const editor of editors) {
     t.after(() => context.close());
     await context.addInitScript(data => { for (const [key, value] of Object.entries(data)) localStorage.setItem(key, JSON.stringify({ version: 1, data: value })); }, drafts);
     const page = await context.newPage();
+    await page.route('https://fonts.googleapis.com/**', route => route.fulfill({ body: '', contentType: 'text/css' }));
     await page.goto(`${base}${editor.path}`);
     await page.locator(`#${editor.id}`).waitFor({ state: 'attached' });
     assert.match(await page.locator(`#${editor.id}`).innerText(), editor.expected);
@@ -59,5 +60,12 @@ for (const editor of editors) {
     const png = PNG.sync.read(data);
     assert.equal(png.width, 1400);
     assert.ok(png.height > 200);
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    const [mobileDownload] = await Promise.all([page.waitForEvent('download', { timeout: 120_000 }), page.getByRole('button', { name: '이미지로 저장' }).click()]);
+    const mobilePath = join(output, `${editor.id}-mobile.png`);
+    await mobileDownload.saveAs(mobilePath);
+    const mobilePng = PNG.sync.read(await readFile(mobilePath));
+    assert.deepEqual([mobilePng.width, mobilePng.height], [png.width, png.height], 'editor exports retain identical geometry on mobile');
   });
 }

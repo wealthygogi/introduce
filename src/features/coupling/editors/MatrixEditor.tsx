@@ -7,6 +7,7 @@ import { PROFILE_CHARACTER_BY_ID } from '../data';
 import { PREFERENCE_BY_ID, RELATIONS } from '../relations';
 import { useCouplingDraft } from '../CouplingDraftProvider';
 import CouplingSnackbar from '../components/CouplingSnackbar';
+import CouplingImageExport from '../components/CouplingImageExport';
 import type { MatrixDraft, PreferenceId, RelationId } from '../types';
 import copy from '../copy';
 import '../matrix/matrix.css';
@@ -210,6 +211,9 @@ export default function MatrixEditor() {
         <section className="coupling-panel coupling-matrix-summary"><h2>{t.details} <small>{modeLabel} · {store.length} {t.records}</small></h2>{store.length ? <ul>{store.map(item => { const from = PROFILE_CHARACTER_BY_ID.get(item.from)!, to = PROFILE_CHARACTER_BY_ID.get(item.to)!, relation = relationMap.get(item.relation)!, preference = item.preference ? PREFERENCE_BY_ID.get(item.preference) : undefined; return <li key={JSON.stringify([item.from, item.to])}><div className="coupling-matrix-pair"><span><CharacterAvatar character={from} size={26} decorative /><strong>{from[lang]}</strong></span><span>{arrow}</span><span><CharacterAvatar character={to} size={26} decorative /><strong>{to[lang]}</strong></span><small style={{ '--relation-color': relation.color } as React.CSSProperties}>{relation.symbol} {relation.label[lang]}</small>{preference && <small className="coupling-matrix-preference-mark">{preference.symbol} {preference.label[lang]}</small>}</div><button className="coupling-btn" type="button" aria-label={`${from[lang]} ${arrow} ${to[lang]} ${t.remove}`} onClick={() => deleteRelation(item.from, item.to)}>{t.remove}</button></li>})}</ul> : <p className="coupling-empty-note">{t.emptyRelations}</p>}</section>
       </aside>
     </div>
+    <CouplingImageExport id="coupling-export-matrix" filename="coupling-matrix.png" title={t.title} scope={`${modeLabel} · ${t.matrixDesc}`}>
+      <table className="coupling-export-matrix"><thead><tr><th>{t.row} ↓ / {t.col} →</th>{roster.map(id => <th key={id}>{PROFILE_CHARACTER_BY_ID.get(id)?.[lang]}</th>)}</tr></thead><tbody>{roster.map(from => <tr key={from}><th>{PROFILE_CHARACTER_BY_ID.get(from)?.[lang]}</th>{roster.map(to => { const relation = from === to ? undefined : cellValue(from, to), relationData = relation ? relationMap.get(relation.relation) : undefined; return <td key={to}>{from === to ? '—' : relationData ? `${relationData.symbol} ${relationData.label[lang]}${relation?.preference ? ` · ${PREFERENCE_BY_ID.get(relation.preference)?.label[lang]}` : ''}` : '·'}</td>; })}</tr>)}</tbody></table>
+    </CouplingImageExport>
     {snackbar&&<CouplingSnackbar message={snackbar.message} actionLabel={copy[lang].undo} dismissLabel={copy[lang].close} onAction={snackbar.onAction} onDismiss={()=>setSnackbar(null)}/>}
   </section>;
 }

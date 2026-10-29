@@ -8,6 +8,7 @@ import PreferencePicker from '../components/PreferencePicker';
 import { useCouplingDraft } from '../CouplingDraftProvider';
 import CouplingSnackbar from '../components/CouplingSnackbar';
 import RelationLegend from '../components/RelationLegend';
+import CouplingImageExport from '../components/CouplingImageExport';
 import copy from '../copy';
 import type { PairCard, PairFields, PairsDraft, RelationId } from '../types';
 import '../coupling.css';
@@ -201,6 +202,9 @@ export default function PairsEditor() {
         })}</ol>}
       </section>
     </div>
+    <CouplingImageExport id="coupling-export-pairs" filename="coupling-pairs.png" title={t.collection} scope={`${t.filter}: ${collectionRelation === 'all' ? t.allRelations : RELATIONS.find(item => item.id === collectionRelation)?.label[lang]} · ${visiblePairs.length}`}>
+      <div className="coupling-export-pairs">{visiblePairs.map((pair, index) => { const a = character(pair.a), b = character(pair.b), relation = RELATIONS.find(item => item.id === pair.relation)!; if (!a || !b) return null; return <article className="coupling-export-pair" key={pair.id} style={{ '--export-relation': relation.color } as CSSProperties}><h2>{String(index + 1).padStart(2, '0')} · {a[lang]} {directionSymbol(pair.direction)} {b[lang]}</h2><strong>{relation.symbol} {relation.label[lang]}{pair.preference ? ` · ${PREFERENCE_BY_ID.get(pair.preference)?.label[lang]}` : ''}</strong><p>{directionSentence(pair)}</p><p>{pair.memo || t.noMemo}</p></article>; })}</div>
+    </CouplingImageExport>
     {snackbar&&<CouplingSnackbar message={snackbar.message} actionLabel={t.undo} dismissLabel={copy[lang].close} onAction={snackbar.onAction} onDismiss={()=>setSnackbar(null)}/>}
   </section>;
 }

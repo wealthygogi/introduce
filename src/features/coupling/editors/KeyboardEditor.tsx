@@ -5,6 +5,7 @@ import { PROFILE_CHARACTER_BY_ID } from '../data';
 import CharacterAvatar from '../components/CharacterAvatar';
 import CharacterPicker from '../components/CharacterPicker';
 import RelationLegend from '../components/RelationLegend';
+import CouplingImageExport from '../components/CouplingImageExport';
 import PreferencePicker from '../components/PreferencePicker';
 import { PREFERENCE_BY_ID, RELATIONS, RELATION_BY_ID } from '../relations';
 import copy from '../copy';
@@ -197,6 +198,9 @@ export default function KeyboardEditor() {
         </section>
       </aside>
     </div>
+    <CouplingImageExport id="coupling-export-keyboard" filename="coupling-keyboard.png" title={words.focus} scope={`${source[lang]} · ${connected.length}`}>
+      <div className="coupling-export-relations">{connected.map(edge => { const character = byId.get(edge.a === source.id ? edge.b : edge.a); if (!character) return null; const relation = relationFor(edge.relation), preferenceData = edge.preference ? PREFERENCE_BY_ID.get(edge.preference) : null; return <div className="coupling-export-relation" key={pairKey(edge.a, edge.b)} style={{ '--export-relation': relation.color } as React.CSSProperties}><strong>{source[lang]} → {character[lang]}</strong><span>{relation.symbol} {relation.label[lang]}{preferenceData ? ` · ${preferenceData.symbol} ${preferenceData.label[lang]}` : ''}</span></div>; })}</div>
+    </CouplingImageExport>
     <div className="coupling-keyboard-session"><p role="status" aria-live="polite">{warning ?? feedback ?? (hasDraft ? words.saved : words.newDraft)}</p><span>{saveStatus === 'saving' ? words.saving : saveStatus === 'memory-only' ? t.memoryOnly : hasDraft ? words.saved : words.newDraft}</span></div>
   </section>;
 }

@@ -7,6 +7,7 @@ import { PROFILE_CHARACTERS, PROFILE_CHARACTER_BY_ID } from '../data';
 import CharacterAvatar from '../components/CharacterAvatar';
 import CharacterBatchDialog from '../components/CharacterBatchDialog';
 import CouplingSnackbar from '../components/CouplingSnackbar';
+import CouplingImageExport from '../components/CouplingImageExport';
 import RelationLegend from '../components/RelationLegend';
 import { PREFERENCE_BY_ID, RELATIONS } from '../relations';
 import PreferencePicker from '../components/PreferencePicker';
@@ -282,7 +283,11 @@ export default function WhiteboardEditor() {
          {(selected&&PROFILE_CHARACTER_BY_ID.has(selected)||selectedEdgeData)&&<div className="coupling-selection-info"><span>{selected&&PROFILE_CHARACTER_BY_ID.has(selected)?<><strong>{characterName(selected,lang)}</strong> · {PROFILE_CHARACTER_BY_ID.get(selected)?.group[lang]}</>:selectedEdgeData&&connectedNames(selectedEdgeData)}</span>{selectedEdgeData&&<button type="button" className="coupling-selection-edit" onClick={event=>{editDefaultsRef.current={relation,preference,direction};setRelation(selectedEdgeData.type);setPreference(selectedEdgeData.preference);setDirection(selectedEdgeData.direction);setEditingEdgeId(selectedEdgeData.id);openPanel('line',event.currentTarget);}}>{t.editLine}</button>}<button type="button" className="coupling-selection-delete" aria-label={t.delete} onClick={()=>remove()}><BoardActionIcon action="delete"/><span>{t.delete}</span></button></div>}
       </div>
     </div>{hover&&PROFILE_CHARACTER_BY_ID.has(hover)&&createPortal(<span className="coupling-node-tooltip" style={tooltipPosition} role="tooltip" id={`coupling-tip-${hover}`}>{characterName(hover,lang)} · {PROFILE_CHARACTER_BY_ID.get(hover)?.group[lang]}</span>,globalThis.document.body)}<div className="coupling-edge-list" data-board-controls aria-label={t.edgeList}>{edges.map(edge=><button key={edge.id} className="coupling-btn" onClick={()=>{setSelectedEdge(edge.id);setSelected(null);}}>{connectedNames(edge)}</button>)}</div><p className="coupling-status" role="status">{notice||`${t.whiteboardDesc} · ${t.shortcutHint}`}</p>
-     {snackbar&&<CouplingSnackbar message={snackbar.message} actionLabel={t.undo} dismissLabel={t.close} onAction={snackbar.onAction} onDismiss={()=>setSnackbar(null)}/>}
+      <CouplingImageExport id="coupling-export-whiteboard" filename="coupling-whiteboard.png" title={t.whiteboard} scope={t.whiteboardDesc}>
+        <div className="coupling-export-nodes">{document.nodes.map(node => { const character = PROFILE_CHARACTER_BY_ID.get(node.id); return character ? <div className="coupling-export-node" key={node.id}><CharacterAvatar character={character} size={64} decorative/><strong>{character[lang]}</strong><small>{character.group[lang]}</small></div> : null; })}</div>
+        <div className="coupling-export-relations">{document.edges.map(edge => { const relationData = RELATIONS.find(item => item.id === edge.type)!; const preferenceData = edge.preference ? PREFERENCE_BY_ID.get(edge.preference) : null; return <div className="coupling-export-relation" key={edge.id} style={{ '--export-relation': relationData.color } as React.CSSProperties}><strong>{characterName(edge.from, lang)} {edge.direction === 'both' ? '↔' : '→'} {characterName(edge.to, lang)}</strong><span>{relationData.symbol} {relationData.label[lang]} · {edge.direction === 'both' ? t.mutualDirection : t.forwardDirection}{preferenceData ? ` · ${preferenceData.symbol} ${preferenceData.label[lang]}` : ''}</span></div>; })}</div>
+      </CouplingImageExport>
+      {snackbar&&<CouplingSnackbar message={snackbar.message} actionLabel={t.undo} dismissLabel={t.close} onAction={snackbar.onAction} onDismiss={()=>setSnackbar(null)}/>}
      <CharacterBatchDialog open={modal} placedIds={nodes.map(n=>n.id)} initialWork="공통" globalSearch={globalSearch} onCancel={closeBatch} onConfirm={addBatch}/>
   </section>;
 }

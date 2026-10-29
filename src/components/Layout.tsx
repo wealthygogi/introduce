@@ -10,8 +10,8 @@ export default function Layout({ children }: { children: ReactNode }) {
   const loc = useLocation();
   const onLanding = loc.pathname === '/' || loc.pathname === '';
   const onSheets = loc.pathname === '/sheets' || loc.pathname === '/compact' || loc.pathname.startsWith('/wide') || loc.pathname.startsWith('/concept/');
-  const onCoupling = loc.pathname === '/coupling' || loc.pathname.startsWith('/coupling/');
-  const sectionNames = { ko: { sheets: '자기소개표', coupling: '캐릭터 커플링' }, ja: { sheets: 'プロフィールシート', coupling: 'キャラクターカップリング' }, en: { sheets: 'Profile sheets', coupling: 'Character couplings' } }[lang];
+  const onCharacters = loc.pathname === '/characters' || loc.pathname.startsWith('/characters/') || loc.pathname === '/coupling' || loc.pathname.startsWith('/coupling/');
+  const sectionNames = { ko: { sheets: '자기소개표', characters: '캐릭터 관련' }, ja: { sheets: 'プロフィールシート', characters: 'キャラクター関連' }, en: { sheets: 'Profile sheets', characters: 'Characters' } }[lang];
   return (
     <div className="shell">
       <header className="top-nav">
@@ -21,7 +21,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         </Link>
         <nav className="mode-nav primary-mode-nav" aria-label={lang === 'ko' ? '주요 메뉴' : lang === 'ja' ? 'メインメニュー' : 'Main menu'}>
           <NavLink to="/sheets" className={`btn ghost${onSheets ? ' active' : ''}`}>{sectionNames.sheets}</NavLink>
-          <NavLink to="/coupling" className={`btn ghost${onCoupling ? ' active' : ''}`}>{sectionNames.coupling}</NavLink>
+          <NavLink to="/characters" className={`btn ghost${onCharacters ? ' active' : ''}`}>{sectionNames.characters}</NavLink>
         </nav>
         {onSheets && <nav className="mode-nav sheet-subnav" aria-label={lang === 'ko' ? '자기소개표 방식' : lang === 'ja' ? 'プロフィール形式' : 'Profile sheet editors'}>
           <NavLink to="/compact" className={({ isActive }) => `btn ghost${isActive || loc.pathname.startsWith('/concept/') ? ' active' : ''}`}>Compact</NavLink>

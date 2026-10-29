@@ -65,9 +65,11 @@ async function clickAtCenter(page, target) {
 const readDraft = (page, key) => page.evaluate(storageKey => JSON.parse(localStorage.getItem(storageKey)), key);
 
 
-test('home routes into coupling hub and retains the introduction-sheet gallery', async t => {
+test('home routes through the character hub and retains both existing galleries', async t => {
   const page = await pageFor(t, '/');
-  await page.locator('a[href="/introduce/coupling"]').first().click();
+  await page.locator('.mode-options a[href="/introduce/characters"]').click();
+  await page.waitForURL('**/introduce/characters');
+  await page.locator('.character-related-card[href="/introduce/coupling"]').click();
   await page.waitForURL('**/introduce/coupling');
   assert.equal(await page.locator('.coupling-hub-card').count(), 4);
   assert.equal(await page.locator('.coupling-hub-card a[href^="/introduce/coupling/"]').count(), 4);
@@ -77,6 +79,20 @@ test('home routes into coupling hub and retains the introduction-sheet gallery',
   assert.equal(await page.getByRole('heading', { level: 1, name: '나를 소개하는, 나만의 한 장' }).count(), 1);
   assert.equal(await page.locator('.mode-options a[href="/introduce/compact"]').count(), 1);
   assert.equal(await page.locator('.mode-options a[href="/introduce/wide"]').count(), 1);
+});
+
+test('home opens the broader character-related hub and keeps legacy relationship routes available', async t => {
+  const page = await pageFor(t, '/');
+  const characterEntry = page.locator('.mode-options a[href="/introduce/characters"]');
+  await characterEntry.click();
+  await page.waitForURL('**/introduce/characters');
+  assert.equal(await page.getByRole('heading', { level: 1, name: '캐릭터 취향과 관계를 한 장에' }).count(), 1);
+  assert.equal(await page.locator('.character-related-card[href="/introduce/characters/tastes"]').count(), 1);
+  assert.equal(await page.locator('.character-related-card[href="/introduce/coupling"]').count(), 1);
+
+  await page.goto(`${base}/coupling/whiteboard`);
+  await page.waitForSelector('.coupling-whiteboard');
+  assert.equal(await page.locator('.coupling-board-node').count(), 6, 'the existing relationship route remains directly loadable');
 });
 
 

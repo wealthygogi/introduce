@@ -2,7 +2,7 @@ import type { Lang } from '../../data/i18n';
 
 const copy = {
   ko: {
-    coupling: '캐릭터 커플링', whiteboard: '자유 캔버스', keyboard: '키보드 릴레이', pairs: '커플 카드', matrix: '관계 매트릭스',
+    coupling: '커플링·관계', whiteboard: '자유 캔버스', keyboard: '키보드 릴레이', pairs: '커플 카드', matrix: '관계 매트릭스',
     loading: '편집기를 불러오는 중…', pickerTitle: '캐릭터 라이브러리', search: '이름 검색', searchPlaceholder: '한국어 · 日本語 · English', work: '작품', allWorks: '전체 작품',
     chooseCharacter: '캐릭터 선택', addCharacter: '캐릭터 추가', noResults: '검색 결과가 없습니다.', selected: '선택됨', placed: '배치됨',
     saveFailed: '이 브라우저에서 자동 저장할 수 없습니다. 현재 탭에서는 편집이 유지됩니다.', restoreFailed: '저장된 초안을 복원하지 못했습니다. 새 초안으로 편집을 시작합니다.',
@@ -20,7 +20,7 @@ const copy = {
     matrixShortcuts: '1–5: {select} · F: 최애 · X: 취향 아님 · 0: 표시 없음 · Enter: 적용 · Space/클릭: 전환 · Delete: 삭제 · 방향키: 이동',
   },
   ja: {
-    coupling: 'キャラクターカップリング', whiteboard: 'フリーボード', keyboard: 'キーボードリレー', pairs: 'カップリングカード', matrix: '関係マトリクス',
+    coupling: 'カップリング・関係', whiteboard: 'フリーボード', keyboard: 'キーボードリレー', pairs: 'カップリングカード', matrix: '関係マトリクス',
     loading: 'エディターを読み込み中…', pickerTitle: 'キャラクター一覧', search: '名前で検索', searchPlaceholder: '한국어 · 日本語 · English', work: '作品',
     allWorks: 'すべての作品', chooseCharacter: 'キャラクターを選択', addCharacter: 'キャラクターを追加', noResults: '検索結果がありません。', selected: '選択済み', placed: '配置済み',
     saveFailed: 'このブラウザーでは自動保存できません。現在のタブでは編集を保持します。', restoreFailed: '保存した下書きを復元できませんでした。新しい下書きとして編集を始めます。',
@@ -38,7 +38,7 @@ const copy = {
     matrixShortcuts: '1–5: {select} · F: 推し · X: 苦手 · 0: 表示なし · Enter: 適用 · Space/クリック: 切替 · Delete: 削除 · 矢印キー: 移動',
   },
   en: {
-    coupling: 'Character Couplings', whiteboard: 'Free canvas', keyboard: 'Keyboard relay', pairs: 'Pair cards', matrix: 'Relationship matrix',
+    coupling: 'Couplings & relationships', whiteboard: 'Free canvas', keyboard: 'Keyboard relay', pairs: 'Pair cards', matrix: 'Relationship matrix',
     loading: 'Loading editor…', pickerTitle: 'Character library', search: 'Search names', searchPlaceholder: '한국어 · 日本語 · English', work: 'Work', allWorks: 'All works',
     chooseCharacter: 'Choose a character', addCharacter: 'Add characters', noResults: 'No results found.', selected: 'Selected', placed: 'Placed',
     saveFailed: 'Automatic saving is unavailable in this browser. Editing remains available in this tab.', restoreFailed: 'The saved draft could not be restored. Editing starts with a new draft.',

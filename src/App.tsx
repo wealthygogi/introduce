@@ -6,6 +6,7 @@ import Landing from './pages/Landing';
 import IntroductionGallery from './pages/IntroductionGallery';
 import ConceptPage from './pages/ConceptPage';
 import CompactGallery from './pages/CompactGallery';
+import CharacterRelated from './pages/CharacterRelated';
 import WideGallery from './pages/WideGallery';
 import WidePage from './pages/WidePage';
 import { CouplingDraftProvider } from './features/coupling/CouplingDraftProvider';
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/compact" element={<CompactGallery />} />
           <Route path="/wide" element={<WideGallery />} />
           <Route path="/wide/:theme" element={<WidePage />} />
+          <Route path="/characters" element={<CharacterRelated />} />
           <Route path="/concept/:id" element={<ConceptPage />} />
           <Route path="/coupling" element={<CouplingLayout />}>
             <Route index element={<CouplingHub />} />

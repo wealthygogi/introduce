@@ -7,6 +7,7 @@ import { PROFILE_CHARACTERS, PROFILE_CHARACTER_BY_ID } from '../data';
 import CharacterAvatar from '../components/CharacterAvatar';
 import CharacterBatchDialog from '../components/CharacterBatchDialog';
 import CouplingSnackbar from '../components/CouplingSnackbar';
+import RelationLegend from '../components/RelationLegend';
 import { PREFERENCE_BY_ID, RELATIONS } from '../relations';
 import PreferencePicker from '../components/PreferencePicker';
 import copy from '../copy';
@@ -277,6 +278,7 @@ export default function WhiteboardEditor() {
       </div>
       <div className="coupling-board-information" data-board-controls>
         <div className="coupling-board-information-summary"><span className="coupling-board-caption">{t.boardCaption.replace('{nodes}',String(nodes.length)).replace('{edges}',String(edges.length)).replace('{total}',String(PROFILE_CHARACTERS.length))}</span><output className="coupling-board-zoom" aria-label={t.zoomLevel}>{Math.round(view.zoom*100)}%</output></div>
+        <RelationLegend />
          {(selected&&PROFILE_CHARACTER_BY_ID.has(selected)||selectedEdgeData)&&<div className="coupling-selection-info"><span>{selected&&PROFILE_CHARACTER_BY_ID.has(selected)?<><strong>{characterName(selected,lang)}</strong> · {PROFILE_CHARACTER_BY_ID.get(selected)?.group[lang]}</>:selectedEdgeData&&connectedNames(selectedEdgeData)}</span>{selectedEdgeData&&<button type="button" className="coupling-selection-edit" onClick={event=>{editDefaultsRef.current={relation,preference,direction};setRelation(selectedEdgeData.type);setPreference(selectedEdgeData.preference);setDirection(selectedEdgeData.direction);setEditingEdgeId(selectedEdgeData.id);openPanel('line',event.currentTarget);}}>{t.editLine}</button>}<button type="button" className="coupling-selection-delete" aria-label={t.delete} onClick={()=>remove()}><BoardActionIcon action="delete"/><span>{t.delete}</span></button></div>}
       </div>
     </div>{hover&&PROFILE_CHARACTER_BY_ID.has(hover)&&createPortal(<span className="coupling-node-tooltip" style={tooltipPosition} role="tooltip" id={`coupling-tip-${hover}`}>{characterName(hover,lang)} · {PROFILE_CHARACTER_BY_ID.get(hover)?.group[lang]}</span>,globalThis.document.body)}<div className="coupling-edge-list" data-board-controls aria-label={t.edgeList}>{edges.map(edge=><button key={edge.id} className="coupling-btn" onClick={()=>{setSelectedEdge(edge.id);setSelected(null);}}>{connectedNames(edge)}</button>)}</div><p className="coupling-status" role="status">{notice||`${t.whiteboardDesc} · ${t.shortcutHint}`}</p>

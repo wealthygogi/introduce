@@ -4,6 +4,7 @@ import { useCouplingDraft } from '../CouplingDraftProvider';
 import { PROFILE_CHARACTER_BY_ID } from '../data';
 import CharacterAvatar from '../components/CharacterAvatar';
 import CharacterPicker from '../components/CharacterPicker';
+import RelationLegend from '../components/RelationLegend';
 import PreferencePicker from '../components/PreferencePicker';
 import { PREFERENCE_BY_ID, RELATIONS, RELATION_BY_ID } from '../relations';
 import copy from '../copy';
@@ -170,8 +171,9 @@ export default function KeyboardEditor() {
     <header className="coupling-keyboard-intro"><p>{words.intro}</p><span>{words.keyboard}</span></header>
     <div className="coupling-keyboard-layout">
        <section className="coupling-keyboard-graph-panel" aria-label={centerChosen ? words.focus : words.sourceHint}>
-        <div className="coupling-keyboard-toolbar"><strong>{centerChosen ? `${words.focus}: ${source[lang]}` : lang === 'ko' ? '현재 중심을 선택하세요' : lang === 'ja' ? '中心キャラクターを選択してください' : 'Choose a center character'}</strong><span>{words.total} {draft.edges.length}{words.count}</span><div className="coupling-keyboard-zoom"><button type="button" onClick={() => setZoom(value => Math.max(.25, value - .1))} aria-label={words.zoomOut}>−</button><span>{Math.round(actualZoom * 100)}%</span><button type="button" onClick={() => setZoom(value => Math.min(1.75, value + .1))} aria-label={words.zoomIn}>+</button><button type="button" onClick={() => setZoom(1)}>{words.fit}</button></div></div>
-        <div className="coupling-keyboard-graph-viewport" ref={viewportRef}>
+         <div className="coupling-keyboard-toolbar"><strong>{centerChosen ? `${words.focus}: ${source[lang]}` : lang === 'ko' ? '현재 중심을 선택하세요' : lang === 'ja' ? '中心キャラクターを選択してください' : 'Choose a center character'}</strong><span>{words.total} {draft.edges.length}{words.count}</span><div className="coupling-keyboard-zoom"><button type="button" onClick={() => setZoom(value => Math.max(.25, value - .1))} aria-label={words.zoomOut}>−</button><span>{Math.round(actualZoom * 100)}%</span><button type="button" onClick={() => setZoom(value => Math.min(1.75, value + .1))} aria-label={words.zoomIn}>+</button><button type="button" onClick={() => setZoom(1)}>{words.fit}</button></div></div>
+         <div className="coupling-keyboard-legend"><RelationLegend /></div>
+         <div className="coupling-keyboard-graph-viewport" ref={viewportRef}>
           <div className="coupling-keyboard-graph-stage" style={{ width: viewportWidth * actualZoom, minHeight: 560 * actualZoom }}>
             <div className={`coupling-keyboard-graph-scene${viewportWidth <= 600 ? ' is-mobile' : ''}`} ref={sceneRef} style={{ width: viewportWidth <= 600 ? viewportWidth : 900, transform: `scale(${actualZoom})`, transformOrigin: 'top left', minHeight: viewportWidth <= 600 ? undefined : 560 }}>
               <svg className="coupling-keyboard-lines" aria-hidden="true" viewBox="0 0 900 560" preserveAspectRatio="none">{visibleEdges.map((edge, index) => <line key={pairKey(edge.a, edge.b)} x1={viewportWidth <= 600 ? 0 : 450} y1={viewportWidth <= 600 ? 0 : 280} x2={viewportWidth <= 600 ? 0 : (index % 2 === 0 ? 145 : 755)} y2={viewportWidth <= 600 ? 0 : 70 + Math.floor(index / 2) * 140} stroke={relationFor(edge.relation).color} strokeDasharray={edge.preference === 'avoid' ? '5 4' : undefined} />)}</svg>

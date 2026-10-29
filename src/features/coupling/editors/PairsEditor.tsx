@@ -7,6 +7,7 @@ import { PREFERENCE_BY_ID, RELATIONS } from '../relations';
 import PreferencePicker from '../components/PreferencePicker';
 import { useCouplingDraft } from '../CouplingDraftProvider';
 import CouplingSnackbar from '../components/CouplingSnackbar';
+import RelationLegend from '../components/RelationLegend';
 import copy from '../copy';
 import type { PairCard, PairFields, PairsDraft, RelationId } from '../types';
 import '../coupling.css';
@@ -187,6 +188,7 @@ export default function PairsEditor() {
       <section className="coupling-panel coupling-pairs-collection" aria-labelledby="pairs-collection-title">
         <header className="coupling-pairs-collection-heading"><div><h2 id="pairs-collection-title">{t.collection} <span className="coupling-pairs-count">{visiblePairs.length} / {draft.pairs.length}</span></h2><p>{t.workSentence}</p></div><button type="button" className="coupling-btn" disabled={!history.length} onClick={undo}>{t.undo}</button></header>
         <div className="coupling-pairs-collection-controls"><label className="coupling-field">{t.filter}<select className="coupling-pairs-filter" value={collectionRelation} onChange={event => setCollectionRelation(event.target.value as RelationId | 'all')}><option value="all">{t.allRelations}</option>{RELATIONS.map(relation => <option key={relation.id} value={relation.id}>{relation.label[lang]}</option>)}</select></label><label className="coupling-field">{t.sort}<select className="coupling-pairs-sort" value={collectionSort} onChange={event => setCollectionSort(event.target.value as 'created' | 'az' | 'za')}><option value="created">{t.orderCreated}</option><option value="az">{t.sortAZ}</option><option value="za">{t.sortZA}</option></select></label></div>
+        <RelationLegend />
         {draft.pairs.length === 0 ? <div className="coupling-pairs-empty"><strong>{t.emptyCards}</strong>{t.subtitle}</div> : visiblePairs.length === 0 ? <div className="coupling-pairs-empty">{t.noMatches}</div> : <ol className="coupling-pairs-list" aria-label={t.collection}>{visiblePairs.map((pair, index) => {
           const a = character(pair.a); const b = character(pair.b); const relation = RELATIONS.find(item => item.id === pair.relation)!;
           if (!a || !b) return null;

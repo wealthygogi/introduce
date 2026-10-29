@@ -7,6 +7,7 @@
 .coupling-keyboard-layout { display: grid; grid-template-columns: minmax(0, 1fr) 354px; gap: 16px; align-items: start; }
 .coupling-keyboard-graph-panel, .coupling-keyboard-command { min-width: 0; border: 1px solid #dfe3e7; border-radius: 10px; background: #fff; overflow: hidden; }
 .coupling-keyboard-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border-bottom: 1px solid #e6e8eb; font-size: 12px; }
+.coupling-keyboard-legend { padding: 8px 14px; border-bottom: 1px solid #e6e8eb; }
 .coupling-keyboard-toolbar > strong { flex: 1 1 220px; overflow-wrap: anywhere; }
 .coupling-keyboard-zoom { display: flex; align-items: center; gap: 6px; }
 .coupling-keyboard-zoom button, .coupling-keyboard-graph-footer button, .coupling-keyboard-pagination button { padding: 5px 9px; }

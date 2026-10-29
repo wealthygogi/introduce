@@ -871,6 +871,20 @@ test('matrix keeps entry context visible, supports compact pair entry, and undoe
   assert.deepEqual(stored.data.unordered[0], { from: 'marisa', to: 'reimu', relation: 'friend', preference: 'favorite' });
 });
 
+test('whiteboard, keyboard, and pair editors show a compact labeled relationship legend on mobile', async t => {
+  for (const route of ['/coupling/whiteboard', '/coupling/keyboard', '/coupling/pairs']) {
+    const page = await pageFor(t, route, { width: 390, height: 844 });
+    const legend = page.locator('.coupling-relation-legend');
+    await legend.waitFor({ state: 'visible' });
+    assert.equal(await legend.getAttribute('role'), 'group', `${route} legend is exposed as a labeled group`);
+    assert.equal(await legend.locator('[data-relation]').count(), 5, `${route} legend lists all relationship types`);
+    assert.match(await legend.innerText(), /커플링[\s\S]*친구·가족[\s\S]*동료·동맹[\s\S]*라이벌·앙숙[\s\S]*복잡·미정/);
+    assert.match(await legend.locator('[data-relation="love"]').getAttribute('style'), /#a04d71/);
+    const box = await legend.boundingBox();
+    assert.ok(box && box.x >= 0 && box.x + box.width <= 390, `${route} legend fits within the mobile viewport`);
+  }
+});
+
 
 
 test('mobile touch scrolls canvas panels and keeps batch, connection, deletion, and matrix flows usable', async t => {

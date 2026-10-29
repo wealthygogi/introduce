@@ -4,8 +4,12 @@ import { NEW_IDS, V1_IDS } from './fixtures';
 test('landing routes into the sheet and coupling workspaces', async ({ page }) => {
   await page.goto('/introduce/');
   const sheets = page.locator('main a[href$="/sheets"]');
-  const coupling = page.locator('main a[href$="/coupling"]');
+  const characters = page.locator('main a[href$="/characters"]');
   await expect(sheets).toBeVisible();
+  await expect(characters).toBeVisible();
+  await characters.click();
+  await expect(page).toHaveURL(/\/characters$/);
+  const coupling = page.locator('main .character-related-card[href$="/coupling"]');
   await expect(coupling).toBeVisible();
   await coupling.click();
   await expect(page).toHaveURL(/\/coupling$/);

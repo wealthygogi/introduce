@@ -71,6 +71,38 @@ test('custom grid controls expand above the board instead of covering cells on m
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, 'custom controls must not cause horizontal page overflow');
 });
 
+test('clearing characters requires confirmation, preserves board settings and can be undone', async t => {
+  const page = await pageFor(t);
+  await page.getByLabel('모음표 제목').fill('내 모음표');
+  await page.getByRole('button', { name: '나이트' }).click();
+  await page.locator('.taste-board-cell').first().click();
+  await page.getByRole('button', { name: '하쿠레이 레이무' }).click();
+  await page.getByRole('button', { name: '그룹 추가' }).click();
+  await page.locator('.taste-board-group').nth(1).locator('.taste-board-cell').first().click();
+  await page.getByRole('button', { name: '키리사메 마리사' }).click();
+  page.once('dialog', dialog => dialog.dismiss());
+  await page.getByRole('button', { name: '캐릭터 초기화' }).click();
+  assert.equal(await page.locator('.taste-board-cell[data-empty="false"]').count(), 2);
+  page.once('dialog', dialog => dialog.accept());
+  await page.getByRole('button', { name: '캐릭터 초기화' }).click();
+  assert.equal(await page.locator('.taste-board-cell[data-empty="false"]').count(), 0);
+  assert.equal(await page.getByLabel('모음표 제목').inputValue(), '내 모음표');
+  assert.equal(await page.locator('.taste-board').getAttribute('data-theme'), 'night');
+  assert.equal(await page.locator('.taste-board-group').count(), 2);
+  await page.reload();
+  assert.equal(await page.locator('.taste-board-cell[data-empty="false"]').count(), 0);
+});
+
+test('clearing characters is undoable', async t => {
+  const page = await pageFor(t);
+  await page.locator('.taste-board-cell').first().click();
+  await page.getByRole('button', { name: '하쿠레이 레이무' }).click();
+  page.once('dialog', dialog => dialog.accept());
+  await page.getByRole('button', { name: '캐릭터 초기화' }).click();
+  await page.getByRole('button', { name: '실행 취소' }).click();
+  assert.equal(await page.locator('.taste-board-cell[data-empty="false"]').count(), 1);
+});
+
 test('shrinking a populated grid requires confirmation and can be cancelled without data loss', async t => {
   const page = await pageFor(t);
   await page.locator('.taste-board-cell').nth(8).click();

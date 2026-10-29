@@ -89,13 +89,35 @@
 .taste-work-dialog { grid-template-rows: auto auto auto auto minmax(0, 1fr) auto; }
 .taste-work-dialog .taste-character-list { min-height: 0; }
 .taste-work-dialog .taste-character-list button[aria-pressed="true"] { border-color: var(--taste-accent); background: color-mix(in srgb, var(--taste-accent) 12%, white); }
+.taste-controls { gap: 18px; border-color: #e8e4ef; background: linear-gradient(155deg, #fff 35%, #f9f7fd); box-shadow: 0 12px 32px #4032650a; }
+.taste-field input:focus-visible, .taste-group-heading input:focus-visible, .taste-board-page button:focus-visible, .taste-custom-grid summary:focus-visible, .taste-custom-grid select:focus-visible { outline: 3px solid color-mix(in srgb, var(--taste-accent) 55%, white); outline-offset: 2px; }
+.taste-theme-option { transition: border-color .18s, background .18s, transform .18s; }
+.taste-theme-option:hover, .taste-secondary-action:not(:disabled):hover, .taste-add-group:not(:disabled):hover { border-color: var(--taste-accent); transform: translateY(-1px); }
+.taste-toggle { padding: 0 12px; border: 1px solid #e8e4ef; border-radius: 14px; background: #fff; font-weight: 600; }
+.taste-create-action { border-color: #d8ceea; background: #f2edf9; color: #59418a; font-weight: 700; }
+.taste-action-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-top: 16px; border-top: 1px solid #e8e4ef; }
+.taste-action-group > strong { grid-column: 1 / -1; font-size: .88rem; }
+.taste-action-group .download-btn { grid-column: 1 / -1; width: 100%; min-height: 48px; justify-content: center; border-radius: 14px; }
+.taste-action-group .taste-secondary-action { min-width: 0; min-height: 44px; font-size: .84rem; transition: border-color .18s, transform .18s; }
+.taste-reset-action { color: #8a5263; }
+.taste-secondary-action:disabled { opacity: .45; cursor: not-allowed; }
+.taste-group-heading { padding: 12px; border: 1px solid var(--taste-line); border-radius: 18px; background: color-mix(in srgb, var(--taste-cell-bg) 70%, var(--taste-board-bg)); }
+.taste-layout-tools > button, .taste-custom-grid summary, .taste-group-actions button { transition: background .18s, border-color .18s; }
+.taste-layout-tools > button:hover, .taste-custom-grid summary:hover, .taste-group-actions button:not(:disabled):hover { border-color: var(--taste-accent); }
+.taste-group-actions button:disabled { opacity: .4; cursor: not-allowed; }
+.taste-board-cell { transition: border-color .18s, background .18s; }
+.taste-board-cell:hover { border-color: var(--taste-accent); background: color-mix(in srgb, var(--taste-accent) 7%, var(--taste-cell-bg)); }
 @media (max-width: 760px) {
   .taste-board-page { padding: 20px 14px 44px; }
   .taste-board-workspace { grid-template-columns: minmax(0, 1fr); gap: 14px; }
   .taste-controls { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 14px; border-radius: 20px; }
   .taste-field:first-child { grid-column: 1 / -1; }
   .taste-control-block { grid-template-columns: 1fr 1fr; }
+  .taste-theme-options { grid-column: 1 / -1; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .taste-theme-option { font-size: .76rem; }
   .taste-toggle, .taste-secondary-action, .taste-save-status { grid-column: 1 / -1; }
+  .taste-action-group { grid-column: 1 / -1; }
+  .taste-action-group .taste-secondary-action { grid-column: auto; }
   .taste-board { padding: 12px; border-radius: 20px; }
   .taste-board-cell { padding: 4px; border-radius: 10px; }
   .taste-character { display: grid; justify-items: center; }
@@ -109,4 +131,4 @@
   .taste-group-actions { grid-column: 2; grid-row: 2; justify-content: flex-end; }
   .taste-custom-grid { grid-column: 1 / -1; grid-row: 3; }
 }
-@media (max-width: 360px) { .taste-controls { grid-template-columns: 1fr; } .taste-field:first-child, .taste-toggle, .taste-secondary-action, .taste-save-status { grid-column: auto; } }
+@media (max-width: 360px) { .taste-controls { grid-template-columns: 1fr; } .taste-field:first-child, .taste-toggle, .taste-secondary-action, .taste-save-status, .taste-action-group, .taste-theme-options { grid-column: auto; } }

@@ -16,6 +16,11 @@ const copy = {
 
 const characterIds = new Set(PROFILE_CHARACTERS.map(character => character.id));
 const themes: TasteTheme[] = ['paper', 'album', 'terminal', 'night'];
+const resetCopy = {
+  ko: { action: '캐릭터 초기화', confirm: '모든 그룹의 캐릭터와 사진을 비울까요? 제목, 테마와 그룹 구성은 유지됩니다.', actions: '작업' },
+  ja: { action: 'キャラクターをリセット', confirm: 'すべてのグループのキャラクターと写真を消去しますか？タイトル、テーマ、グループ構成は保持されます。', actions: '操作' },
+  en: { action: 'Clear characters', confirm: 'Clear characters and photos from all groups? The title, theme, and group layouts will be kept.', actions: 'Actions' },
+} as const;
 
 async function resizeImageFile(file: File): Promise<Blob> {
   if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) throw new Error('Unsupported image');
@@ -43,6 +48,7 @@ function loadInitialBoard(): TasteBoard {
 export default function TasteBoardEditor() {
   const { lang } = useLang();
   const t = copy[lang];
+  const resetText = resetCopy[lang];
   const [board, setBoard] = useState<TasteBoard>(loadInitialBoard);
   const [undoStack, setUndoStack] = useState<TasteBoard[]>([]);
   const [activeCell, setActiveCell] = useState<{ groupId: string; index: number; adding: boolean } | null>(null);
@@ -178,9 +184,13 @@ export default function TasteBoardEditor() {
         <label className="taste-field">{t.title}<input value={board.title} maxLength={120} onChange={event => update(current => ({ ...current, title: event.target.value }))} /></label>
         <div className="taste-control-block taste-theme-options"><strong>{t.themes}</strong>{themes.map(theme => <button key={theme} type="button" className={`taste-theme-option theme-${theme}`} aria-pressed={board.theme === theme} onClick={() => update(current => ({ ...current, theme }))}><span className="taste-theme-swatch" aria-hidden="true"><i /><i /><i /><i /></span><span>{t[theme]}</span></button>)}</div>
         <label className="taste-toggle"><input type="checkbox" checked={board.showNames} onChange={event => update(current => ({ ...current, showNames: event.target.checked }))} />{t.showNames}</label>
-        <button type="button" className="taste-secondary-action" disabled={board.groups.length >= MAX_GROUPS} onClick={() => { setWorkGroupError(false); setWorkGroupOpen(true); }}>{t.workGroup}</button>
-        <button type="button" className="taste-secondary-action" disabled={!undoStack.length} onClick={() => { setBoard(undoStack[undoStack.length - 1]); setUndoStack(stack => stack.slice(0, -1)); }}>{t.undo}</button>
-        <DownloadButton targetId="taste-board-export" filename="character-taste-board.png" captureOptions={{ scale: 1, resetPosition: true, maxPixelArea: 16_000_000 }} />
+        <button type="button" className="taste-secondary-action taste-create-action" disabled={board.groups.length >= MAX_GROUPS} onClick={() => { setWorkGroupError(false); setWorkGroupOpen(true); }}>{t.workGroup}</button>
+        <div className="taste-action-group" aria-label={resetText.actions}>
+          <strong>{resetText.actions}</strong>
+          <DownloadButton targetId="taste-board-export" filename="character-taste-board.png" captureOptions={{ scale: 1, resetPosition: true, maxPixelArea: 16_000_000 }} />
+          <button type="button" className="taste-secondary-action" disabled={!undoStack.length} onClick={() => { setBoard(undoStack[undoStack.length - 1]); setUndoStack(stack => stack.slice(0, -1)); }}>{t.undo}</button>
+          <button type="button" className="taste-secondary-action taste-reset-action" disabled={!board.groups.some(group => group.cells.some(Boolean))} onClick={() => { if (window.confirm(resetText.confirm)) update(current => ({ ...current, groups: current.groups.map(group => ({ ...group, cells: group.cells.map(() => null) })) })); }}>{resetText.action}</button>
+        </div>
         <p className="taste-save-status" role="status">{storageAvailable ? t.saved : t.storageWarning}</p>
         {restoreWarning && <p role="alert">{t.invalid}</p>}
         {boardLimitError && <p role="alert">{t.gridLimit}</p>}

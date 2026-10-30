@@ -51,6 +51,14 @@ for (const editor of editors) {
     await page.goto(`${base}${editor.path}`);
     await page.locator(`#${editor.id}`).waitFor({ state: 'attached' });
     assert.match(await page.locator(`#${editor.id}`).innerText(), editor.expected);
+    const portraits = await page.locator(`#${editor.id}`).evaluate(root => {
+      const rootRect = root.getBoundingClientRect();
+      return [...root.querySelectorAll('.coupling-avatar img')].slice(0, 2).map(image => {
+        const rect = image.getBoundingClientRect();
+        return { x: Math.round(rect.left - rootRect.left), y: Math.round(rect.top - rootRect.top), width: Math.round(rect.width), height: Math.round(rect.height) };
+      });
+    });
+    assert.equal(portraits.length, 2, 'both characters have portraits in the exported content');
     assert.equal(await page.getByRole('button', { name: '이미지로 저장' }).count(), 1);
     const [download] = await Promise.all([page.waitForEvent('download', { timeout: 120_000 }), page.getByRole('button', { name: '이미지로 저장' }).click()]);
     const path = join(output, `${editor.id}.png`);
@@ -60,6 +68,15 @@ for (const editor of editors) {
     const png = PNG.sync.read(data);
     assert.equal(png.width, 1400);
     assert.ok(png.height > 200);
+    for (const rect of portraits) {
+      let coloredPixels = 0;
+      for (let y = rect.y; y < rect.y + rect.height; y++) for (let x = rect.x; x < rect.x + rect.width; x++) {
+        const index = (y * png.width + x) * 4;
+        const channels = [png.data[index], png.data[index + 1], png.data[index + 2]];
+        if (Math.max(...channels) - Math.min(...channels) > 35) coloredPixels++;
+      }
+      assert.ok(coloredPixels > 30, `downloaded image contains a visible portrait at ${rect.x},${rect.y}`);
+    }
 
     await page.setViewportSize({ width: 390, height: 844 });
     const [mobileDownload] = await Promise.all([page.waitForEvent('download', { timeout: 120_000 }), page.getByRole('button', { name: '이미지로 저장' }).click()]);

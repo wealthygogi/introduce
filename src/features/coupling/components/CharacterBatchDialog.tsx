@@ -1,6 +1,6 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useLang } from '../../../contexts/LangContext';
-import { COUPLING_FACE_CHARACTERS, COUPLING_WORKS } from '../data';
+import { PROFILE_CHARACTERS, PROFILE_CHARACTER_BY_ID, COUPLING_WORKS } from '../data';
 import { normalizeCouplingSearch } from '../relations';
 import copy from '../copy';
 import CharacterAvatar from './CharacterAvatar';
@@ -17,15 +17,15 @@ export default function CharacterBatchDialog({ open, placedIds, initialWork = 'ê
   const workOptions = useMemo<WorkOption[]>(() => [
     { value: '', name: t.allWorks, search: `${copy.ko.allWorks} ${copy.ja.allWorks} ${copy.en.allWorks}` },
     ...COUPLING_WORKS.map(value => {
-      const group = COUPLING_FACE_CHARACTERS.find(character => character.group.ko === value)!.group;
+      const group = PROFILE_CHARACTERS.find(character => character.group.ko === value)!.group;
       return { value, name: group[lang], search: `${group.ko} ${group.ja} ${group.en}` };
     }),
   ], [lang, t.allWorks]);
-  const availableCounts = useMemo(() => new Map<string, number>(workOptions.map(option => [option.value, COUPLING_FACE_CHARACTERS.reduce((count, character) => count + (!placed.has(character.id) && (!option.value || character.group.ko === option.value) ? 1 : 0), 0)] as const)), [placed, workOptions]);
+  const availableCounts = useMemo(() => new Map<string, number>(workOptions.map(option => [option.value, PROFILE_CHARACTERS.reduce((count, character) => count + (!placed.has(character.id) && (!option.value || character.group.ko === option.value) ? 1 : 0), 0)] as const)), [placed, workOptions]);
   const selectedWorkName = workOptions.find(option => option.value === work)?.name ?? t.allWorks;
   const term = normalizeCouplingSearch(query);
   const workTerm = normalizeCouplingSearch(workQuery);
-  const matches = useMemo(() => COUPLING_FACE_CHARACTERS.filter(character => (!work || character.group.ko === work) && (!term || normalizeCouplingSearch(`${character.ko}${character.ja}${character.en}${character.group.ko}${character.group.ja}${character.group.en}`).includes(term))), [term, work]);
+  const matches = useMemo(() => PROFILE_CHARACTERS.filter(character => (!work || character.group.ko === work) && (!term || normalizeCouplingSearch(`${character.ko}${character.ja}${character.en}${character.group.ko}${character.group.ja}${character.group.en}`).includes(term))), [term, work]);
   const matchingWorks = useMemo(() => workOptions.filter(option => !workTerm || normalizeCouplingSearch(option.search).includes(workTerm)), [workOptions, workTerm]);
   useLayoutEffect(() => {
     const el = dialog.current; if (!el) return;
@@ -52,7 +52,7 @@ export default function CharacterBatchDialog({ open, placedIds, initialWork = 'ê
     setWorkPickerOpen(false);
   };
   const leaveWorkPicker = () => { restoreWorkButton.current = true; setWorkPickerOpen(false); };
-  const confirm = () => { if (pending.length) onConfirm(COUPLING_FACE_CHARACTERS.filter(character => pending.includes(character.id)).map(character => character.id)); };
+  const confirm = () => { if (pending.length) onConfirm(PROFILE_CHARACTERS.filter(character => pending.includes(character.id)).map(character => character.id)); };
   const cancelOrReturn = () => { if (workPickerOpen) leaveWorkPicker(); else onCancel(); };
   return <dialog id="coupling-batch-dialog" ref={dialog} className="coupling-batch-dialog" aria-labelledby="coupling-batch-title" onKeyDown={event => {
     if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); cancelOrReturn(); return; }
@@ -81,7 +81,7 @@ export default function CharacterBatchDialog({ open, placedIds, initialWork = 'ê
           </div>
           <label className="coupling-batch-field">{t.search}<input ref={search} type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder={t.searchPlaceholder}/></label>
           <div className="coupling-batch-actions">
-            <button type="button" onClick={() => setPending(ids => [...new Set([...ids, ...COUPLING_FACE_CHARACTERS.filter(character => (!work || character.group.ko === work) && !placed.has(character.id)).map(character => character.id)])])}>{work ? `${selectedWorkName} ${t.selectAll}` : t.selectAllCharacters}</button>
+            <button type="button" onClick={() => setPending(ids => [...new Set([...ids, ...PROFILE_CHARACTERS.filter(character => (!work || character.group.ko === work) && !placed.has(character.id)).map(character => character.id)])])}>{work ? `${selectedWorkName} ${t.selectAll}` : t.selectAllCharacters}</button>
             <button type="button" onClick={() => setPending([])}>{t.clearSelection}</button>
           </div>
         </>}
@@ -108,7 +108,7 @@ export default function CharacterBatchDialog({ open, placedIds, initialWork = 'ê
         </div>}
       </div>
       <footer>
-        <div className="coupling-batch-pending" aria-live="polite">{pending.map(id => { const character = COUPLING_FACE_CHARACTERS.find(item => item.id === id)!; return <button type="button" key={id} aria-label={`${character[lang]} ${t.remove}`} onClick={() => toggle(id)}>{character[lang]} Ã—</button>; })}</div>
+        <div className="coupling-batch-pending" aria-live="polite">{pending.map(id => { const character = PROFILE_CHARACTER_BY_ID.get(id)!; return <button type="button" key={id} aria-label={`${character[lang]} ${t.remove}`} onClick={() => toggle(id)}>{character[lang]} Ã—</button>; })}</div>
         <button className="coupling-btn" type="button" onClick={onCancel}>{t.cancel}</button>
         {!workPickerOpen&&<button className="coupling-btn coupling-btn-primary" type="button" disabled={!pending.length} onClick={confirm}>{t.addSelected.replace('{count}', String(pending.length))}</button>}
       </footer>

@@ -270,32 +270,22 @@ test('whiteboard batch is atomic, edges follow moved nodes, and full layout fits
   assert.deepEqual(await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('introduce:coupling:'))), ['introduce:coupling:whiteboard:v1']);
 });
 
-test('whiteboard batch picker lists only characters with coupling face portraits', async t => {
+test('batch picker includes characters without portraits and adds them to the canvas', async t => {
   const page = await pageFor(t, '/coupling/whiteboard');
   await page.locator('.coupling-board-add').click();
   const dialog = page.locator('.coupling-batch-dialog');
-  await dialog.waitFor({ state: 'visible' });
-  const controlBounds = await dialog.evaluate(element => ({
-    work: element.querySelector('.coupling-batch-work-select > button').getBoundingClientRect().toJSON(),
-    search: element.querySelector('.coupling-batch-field input').getBoundingClientRect().toJSON(),
-  }));
-  assert.ok(controlBounds.work.bottom <= controlBounds.search.top && Math.abs(controlBounds.work.left - controlBounds.search.left) < 1,
-    'desktop work and search controls are aligned without overlap in the filter pane');
-  await chooseBatchWork(dialog, '전체 작품');
-  const faceIds = await page.evaluate(async () => await (await fetch('/introduce/src/features/coupling/portraitIds.json')).json());
-  await dialog.getByRole('searchbox', { name: '이름 검색' }).fill('Alice Margatroid');
-  const aliceChoice = dialog.locator('.coupling-batch-choice').filter({ hasText: '앨리스 마가트로이드' });
-  assert.equal(await aliceChoice.count(), 1, 'Alice is selectable with her face portrait');
-  assert.equal(await aliceChoice.locator('.coupling-avatar').getAttribute('data-portrait-kind'), 'face');
-  const aliceImage = aliceChoice.locator('.coupling-avatar img');
-  assert.match(await aliceImage.getAttribute('src') ?? '', /\/coupling\/faces\/alice\.png$/);
-  await page.waitForFunction(image => image.complete && image.naturalWidth === 512, await aliceImage.elementHandle());
-  await dialog.getByRole('searchbox', { name: '이름 검색' }).fill('');
-  const listedIds = await dialog.locator('.coupling-batch-choice img').evaluateAll(images => images.map(image => new URL(image.src).pathname.split('/').pop().replace(/\.png$/, '')));
-  assert.deepEqual(listedIds.sort(), [...faceIds].sort());
-  await dialog.locator('.coupling-batch-actions button').first().click();
-  const starter = ['reimu', 'marisa', 'sakuya', 'remilia', 'youmu', 'yuyuko'];
-  assert.equal(await dialog.locator('.coupling-batch-pending button').count(), faceIds.filter(id => !starter.includes(id)).length, 'select-all excludes portrait-less characters too');
+  await chooseBatchWork(dialog, '동방지령기전');
+  const shrineMaiden = dialog.locator('.coupling-batch-choice').filter({ hasText: '선대 무녀' });
+  assert.equal(await shrineMaiden.locator('.coupling-avatar').getAttribute('data-portrait-kind'), 'initial');
+  await shrineMaiden.locator('input').check();
+  await chooseBatchWork(dialog, '동방향림당');
+  const laika = dialog.locator('.coupling-batch-choice').filter({ hasText: '라이카' });
+  assert.equal(await laika.locator('.coupling-avatar').getAttribute('data-portrait-kind'), 'initial');
+  await laika.locator('input').check();
+  await dialog.getByRole('button', { name: '선택한 2명 추가' }).click();
+  await page.waitForSelector('[data-node="char-d62c4b7c098d"]');
+  await page.waitForSelector('[data-node="char-edde0f5d138b"]');
+  assert.equal(await page.locator('[data-node="char-d62c4b7c098d"] .coupling-avatar').getAttribute('data-portrait-kind'), 'initial');
 });
 
 test('batch selection preserves the board until confirm and commits as one undo step', async t => {

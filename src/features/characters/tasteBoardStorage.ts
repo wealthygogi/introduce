@@ -31,6 +31,15 @@ function isTasteGroup(value: unknown, characters: ReadonlySet<string>): value is
   const rows = value.rows as number;
   const columns = value.columns as number;
   if (rows < 1 || columns < 1 || rows * columns > MAX_CELLS_PER_GROUP || !Array.isArray(value.cells) || value.cells.length !== rows * columns) return false;
+  if ('slots' in value && (!Array.isArray(value.slots) || value.slots.length !== value.cells.length || !value.slots.every(slot => slot === null || (isRecord(slot) && isText(slot.label, 80) && (!('topicId' in slot) || (isText(slot.topicId, 120) && slot.topicId.length > 0)))))) return false;
+  if ('showAppearances' in value && typeof value.showAppearances !== 'boolean') return false;
+  if ('appearanceContext' in value) {
+    const context = value.appearanceContext;
+    if (!isRecord(context) || !(context.topicId === null || (isText(context.topicId, 120) && context.topicId.length > 0)) ||
+      !(context.role === null || ['playable', 'enemy', 'boss', 'midboss', 'opponent', 'support', 'other'].includes(context.role as string)) ||
+      !(context.stage === null || (typeof context.stage === 'number' && Number.isInteger(context.stage) && context.stage > 0) ||
+        ['extra', 'phantasm', 'final'].includes(context.stage as string))) return false;
+  }
   return value.cells.every(cell => cell === null || isTasteCell(cell, characters));
 }
 

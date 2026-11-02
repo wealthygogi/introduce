@@ -62,6 +62,28 @@ test('cells may reference a custom image while old cells remain valid without on
   assert.equal(parseTasteBoard(serializeTasteBoard(board), characters).kind, 'invalid');
 });
 
+test('slot labels and appearance context survive v1 round-trip and malformed metadata is rejected', () => {
+  const board = createDefaultTasteBoard();
+  const group = board.groups[0];
+  group.cells[0] = { characters: ['reimu', 'marisa'], label: 'duo', imageId: 'photo-1' };
+  group.slots = [{ label: '홍마향', topicId: 'th6' }, { label: 'unknown', topicId: 'removed-topic' }, ...Array(7).fill(null)];
+  group.showAppearances = true;
+  group.appearanceContext = { topicId: 'mainline', role: 'boss', stage: 1 };
+  assert.deepEqual(parseTasteBoard(serializeTasteBoard(board), characters), { kind: 'valid', data: board });
+  for (const mutate of [
+    g => { g.slots.pop(); },
+    g => { g.slots[0].topicId = ''; },
+    g => { g.slots[0].label = 'x'.repeat(81); },
+    g => { g.showAppearances = 'yes'; },
+    g => { g.appearanceContext.role = 'invalid'; },
+    g => { g.appearanceContext.stage = 0; },
+  ]) {
+    const invalid = structuredClone(board);
+    mutate(invalid.groups[0]);
+    assert.equal(parseTasteBoard(serializeTasteBoard(invalid), characters).kind, 'invalid');
+  }
+});
+
 test('storage uses an independent versioned key and reports blocked storage', () => {
   const values = new Map();
   const storage = {

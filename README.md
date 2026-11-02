@@ -21,6 +21,7 @@
 - **캐릭터 커플링 워크스페이스**: 자유 캔버스, 단계형 키보드 릴레이, 커플 카드, 관계 매트릭스의 네 편집기를 제공합니다. 릴레이는 입력 단계를 한 번에 하나씩 보여주고, 커플 카드의 캐릭터 검색은 A/B 슬롯을 선택할 때 대화상자로 엽니다. 관계 매트릭스는 방향을 행·열 머리글로 강조하고 화살표·Home/End 키로 셀을 탐색하며, 좁은 화면에서는 관계 도구막대를 가로 스크롤합니다. 자유 캔버스는 이동·연결·선 설정을 기본 도구막대에 두며, 넓은 화면에서는 화면 조정·기록 도구도 바로 보여주고 좁은 화면에서는 더보기 메뉴로 묶습니다. 캐릭터 추가 대화상자에서는 작품을 검색·선택한 뒤 이름 검색과 카드 선택으로 여러 캐릭터를 추가합니다. 전체 배치와 초기화는 더보기 메뉴에, 삭제는 선택한 캐릭터나 관계의 하단 동작에 둡니다. 관계 종류는 커플링·친구/가족·동료/동맹·라이벌/앙숙·복잡/미정이며, 최애와 취향 아님은 관계 종류와 분리된 개인 취향 표시입니다. 선의 곡선 형태는 관계 방향 조합에 따라 자동으로 정해집니다. 각 편집기의 초안은 이 브라우저에 별도 저장되며 자기소개표 데이터와 분리됩니다. 각 편집기의 초기화 버튼은 확인 후 해당 편집기의 저장 초안만 지우고 최초 상태로 되돌립니다.
   캐릭터 목록 전체를 선택할 수 있으며, 얼굴 이미지가 없는 인물은 이름의 첫 글자로 표시합니다.
   네 편집기의 이미지 저장에는 캐릭터 얼굴과 관계 내용이 함께 포함됩니다.
+- **캐릭터 취향표**: 기존 그룹에 작품별 최애 칸, 출연 조건으로 모은 인물, 빈 그룹을 함께 추가합니다. 작품별 후보는 대표 분류와 확인된 출연의 합집합이며 역할·스테이지 필터는 같은 작품의 확인된 출연 기록을 기준으로 합니다. 출연 정보가 없는 인물도 전체 목록에서 선택할 수 있습니다. 그룹별 출연 요약은 선택 사항이고, 라벨·사진과 함께 PNG에 저장됩니다. 초안과 사진은 이 브라우저에 저장됩니다.
 - **반응형 편집**: 좁은 화면에서는 저장·공유 버튼을 여러 줄로 배치합니다.
   화면 크기·언어·QR 표시 변경 시 미리보기 높이를 다시 계산합니다.
 - **와이드 프로필**: 4개 테마(paper / album / terminal / hifuu), 2×2 또는 1×4 배치, 캐릭터 최대 7명·통합 작품 최대 5개. 비어 있는 작품·캐릭터·교류 구역은 PNG에서 생략되고, 입력량에 따라 높이가 달라지며, 한국어 이름은 가능한 한 단어 단위로 줄바꿈합니다.
@@ -59,11 +60,20 @@ npm run qa:modes    # 32 Wide PNG states × theme/layout/scenario plus Compact c
 npm run test:share   # Shared drafts and legacy share compatibility
 npm run test:profile # Wide selection, migration, limits and storage regression checks
 npm run test:coupling # 커플링 편집·저장·반응형 회귀 검증
+npm run test:taste-board # 취향표 저장·그룹·출연 필터·PNG 회귀 검증
 ```
 
 `/introduce/` base path 때문에 로컬에서도 `http://localhost:5173/introduce/`로 접속합니다.
 
 > 의존성을 추가할 때는 `--registry=https://registry.npmjs.org`로 설치하세요. lockfile에 사내 레지스트리 URL이 들어가면 Actions의 `npm ci`가 실패합니다.
+
+출연 스냅샷은 저장된 위키 원문의 출처 메타데이터와 확인된 사실만 포함합니다. 일반 빌드에는 tdata나 Python이 필요하지 않습니다. 스냅샷 재생성과 확인에는 별도의 `../tdata` 원문 코퍼스와 해당 Python 환경이 필요합니다.
+
+```bash
+../tdata/.venv/bin/python -B scripts/build_character_categories.py --tdata-root ../tdata
+../tdata/.venv/bin/python -B scripts/build_character_categories.py --tdata-root ../tdata --check
+../tdata/.venv/bin/python -B -m unittest discover -s tests -p 'test_character_categories.py'
+```
 
 ## E2E 테스트
 

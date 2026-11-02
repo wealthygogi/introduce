@@ -1,0 +1,22 @@
+{
+  "names": {
+    "SinGyoku": "char-3b36085fb14b",
+    "YuugenMagan": "char-8d776a8e0e35",
+    "Elis": "char-429c97e69b48",
+    "Sariel": "char-e83e9252afea",
+    "Kikuri": "char-04d822acfd10",
+    "Konngara": "char-c756921490b3",
+    "Mima": "char-00fff23aa4fd",
+    "Mai (PC-98)": "char-8c08177f8798",
+    "Chimi Houjuu": "chimi",
+    "Son Biten": "son_biten",
+    "Yuuma Toutetsu": "yuuma"
+  },
+  "pages": {
+    "char-8c08177f8798": "Mai (PC-98)",
+    "char-8c682b0ac9c4": "Reisen (Bougetsushou)"
+  },
+  "works": {
+    "Fairy Wars": "game-10f91c9982f7"
+  }
+}

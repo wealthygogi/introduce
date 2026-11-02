@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { PROFILE_CHARACTERS, PROFILE_CHARACTER_BY_ID } from '../../data/profileCatalog';
 import { getCouplingPortrait } from '../coupling/data';
 import { useLang } from '../../contexts/LangContext';
@@ -6,6 +6,10 @@ import DownloadButton from '../../components/DownloadButton';
 import { createDefaultTasteBoard, MAX_CELLS_PER_GROUP, MAX_CELLS_TOTAL, MAX_GROUPS, parseTasteBoard, readTasteBoard, TASTE_BOARD_STORAGE_KEY, writeTasteBoard } from './tasteBoardStorage';
 import { collectTasteBoardImageIds, createTasteBoardImageStorage } from './tasteBoardImageStorage';
 import type { TasteBoard, TasteCell, TasteGroup, TasteTheme } from './tasteBoardTypes';
+import TasteDialog from './TasteDialog';
+import TasteGroupDialog from './TasteGroupDialog';
+import TasteCharacterList from './TasteCharacterList';
+import { CHARACTER_TOPICS, CHARACTER_TOPIC_BUNDLES, CHARACTER_TOPIC_BY_ID, EMPTY_CHARACTER_FILTER, appearanceSummary, type AppearanceStage, type RoleFilter } from './characterCategories';
 import './taste-board.css';
 
 const copy = {
@@ -21,15 +25,13 @@ const pickerCopy = {
   en: { group: 'Work category', all: 'All works', empty: 'No characters found.' },
 } as const;
 
-function TasteDialog({ label, className = '', onClose, opener, children }: { label: string; className?: string; onClose: () => void; opener: HTMLElement | null; children: ReactNode }) {
-  const ref = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    const dialog = ref.current;
-    dialog?.showModal();
-    return () => { dialog?.close(); opener?.focus(); };
-  }, []);
-  return <dialog ref={ref} role="dialog" className={`taste-character-dialog ${className}`} aria-label={label} onCancel={event => { if (event.target === event.currentTarget) { event.preventDefault(); onClose(); } }} onClick={event => { if (event.target === event.currentTarget) onClose(); }}>{children}</dialog>;
-}
+const appearanceCopy = {
+  ko: { show: '출연 정보 표시', role: '역할', allRoles: '모든 역할', playable: '플레이어', enemy: '적', boss: '보스', midboss: '중보스', opponent: '대전 상대', support: '지원·동료', other: '기타 출연', details: '상세 조건', stage: '스테이지', allStages: '모든 스테이지', final: '최종면', note: '확인된 출연 정보를 기준으로 필터링합니다.', unknown: '출연 정보 미확인' },
+  ja: { show: '出演情報を表示', role: '役割', allRoles: 'すべての役割', playable: 'プレイヤー', enemy: '敵', boss: 'ボス', midboss: '中ボス', opponent: '対戦相手', support: '支援・仲間', other: 'その他の出演', details: '詳細条件', stage: 'ステージ', allStages: 'すべてのステージ', final: '最終面', note: '確認された出演情報に基づいて絞り込みます。', unknown: '出演情報未確認' },
+  en: { show: 'Show appearances', role: 'Role', allRoles: 'All roles', playable: 'Playable', enemy: 'Enemy', boss: 'Boss', midboss: 'Midboss', opponent: 'Opponent', support: 'Support', other: 'Other appearance', details: 'Advanced filters', stage: 'Stage', allStages: 'All stages', final: 'Final stage', note: 'Filtering is based on confirmed appearance information.', unknown: 'Appearance information unconfirmed' },
+} as const;
+const roles: RoleFilter[] = ['playable', 'enemy', 'boss', 'midboss', 'opponent', 'support', 'other'];
+
 const themes: TasteTheme[] = ['paper', 'album', 'terminal', 'night'];
 const resetCopy = {
   ko: { action: '캐릭터 초기화', confirm: '모든 그룹의 캐릭터와 사진을 비울까요? 제목, 테마와 그룹 구성은 유지됩니다.', actions: '작업' },
@@ -74,17 +76,15 @@ export default function TasteBoardEditor() {
   const [activeCell, setActiveCell] = useState<{ groupId: string; index: number; adding: boolean } | null>(null);
   const [query, setQuery] = useState('');
   const [pickerGroup, setPickerGroup] = useState('');
+  const [pickerRole, setPickerRole] = useState<RoleFilter | null>(null);
+  const [pickerStage, setPickerStage] = useState<AppearanceStage | null>(null);
   const [storageAvailable, setStorageAvailable] = useState(true);
   const [restoreWarning, setRestoreWarning] = useState(false);
   const [boardLimitError, setBoardLimitError] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [downloadStatus, setDownloadStatus] = useState<'preparing' | 'started' | 'failed' | null>(null);
   const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
-  const [workGroupOpen, setWorkGroupOpen] = useState(false);
-  const [workGroupTitle, setWorkGroupTitle] = useState('');
-  const [workQuery, setWorkQuery] = useState('');
-  const [workSelection, setWorkSelection] = useState<Set<string>>(new Set());
-  const [workGroupError, setWorkGroupError] = useState(false);
+  const [groupDialogOpen, setGroupDialogOpen] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const dialogOpener = useRef<HTMLElement | null>(null);
   const imageStorage = useMemo(() => createTasteBoardImageStorage(), []);
@@ -113,12 +113,13 @@ export default function TasteBoardEditor() {
     };
   }, [board, undoStack, imageStorage]);
 
-  const pickerGroups = useMemo(() => [...new Map(PROFILE_CHARACTERS.map(character => [character.group.ko, character.group])).values()], []);
-  const visibleCharacters = useMemo(() => PROFILE_CHARACTERS.filter(character => (!pickerGroup || character.group.ko === pickerGroup) && `${character[lang]} ${character.ko} ${character.ja} ${character.en}`.toLocaleLowerCase().includes(query.toLocaleLowerCase())), [lang, query, pickerGroup]);
-  const renderAvatar = (character: (typeof PROFILE_CHARACTERS)[number], size: number, imageId?: string) => {
+  const pickerFilter = { topicId: CHARACTER_TOPIC_BY_ID.has(pickerGroup) ? pickerGroup : null, role: pickerRole, stage: pickerStage };
+  const currentIds = activeCell ? board.groups.find(group => group.id === activeCell.groupId)?.cells[activeCell.index]?.characters ?? [] : [];
+  const appearanceText = appearanceCopy[lang];
+  const renderAvatar = (character: (typeof PROFILE_CHARACTERS)[number], size: number, imageId?: string, loading: 'lazy' | 'eager' = 'lazy') => {
     const portrait = getCouplingPortrait(character);
     const src = imageId ? imageUrls[imageId] : undefined;
-    return <span className="taste-character-avatar" style={{ '--taste-avatar-size': `${size}px` } as React.CSSProperties} aria-hidden="true">{src || portrait.src ? <img src={src ?? portrait.src ?? undefined} alt="" loading="lazy" /> : character[lang].slice(0, 1)}</span>;
+    return <span className="taste-character-avatar" style={{ '--taste-avatar-size': `${size}px` } as React.CSSProperties} aria-hidden="true">{src || portrait.src ? <img src={src ?? portrait.src ?? undefined} alt="" loading={loading} /> : character[lang].slice(0, 1)}</span>;
   };
   const update = (change: (current: TasteBoard) => TasteBoard) => {
     setUndoStack(stack => [...stack.slice(-19), board]);
@@ -132,8 +133,9 @@ export default function TasteBoardEditor() {
     }
     const cells = Array<TasteCell | null>(rows * columns).fill(null);
     group.cells.slice(0, cells.length).forEach((cell, index) => { cells[index] = cell; });
-    if (group.cells.slice(cells.length).some(Boolean) && !window.confirm('격자를 줄이면 일부 캐릭터가 제거됩니다. 계속할까요?')) return;
-    update(current => ({ ...current, groups: current.groups.map(item => item.id === group.id ? { ...item, rows, columns, cells } : item) }));
+    const slots = group.slots && Array.from({ length: cells.length }, (_, index) => group.slots?.[index] ?? null);
+    if ((group.cells.slice(cells.length).some(Boolean) || group.slots?.slice(cells.length).some(Boolean)) && !window.confirm('격자를 줄이면 일부 캐릭터 또는 칸 라벨이 제거됩니다. 계속할까요?')) return;
+    update(current => ({ ...current, groups: current.groups.map(item => item.id === group.id ? { ...item, rows, columns, cells, ...(slots ? { slots } : {}) } : item) }));
     setBoardLimitError(false);
   };
   const setCell = (groupId: string, index: number, cell: TasteCell | null) => update(current => ({
@@ -168,35 +170,12 @@ export default function TasteBoardEditor() {
       setCell(activeCell.groupId, activeCell.index, withoutImage);
     }
   };
-  const createWorkGroup = () => {
-    const selected = PROFILE_CHARACTERS.filter(character => workSelection.has(character.id));
-    const currentCells = board.groups.reduce((total, group) => total + group.cells.length, 0);
-    const maxGridSize = Math.min(MAX_CELLS_PER_GROUP, MAX_CELLS_TOTAL - currentCells);
-    const layout = Array.from({ length: 10 }, (_, index) => index + 1)
-      .flatMap(rows => Array.from({ length: 10 }, (_, index) => ({ rows, columns: index + 1 })))
-      .filter(candidate => candidate.rows * candidate.columns >= selected.length && candidate.rows * candidate.columns <= maxGridSize)
-      .sort((left, right) => left.rows * left.columns - right.rows * right.columns || Math.abs(left.rows - left.columns) - Math.abs(right.rows - right.columns))[0];
-    if (!layout) {
-      setWorkGroupError(true);
-      return;
-    }
-    if (!workGroupTitle.trim() || selected.length === 0 || board.groups.length >= MAX_GROUPS) return;
-    const cells: Array<TasteCell | null> = Array(layout.rows * layout.columns).fill(null);
-    selected.forEach((character, index) => { cells[index] = { characters: [character.id], label: '' }; });
-    update(current => ({ ...current, groups: [...current.groups, { id: crypto.randomUUID(), title: workGroupTitle.trim(), ...layout, cells }] }));
-    setWorkGroupOpen(false);
-    setWorkGroupTitle('');
-    setWorkSelection(new Set());
-    setWorkQuery('');
-    setWorkGroupError(false);
-  };
-  const addGroup = () => update(current => ({ ...current, groups: [...current.groups, { id: crypto.randomUUID(), title: `Group ${current.groups.length + 1}`, rows: 3, columns: 3, cells: Array(9).fill(null) }] }));
   const chooseCharacter = (id: string) => {
     if (!activeCell) return;
     const group = board.groups.find(item => item.id === activeCell.groupId);
     const current = group?.cells[activeCell.index] ?? null;
     const characters = activeCell.adding && current ? [...current.characters, id].slice(0, 2) : [id];
-    setCell(activeCell.groupId, activeCell.index, { characters, label: current?.label ?? '' });
+    setCell(activeCell.groupId, activeCell.index, { ...current, characters, label: current?.label ?? '' });
     setActiveCell(null);
     setQuery('');
   };
@@ -208,7 +187,7 @@ export default function TasteBoardEditor() {
         <label className="taste-field">{t.title}<input value={board.title} maxLength={120} onChange={event => update(current => ({ ...current, title: event.target.value }))} /></label>
         <div className="taste-control-block taste-theme-options"><strong>{t.themes}</strong>{themes.map(theme => <button key={theme} type="button" className={`taste-theme-option theme-${theme}`} aria-pressed={board.theme === theme} onClick={() => update(current => ({ ...current, theme }))}><span className="taste-theme-swatch" aria-hidden="true"><i /><i /><i /><i /></span><span>{t[theme]}</span></button>)}</div>
         <label className="taste-toggle"><input type="checkbox" checked={board.showNames} onChange={event => update(current => ({ ...current, showNames: event.target.checked }))} />{t.showNames}</label>
-        <button type="button" className="taste-secondary-action taste-create-action" disabled={board.groups.length >= MAX_GROUPS} onClick={event => { dialogOpener.current = event.currentTarget; setWorkGroupError(false); setWorkGroupOpen(true); }}>{t.workGroup}</button>
+        <button type="button" className="taste-secondary-action taste-create-action" disabled={board.groups.length >= MAX_GROUPS} onClick={event => { dialogOpener.current = event.currentTarget; setGroupDialogOpen(true); }}>{t.workGroup}</button>
         <div className="taste-action-group" aria-label={resetText.actions}>
           <strong>{resetText.actions}</strong>
           <DownloadButton targetId="taste-board-export" filename="character-taste-board.png" captureOptions={{ scale: 1, resetPosition: true, maxPixelArea: 16_000_000 }} onStatusChange={setDownloadStatus} />
@@ -230,15 +209,17 @@ export default function TasteBoardEditor() {
               {([['oneRow', 1, 3], ['three', 3, 3], ['four', 4, 4], ['five', 5, 5]] as const).map(([key, rows, columns]) => <button type="button" key={key} aria-pressed={group.rows === rows && group.columns === columns} onClick={() => applyPreset(group, rows, columns)}>{t[key]}</button>)}
             </div>
             <details className="taste-custom-grid"><summary>{t.custom}</summary><div className="taste-custom-grid-fields"><label>{t.rows}<select aria-label={lang === 'ko' ? '행 수' : lang === 'ja' ? '行数' : 'Rows'} value={group.rows} onChange={event => applyPreset(group, Number(event.target.value), group.columns)}>{Array.from({ length: 10 }, (_, i) => i + 1).map(value => <option key={value} value={value}>{value}</option>)}</select></label><label>{t.columns}<select aria-label={lang === 'ko' ? '열 수' : lang === 'ja' ? '列数' : 'Columns'} value={group.columns} onChange={event => applyPreset(group, group.rows, Number(event.target.value))}>{Array.from({ length: 10 }, (_, i) => i + 1).map(value => <option key={value} value={value}>{value}</option>)}</select></label></div></details>
+            <label className="taste-toggle"><input type="checkbox" checked={group.showAppearances ?? false} onChange={event => { const checked = event.target.checked; update(current => ({ ...current, groups: current.groups.map(item => item.id === group.id ? { ...item, showAppearances: checked } : item) })); }} />{appearanceText.show}</label>
             <div className="taste-group-actions"><button type="button" onClick={() => update(current => ({ ...current, groups: current.groups.filter(item => item.id !== group.id) }))} disabled={board.groups.length === 1} aria-label={t.remove}>×</button><button type="button" aria-label={t.up} disabled={groupIndex === 0} onClick={() => update(current => ({ ...current, groups: [current.groups[groupIndex - 1], current.groups[groupIndex], ...current.groups.filter((_, i) => i !== groupIndex && i !== groupIndex - 1)] }))}>↑</button><button type="button" aria-label={t.down} disabled={groupIndex === board.groups.length - 1} onClick={() => update(current => ({ ...current, groups: [current.groups[groupIndex], current.groups[groupIndex + 1], ...current.groups.filter((_, i) => i !== groupIndex && i !== groupIndex + 1)] }))}>↓</button></div>
           </div>
           <div className="taste-board-grid" style={{ '--taste-columns': group.columns } as React.CSSProperties}>
-            {group.cells.map((cell, index) => <button key={index} type="button" className="taste-board-cell" data-empty={!cell} aria-label={`${group.title} ${index + 1}: ${cell ? cell.characters.map(id => PROFILE_CHARACTER_BY_ID.get(id)?.[lang]).join(' + ') : t.empty}`} onClick={event => { dialogOpener.current = event.currentTarget; setActiveCell({ groupId: group.id, index, adding: false }); }}>
-              {cell ? <><span className="taste-cell-characters">{cell.characters.map((id, characterIndex) => { const character = PROFILE_CHARACTER_BY_ID.get(id)!; return <span className="taste-character" key={id}>{renderAvatar(character, 72, characterIndex === 0 ? cell.imageId : undefined)}{board.showNames && <span>{character[lang]}</span>}</span>; })}</span><span className="taste-cell-edit">{t.change}</span></> : <span className="taste-cell-empty"><b>＋</b>{t.empty}</span>}
+            {group.cells.map((cell, index) => <button key={index} type="button" className={`taste-board-cell${group.slots?.[index] || (group.showAppearances && cell) ? ' taste-board-cell--expanded' : ''}`} data-empty={!cell} aria-label={`${group.title} ${index + 1} ${group.slots?.[index]?.label ?? ''}: ${cell ? cell.characters.map(id => PROFILE_CHARACTER_BY_ID.get(id)?.[lang]).join(' + ') : t.empty}`} onClick={event => { dialogOpener.current = event.currentTarget; setQuery(''); setPickerGroup(group.slots?.[index]?.topicId ?? ''); setPickerRole(null); setPickerStage(null); setActiveCell({ groupId: group.id, index, adding: false }); }}>
+              {group.slots?.[index] && <span className="taste-slot-label">{group.slots[index]?.label}</span>}
+              {cell ? <><span className="taste-cell-characters">{cell.characters.map((id, characterIndex) => { const character = PROFILE_CHARACTER_BY_ID.get(id)!; const topicId = group.slots?.[index]?.topicId; const context = topicId ? { ...EMPTY_CHARACTER_FILTER, topicId } : group.appearanceContext ?? EMPTY_CHARACTER_FILTER; const summary = group.showAppearances ? (context.topicId && !CHARACTER_TOPIC_BY_ID.has(context.topicId) ? [appearanceText.unknown] : appearanceSummary(id, context, lang)) : []; return <span className="taste-character" key={id}>{renderAvatar(character, 72, characterIndex === 0 ? cell.imageId : undefined)}{board.showNames && <span>{character[lang]}</span>}{group.showAppearances && <span className="taste-appearance-summary">{summary.slice(0, 2).map((label, i) => <small key={i}>{label}</small>)}{summary.length > 2 && <small>+{summary.length - 2}</small>}</span>}</span>; })}</span><span className="taste-cell-edit">{t.change}</span></> : <span className="taste-cell-empty"><b>＋</b>{t.empty}</span>}
             </button>)}
           </div>
         </section>)}
-      <button type="button" className="taste-add-group" disabled={board.groups.length >= MAX_GROUPS || board.groups.reduce((total, group) => total + group.cells.length, 0) + 9 > MAX_CELLS_TOTAL} onClick={addGroup}>{t.addGroup}</button>
+      <button type="button" className="taste-add-group" disabled={board.groups.length >= MAX_GROUPS} onClick={event => { dialogOpener.current = event.currentTarget; setGroupDialogOpen(true); }}>{t.addGroup}</button>
       </section>
     </div>
     <section id="taste-board-export" className={`taste-export theme-${board.theme}`} aria-hidden="true">
@@ -246,25 +227,34 @@ export default function TasteBoardEditor() {
       {board.groups.map(group => <section className="taste-export-group" key={group.id}>
         <h2>{group.title}</h2>
         <div className="taste-export-grid" style={{ '--taste-columns': group.columns } as React.CSSProperties}>{group.cells.map((cell, index) => <div className="taste-export-cell" key={index}>
-          {cell?.characters.map((id, characterIndex) => <div className="taste-export-character" key={id}>{renderAvatar(PROFILE_CHARACTER_BY_ID.get(id)!, 96, characterIndex === 0 ? cell.imageId : undefined)}{board.showNames && <span>{PROFILE_CHARACTER_BY_ID.get(id)![lang]}</span>}</div>)}
+          {group.slots?.[index] && <span className="taste-export-slot-label">{group.slots[index]?.label}</span>}
+          {cell?.characters.map((id, characterIndex) => {
+            const character = PROFILE_CHARACTER_BY_ID.get(id)!;
+            const topicId = group.slots?.[index]?.topicId;
+            const context = topicId ? { ...EMPTY_CHARACTER_FILTER, topicId } : group.appearanceContext ?? EMPTY_CHARACTER_FILTER;
+            const summary = group.showAppearances ? (context.topicId && !CHARACTER_TOPIC_BY_ID.has(context.topicId) ? [appearanceText.unknown] : appearanceSummary(id, context, lang)) : [];
+            return <div className="taste-export-character" key={id}>
+              {renderAvatar(character, 96, characterIndex === 0 ? cell.imageId : undefined, 'eager')}
+              {board.showNames && <span>{character[lang]}</span>}
+              {group.showAppearances && <span className="taste-export-summary">{summary.slice(0, 2).map((label, i) => <small key={i}>{label}</small>)}{summary.length > 2 && <small>+{summary.length - 2}</small>}</span>}
+            </div>;
+          })}
           {cell?.label && <small>{cell.label}</small>}
         </div>)}</div>
       </section>)}
     </section>
     {activeCell && <TasteDialog label={t.choose} opener={dialogOpener.current} onClose={() => setActiveCell(null)}>
       <header><h2>{t.choose}</h2><button type="button" aria-label={t.close} onClick={() => setActiveCell(null)}>×</button></header>
+      {board.groups.find(group => group.id === activeCell.groupId)?.slots?.[activeCell.index] && <label className="taste-field">{lang === 'ko' ? '칸 이름' : lang === 'ja' ? 'マスの名前' : 'Cell name'}<input maxLength={80} value={board.groups.find(group => group.id === activeCell.groupId)?.slots?.[activeCell.index]?.label ?? ''} onChange={event => { const label = event.target.value; update(current => ({ ...current, groups: current.groups.map(group => group.id === activeCell.groupId ? { ...group, slots: group.slots?.map((slot, index) => index === activeCell.index && slot ? { ...slot, label } : slot) } : group) })); }} /></label>}
       <label className="taste-field">{t.search}<input autoFocus type="search" value={query} onChange={event => setQuery(event.target.value)} /></label>
-      <label className="taste-field">{pickerCopy[lang].group}<select value={pickerGroup} onChange={event => setPickerGroup(event.target.value)}><option value="">{pickerCopy[lang].all}</option>{pickerGroups.map(group => <option key={group.ko} value={group.ko}>{group[lang]}</option>)}</select></label>
-      <div className="taste-character-list">{visibleCharacters.length === 0 && <p className="taste-picker-empty" role="status">{pickerCopy[lang].empty}</p>}{visibleCharacters.map(character => { const activeGroup = activeCell && board.groups.find(group => group.id === activeCell.groupId); const currentIds = activeGroup?.cells[activeCell?.index ?? -1]?.characters ?? []; return <button key={character.id} type="button" disabled={activeCell.adding && currentIds.includes(character.id)} onClick={() => chooseCharacter(character.id)}>{renderAvatar(character, 36)}<span>{character[lang]}</span><small>{character.group[lang]}</small></button>; })}</div>
+      <label className="taste-field">{pickerCopy[lang].group}<select value={CHARACTER_TOPIC_BY_ID.has(pickerGroup) ? pickerGroup : ''} onChange={event => setPickerGroup(event.target.value)}><option value="">{lang === 'ko' ? '전체 인물에서 선택' : lang === 'ja' ? 'すべてのキャラクターから選択' : 'Choose from all characters'}</option>{[...CHARACTER_TOPIC_BUNDLES, ...CHARACTER_TOPICS].map(topic => <option key={topic.id} value={topic.id}>{topic.label[lang]}</option>)}</select></label>
+      {pickerGroup && !CHARACTER_TOPIC_BY_ID.has(pickerGroup) && <p role="status">{lang === 'ko' ? '현재 사용할 수 없는 분류입니다.' : lang === 'ja' ? '現在利用できない分類です。' : 'This category is no longer available.'}</p>}
+      <label className="taste-field">{appearanceText.role}<select value={pickerRole ?? ''} onChange={event => setPickerRole((event.target.value || null) as RoleFilter | null)}><option value="">{appearanceText.allRoles}</option>{roles.map(role => <option key={role} value={role}>{appearanceText[role]}</option>)}</select></label>
+      <details><summary>{appearanceText.details}</summary><label className="taste-field">{appearanceText.stage}<select value={pickerStage ?? ''} onChange={event => { const value = event.target.value; setPickerStage(value ? (/^[1-6]$/.test(value) ? Number(value) : value as AppearanceStage) : null); }}><option value="">{appearanceText.allStages}</option>{Array.from({ length: 6 }, (_, index) => <option key={index + 1} value={index + 1}>{lang === 'en' ? `Stage ${index + 1}` : `${index + 1}面`}</option>)}<option value="final">{appearanceText.final}</option><option value="extra">Extra</option><option value="phantasm">Phantasm</option></select></label></details>
+      {(pickerRole || pickerStage !== null) && <p>{appearanceText.note}</p>}
+      <TasteCharacterList query={query} filter={pickerFilter} selectedIds={new Set(currentIds)} disabledIds={new Set(activeCell.adding ? currentIds : [])} onSelect={chooseCharacter} renderAvatar={renderAvatar} />
       <footer>{activeCell && board.groups.find(group => group.id === activeCell.groupId)?.cells[activeCell.index] && <><button type="button" onClick={() => { setCell(activeCell.groupId, activeCell.index, null); setActiveCell(null); }}>{t.clear}</button><button type="button" disabled={(board.groups.find(item => item.id === activeCell.groupId)?.cells[activeCell.index]?.characters.length ?? 0) >= 2} onClick={() => setActiveCell({ ...activeCell, adding: true })}>{t.addSecond}</button><button type="button" onClick={() => imageInputRef.current?.click()}>{board.groups.find(group => group.id === activeCell.groupId)?.cells[activeCell.index]?.imageId ? t.replaceImage : t.upload}</button>{board.groups.find(group => group.id === activeCell.groupId)?.cells[activeCell.index]?.imageId && <button type="button" onClick={removeCellImage}>{t.removeImage}</button>}</>}<button type="button" onClick={() => setActiveCell(null)}>{t.close}</button><input ref={imageInputRef} type="file" accept="image/png,image/jpeg,image/webp" onChange={uploadCellImage} hidden aria-label={t.upload} />{imageError && <span role="alert">{t.invalidImage}</span>}</footer>
     </TasteDialog>}
-    {workGroupOpen && <TasteDialog label={t.workGroup} className="taste-work-dialog" opener={dialogOpener.current} onClose={() => setWorkGroupOpen(false)}>
-      <header><h2>{t.workGroup}</h2><button type="button" aria-label={t.close} onClick={() => setWorkGroupOpen(false)}>×</button></header>
-      <label className="taste-field">{t.workTitle}<input autoFocus value={workGroupTitle} maxLength={100} onChange={event => setWorkGroupTitle(event.target.value)} /></label>
-      <label className="taste-field">{t.search}<input type="search" value={workQuery} onChange={event => setWorkQuery(event.target.value)} /></label>
-      <p className="taste-roster-note">{t.rosterNote}{workGroupError && <> <span role="alert">{t.workLimit}</span></>}</p>
-      <div className="taste-character-list">{PROFILE_CHARACTERS.filter(character => `${character[lang]} ${character.ko} ${character.ja} ${character.en} ${character.group[lang]}`.toLocaleLowerCase().includes(workQuery.toLocaleLowerCase())).map(character => <button key={character.id} type="button" aria-pressed={workSelection.has(character.id)} onClick={() => setWorkSelection(current => { const next = new Set(current); if (next.has(character.id)) next.delete(character.id); else next.add(character.id); return next; })}>{renderAvatar(character, 36)}<span>{character[lang]}</span><small>{character.group[lang]}</small></button>)}</div>
-      <footer><span>{workSelection.size} {t.selected}</span><button type="button" disabled={!workGroupTitle.trim() || workSelection.size === 0 || board.groups.length >= MAX_GROUPS} onClick={createWorkGroup}>{t.addSelected}</button><button type="button" onClick={() => setWorkGroupOpen(false)}>{t.close}</button></footer>
-    </TasteDialog>}
+    {groupDialogOpen && <TasteGroupDialog board={board} opener={dialogOpener.current} onClose={() => setGroupDialogOpen(false)} onCreate={group => { update(current => ({ ...current, groups: [...current.groups, group] })); setGroupDialogOpen(false); }} renderAvatar={renderAvatar} />}
   </main>;
 }

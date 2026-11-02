@@ -238,13 +238,13 @@ export default function TasteBoardEditor() {
       <h1>{board.title || t.heading}</h1>
       {board.groups.map(group => <section className="taste-export-group" key={group.id}>
         <h2>{group.title}</h2>
-        <div className="taste-export-grid" style={{ '--taste-columns': group.columns } as React.CSSProperties}>{group.cells.map((cell, index) => <div className="taste-export-cell" key={index}>
+        <div className="taste-export-grid" style={{ '--taste-columns': group.columns, '--taste-export-name-size': `${Math.min(21, 105 / group.columns)}px` } as React.CSSProperties}>{group.cells.map((cell, index) => <div className="taste-export-cell" key={index}>
           {group.slots?.[index] && <span className="taste-export-slot-label">{group.slots[index]?.label}</span>}
           {cell?.characters.map((id, characterIndex) => {
             const character = PROFILE_CHARACTER_BY_ID.get(id)!;
             return <div className="taste-export-character" key={id}>
               {renderAvatar(character, 96, characterIndex === 0 ? cell.imageId : undefined, 'eager')}
-              {board.showNames && <span>{character[lang]}</span>}
+              {board.showNames && <span className="taste-export-character-name">{character[lang]}</span>}
               {cell.versionWorkIds?.[id] && <span className="taste-export-version">{versionLabel(cell.versionWorkIds[id])}</span>}
             </div>;
           })}

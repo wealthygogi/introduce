@@ -68,6 +68,21 @@ test('mobile workspace presents the board before its supporting settings', async
   assert.ok(board.y < 844, 'board appears in the initial viewport');
 });
 
+test('mobile dense grids keep character names readable without page overflow', async t => {
+  const page = await pageFor(t, '/characters/tastes', { width: 390, height: 844 });
+  await page.getByRole('button', { name: '5 × 5' }).click();
+  await page.locator('.taste-board-cell').first().click();
+  await characterButton(page, '카기야마 히나').click();
+  const name = page.locator('.taste-character').first().locator('span').last();
+  assert.equal(await name.evaluate(element => {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    return range.getClientRects().length;
+  }), 1);
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+  assert.equal(await page.locator('.taste-board-grid').evaluate(element => element.scrollWidth > element.clientWidth), true);
+});
+
 test('character selection supports group filtering, empty results and keyboard dismissal', async t => {
   const page = await pageFor(t);
   const cell = page.locator('.taste-board-cell').first();

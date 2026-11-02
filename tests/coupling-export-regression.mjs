@@ -26,6 +26,21 @@ after(async () => {
   await server?.close();
   if (output) await rm(output, { recursive: true, force: true });
 });
+async function downloadWithFallback(page, button = page.locator('.download-btn')) {
+  await button.evaluate(element => element.removeAttribute('data-qa-download-started'));
+  const downloadPromise = page.waitForEvent('download', { timeout: 120_000 }).then(async download => {
+    await button.evaluate(element => element.setAttribute('data-qa-download-started', 'true'));
+    return download;
+  });
+  await button.click();
+  await page.waitForFunction(() => {
+    const button = document.querySelector('.download-btn');
+    return button?.dataset.qaDownloadStarted === 'true' || button?.dataset.downloadReady === 'true';
+  }, null, { timeout: 120_000 });
+  if (await button.getAttribute('data-download-ready') === 'true') await button.click();
+  return downloadPromise;
+}
+
 
 const drafts = {
   'introduce:coupling:whiteboard:v1': { nodes: [{ id: 'reimu', x: 0, y: 0 }, { id: 'marisa', x: 220, y: 120 }], edges: [{ id: 'edge-1', from: 'reimu', to: 'marisa', type: 'love', preference: null, direction: 'forward' }], view: { x: 0, y: 0, zoom: 1 } },
@@ -60,7 +75,7 @@ for (const editor of editors) {
     });
     assert.equal(portraits.length, 2, 'both characters have portraits in the exported content');
     assert.equal(await page.getByRole('button', { name: '이미지로 저장' }).count(), 1);
-    const [download] = await Promise.all([page.waitForEvent('download', { timeout: 120_000 }), page.getByRole('button', { name: '이미지로 저장' }).click()]);
+    const download = await downloadWithFallback(page, page.getByRole('button', { name: '이미지로 저장' }));
     const path = join(output, `${editor.id}.png`);
     await download.saveAs(path);
     const data = await readFile(path);
@@ -79,7 +94,7 @@ for (const editor of editors) {
     }
 
     await page.setViewportSize({ width: 390, height: 844 });
-    const [mobileDownload] = await Promise.all([page.waitForEvent('download', { timeout: 120_000 }), page.getByRole('button', { name: '이미지로 저장' }).click()]);
+    const mobileDownload = await downloadWithFallback(page, page.getByRole('button', { name: '이미지로 저장' }));
     const mobilePath = join(output, `${editor.id}-mobile.png`);
     await mobileDownload.saveAs(mobilePath);
     const mobilePng = PNG.sync.read(await readFile(mobilePath));

@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test, type Page } from '@playwright/test';
+import { clickDownloadButton } from './helpers';
 
 const scenarios = [
   { name: 'all', nickname: 'PNG 확인', values: { 'wide:intro': '소개 문장', 'wide:workNote': '대표곡·입덕 계기·좋아하는 부분', 'wide:pairing': '렌코 × 메리', 'wide:freeText': '마지막 줄까지 PNG에 포함합니다.' } },
@@ -17,9 +18,7 @@ async function openGroup(page: Page, index: number) {
 
 async function downloadPng(page: Page, name: string) {
   const box = await page.locator('#wide-export').evaluate((el: HTMLElement) => ({ width: el.offsetWidth, height: el.offsetHeight }));
-  const downloadPromise = page.waitForEvent('download');
-  await page.locator('.download-btn').click();
-  const download = await downloadPromise;
+  const download = await clickDownloadButton(page);
   const path = test.info().outputPath(`${name}.png`);
   await download.saveAs(path);
   const png = await readFile(path);

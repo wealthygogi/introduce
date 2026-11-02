@@ -87,6 +87,22 @@ async function waitForServer(url, timeoutMs = 60_000) {
   throw new Error(`dev server not ready at ${url} within ${timeoutMs}ms`);
 }
 
+async function downloadWithFallback(page) {
+  const button = page.locator('.download-btn');
+  await button.evaluate(element => element.removeAttribute('data-qa-download-started'));
+  const downloadPromise = page.waitForEvent('download', { timeout: 120_000 }).then(async download => {
+    await button.evaluate(element => element.setAttribute('data-qa-download-started', 'true'));
+    return download;
+  });
+  await button.click();
+  await page.waitForFunction(() => {
+    const button = document.querySelector('.download-btn');
+    return button?.dataset.qaDownloadStarted === 'true' || button?.dataset.downloadReady === 'true';
+  }, null, { timeout: 120_000 });
+  if (await button.getAttribute('data-download-ready') === 'true') await button.click();
+  return downloadPromise;
+}
+
 // ── 메인 ───────────────────────────────────────────────────
 console.log(`[harness] concepts=${conceptList.join(',')} lang=${lang} theme=${theme} scenario=${scenarioName} mobile=${mobile}`);
 
@@ -155,10 +171,7 @@ try {
       const card = page.locator('#card-export');
       await card.screenshot({ path: join(OUTPUT_DIR, `${id}-${suffix}-preview.png`) });
 
-      const [download] = await Promise.all([
-        page.waitForEvent('download', { timeout: 20_000 }),
-        page.click('.download-btn'),
-      ]);
+      const download = await downloadWithFallback(page);
       await download.saveAs(join(OUTPUT_DIR, `${id}-${suffix}-download.png`));
 
       const ok = errors.length === 0;

@@ -181,11 +181,9 @@ test('WebKit mobile export produces a decodable fixed-width PNG', async t => {
   await page.getByRole('button', { name: '5 × 5' }).click();
   await page.locator('.taste-board-cell').last().click();
   await page.locator('.taste-character-select').getByText('하쿠레이 레이무', { exact: true }).click();
-  const [download] = await Promise.all([page.waitForEvent('download', { timeout: 120_000 }), page.locator('.download-btn').click()]);
   const path = join(tmpdir(), `taste-board-webkit-${process.pid}.png`);
   try {
-    await download.saveAs(path);
-    const png = PNG.sync.read(await readFile(path));
+    const png = await downloadPng(page, path);
     assert.equal(png.width, 1200);
     assert.ok(png.height > 900, 'the full fixed 5 by 5 export is represented');
   } finally {

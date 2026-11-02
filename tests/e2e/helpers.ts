@@ -1,6 +1,6 @@
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Download, type Locator, type Page } from '@playwright/test';
 import { PNG } from 'pngjs';
 import pixelmatch from 'pixelmatch';
 import type { Lang, PlainState } from './fixtures';
@@ -112,9 +112,25 @@ export async function expectNoOverflow(card: Locator, { allowTruncate }: { allow
   }, allowTruncate);
   expect(violations).toEqual([]);
 }
+export async function clickDownloadButton(page: Page): Promise<Download> {
+  const button = page.locator('.download-btn');
+  await button.evaluate(element => element.removeAttribute('data-qa-download-started'));
+  const downloadPromise = page.waitForEvent('download').then(async download => {
+    await button.evaluate(element => element.setAttribute('data-qa-download-started', 'true'));
+    return download;
+  });
+  await button.click();
+  await page.waitForFunction(() => {
+    const button = document.querySelector('.download-btn');
+    return button?.getAttribute('data-qa-download-started') === 'true' || button?.getAttribute('data-download-ready') === 'true';
+  });
+  if (await button.getAttribute('data-download-ready') === 'true') await button.click();
+  return downloadPromise;
+}
+
 
 export async function downloadPng(page: Page): Promise<{ width: number; height: number; png: PNG }> {
-  const [dl] = await Promise.all([page.waitForEvent('download'), page.click('.download-btn')]);
+  const dl = await clickDownloadButton(page);
   const png = PNG.sync.read(await readFile((await dl.path())!));
   return { width: png.width, height: png.height, png };
 }

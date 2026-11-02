@@ -34,12 +34,12 @@ async function downloadPng(page, path, expectSecondTap = false) {
   await page.waitForFunction(() => {
     const button = document.querySelector('.download-btn');
     const status = document.querySelector('.taste-download-status')?.textContent ?? '';
-    return button?.dataset.downloadReady === 'true' || status.includes('다운로드를 시작했습니다.');
+    return button?.dataset.downloadReady === 'true' || ['다운로드를 시작했습니다.', 'ダウンロードを開始しました。', 'Download started.'].some(message => status.includes(message));
   }, null, { timeout: 120_000 });
   const ready = await button.getAttribute('data-download-ready') === 'true';
   if (expectSecondTap) assert.equal(ready, true, 'mobile fallback asks for a fresh user tap after image capture');
   if (ready) {
-    assert.match(await page.locator('.taste-download-status').innerText(), /준비됐습니다/);
+    assert.match(await page.locator('.taste-download-status').innerText(), /준비됐습니다|準備できました|Image ready/);
     await Promise.all([downloadPromise, button.click()]);
   }
   const download = await downloadPromise;
@@ -165,6 +165,51 @@ test('taste-board PNG downloads decode at fixed dimensions on desktop and mobile
     dimensions.push([png.width, png.height]);
   }
   assert.deepEqual(dimensions[0], dimensions[1]);
+});
+
+test('Japanese names and work versions stay separated in the downloaded board', async t => {
+  const output = await mkdtemp(join(tmpdir(), 'taste-board-japanese-export-'));
+  t.after(() => rm(output, { recursive: true, force: true }));
+  const context = await browser.newContext({ acceptDownloads: true, locale: 'ja-JP', viewport: { width: 1280, height: 900 } });
+  t.after(() => context.close());
+  await context.addInitScript(() => localStorage.setItem('introduce:characters:taste-board:v1', JSON.stringify({
+    version: 1,
+    data: {
+      title: '내 캐릭터 취향',
+      theme: 'album',
+      showNames: true,
+      groups: [{
+        id: 'japanese-versions',
+        title: '내 그룹 2',
+        rows: 1,
+        columns: 3,
+        cells: ['sanae', 'hina', 'tenshi'].map(id => ({ characters: [id], label: '', versionWorkIds: { [id]: 'th10' } })),
+      }],
+    },
+  })));
+  const page = await context.newPage();
+  await page.route('https://fonts.googleapis.com/**', route => route.fulfill({ body: '', contentType: 'text/css' }));
+  await page.goto(`${base}/characters/tastes?lang=ja`);
+  const cells = page.locator('#taste-board-export .taste-export-cell');
+  await cells.first().waitFor();
+  const layout = await cells.evaluateAll(elements => elements.map(cell => {
+    const nameElement = cell.querySelector('.taste-export-character-name');
+    const name = nameElement.getBoundingClientRect();
+    const version = cell.querySelector('.taste-export-version').getBoundingClientRect();
+    const bounds = cell.getBoundingClientRect();
+    const lineHeight = Number.parseFloat(getComputedStyle(nameElement).lineHeight);
+    return { nameLines: Math.round(name.height / lineHeight), gap: version.top - name.bottom, versionBottom: version.bottom, cellBottom: bounds.bottom, name: nameElement.textContent };
+  }));
+  assert.equal(layout.length, 3);
+  for (const item of layout) assert.equal(item.nameLines, 1, `${item.name} stays on one line`);
+  for (const item of layout) {
+    assert.ok(item.gap >= 4, `${item.name} and its version label do not overlap`);
+    assert.ok(item.versionBottom <= item.cellBottom - 8, `${item.name} version label stays inside its card`);
+  }
+  assert.equal(await cells.first().locator('.taste-export-version').innerText(), '東方風神録 バージョン');
+  const png = await downloadPng(page, join(output, 'japanese-versions.png'));
+  assert.equal(png.width, 1200);
+  assert.ok(png.height > 0);
 });
 
 test('WebKit mobile export produces a decodable fixed-width PNG', async t => {

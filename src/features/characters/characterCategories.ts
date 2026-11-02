@@ -5,13 +5,11 @@ import { normalizeCouplingSearch } from '../coupling/relations';
 
 export type AppearanceRole = 'playable' | 'boss' | 'midboss' | 'opponent' | 'support' | 'other';
 export type AppearanceStage = number | 'extra' | 'phantasm' | 'final';
-export type AppearanceSource = { url: string; revisionId: string; locator: string };
 export type CharacterAppearance = { workId: string; role: AppearanceRole; stage: AppearanceStage | null; branch: string | null; conditional: boolean; sources: number[] };
 export type CharacterTopic = { id: string; label: Record<Lang, string>; workIds: readonly string[]; catalogGroupKeys: readonly string[] };
 export type RoleFilter = AppearanceRole | 'enemy';
 export type CharacterFilter = { topicId: string | null; role: RoleFilter | null; stage: AppearanceStage | null };
 export const EMPTY_CHARACTER_FILTER: CharacterFilter = { topicId: null, role: null, stage: null };
-export const APPEARANCE_SOURCES = snapshot.sources as AppearanceSource[];
 const appearances = snapshot.characters as Record<string, CharacterAppearance[]>;
 const games = PROFILE_WORKS.filter(work => work.category === 'game');
 const groupKeys = [...new Map(PROFILE_CHARACTERS.map(character => [character.group.ko, character.group])).values()];
@@ -48,32 +46,5 @@ export function filterCharacters(query: string, filter: CharacterFilter): Profil
     if (term && !normalizeCouplingSearch(`${character.ko} ${character.ja} ${character.en} ${character.group.ko} ${character.group.ja} ${character.group.en}`).includes(term)) return false;
     if (topic && !inTopic(character, topic)) return false;
     return !(filter.role || filter.stage !== null) || matchingAppearances(character.id, filter).length > 0;
-  });
-}
-const roleLabels: Record<AppearanceRole, Record<Lang, string>> = {
-  playable: { ko: '플레이어', ja: 'プレイヤー', en: 'Playable' }, boss: { ko: '보스', ja: 'ボス', en: 'Boss' },
-  midboss: { ko: '중보스', ja: '中ボス', en: 'Midboss' }, opponent: { ko: '대전 상대', ja: '対戦相手', en: 'Opponent' },
-  support: { ko: '지원·동료', ja: '支援・仲間', en: 'Support' }, other: { ko: '기타 출연', ja: 'その他の出演', en: 'Other appearance' },
-};
-export function formatAppearance(appearance: Pick<CharacterAppearance, 'role' | 'stage' | 'branch'>, lang: Lang): string {
-  const label = roleLabels[appearance.role][lang];
-  if (appearance.stage === null) return label;
-  const stage = typeof appearance.stage === 'number' ? (lang === 'ko' ? `${appearance.stage}면` : lang === 'ja' ? `${appearance.stage}面` : `Stage ${appearance.stage}`) : ({ extra: { ko: 'Extra', ja: 'Extra', en: 'Extra' }, phantasm: { ko: 'Phantasm', ja: 'Phantasm', en: 'Phantasm' }, final: { ko: '최종면', ja: '最終面', en: 'Final stage' } }[appearance.stage][lang]);
-  return `${stage}${appearance.branch ? ` ${appearance.branch}` : ''} ${label}`;
-}
-export function appearanceSummary(characterId: string, filter: CharacterFilter, lang: Lang): string[] {
-  const facts = matchingAppearances(characterId, filter);
-  const unknown = { ko: '출연 정보 미확인', ja: '出演情報未確認', en: 'Appearance information unconfirmed' }[lang];
-  if (!facts.length) return [unknown];
-  if (!filter.topicId && !filter.role && filter.stage === null) {
-    const count = new Set(facts.map(fact => fact.workId)).size;
-    return [lang === 'ko' ? `출연 ${count}작품` : lang === 'ja' ? `${count}作品に出演` : `${count} works`];
-  }
-  const order: AppearanceRole[] = ['playable', 'boss', 'midboss', 'opponent', 'support', 'other'];
-  return order.flatMap(role => {
-    const items = facts.filter(fact => fact.role === role);
-    if (!items.length) return [];
-    const stages = new Set(items.map(item => `${item.stage ?? ''}|${item.branch ?? ''}`));
-    return [stages.size === 1 ? formatAppearance(items[0], lang) : roleLabels[role][lang]];
   });
 }

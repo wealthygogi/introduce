@@ -74,7 +74,7 @@ test('taste-board PNG downloads decode at fixed dimensions on desktop and mobile
         { id: 'g', title: '마지막 그룹', rows: 3, columns: 3,
           cells: [{ characters: ['sakuya', 'marisa'], label: '사용자 사진', imageId: 'export-image', versionWorkIds: { sakuya: 'th18' } }, null, null, null, null, null, null, null, { characters: ['reimu', 'marisa'], label: '마지막 칸' }],
           slots: [{ label: '홍마향', topicId: 'th6' }, { label: '빈 작품 칸', topicId: 'th7' }, null, null, null, null, null, null, null],
-          appearanceContext: { topicId: 'th7', role: null, stage: null }, showAppearances: false },
+          appearanceContext: { topicId: 'th7', role: null, stage: null }, showAppearances: true },
       ] },
     })));
     const page = await context.newPage();
@@ -120,34 +120,19 @@ test('taste-board PNG downloads decode at fixed dimensions on desktop and mobile
     assert.equal(await version.innerText(), '동방홍룡동 버전');
     const targets = [group.locator('h2'), filledLabel, emptyLabel, portrait, version];
     const descriptions = ['last group heading', 'filled slot label', 'empty slot label', 'last group character portrait', 'selected work version'];
-    const variantDimensions = [];
-    for (const show of [false, true]) {
-      if (show) await page.locator('.taste-board-group').last().getByLabel('출연 정보 표시').check();
-      const summaries = group.locator('.taste-export-cell').first().locator('.taste-export-character').first().locator('.taste-export-summary');
-      assert.equal(await summaries.count(), show ? 1 : 0, 'roles are only included when enabled');
-      if (show) {
-        assert.match(await summaries.innerText(), /5면 보스/);
-        assert.match(await summaries.innerText(), /중보스/);
-        assert.doesNotMatch(await summaries.innerText(), /플레이어/, 'slot topic overrides the group context');
-      }
-      const measured = show ? [...targets, summaries] : targets;
-      const rects = await Promise.all(measured.map(exportRect));
-      const png = await downloadPng(page, join(output, `${viewport.width}-${show}.png`));
-      await page.getByText('다운로드를 시작했습니다. 브라우저의 다운로드 목록을 확인해 주세요.').waitFor({ timeout: 5000 });
-      assert.equal(png.width, 1200, 'export width is independent of the viewport');
-      assert.ok(png.height > 0);
-      assert.ok(png.data.some((channel, index) => index % 4 !== 3 && channel !== 255), 'PNG contains rendered non-white board content');
-      assert.ok(png.data.some((_, index) => index % 4 === 0 && png.data[index] < 80 && png.data[index + 1] > 200 && png.data[index + 2] < 80), 'PNG includes the custom green image pixels');
-      variantDimensions.push([png.width, png.height]);
-
-      // A second real download with only the measured elements hidden preserves layout.
-      // Pixel differences in each element's rectangle prove the downloaded image contains it.
-      for (const locator of measured) await locator.evaluate(element => { element.style.visibility = 'hidden'; });
-      const hidden = await downloadPng(page, join(output, `${viewport.width}-${show}-hidden.png`));
-      for (const locator of measured) await locator.evaluate(element => { element.style.visibility = ''; });
-      measured.forEach((_, index) => assertRenderedPixels(png, hidden, rects[index], descriptions[index] ?? 'contextual role summary'));
-    }
-    dimensions.push(variantDimensions);
+    const rects = await Promise.all(targets.map(exportRect));
+    const png = await downloadPng(page, join(output, `${viewport.width}.png`));
+    await page.getByText('다운로드를 시작했습니다. 브라우저의 다운로드 목록을 확인해 주세요.').waitFor({ timeout: 5000 });
+    assert.equal(png.width, 1200, 'export width is independent of the viewport');
+    assert.ok(png.height > 0);
+    assert.ok(png.data.some((channel, index) => index % 4 !== 3 && channel !== 255), 'PNG contains rendered non-white board content');
+    assert.ok(png.data.some((_, index) => index % 4 === 0 && png.data[index] < 80 && png.data[index + 1] > 200 && png.data[index + 2] < 80), 'PNG includes the custom green image pixels');
+    assert.doesNotMatch(await group.innerText(), /5면 보스|중보스|출연 정보/);
+    for (const locator of targets) await locator.evaluate(element => { element.style.visibility = 'hidden'; });
+    const hidden = await downloadPng(page, join(output, `${viewport.width}-hidden.png`));
+    for (const locator of targets) await locator.evaluate(element => { element.style.visibility = ''; });
+    targets.forEach((_, index) => assertRenderedPixels(png, hidden, rects[index], descriptions[index]));
+    dimensions.push([png.width, png.height]);
   }
   assert.deepEqual(dimensions[0], dimensions[1]);
 });

@@ -9,6 +9,7 @@ import type { TasteBoard, TasteCell, TasteGroup, TasteTheme } from './tasteBoard
 import TasteDialog from './TasteDialog';
 import TasteGroupDialog from './TasteGroupDialog';
 import TasteCharacterList from './TasteCharacterList';
+import TasteStartScreen from './TasteStartScreen';
 import { CHARACTER_TOPICS, CHARACTER_TOPIC_BUNDLES, CHARACTER_TOPIC_BY_ID } from './characterCategories';
 import './taste-board.css';
 
@@ -37,6 +38,11 @@ const resetCopy = {
   ko: { action: '캐릭터 초기화', confirm: '모든 그룹의 캐릭터와 사진을 비울까요? 제목, 테마와 그룹 구성은 유지됩니다.', actions: '작업' },
   ja: { action: 'キャラクターをリセット', confirm: 'すべてのグループのキャラクターと写真を消去しますか？タイトル、テーマ、グループ構成は保持されます。', actions: '操作' },
   en: { action: 'Clear characters', confirm: 'Clear characters and photos from all groups? The title, theme, and group layouts will be kept.', actions: 'Actions' },
+} as const;
+const newBoardCopy = {
+  ko: { action: '새 표 만들기', confirm: '새 표를 만들면 현재 표가 교체됩니다. 계속할까요?' },
+  ja: { action: '新しい表を作る', confirm: '新しい表を作ると現在の表が置き換わります。続けますか？' },
+  en: { action: 'Create a new board', confirm: 'Creating a new board will replace the current board. Continue?' },
 } as const;
 const downloadCopy = {
   ko: { preparing: '이미지를 준비하고 있습니다…', started: '다운로드를 시작했습니다. 브라우저의 다운로드 목록을 확인해 주세요.', failed: '다운로드를 시작하지 못했습니다. 다시 시도해 주세요.' },
@@ -72,6 +78,15 @@ export default function TasteBoardEditor() {
   const t = copy[lang];
   const resetText = resetCopy[lang];
   const [board, setBoard] = useState<TasteBoard>(loadInitialBoard);
+  const [needsSetup, setNeedsSetup] = useState(() => {
+    try {
+      const result = readTasteBoard(window.localStorage, characterIds);
+      return result.kind === 'empty' || result.kind === 'unavailable';
+    } catch {
+      return true;
+    }
+  });
+  const [setupFromBoard, setSetupFromBoard] = useState(false);
   const [undoStack, setUndoStack] = useState<TasteBoard[]>([]);
   const [activeCell, setActiveCell] = useState<{ groupId: string; index: number; adding: boolean } | null>(null);
   const [query, setQuery] = useState('');
@@ -92,8 +107,9 @@ export default function TasteBoardEditor() {
     try { setRestoreWarning(window.localStorage.getItem(TASTE_BOARD_STORAGE_KEY) !== null && readTasteBoard(window.localStorage, characterIds).kind === 'invalid'); }
     catch { setStorageAvailable(false); }
   }, []);
-  useEffect(() => { setStorageAvailable(writeTasteBoard(window.localStorage, board)); }, [board]);
+  useEffect(() => { if (!needsSetup) setStorageAvailable(writeTasteBoard(window.localStorage, board)); }, [board, needsSetup]);
   useEffect(() => {
+    if (needsSetup) return;
     let cancelled = false;
     const urls: Record<string, string> = {};
     const ids = collectTasteBoardImageIds(board, undoStack);
@@ -110,7 +126,7 @@ export default function TasteBoardEditor() {
       cancelled = true;
       Object.values(urls).forEach(URL.revokeObjectURL);
     };
-  }, [board, undoStack, imageStorage]);
+  }, [board, undoStack, imageStorage, needsSetup]);
 
   const pickerFilter = { topicId: CHARACTER_TOPIC_BY_ID.has(pickerGroup) ? pickerGroup : null, role: null, stage: null };
   const currentIds = activeCell ? board.groups.find(group => group.id === activeCell.groupId)?.cells[activeCell.index]?.characters ?? [] : [];
@@ -184,6 +200,30 @@ export default function TasteBoardEditor() {
     setActiveCell(null);
     setQuery('');
   };
+  const startBoard = (next: TasteBoard) => {
+    if (setupFromBoard) setUndoStack(stack => [...stack.slice(-19), board]);
+    setBoard(next);
+    setSetupFromBoard(false);
+    setNeedsSetup(false);
+    setRestoreWarning(false);
+  };
+
+
+  if (needsSetup) return <>
+    <TasteStartScreen
+      onStartGrid={(rows, columns) => {
+        const next = createDefaultTasteBoard();
+        next.groups[0] = { ...next.groups[0], rows, columns, cells: Array(rows * columns).fill(null) };
+        startBoard(next);
+      }}
+      onStartByWorks={opener => { dialogOpener.current = opener; setGroupDialogOpen(true); }}
+      onCancel={setupFromBoard ? () => { setSetupFromBoard(false); setNeedsSetup(false); } : undefined}
+    />
+    {groupDialogOpen && <TasteGroupDialog board={{ ...board, groups: [] }} opener={dialogOpener.current} onClose={() => setGroupDialogOpen(false)} onCreate={group => {
+      startBoard({ ...createDefaultTasteBoard(), groups: [group] });
+      setGroupDialogOpen(false);
+    }} renderAvatar={renderAvatar} />}
+  </>;
 
   return <main className="taste-board-page">
     <header className="taste-board-header"><span className="taste-eyebrow">GENSOKYO · FAVORITES</span><h1>{t.heading}</h1><p>{t.hint}</p></header>
@@ -198,6 +238,7 @@ export default function TasteBoardEditor() {
           <DownloadButton targetId="taste-board-export" filename="character-taste-board.png" captureOptions={{ scale: 1, resetPosition: true, maxPixelArea: 16_000_000 }} onStatusChange={setDownloadStatus} />
           <p className="taste-download-status" role="status" aria-live="polite">{downloadStatus ? downloadCopy[lang][downloadStatus] : ''}</p>
           <button type="button" className="taste-secondary-action" disabled={!undoStack.length} onClick={() => { setBoard(undoStack[undoStack.length - 1]); setUndoStack(stack => stack.slice(0, -1)); }}>{t.undo}</button>
+          <button type="button" className="taste-secondary-action" onClick={() => { if (window.confirm(newBoardCopy[lang].confirm)) { setSetupFromBoard(true); setNeedsSetup(true); } }}>{newBoardCopy[lang].action}</button>
           <button type="button" className="taste-secondary-action taste-reset-action" disabled={!board.groups.some(group => group.cells.some(Boolean))} onClick={() => { if (window.confirm(resetText.confirm)) update(current => ({ ...current, groups: current.groups.map(group => ({ ...group, cells: group.cells.map(() => null) })) })); }}>{resetText.action}</button>
         </div>
         <p className="taste-save-status" role="status">{storageAvailable ? t.saved : t.storageWarning}</p>

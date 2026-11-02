@@ -144,6 +144,7 @@ test('WebKit mobile export produces a decodable fixed-width PNG', async t => {
   const page = await context.newPage();
   await page.route('https://fonts.googleapis.com/**', route => route.fulfill({ body: '', contentType: 'text/css' }));
   await page.goto(`${base}/characters/tastes`);
+  await page.getByRole('button', { name: '표 만들기', exact: true }).click();
   await page.getByRole('heading', { level: 1, name: '캐릭터 취향 모음표' }).waitFor();
   await page.getByRole('button', { name: '5 × 5' }).click();
   await page.locator('.taste-board-cell').last().click();

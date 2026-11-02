@@ -21,11 +21,12 @@ after(async () => {
   await server?.close();
 });
 
-async function pageFor(t, route = '/characters/tastes', viewport = { width: 1280, height: 900 }) {
+async function pageFor(t, route = '/characters/tastes', viewport = { width: 1280, height: 900 }, start = true) {
   const context = await browser.newContext({ locale: 'ko-KR', viewport });
   t.after(() => context.close());
   const page = await context.newPage();
   await page.goto(`${base}${route}`);
+  if (start) await page.getByRole('button', { name: '표 만들기', exact: true }).click();
   return page;
 }
 
@@ -48,6 +49,91 @@ async function savedBoard(page) {
   await page.waitForFunction(() => localStorage.getItem('introduce:characters:taste-board:v1') !== null);
   return page.evaluate(() => JSON.parse(localStorage.getItem('introduce:characters:taste-board:v1')).data);
 }
+
+test('a new board starts with the selected size and restores it on reload', async t => {
+  const page = await pageFor(t, '/characters/tastes', undefined, false);
+  await page.getByRole('heading', { name: '어떻게 시작할까요?' }).waitFor();
+  assert.equal(await page.locator('.taste-board-cell').count(), 0);
+  assert.equal(await page.evaluate(() => localStorage.getItem('introduce:characters:taste-board:v1')), null);
+  await page.getByRole('button', { name: '4 × 4', exact: true }).click();
+  await page.getByRole('button', { name: '표 만들기', exact: true }).click();
+  assert.equal(await page.locator('.taste-board-cell').count(), 16);
+  await page.waitForFunction(() => {
+    const saved = JSON.parse(localStorage.getItem('introduce:characters:taste-board:v1'));
+    return saved?.data.groups[0].rows === 4 && saved.data.groups[0].columns === 4;
+  });
+  await page.reload();
+  await page.locator('.taste-board-cell').first().waitFor();
+  assert.equal(await page.getByRole('heading', { name: '어떻게 시작할까요?' }).count(), 0);
+  assert.equal(await page.locator('.taste-board-cell').count(), 16);
+});
+
+test('starting with work favorites creates only the selected work group', async t => {
+  const page = await pageFor(t, '/characters/tastes', undefined, false);
+  await page.getByRole('button', { name: '작품별 최애로 시작', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: '그룹 추가' });
+  while (await dialog.locator('.taste-group-topics input:checked').count()) await dialog.locator('.taste-group-topics input:checked').first().uncheck();
+  await dialog.getByLabel('동방홍마향', { exact: true }).check();
+  await dialog.getByRole('button', { name: '그룹 추가', exact: true }).click();
+  await dialog.waitFor({ state: 'detached' });
+  assert.equal(await page.locator('.taste-board-group').count(), 1);
+  assert.match(await page.locator('.taste-board-group').first().innerText(), /동방홍마향/);
+  await page.waitForFunction(() => {
+    const saved = JSON.parse(localStorage.getItem('introduce:characters:taste-board:v1'));
+    return saved?.data.groups.length === 1 && saved.data.groups[0].slots?.some(slot => slot?.topicId === 'th6');
+  });
+  const board = await savedBoard(page);
+  assert.notEqual(board.groups[0].title, 'Favorites');
+  assert.deepEqual(board.groups[0].slots.filter(Boolean).map(slot => slot.topicId), ['th6']);
+  await page.reload();
+  await page.locator('.taste-board-group').first().waitFor();
+  assert.equal(await page.getByRole('heading', { name: '어떻게 시작할까요?' }).count(), 0);
+  assert.deepEqual(await savedBoard(page), board);
+});
+
+test('cancelling or reloading the initial choices does not save a board', async t => {
+  const page = await pageFor(t, '/characters/tastes', undefined, false);
+  await page.getByRole('heading', { name: '어떻게 시작할까요?' }).waitFor();
+  await page.getByRole('button', { name: '4 × 4', exact: true }).click();
+  await page.reload();
+  await page.getByRole('heading', { name: '어떻게 시작할까요?' }).waitFor();
+  assert.equal(await page.evaluate(() => localStorage.getItem('introduce:characters:taste-board:v1')), null);
+  await page.getByRole('button', { name: '작품별 최애로 시작', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: '그룹 추가' });
+  await dialog.getByLabel('동방홍마향', { exact: true }).uncheck();
+  await dialog.getByRole('button', { name: '닫기', exact: true }).last().click();
+  await dialog.waitFor({ state: 'detached' });
+  await page.getByRole('heading', { name: '어떻게 시작할까요?' }).waitFor();
+  assert.equal(await page.evaluate(() => localStorage.getItem('introduce:characters:taste-board:v1')), null);
+  await page.reload();
+  await page.getByRole('heading', { name: '어떻게 시작할까요?' }).waitFor();
+  assert.equal(await page.evaluate(() => localStorage.getItem('introduce:characters:taste-board:v1')), null);
+});
+
+test('starting another board preserves the current draft until confirmed and allows undo', async t => {
+  const page = await pageFor(t);
+  await page.locator('.taste-board-cell').first().click();
+  await characterButton(page, '카기야마 히나').click();
+  await page.waitForFunction(() => JSON.parse(localStorage.getItem('introduce:characters:taste-board:v1'))?.data.groups[0].cells[0]?.characters[0] === 'hina');
+  const original = await savedBoard(page);
+  page.once('dialog', dialog => dialog.dismiss());
+  await page.getByRole('button', { name: '새 표 만들기' }).click();
+  assert.deepEqual(await savedBoard(page), original);
+  page.once('dialog', dialog => dialog.accept());
+  await page.getByRole('button', { name: '새 표 만들기' }).click();
+  assert.deepEqual(await savedBoard(page), original);
+  await page.getByRole('button', { name: '기존 표로 돌아가기' }).click();
+  assert.match(await page.locator('.taste-board-cell').first().innerText(), /카기야마 히나/);
+  page.once('dialog', dialog => dialog.accept());
+  await page.getByRole('button', { name: '새 표 만들기' }).click();
+  await page.getByText('직접 선택', { exact: true }).click();
+  await page.locator('.taste-start-custom select').nth(0).selectOption('2');
+  await page.locator('.taste-start-custom select').nth(1).selectOption('4');
+  await page.getByRole('button', { name: '표 만들기' }).click();
+  assert.equal(await page.locator('.taste-board-cell').count(), 8);
+  await page.getByRole('button', { name: '실행 취소' }).click();
+  assert.match(await page.locator('.taste-board-cell').first().innerText(), /카기야마 히나/);
+});
 
 test('desktop taste picker shows large portrait cards beside its filters', async t => {
   const page = await pageFor(t);
@@ -189,6 +275,7 @@ test('a cell image is stored separately and restored after reload', async t => {
   await page.locator('.taste-board-cell').first().click();
   await characterButton(page, '하쿠레이 레이무').click();
   await page.locator('.taste-board-cell').first().click();
+  await page.getByLabel('하쿠레이 레이무 좋아하는 버전').selectOption('th18');
   await page.getByRole('button', { name: '사진 업로드' }).click();
   await page.locator('input[type="file"]').setInputFiles({
     name: 'custom.png',
@@ -197,12 +284,23 @@ test('a cell image is stored separately and restored after reload', async t => {
   });
   await page.locator('.taste-character-avatar img[src^="blob:"]').first().waitFor();
   await page.locator('[role="dialog"] footer').getByText('완료').click();
+  await page.waitForFunction(() => {
+    const saved = JSON.parse(localStorage.getItem('introduce:characters:taste-board:v1'));
+    const cell = saved?.data.groups[0].cells[0];
+    return cell?.imageId && cell.versionWorkIds?.reimu === 'th18';
+  });
   await page.reload();
   await page.locator('.taste-character-avatar img[src^="blob:"]').first().waitFor();
+  assert.equal(await page.getByRole('heading', { name: '어떻게 시작할까요?' }).count(), 0);
+  assert.match(await page.locator('.taste-board-cell').first().innerText(), /동방홍룡동 버전/);
   const imageId = await page.evaluate(() => {
     const saved = JSON.parse(localStorage.getItem('introduce:characters:taste-board:v1'));
     return saved.data.groups[0].cells[0].imageId;
   });
+  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('introduce:characters:taste-board:v1')).version), 1);
+  const restored = await savedBoard(page);
+  assert.deepEqual(restored.groups[0].cells[0].characters, ['reimu']);
+  assert.equal(restored.groups[0].cells[0].versionWorkIds.reimu, 'th18');
   assert.ok(imageId);
   await page.locator('.taste-board-cell').first().click();
   await page.getByRole('button', { name: '사진 제거' }).click();
@@ -429,6 +527,7 @@ test('grid editing and character dialog stay usable without horizontal overflow 
     t.after(() => context.close());
     const page = await context.newPage();
     await page.goto(`${base}/characters/tastes`);
+    await page.getByRole('button', { name: '표 만들기', exact: true }).click();
     await page.getByRole('button', { name: '5 × 5' }).click();
     assert.equal(await page.locator('.taste-board-cell').count(), 25);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true, `${width}px layout has no horizontal overflow`);

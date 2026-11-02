@@ -35,9 +35,20 @@ async function png(page, target, name, wide = true) {
   console.log(`[modes] capturing ${name}…`);
   let download;
   try {
-    [download] = await Promise.all([page.waitForEvent('download', { timeout: 120_000 }), page.locator('.download-btn').click()]);
+    await page.evaluate(() => { window.__visualDownloadObserved = false; });
+    const downloadPromise = page.waitForEvent('download', { timeout: 120_000 }).then(async result => {
+      await page.evaluate(() => { window.__visualDownloadObserved = true; });
+      return result;
+    });
+    const button = page.locator('.download-btn');
+    await button.click();
+    await page.waitForFunction(() =>
+      window.__visualDownloadObserved === true || document.querySelector('.download-btn')?.dataset.downloadReady === 'true',
+    null, { timeout: 120_000 });
+    if (await button.getAttribute('data-download-ready') === 'true') await button.click();
+    download = await downloadPromise;
   } catch (error) {
-    const state = await page.evaluate(() => ({ url: location.href, button: document.querySelector('.download-btn')?.textContent, busy: document.querySelector('.download-btn')?.disabled, detachedCaptures: document.querySelectorAll('body > div[style*="-99999px"]').length }));
+    const state = await page.evaluate(() => ({ url: location.href, button: document.querySelector('.download-btn')?.textContent, ready: document.querySelector('.download-btn')?.getAttribute('data-download-ready'), busy: document.querySelector('.download-btn')?.disabled, detachedCaptures: document.querySelectorAll('body > div[style*="-99999px"]').length }));
     await writeFile(new URL(`${name}-failure.json`, out), JSON.stringify({ state, runtimeErrors: errors }, null, 2));
     await page.screenshot({ path: fileURLToPath(new URL(`${name}-failure.png`, out)) });
     throw error;

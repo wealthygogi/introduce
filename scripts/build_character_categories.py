@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DIRECTION = re.compile('[\u200e\u200f\u202a-\u202e\u2066-\u2069]')
 ROLE_PATTERN = re.compile(r'\b(playable\s+characters?|mid[\s-]*boss(?:es)?|supporting\s+boss(?:es)?|support(?:er|ing)?(?:\s+enemy)?|partners?|possible\s+opponents?|opponents?|(?:generic|general)\s+enemy|background\s+character|cameo|boss(?:es)?)\b', re.I)
 STAGE_PATTERN = re.compile(r'\b(?:stage\s*)?(extra|phantasm|final)\s+stage(?:\s*[- ]\s*([ab])\b)?|\bstage\s+(\d+)(?:\s*-?\s*([ab])\b)?(?!\s*-\s*\d)', re.I)
+VERSUS_WORKS = frozenset({'th3', 'th9', 'th19'})
 
 
 def clean_name(name: str) -> str:
@@ -39,7 +40,7 @@ def resolve_name(name: str, name_to_ids: dict[str, list[str]], overrides: dict[s
     return ids[0] if ids else None
 
 
-def parse_role(role: str) -> list[tuple[str, int | str | None, str | None, bool]]:
+def parse_role(role: str, *, versus: bool = False) -> list[tuple[str, int | str | None, str | None, bool]]:
     """Return separate role/stage facts; route and scene numbering is not a stage."""
     role = re.sub(r'<br\s*/?>', ';', role, flags=re.I)
     role = re.sub(r'<[^>]+>', '', role)
@@ -56,7 +57,7 @@ def parse_role(role: str) -> list[tuple[str, int | str | None, str | None, bool]
                     'other' if word.startswith(('generic', 'general', 'background', 'cameo')) else 'boss')
             prefix = segment[previous_end:match.start()]
             conditional = bool(re.search(r'\b(?:scenario|route|only|exclusive|conditional)\b', segment, re.I))
-            uncertain = bool(re.search(r'\b(?:scene|market|day|scenario|route)\b|\bstage\s+\d+\s*-\s*\d+', prefix, re.I))
+            uncertain = versus or bool(re.search(r'\b(?:scene|market|day|scenario|route)\b|\bstage\s+\d+\s*-\s*\d+', segment, re.I))
             stages = []
             if not uncertain:
                 for sm in STAGE_PATTERN.finditer(prefix):
@@ -64,6 +65,9 @@ def parse_role(role: str) -> list[tuple[str, int | str | None, str | None, bool]
                     stages.append((value, (sm.group(2) or sm.group(4) or '').upper() or None))
                 # Explicit lists such as "Stage 4 and 5 Midboss".
                 for lm in re.finditer(r'\bstage\s+(\d+)\s*(?:,\s*\d+)*\s*(?:and|&)\s*(\d+)\b', prefix, re.I):
+                    # The numbers in "Extra Stage 1 and 2" are scenes, not stages.
+                    if re.search(r'\b(?:extra|phantasm|final)\s+$', prefix[:lm.start()], re.I):
+                        continue
                     stages.extend((int(n), None) for n in re.findall(r'\d+', lm.group(0)))
             if not stages and not prefix.strip(' ,&') and previous_stages:
                 stages = previous_stages
@@ -119,8 +123,11 @@ def build(tdata_root: Path) -> dict:
     if len(ids) != len(characters) or any(v not in ids for v in overrides['names'].values()) or any(k not in ids for k in overrides['pages']):
         raise ValueError('invalid or duplicate character ID in catalog or overrides')
     work_ids = {w['id'] for w in works}
-    if len(work_ids) != len(works) or any(v not in work_ids for v in overrides['works'].values()):
-        raise ValueError('invalid or duplicate work ID')
+    if (len(work_ids) != len(works) or any(v not in work_ids for v in overrides['works'].values())
+            or any(wid not in work_ids or not isinstance(entry['number'], int)
+                   or isinstance(entry['number'], bool) or entry['number'] <= 0 or not entry['evidence']
+                   for wid, entry in overrides['finalStages'].items())):
+        raise ValueError('invalid or duplicate work ID or final stage')
     corpus = tdata_root / '_raw/_corpus-ko-en-ja'
     con = sqlite3.connect(f'file:{(corpus / "inventory.sqlite").as_posix()}?mode=ro', uri=True)
     con.execute('PRAGMA query_only=ON')
@@ -172,7 +179,7 @@ def build(tdata_root: Path) -> dict:
                 unknown_names[name] += 1
                 continue
             role_text = str(template.get('role').value).strip()
-            parsed = parse_role(role_text)
+            parsed = parse_role(role_text, versus=w['id'] in VERSUS_WORKS)
             if not parsed:
                 unknown_roles[title] += 1
                 continue
@@ -201,7 +208,7 @@ def build(tdata_root: Path) -> dict:
                 continue
             # Roles following the work link only; do not classify the work title.
             suffix = line.split(str(links[0]), 1)[1]
-            parsed = parse_role(suffix)
+            parsed = parse_role(suffix, versus=wid in VERSUS_WORKS)
             if not parsed:
                 unknown_roles[title] += 1
                 continue
@@ -214,7 +221,7 @@ def build(tdata_root: Path) -> dict:
         wid, role, stage, branch, conditional = item[0]
         stage_key = (0, 0) if stage is None else (1, stage) if isinstance(stage, int) else (2, stage)
         return (work_order[wid], role, stage_key, branch or '', conditional)
-    output = {'schemaVersion': 1, 'sources': [{'url': u, 'revisionId': r, 'locator': loc} for u, r, loc in ordered_sources], 'characters': {}}
+    output = {'schemaVersion': 1, 'finalStageByWork': {wid: entry['number'] for wid, entry in overrides['finalStages'].items()}, 'sources': [{'url': u, 'revisionId': r, 'locator': loc} for u, r, loc in ordered_sources], 'characters': {}}
     for c in characters:
         entries = []
         for (wid, role, stage, branch, conditional), sources in sorted(facts[c['id']].items(), key=sort_fact):

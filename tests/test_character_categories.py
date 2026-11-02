@@ -155,6 +155,32 @@ class RoleTests(unittest.TestCase):
         scenario = exporter.parse_role("Scenario 1 Boss")
         self.assertTrue(all(conditional for _, _, _, conditional in scenario))
 
+    def test_extra_scene_lists_do_not_become_numbered_stages(self):
+        for role in ("Extra Stage 1 and 2 Boss", "Extra Stage 7 and 8 Midboss"):
+            with self.subTest(role=role):
+                facts = exporter.parse_role(role)
+                self.assertEqual(len(facts), 1)
+                self.assertEqual(facts[0][1], "extra")
+        self.assertEqual(
+            {stage for _, stage, _, _ in exporter.parse_role("Stage 4 and 5 Midboss")},
+            {4, 5},
+        )
+
+    def test_route_after_role_and_versus_stages_are_not_numbered(self):
+        for role in ("Stage 1 Boss in Reimu's Scenario", "Stage 2 Boss on this Route",
+                     "Stage 3 Boss on Day 1", "Stage 4 Boss in Market 1"):
+            with self.subTest(role=role):
+                self.assertTrue(all(stage is None for _, stage, _, _ in exporter.parse_role(role)))
+        self.assertEqual(exporter.parse_role("Stage 1 Boss", versus=True),
+                         [("boss", None, None, False)])
+
+    def test_final_stage_overrides_have_explicit_evidence(self):
+        overrides = json.loads(OVERRIDES.read_text(encoding="utf-8"))
+        self.assertEqual(overrides["finalStages"]["th6"]["number"], 6)
+        self.assertTrue(all(entry["evidence"] for entry in overrides["finalStages"].values()))
+        self.assertNotIn("th9", overrides["finalStages"])
+        self.assertNotIn("th19", overrides["finalStages"])
+
     def test_multiple_roles_preserved_without_treating_midboss_as_boss(self):
         facts = exporter.parse_role("Stage 5 Boss and Midboss")
         self.assertIn(("boss", 5, None, False), facts)

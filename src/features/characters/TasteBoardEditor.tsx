@@ -9,7 +9,6 @@ import type { TasteBoard, TasteCell, TasteGroup, TasteTheme } from './tasteBoard
 import TasteDialog from './TasteDialog';
 import TasteGroupDialog from './TasteGroupDialog';
 import TasteCharacterList from './TasteCharacterList';
-import TasteStartScreen from './TasteStartScreen';
 import { CHARACTER_TOPICS, CHARACTER_TOPIC_BUNDLES, CHARACTER_TOPIC_BY_ID } from './characterCategories';
 import './taste-board.css';
 
@@ -25,6 +24,7 @@ const pickerCopy = {
   ja: { group: '作品 / バージョン', all: 'すべてのキャラクターから選択' },
   en: { group: 'Work / version', all: 'Choose from all characters' },
 } as const;
+const groupActionCopy = { ko: '그룹 만들기', ja: 'グループを作成', en: 'Create a group' } as const;
 
 const versionCopy = {
   ko: { label: '좋아하는 버전', none: '지정하지 않음', suffix: '버전' },
@@ -98,7 +98,7 @@ export default function TasteBoardEditor() {
   const [imageError, setImageError] = useState(false);
   const [downloadStatus, setDownloadStatus] = useState<'preparing' | 'started' | 'failed' | null>(null);
   const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
-  const [groupDialogOpen, setGroupDialogOpen] = useState(false);
+  const [groupDialogOpen, setGroupDialogOpen] = useState(needsSetup);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const dialogOpener = useRef<HTMLElement | null>(null);
   const imageStorage = useMemo(() => createTasteBoardImageStorage(), []);
@@ -210,16 +210,14 @@ export default function TasteBoardEditor() {
 
 
   if (needsSetup) return <>
-    <TasteStartScreen
-      onStartGrid={(rows, columns) => {
-        const next = createDefaultTasteBoard();
-        next.groups[0] = { ...next.groups[0], rows, columns, cells: Array(rows * columns).fill(null) };
-        startBoard(next);
-      }}
-      onStartByWorks={opener => { dialogOpener.current = opener; setGroupDialogOpen(true); }}
-      onCancel={setupFromBoard ? () => { setSetupFromBoard(false); setNeedsSetup(false); } : undefined}
-    />
-    {groupDialogOpen && <TasteGroupDialog board={{ ...board, groups: [] }} opener={dialogOpener.current} onClose={() => setGroupDialogOpen(false)} onCreate={group => {
+    <main className="taste-board-page">
+      <header className="taste-board-header"><span className="taste-eyebrow">GENSOKYO · FAVORITES</span><h1>{t.heading}</h1><p>{t.hint}</p></header>
+      <button type="button" className="taste-secondary-action" onClick={event => { dialogOpener.current = event.currentTarget; setGroupDialogOpen(true); }}>{t.addGroup}</button>
+    </main>
+    {groupDialogOpen && <TasteGroupDialog board={{ ...board, groups: [] }} opener={dialogOpener.current} onClose={() => {
+      setGroupDialogOpen(false);
+      if (setupFromBoard) { setSetupFromBoard(false); setNeedsSetup(false); }
+    }} onCreate={group => {
       startBoard({ ...createDefaultTasteBoard(), groups: [group] });
       setGroupDialogOpen(false);
     }} renderAvatar={renderAvatar} />}
@@ -232,13 +230,13 @@ export default function TasteBoardEditor() {
         <label className="taste-field">{t.title}<input value={board.title} maxLength={120} onChange={event => update(current => ({ ...current, title: event.target.value }))} /></label>
         <div className="taste-control-block taste-theme-options"><strong>{t.themes}</strong>{themes.map(theme => <button key={theme} type="button" className={`taste-theme-option theme-${theme}`} aria-pressed={board.theme === theme} onClick={() => update(current => ({ ...current, theme }))}><span className="taste-theme-swatch" aria-hidden="true"><i /><i /><i /><i /></span><span>{t[theme]}</span></button>)}</div>
         <label className="taste-toggle"><input type="checkbox" checked={board.showNames} onChange={event => update(current => ({ ...current, showNames: event.target.checked }))} />{t.showNames}</label>
-        <button type="button" className="taste-secondary-action taste-create-action" disabled={board.groups.length >= MAX_GROUPS} onClick={event => { dialogOpener.current = event.currentTarget; setGroupDialogOpen(true); }}>{t.workGroup}</button>
+        <button type="button" className="taste-secondary-action taste-create-action" disabled={board.groups.length >= MAX_GROUPS} onClick={event => { dialogOpener.current = event.currentTarget; setGroupDialogOpen(true); }}>{groupActionCopy[lang]}</button>
         <div className="taste-action-group" aria-label={resetText.actions}>
           <strong>{resetText.actions}</strong>
           <DownloadButton targetId="taste-board-export" filename="character-taste-board.png" captureOptions={{ scale: 1, resetPosition: true, maxPixelArea: 16_000_000 }} onStatusChange={setDownloadStatus} />
           <p className="taste-download-status" role="status" aria-live="polite">{downloadStatus ? downloadCopy[lang][downloadStatus] : ''}</p>
           <button type="button" className="taste-secondary-action" disabled={!undoStack.length} onClick={() => { setBoard(undoStack[undoStack.length - 1]); setUndoStack(stack => stack.slice(0, -1)); }}>{t.undo}</button>
-          <button type="button" className="taste-secondary-action" onClick={() => { if (window.confirm(newBoardCopy[lang].confirm)) { setSetupFromBoard(true); setNeedsSetup(true); } }}>{newBoardCopy[lang].action}</button>
+          <button type="button" className="taste-secondary-action" onClick={() => { if (window.confirm(newBoardCopy[lang].confirm)) { dialogOpener.current = null; setSetupFromBoard(true); setNeedsSetup(true); setGroupDialogOpen(true); } }}>{newBoardCopy[lang].action}</button>
           <button type="button" className="taste-secondary-action taste-reset-action" disabled={!board.groups.some(group => group.cells.some(Boolean))} onClick={() => { if (window.confirm(resetText.confirm)) update(current => ({ ...current, groups: current.groups.map(group => ({ ...group, cells: group.cells.map(() => null) })) })); }}>{resetText.action}</button>
         </div>
         <p className="taste-save-status" role="status">{storageAvailable ? t.saved : t.storageWarning}</p>

@@ -18,5 +18,20 @@
   },
   "works": {
     "Fairy Wars": "game-10f91c9982f7"
+  },
+  "finalStages": {
+    "th6": {"number": 6, "evidence": "Embodiment of Scarlet Devil/Story/Reimu's Scenario: Final Stage, th06stage6title.jpg"},
+    "th7": {"number": 6, "evidence": "Perfect Cherry Blossom/Story/Reimu's Scenario: Stage 6; Perfect Cherry Blossom/Characters: Final Stage boss"},
+    "th8": {"number": 6, "evidence": "Imperishable Night/Story/Barrier Team's Scenario: Final Stage A/B, th08stage6atitle.jpg and th08stage6btitle.jpg"},
+    "th10": {"number": 6, "evidence": "Mountain of Faith/Characters: Final Stage boss; Kanako Yasaka infobox: Stage 6 boss"},
+    "th11": {"number": 6, "evidence": "Subterranean Animism/Story/Reimu and Yukari's Scenario: Stage 6; Subterranean Animism/Characters: Final Stage boss"},
+    "th12": {"number": 6, "evidence": "Undefined Fantastic Object/Story/Reimu A's Scenario: Stage 6; Undefined Fantastic Object/Characters: Final Stage boss"},
+    "th13": {"number": 6, "evidence": "Ten Desires/Story/Reimu's Scenario: Stage 6; Ten Desires/Characters: Final Stage boss"},
+    "th14": {"number": 6, "evidence": "Double Dealing Character/Characters: Final Stage boss; Shinmyoumaru Sukuna infobox: Stage 6 boss"},
+    "th15": {"number": 6, "evidence": "Legacy of Lunatic Kingdom/Story/Reimu's Scenario: Stage 6; Legacy of Lunatic Kingdom/Characters: Final Stage boss"},
+    "th16": {"number": 6, "evidence": "Hidden Star in Four Seasons/Characters: Final Stage boss; Okina Matara infobox: Stage 6 boss"},
+    "th17": {"number": 6, "evidence": "Wily Beast and Weakest Creature/Characters: Final Stage boss; Keiki Haniyasushin infobox: Stage 6 boss"},
+    "th18": {"number": 6, "evidence": "Unconnected Marketeers/Story/Reimu's Scenario: Stage 6; Unconnected Marketeers/Characters: Final Stage boss"},
+    "th20": {"number": 6, "evidence": "Fossilized Wonders/Characters: Final Stage boss; Ariya Iwanaga infobox: Stage 6 boss"}
   }
 }

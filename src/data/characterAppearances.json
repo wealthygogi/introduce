@@ -1,5 +1,20 @@
 {
   "schemaVersion": 1,
+  "finalStageByWork": {
+    "th6": 6,
+    "th7": 6,
+    "th8": 6,
+    "th10": 6,
+    "th11": 6,
+    "th12": 6,
+    "th13": 6,
+    "th14": 6,
+    "th15": 6,
+    "th16": 6,
+    "th17": 6,
+    "th18": 6,
+    "th20": 6
+  },
   "sources": [
     {
       "url": "https://en.touhouwiki.net/wiki/100th_Black_Market/Characters",
@@ -2563,17 +2578,8 @@
         "branch": null,
         "conditional": false,
         "sources": [
+          264,
           292
-        ]
-      },
-      {
-        "workId": "th3",
-        "role": "opponent",
-        "stage": 7,
-        "branch": null,
-        "conditional": false,
-        "sources": [
-          264
         ]
       },
       {
@@ -3128,7 +3134,7 @@
       {
         "workId": "th3",
         "role": "opponent",
-        "stage": 7,
+        "stage": null,
         "branch": null,
         "conditional": true,
         "sources": [
@@ -4446,26 +4452,6 @@
       {
         "workId": "game-17f5487231cb",
         "role": "boss",
-        "stage": 1,
-        "branch": null,
-        "conditional": false,
-        "sources": [
-          66
-        ]
-      },
-      {
-        "workId": "game-17f5487231cb",
-        "role": "boss",
-        "stage": 2,
-        "branch": null,
-        "conditional": false,
-        "sources": [
-          66
-        ]
-      },
-      {
-        "workId": "game-17f5487231cb",
-        "role": "boss",
         "stage": "extra",
         "branch": null,
         "conditional": false,
@@ -5560,26 +5546,6 @@
       {
         "workId": "game-17f5487231cb",
         "role": "boss",
-        "stage": 3,
-        "branch": null,
-        "conditional": false,
-        "sources": [
-          498
-        ]
-      },
-      {
-        "workId": "game-17f5487231cb",
-        "role": "boss",
-        "stage": 4,
-        "branch": null,
-        "conditional": false,
-        "sources": [
-          498
-        ]
-      },
-      {
-        "workId": "game-17f5487231cb",
-        "role": "boss",
         "stage": "extra",
         "branch": null,
         "conditional": false,
@@ -6195,26 +6161,6 @@
       {
         "workId": "game-17f5487231cb",
         "role": "boss",
-        "stage": 5,
-        "branch": null,
-        "conditional": false,
-        "sources": [
-          76
-        ]
-      },
-      {
-        "workId": "game-17f5487231cb",
-        "role": "boss",
-        "stage": 6,
-        "branch": null,
-        "conditional": false,
-        "sources": [
-          76
-        ]
-      },
-      {
-        "workId": "game-17f5487231cb",
-        "role": "boss",
         "stage": "extra",
         "branch": null,
         "conditional": false,
@@ -6316,26 +6262,6 @@
       }
     ],
     "suika": [
-      {
-        "workId": "game-17f5487231cb",
-        "role": "boss",
-        "stage": 7,
-        "branch": null,
-        "conditional": false,
-        "sources": [
-          358
-        ]
-      },
-      {
-        "workId": "game-17f5487231cb",
-        "role": "boss",
-        "stage": 8,
-        "branch": null,
-        "conditional": false,
-        "sources": [
-          358
-        ]
-      },
       {
         "workId": "game-17f5487231cb",
         "role": "boss",
@@ -11916,7 +11842,7 @@
       {
         "workId": "th3",
         "role": "opponent",
-        "stage": 7,
+        "stage": null,
         "branch": null,
         "conditional": true,
         "sources": [
@@ -11948,7 +11874,7 @@
       {
         "workId": "th3",
         "role": "opponent",
-        "stage": 7,
+        "stage": null,
         "branch": null,
         "conditional": true,
         "sources": [
@@ -11980,7 +11906,7 @@
       {
         "workId": "th3",
         "role": "opponent",
-        "stage": 7,
+        "stage": null,
         "branch": null,
         "conditional": true,
         "sources": [
@@ -12012,7 +11938,7 @@
       {
         "workId": "th3",
         "role": "opponent",
-        "stage": 7,
+        "stage": null,
         "branch": null,
         "conditional": true,
         "sources": [
@@ -12044,7 +11970,7 @@
       {
         "workId": "th3",
         "role": "opponent",
-        "stage": 7,
+        "stage": null,
         "branch": null,
         "conditional": true,
         "sources": [
@@ -12076,7 +12002,7 @@
       {
         "workId": "th3",
         "role": "boss",
-        "stage": 8,
+        "stage": null,
         "branch": null,
         "conditional": false,
         "sources": [
@@ -12086,7 +12012,7 @@
       {
         "workId": "th3",
         "role": "opponent",
-        "stage": 8,
+        "stage": null,
         "branch": null,
         "conditional": false,
         "sources": [
@@ -12119,7 +12045,7 @@
       {
         "workId": "th3",
         "role": "opponent",
-        "stage": 9,
+        "stage": null,
         "branch": null,
         "conditional": false,
         "sources": [

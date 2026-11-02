@@ -12,16 +12,17 @@ const copy = {
 type Props = {
   query: string;
   filter: CharacterFilter;
+  characters?: ProfileCharacter[];
   selectedIds: ReadonlySet<string>;
   disabledIds: ReadonlySet<string>;
   onSelect: (id: string) => void;
   renderAvatar: (character: ProfileCharacter, size: number) => ReactNode;
 };
 
-export default function TasteCharacterList({ query, filter, selectedIds, disabledIds, onSelect, renderAvatar }: Props) {
+export default function TasteCharacterList({ query, filter, characters: providedCharacters, selectedIds, disabledIds, onSelect, renderAvatar }: Props) {
   const { lang } = useLang();
   const t = copy[lang];
-  const characters = filterCharacters(query, filter);
+  const characters = providedCharacters ?? filterCharacters(query, filter);
 
   return <div className="taste-character-list">
     {characters.length === 0 && <p className="taste-picker-empty" role="status">{t.empty}</p>}

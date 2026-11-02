@@ -26,14 +26,20 @@ async function pageFor(t, route = '/characters/tastes', viewport = { width: 1280
   t.after(() => context.close());
   const page = await context.newPage();
   await page.goto(`${base}${route}`);
-  if (start) await page.getByRole('button', { name: '표 만들기', exact: true }).click();
+  if (start) {
+    const dialog = page.getByRole('dialog', { name: '그룹 추가' });
+    await dialog.getByRole('button', { name: '자유 그룹' }).click();
+    await dialog.getByRole('button', { name: '그룹 추가', exact: true }).click();
+    await dialog.waitFor({ state: 'detached' });
+  }
   return page;
 }
 
-async function openGroupDialog(page, mode) {
+async function openGroupDialog(page, mode = 'favorites') {
   await page.getByRole('button', { name: '그룹 추가', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: '그룹 추가' });
-  if (mode) await dialog.getByLabel('추가 방식').selectOption(mode);
+  const modes = { favorites: '작품별 최애', collect: '조건별 모음', empty: '자유 그룹' };
+  await dialog.getByRole('button', { name: modes[mode], exact: true }).click();
   return dialog;
 }
 
@@ -52,11 +58,13 @@ async function savedBoard(page) {
 
 test('a new board starts with the selected size and restores it on reload', async t => {
   const page = await pageFor(t, '/characters/tastes', undefined, false);
-  await page.getByRole('heading', { name: '어떻게 시작할까요?' }).waitFor();
+  const dialog = page.getByRole('dialog', { name: '그룹 추가' });
+  await dialog.waitFor();
   assert.equal(await page.locator('.taste-board-cell').count(), 0);
   assert.equal(await page.evaluate(() => localStorage.getItem('introduce:characters:taste-board:v1')), null);
-  await page.getByRole('button', { name: '4 × 4', exact: true }).click();
-  await page.getByRole('button', { name: '표 만들기', exact: true }).click();
+  await dialog.getByRole('button', { name: '자유 그룹' }).click();
+  await dialog.getByRole('button', { name: '4 × 4', exact: true }).click();
+  await dialog.getByRole('button', { name: '그룹 추가', exact: true }).click();
   assert.equal(await page.locator('.taste-board-cell').count(), 16);
   await page.waitForFunction(() => {
     const saved = JSON.parse(localStorage.getItem('introduce:characters:taste-board:v1'));
@@ -64,14 +72,14 @@ test('a new board starts with the selected size and restores it on reload', asyn
   });
   await page.reload();
   await page.locator('.taste-board-cell').first().waitFor();
-  assert.equal(await page.getByRole('heading', { name: '어떻게 시작할까요?' }).count(), 0);
+  assert.equal(await page.getByRole('dialog', { name: '그룹 추가' }).count(), 0);
   assert.equal(await page.locator('.taste-board-cell').count(), 16);
 });
 
 test('starting with work favorites creates only the selected work group', async t => {
   const page = await pageFor(t, '/characters/tastes', undefined, false);
-  await page.getByRole('button', { name: '작품별 최애로 시작', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: '그룹 추가' });
+  await dialog.getByRole('button', { name: '작품별 최애', exact: true }).click();
   while (await dialog.locator('.taste-group-topics input:checked').count()) await dialog.locator('.taste-group-topics input:checked').first().uncheck();
   await dialog.getByLabel('동방홍마향', { exact: true }).check();
   await dialog.getByRole('button', { name: '그룹 추가', exact: true }).click();
@@ -87,26 +95,25 @@ test('starting with work favorites creates only the selected work group', async 
   assert.deepEqual(board.groups[0].slots.filter(Boolean).map(slot => slot.topicId), ['th6']);
   await page.reload();
   await page.locator('.taste-board-group').first().waitFor();
-  assert.equal(await page.getByRole('heading', { name: '어떻게 시작할까요?' }).count(), 0);
+  assert.equal(await page.getByRole('dialog', { name: '그룹 추가' }).count(), 0);
   assert.deepEqual(await savedBoard(page), board);
 });
 
 test('cancelling or reloading the initial choices does not save a board', async t => {
   const page = await pageFor(t, '/characters/tastes', undefined, false);
-  await page.getByRole('heading', { name: '어떻게 시작할까요?' }).waitFor();
-  await page.getByRole('button', { name: '4 × 4', exact: true }).click();
-  await page.reload();
-  await page.getByRole('heading', { name: '어떻게 시작할까요?' }).waitFor();
-  assert.equal(await page.evaluate(() => localStorage.getItem('introduce:characters:taste-board:v1')), null);
-  await page.getByRole('button', { name: '작품별 최애로 시작', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: '그룹 추가' });
+  await dialog.getByRole('button', { name: '자유 그룹' }).click();
+  await dialog.getByRole('button', { name: '4 × 4', exact: true }).click();
+  await page.reload();
+  await dialog.waitFor();
+  assert.equal(await page.evaluate(() => localStorage.getItem('introduce:characters:taste-board:v1')), null);
+  await dialog.getByRole('button', { name: '작품별 최애' }).click();
   await dialog.getByLabel('동방홍마향', { exact: true }).uncheck();
   await dialog.getByRole('button', { name: '닫기', exact: true }).last().click();
   await dialog.waitFor({ state: 'detached' });
-  await page.getByRole('heading', { name: '어떻게 시작할까요?' }).waitFor();
   assert.equal(await page.evaluate(() => localStorage.getItem('introduce:characters:taste-board:v1')), null);
   await page.reload();
-  await page.getByRole('heading', { name: '어떻게 시작할까요?' }).waitFor();
+  await dialog.waitFor();
   assert.equal(await page.evaluate(() => localStorage.getItem('introduce:characters:taste-board:v1')), null);
 });
 
@@ -122,14 +129,16 @@ test('starting another board preserves the current draft until confirmed and all
   page.once('dialog', dialog => dialog.accept());
   await page.getByRole('button', { name: '새 표 만들기' }).click();
   assert.deepEqual(await savedBoard(page), original);
-  await page.getByRole('button', { name: '기존 표로 돌아가기' }).click();
+  await page.getByRole('dialog', { name: '그룹 추가' }).getByRole('button', { name: '닫기', exact: true }).last().click();
   assert.match(await page.locator('.taste-board-cell').first().innerText(), /카기야마 히나/);
   page.once('dialog', dialog => dialog.accept());
   await page.getByRole('button', { name: '새 표 만들기' }).click();
-  await page.getByText('직접 선택', { exact: true }).click();
-  await page.locator('.taste-start-custom select').nth(0).selectOption('2');
-  await page.locator('.taste-start-custom select').nth(1).selectOption('4');
-  await page.getByRole('button', { name: '표 만들기' }).click();
+  const dialog = page.getByRole('dialog', { name: '그룹 추가' });
+  await dialog.getByRole('button', { name: '자유 그룹' }).click();
+  await dialog.getByText('직접 선택', { exact: true }).click();
+  await dialog.getByLabel('행 수').selectOption('2');
+  await dialog.getByLabel('열 수').selectOption('4');
+  await dialog.getByRole('button', { name: '그룹 추가', exact: true }).click();
   assert.equal(await page.locator('.taste-board-cell').count(), 8);
   await page.getByRole('button', { name: '실행 취소' }).click();
   assert.match(await page.locator('.taste-board-cell').first().innerText(), /카기야마 히나/);
@@ -310,36 +319,63 @@ test('a cell image is stored separately and restored after reload', async t => {
 });
 
 
-test('appearance filters match role and stage within the same work', async t => {
+test('criteria combine a work, role and stage on the same game record', async t => {
   const page = await pageFor(t);
   const dialog = await openGroupDialog(page, 'collect');
-  await dialog.getByText('상세 조건', { exact: true }).click();
-  const topic = dialog.locator('.taste-group-dialog-controls > label select').nth(1);
-  const role = dialog.locator('.taste-group-dialog-controls > label select').nth(2);
-  const stage = dialog.locator('details select');
-  await stage.selectOption('1');
-  await role.selectOption('boss');
-  await topic.selectOption('th6');
+  const next = () => dialog.getByRole('button', { name: '인물 선택으로' }).click();
+  const back = () => dialog.getByRole('button', { name: '그룹 설정으로' }).click();
+  await dialog.getByLabel('작품 범위').selectOption('mainline');
+  assert.equal(await dialog.getByLabel('스테이지').isDisabled(), true);
+  await dialog.getByLabel('동방홍마향', { exact: true }).check();
+  await dialog.getByLabel('보스', { exact: true }).check();
+  await dialog.getByLabel('스테이지').selectOption('1');
+  await next();
   assert.equal(await characterButton(dialog, '루미아').count(), 1);
   assert.equal(await characterButton(dialog, '치르노').count(), 0);
-  await topic.selectOption('th11');
+  assert.equal(await characterButton(dialog, '플랑드르 스칼렛').count(), 0);
+  await back();
+  await dialog.getByLabel('동방홍마향', { exact: true }).uncheck();
+  await dialog.getByLabel('동방지령전', { exact: true }).check();
+  await next();
   assert.equal(await characterButton(dialog, '쿠로다니 야마메').count(), 1);
   assert.equal(await characterButton(dialog, '키스메').count(), 0);
-  await role.selectOption('midboss');
+  await back();
+  await dialog.getByLabel('보스', { exact: true }).uncheck();
+  await dialog.getByLabel('중보스', { exact: true }).check();
+  await next();
   assert.equal(await characterButton(dialog, '키스메').count(), 1);
-  await topic.selectOption('th12');
-  await stage.selectOption('5');
-  await role.selectOption('boss');
-  assert.equal(await characterButton(dialog, '나즈린').count(), 0);
-  await role.selectOption('midboss');
+  await back();
+  await dialog.getByLabel('동방지령전', { exact: true }).uncheck();
+  await dialog.getByLabel('동방성련선', { exact: true }).check();
+  await dialog.getByLabel('스테이지').selectOption('5');
+  await next();
   assert.equal(await characterButton(dialog, '나즈린').count(), 1);
-  await topic.selectOption('th7');
-  await stage.selectOption('');
-  await role.selectOption('playable');
-  assert.equal(await characterButton(dialog, '이자요이 사쿠야').count(), 1);
-  await topic.selectOption('');
-  await role.selectOption('');
-  assert.equal(await characterButton(dialog, '선대 무녀').count(), 1);
+  await back();
+  await dialog.getByLabel('중보스', { exact: true }).uncheck();
+  await dialog.getByLabel('플레이어', { exact: true }).check();
+  assert.equal(await dialog.getByLabel('스테이지').isDisabled(), true);
+});
+
+test('multiple works and final stages combine, and incomplete book candidates remain manually expandable', async t => {
+  const page = await pageFor(t);
+  const dialog = await openGroupDialog(page, 'collect');
+  await dialog.getByLabel('작품 범위').selectOption('mainline');
+  await dialog.getByLabel('동방홍마향', { exact: true }).check();
+  await dialog.getByLabel('동방요요몽', { exact: true }).check();
+  await dialog.getByLabel('보스', { exact: true }).check();
+  await dialog.getByLabel('스테이지').selectOption('6');
+  await dialog.getByRole('button', { name: '인물 선택으로' }).click();
+  assert.equal(await characterButton(dialog, '레밀리아 스칼렛').count(), 1);
+  assert.equal(await characterButton(dialog, '사이교우지 유유코').count(), 1);
+  assert.equal(await characterButton(dialog, '플랑드르 스칼렛').count(), 0);
+  await dialog.getByRole('button', { name: '그룹 설정으로' }).click();
+  await dialog.getByLabel('작품 범위').selectOption('books');
+  assert.equal(await dialog.getByLabel('스테이지').isDisabled(), true);
+  await dialog.getByLabel('동방영나암', { exact: true }).check();
+  await dialog.getByRole('button', { name: '인물 선택으로' }).click();
+  assert.equal(await characterButton(dialog, '모토오리 코스즈').count(), 1);
+  assert.match(await dialog.innerText(), /서적 관련 후보\(언급 포함\), 불완전/);
+  await dialog.getByRole('button', { name: '전체 인물에서 직접 추가' }).click();
   assert.equal(await characterButton(dialog, '라이카').count(), 1);
 });
 
@@ -362,13 +398,19 @@ test('favorites, first-stage bosses and a free group coexist, undo and reload', 
     assert.match(await cell.innerText(), new RegExp(`${work} 버전`));
   }
   dialog = await openGroupDialog(page, 'collect');
-  await dialog.getByRole('button', { name: '1면 보스', exact: true }).click();
-  assert.equal(await dialog.getByLabel('그룹 이름').inputValue(), '1면 보스 모음');
+  await dialog.getByLabel('작품 범위').selectOption('mainline');
+  await dialog.getByLabel('보스', { exact: true }).check();
+  await dialog.getByLabel('스테이지').selectOption('1');
+  await dialog.getByRole('button', { name: '인물 선택으로' }).click();
+  assert.equal(await characterButton(dialog, '루미아').count(), 1);
+  assert.equal(await characterButton(dialog, '쿠로다니 야마메').count(), 1);
+  assert.equal(await characterButton(dialog, '플랑드르 스칼렛').count(), 0);
   await dialog.getByRole('button', { name: '검색 결과 모두 선택' }).click();
   await dialog.getByRole('button', { name: '선택한 인물로 그룹 추가' }).click();
   await dialog.waitFor({ state: 'detached' });
   const bosses = page.locator('.taste-board-group').nth(2);
-  assert.equal(await bosses.locator('.taste-board-cell[data-empty="false"]').count(), 16);
+  assert.match(await bosses.innerText(), /루미아/);
+  assert.match(await bosses.innerText(), /쿠로다니 야마메/);
   await addEmptyGroup(page);
   assert.equal(await page.locator('.taste-board-group').count(), 4);
   await page.getByRole('button', { name: '실행 취소' }).click();
@@ -380,7 +422,7 @@ test('favorites, first-stage bosses and a free group coexist, undo and reload', 
     await characterButton(page.getByRole('dialog', { name: '캐릭터 선택' }), name).click();
   }
   const beforeReload = await savedBoard(page);
-  assert.equal(beforeReload.groups[0].title, 'Favorites');
+  assert.equal(beforeReload.groups[0].title, '내 그룹 1');
   assert.deepEqual(beforeReload.groups[0].cells[0].characters, ['reimu']);
   await page.reload();
   assert.deepEqual(await savedBoard(page), beforeReload);
@@ -465,11 +507,15 @@ test('group selection keeps its chosen work and pending selection across filter 
   const page = await pageFor(t);
   const before = await savedBoard(page);
   const dialog = await openGroupDialog(page, 'collect');
-  await dialog.locator('.taste-group-dialog-controls > label select').nth(1).selectOption('th6');
+  await dialog.getByLabel('동방홍마향', { exact: true }).check();
+  await dialog.getByRole('button', { name: '인물 선택으로' }).click();
   const sakuya = characterButton(dialog, '이자요이 사쿠야');
   await sakuya.click();
   assert.equal(await sakuya.getAttribute('aria-pressed'), 'true');
-  await dialog.locator('.taste-group-dialog-controls > label select').nth(1).selectOption('th7');
+  await dialog.getByRole('button', { name: '그룹 설정으로' }).click();
+  await dialog.getByLabel('동방홍마향', { exact: true }).uncheck();
+  await dialog.getByLabel('동방요요몽', { exact: true }).check();
+  await dialog.getByRole('button', { name: '인물 선택으로' }).click();
   assert.equal(await characterButton(dialog, '이자요이 사쿠야').getAttribute('aria-pressed'), 'true');
   await dialog.getByLabel('이름 검색').fill('이자요이 사쿠야');
   await dialog.getByRole('button', { name: '검색 결과 모두 선택' }).click();
@@ -488,14 +534,15 @@ test('group creation rejects empty inputs and capacity limits without modifying 
   const create = dialog.getByRole('button', { name: '그룹 추가', exact: true });
   await dialog.getByLabel('그룹 이름').fill('');
   assert.equal(await create.isDisabled(), true);
-  assert.equal(await dialog.getByText('그룹 이름을 입력하세요.').count(), 1);
+  assert.equal(await dialog.getByText('그룹 이름을 입력해 주세요.').count(), 1);
   await dialog.getByLabel('그룹 이름').fill('최애');
   while (await dialog.locator('.taste-group-topics input:checked').count()) await dialog.locator('.taste-group-topics input:checked').first().uncheck();
   assert.equal(await create.isDisabled(), true);
-  assert.equal(await dialog.getByText('주제를 하나 이상 선택하세요.').count(), 1);
-  await dialog.getByLabel('추가 방식').selectOption('collect');
+  assert.equal(await dialog.getByText('작품이나 분류를 선택해 주세요.').count(), 1);
+  await dialog.getByRole('button', { name: '조건별 모음' }).click();
+  await dialog.getByRole('button', { name: '인물 선택으로' }).click();
   assert.equal(await dialog.getByRole('button', { name: '선택한 인물로 그룹 추가' }).isDisabled(), true);
-  assert.equal(await dialog.getByText('인물을 한 명 이상 선택하세요.').count(), 1);
+  assert.equal(await dialog.getByText('인물을 선택해 주세요.').count(), 1);
   await dialog.getByRole('button', { name: '검색 결과 모두 선택' }).click();
   assert.equal(await dialog.getByRole('button', { name: '선택한 인물로 그룹 추가' }).isDisabled(), true);
   assert.match(await dialog.locator('footer').innerText(), /필요한 칸/);
@@ -527,7 +574,9 @@ test('grid editing and character dialog stay usable without horizontal overflow 
     t.after(() => context.close());
     const page = await context.newPage();
     await page.goto(`${base}/characters/tastes`);
-    await page.getByRole('button', { name: '표 만들기', exact: true }).click();
+    const groupDialog = page.getByRole('dialog', { name: '그룹 추가' });
+    await groupDialog.getByRole('button', { name: '자유 그룹' }).click();
+    await groupDialog.getByRole('button', { name: '그룹 추가', exact: true }).click();
     await page.getByRole('button', { name: '5 × 5' }).click();
     assert.equal(await page.locator('.taste-board-cell').count(), 25);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true, `${width}px layout has no horizontal overflow`);

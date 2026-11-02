@@ -6,6 +6,7 @@ export interface TasteCell {
   characters: string[];
   label: string;
   imageId?: string;
+  versionWorkIds?: Record<string, string>;
 }
 
 export interface TasteSlot {

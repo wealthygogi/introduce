@@ -72,7 +72,7 @@ test('taste-board PNG downloads decode at fixed dimensions on desktop and mobile
       data: { title: 'PNG 검증 모음표', theme: 'album', showNames: true, groups: [
         { id: 'first', title: '첫 그룹', rows: 1, columns: 1, cells: [null] },
         { id: 'g', title: '마지막 그룹', rows: 3, columns: 3,
-          cells: [{ characters: ['sakuya', 'marisa'], label: '사용자 사진', imageId: 'export-image' }, null, null, null, null, null, null, null, { characters: ['reimu', 'marisa'], label: '마지막 칸' }],
+          cells: [{ characters: ['sakuya', 'marisa'], label: '사용자 사진', imageId: 'export-image', versionWorkIds: { sakuya: 'th18' } }, null, null, null, null, null, null, null, { characters: ['reimu', 'marisa'], label: '마지막 칸' }],
           slots: [{ label: '홍마향', topicId: 'th6' }, { label: '빈 작품 칸', topicId: 'th7' }, null, null, null, null, null, null, null],
           appearanceContext: { topicId: 'th7', role: null, stage: null }, showAppearances: false },
       ] },
@@ -116,8 +116,10 @@ test('taste-board PNG downloads decode at fixed dimensions on desktop and mobile
     const portrait = group.locator('.taste-export-cell').last().locator('img').first();
     await portrait.evaluate(image => image.decode());
     assert.equal(await portrait.getAttribute('loading'), 'eager');
-    const targets = [group.locator('h2'), filledLabel, emptyLabel, portrait];
-    const descriptions = ['last group heading', 'filled slot label', 'empty slot label', 'last group character portrait'];
+    const version = group.locator('.taste-export-cell').first().locator('.taste-export-version');
+    assert.equal(await version.innerText(), '동방홍룡동 버전');
+    const targets = [group.locator('h2'), filledLabel, emptyLabel, portrait, version];
+    const descriptions = ['last group heading', 'filled slot label', 'empty slot label', 'last group character portrait', 'selected work version'];
     const variantDimensions = [];
     for (const show of [false, true]) {
       if (show) await page.locator('.taste-board-group').last().getByLabel('출연 정보 표시').check();

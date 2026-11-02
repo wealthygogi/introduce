@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
-import { PROFILE_CHARACTERS, PROFILE_CHARACTER_BY_ID } from '../../data/profileCatalog';
+import { PROFILE_CHARACTERS, PROFILE_CHARACTER_BY_ID, PROFILE_WORKS, PROFILE_WORK_BY_ID } from '../../data/profileCatalog';
 import { getCouplingPortrait } from '../coupling/data';
 import { useLang } from '../../contexts/LangContext';
 import DownloadButton from '../../components/DownloadButton';
@@ -30,6 +30,12 @@ const appearanceCopy = {
   ja: { show: '出演情報を表示', role: '役割', allRoles: 'すべての役割', playable: 'プレイヤー', enemy: '敵', boss: 'ボス', midboss: '中ボス', opponent: '対戦相手', support: '支援・仲間', other: 'その他の出演', details: '詳細条件', stage: 'ステージ', allStages: 'すべてのステージ', final: '最終面', note: '確認された出演情報に基づいて絞り込みます。', unknown: '出演情報未確認' },
   en: { show: 'Show appearances', role: 'Role', allRoles: 'All roles', playable: 'Playable', enemy: 'Enemy', boss: 'Boss', midboss: 'Midboss', opponent: 'Opponent', support: 'Support', other: 'Other appearance', details: 'Advanced filters', stage: 'Stage', allStages: 'All stages', final: 'Final stage', note: 'Filtering is based on confirmed appearance information.', unknown: 'Appearance information unconfirmed' },
 } as const;
+const versionCopy = {
+  ko: { label: '좋아하는 버전', none: '지정하지 않음', suffix: '버전' },
+  ja: { label: '好きなバージョン', none: '指定しない', suffix: 'バージョン' },
+  en: { label: 'Favorite version', none: 'Not specified', suffix: 'version' },
+} as const;
+const versionWorks = PROFILE_WORKS.filter(work => work.category === 'game');
 const roles: RoleFilter[] = ['playable', 'enemy', 'boss', 'midboss', 'opponent', 'support', 'other'];
 
 const themes: TasteTheme[] = ['paper', 'album', 'terminal', 'night'];
@@ -116,6 +122,10 @@ export default function TasteBoardEditor() {
   const pickerFilter = { topicId: CHARACTER_TOPIC_BY_ID.has(pickerGroup) ? pickerGroup : null, role: pickerRole, stage: pickerStage };
   const currentIds = activeCell ? board.groups.find(group => group.id === activeCell.groupId)?.cells[activeCell.index]?.characters ?? [] : [];
   const appearanceText = appearanceCopy[lang];
+  const versionText = versionCopy[lang];
+  const versionLabel = (workId: string) => `${PROFILE_WORK_BY_ID.get(workId)?.[lang] ?? workId} ${versionText.suffix}`;
+  const activeGroup = activeCell ? board.groups.find(group => group.id === activeCell.groupId) : undefined;
+  const activeValue = activeCell ? activeGroup?.cells[activeCell.index] : undefined;
   const renderAvatar = (character: (typeof PROFILE_CHARACTERS)[number], size: number, imageId?: string, loading: 'lazy' | 'eager' = 'lazy') => {
     const portrait = getCouplingPortrait(character);
     const src = imageId ? imageUrls[imageId] : undefined;
@@ -175,7 +185,10 @@ export default function TasteBoardEditor() {
     const group = board.groups.find(item => item.id === activeCell.groupId);
     const current = group?.cells[activeCell.index] ?? null;
     const characters = activeCell.adding && current ? [...current.characters, id].slice(0, 2) : [id];
-    setCell(activeCell.groupId, activeCell.index, { ...current, characters, label: current?.label ?? '' });
+    const versionWorkIds = Object.fromEntries(characters.flatMap(characterId => current?.versionWorkIds?.[characterId] ? [[characterId, current.versionWorkIds[characterId]]] : []));
+    const slotTopic = group?.slots?.[activeCell.index]?.topicId;
+    if (!current?.characters.includes(id) && slotTopic && versionWorks.some(work => work.id === slotTopic)) versionWorkIds[id] = slotTopic;
+    setCell(activeCell.groupId, activeCell.index, { ...current, characters, label: current?.label ?? '', versionWorkIds });
     setActiveCell(null);
     setQuery('');
   };
@@ -213,9 +226,21 @@ export default function TasteBoardEditor() {
             <div className="taste-group-actions"><button type="button" onClick={() => update(current => ({ ...current, groups: current.groups.filter(item => item.id !== group.id) }))} disabled={board.groups.length === 1} aria-label={t.remove}>×</button><button type="button" aria-label={t.up} disabled={groupIndex === 0} onClick={() => update(current => ({ ...current, groups: [current.groups[groupIndex - 1], current.groups[groupIndex], ...current.groups.filter((_, i) => i !== groupIndex && i !== groupIndex - 1)] }))}>↑</button><button type="button" aria-label={t.down} disabled={groupIndex === board.groups.length - 1} onClick={() => update(current => ({ ...current, groups: [current.groups[groupIndex], current.groups[groupIndex + 1], ...current.groups.filter((_, i) => i !== groupIndex && i !== groupIndex + 1)] }))}>↓</button></div>
           </div>
           <div className="taste-board-grid" style={{ '--taste-columns': group.columns } as React.CSSProperties}>
-            {group.cells.map((cell, index) => <button key={index} type="button" className={`taste-board-cell${group.slots?.[index] || (group.showAppearances && cell) ? ' taste-board-cell--expanded' : ''}`} data-empty={!cell} aria-label={`${group.title} ${index + 1} ${group.slots?.[index]?.label ?? ''}: ${cell ? cell.characters.map(id => PROFILE_CHARACTER_BY_ID.get(id)?.[lang]).join(' + ') : t.empty}`} onClick={event => { dialogOpener.current = event.currentTarget; setQuery(''); setPickerGroup(group.slots?.[index]?.topicId ?? ''); setPickerRole(null); setPickerStage(null); setActiveCell({ groupId: group.id, index, adding: false }); }}>
+            {group.cells.map((cell, index) => <button key={index} type="button" className={`taste-board-cell${group.slots?.[index] || (group.showAppearances && cell) || (cell && Object.keys(cell.versionWorkIds ?? {}).length > 0) ? ' taste-board-cell--expanded' : ''}`} data-empty={!cell} aria-label={`${group.title} ${index + 1} ${group.slots?.[index]?.label ?? ''}: ${cell ? cell.characters.map(id => `${PROFILE_CHARACTER_BY_ID.get(id)?.[lang]}${cell.versionWorkIds?.[id] ? ` · ${versionLabel(cell.versionWorkIds[id])}` : ''}`).join(' + ') : t.empty}`} onClick={event => { dialogOpener.current = event.currentTarget; setQuery(''); setPickerGroup(group.slots?.[index]?.topicId ?? ''); setPickerRole(null); setPickerStage(null); setActiveCell({ groupId: group.id, index, adding: false }); }}>
               {group.slots?.[index] && <span className="taste-slot-label">{group.slots[index]?.label}</span>}
-              {cell ? <><span className="taste-cell-characters">{cell.characters.map((id, characterIndex) => { const character = PROFILE_CHARACTER_BY_ID.get(id)!; const topicId = group.slots?.[index]?.topicId; const context = topicId ? { ...EMPTY_CHARACTER_FILTER, topicId } : group.appearanceContext ?? EMPTY_CHARACTER_FILTER; const summary = group.showAppearances ? (context.topicId && !CHARACTER_TOPIC_BY_ID.has(context.topicId) ? [appearanceText.unknown] : appearanceSummary(id, context, lang)) : []; return <span className="taste-character" key={id}>{renderAvatar(character, 72, characterIndex === 0 ? cell.imageId : undefined)}{board.showNames && <span>{character[lang]}</span>}{group.showAppearances && <span className="taste-appearance-summary">{summary.slice(0, 2).map((label, i) => <small key={i}>{label}</small>)}{summary.length > 2 && <small>+{summary.length - 2}</small>}</span>}</span>; })}</span><span className="taste-cell-edit">{t.change}</span></> : <span className="taste-cell-empty"><b>＋</b>{t.empty}</span>}
+              {cell ? <><span className="taste-cell-characters">{cell.characters.map((id, characterIndex) => {
+                const character = PROFILE_CHARACTER_BY_ID.get(id)!;
+                const topicId = group.slots?.[index]?.topicId;
+                const context = topicId ? { ...EMPTY_CHARACTER_FILTER, topicId } : group.appearanceContext ?? EMPTY_CHARACTER_FILTER;
+                const summary = group.showAppearances ? (context.topicId && !CHARACTER_TOPIC_BY_ID.has(context.topicId) ? [appearanceText.unknown] : appearanceSummary(id, context, lang)) : [];
+                const version = cell.versionWorkIds?.[id];
+                return <span className="taste-character" key={id}>
+                  {renderAvatar(character, 72, characterIndex === 0 ? cell.imageId : undefined)}
+                  {board.showNames && <span>{character[lang]}</span>}
+                  {version && <span className="taste-version-label">{versionLabel(version)}</span>}
+                  {group.showAppearances && <span className="taste-appearance-summary">{summary.slice(0, 2).map((label, i) => <small key={i}>{label}</small>)}{summary.length > 2 && <small>+{summary.length - 2}</small>}</span>}
+                </span>;
+              })}</span><span className="taste-cell-edit">{t.change}</span></> : <span className="taste-cell-empty"><b>＋</b>{t.empty}</span>}
             </button>)}
           </div>
         </section>)}
@@ -236,6 +261,7 @@ export default function TasteBoardEditor() {
             return <div className="taste-export-character" key={id}>
               {renderAvatar(character, 96, characterIndex === 0 ? cell.imageId : undefined, 'eager')}
               {board.showNames && <span>{character[lang]}</span>}
+              {cell.versionWorkIds?.[id] && <span className="taste-export-version">{versionLabel(cell.versionWorkIds[id])}</span>}
               {group.showAppearances && <span className="taste-export-summary">{summary.slice(0, 2).map((label, i) => <small key={i}>{label}</small>)}{summary.length > 2 && <small>+{summary.length - 2}</small>}</span>}
             </div>;
           })}
@@ -245,6 +271,22 @@ export default function TasteBoardEditor() {
     </section>
     {activeCell && <TasteDialog label={t.choose} opener={dialogOpener.current} onClose={() => setActiveCell(null)}>
       <header><h2>{t.choose}</h2><button type="button" aria-label={t.close} onClick={() => setActiveCell(null)}>×</button></header>
+      {activeValue && <div className="taste-version-controls">{activeValue.characters.map(id => {
+        const character = PROFILE_CHARACTER_BY_ID.get(id)!;
+        const selected = activeValue.versionWorkIds?.[id] ?? '';
+        return <label className="taste-field" key={id}>{character[lang]} · {versionText.label}
+          <select aria-label={`${character[lang]} ${versionText.label}`} value={selected} onChange={event => {
+            const versions = { ...activeValue.versionWorkIds };
+            if (event.target.value) versions[id] = event.target.value;
+            else delete versions[id];
+            setCell(activeCell.groupId, activeCell.index, { ...activeValue, versionWorkIds: versions });
+          }}>
+            <option value="">{versionText.none}</option>
+            {selected && !versionWorks.some(work => work.id === selected) && <option value={selected}>{versionLabel(selected)}</option>}
+            {versionWorks.map(work => <option key={work.id} value={work.id}>{versionLabel(work.id)}</option>)}
+          </select>
+        </label>;
+      })}</div>}
       {board.groups.find(group => group.id === activeCell.groupId)?.slots?.[activeCell.index] && <label className="taste-field">{lang === 'ko' ? '칸 이름' : lang === 'ja' ? 'マスの名前' : 'Cell name'}<input maxLength={80} value={board.groups.find(group => group.id === activeCell.groupId)?.slots?.[activeCell.index]?.label ?? ''} onChange={event => { const label = event.target.value; update(current => ({ ...current, groups: current.groups.map(group => group.id === activeCell.groupId ? { ...group, slots: group.slots?.map((slot, index) => index === activeCell.index && slot ? { ...slot, label } : slot) } : group) })); }} /></label>}
       <label className="taste-field">{t.search}<input autoFocus type="search" value={query} onChange={event => setQuery(event.target.value)} /></label>
       <label className="taste-field">{pickerCopy[lang].group}<select value={CHARACTER_TOPIC_BY_ID.has(pickerGroup) ? pickerGroup : ''} onChange={event => setPickerGroup(event.target.value)}><option value="">{lang === 'ko' ? '전체 인물에서 선택' : lang === 'ja' ? 'すべてのキャラクターから選択' : 'Choose from all characters'}</option>{[...CHARACTER_TOPIC_BUNDLES, ...CHARACTER_TOPICS].map(topic => <option key={topic.id} value={topic.id}>{topic.label[lang]}</option>)}</select></label>

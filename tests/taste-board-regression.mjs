@@ -249,6 +249,7 @@ test('favorites, first-stage bosses and a free group coexist, undo and reload', 
     assert.match(await sakuyaCard.innerText(), work === '동방홍마향' ? /5면 보스/ : /플레이어/);
     await characterButton(picker, '이자요이 사쿠야').click();
     assert.equal(await cell.getAttribute('data-empty'), 'false');
+    assert.match(await cell.innerText(), new RegExp(`${work} 버전`));
   }
   await favorites.getByLabel('출연 정보 표시').check();
   assert.match(await favorites.locator('.taste-board-cell').filter({ hasText: '동방홍마향' }).innerText(), /5면 보스/);
@@ -282,6 +283,37 @@ test('favorites, first-stage bosses and a free group coexist, undo and reload', 
   }
   assert.equal(await page.locator('.taste-board-group').nth(2).locator('.taste-board-cell[data-empty="false"]').count(), 16);
   assert.equal(await page.locator('.taste-board-group').nth(3).locator('.taste-board-cell[data-empty="false"]').count(), 2);
+});
+
+test('favorite work versions stay independent per character and survive edits and reload', async t => {
+  const page = await pageFor(t);
+  const cell = page.locator('.taste-board-cell').first();
+  await cell.click();
+  await characterButton(page, '하쿠레이 레이무').click();
+  await cell.click();
+  let dialog = page.getByRole('dialog', { name: '캐릭터 선택' });
+  await dialog.getByLabel('하쿠레이 레이무 좋아하는 버전').selectOption('th18');
+  await dialog.getByRole('button', { name: '한 명 더 담기' }).click();
+  await characterButton(dialog, '키리사메 마리사').click();
+  await cell.click();
+  dialog = page.getByRole('dialog', { name: '캐릭터 선택' });
+  await dialog.getByLabel('키리사메 마리사 좋아하는 버전').selectOption('th7');
+  await dialog.getByRole('button', { name: '완료', exact: true }).last().click();
+  assert.match(await cell.innerText(), /하쿠레이 레이무[\s\S]*동방홍룡동 버전[\s\S]*키리사메 마리사[\s\S]*동방요요몽 버전/);
+  await page.reload();
+  await cell.waitFor();
+  assert.match(await cell.innerText(), /동방홍룡동 버전/);
+  await cell.click();
+  dialog = page.getByRole('dialog', { name: '캐릭터 선택' });
+  assert.equal(await dialog.getByLabel('하쿠레이 레이무 좋아하는 버전').inputValue(), 'th18');
+  assert.equal(await dialog.getByLabel('키리사메 마리사 좋아하는 버전').inputValue(), 'th7');
+  await characterButton(dialog, '루미아').click();
+  const replaced = (await savedBoard(page)).groups[0].cells[0];
+  assert.deepEqual(replaced.characters, ['rumia']);
+  assert.deepEqual(replaced.versionWorkIds, {});
+  await page.getByRole('button', { name: '실행 취소' }).click();
+  assert.match(await cell.innerText(), /동방홍룡동 버전/);
+  assert.match(await cell.innerText(), /동방요요몽 버전/);
 });
 
 test('labeled empty slots survive a cancelled shrink and undo', async t => {

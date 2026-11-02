@@ -62,6 +62,17 @@ test('cells may reference a custom image while old cells remain valid without on
   assert.equal(parseTasteBoard(serializeTasteBoard(board), characters).kind, 'invalid');
 });
 
+test('character versions round-trip independently and reject unrelated or malformed entries', () => {
+  const board = createDefaultTasteBoard();
+  board.groups[0].cells[0] = { characters: ['reimu', 'marisa'], label: '', imageId: 'photo-1', versionWorkIds: { reimu: 'th18', marisa: 'th6' } };
+  assert.deepEqual(parseTasteBoard(serializeTasteBoard(board), characters), { kind: 'valid', data: board });
+  for (const versions of [{ reimu: '' }, { reimu: 18 }, { sakuya: 'th18' }, { reimu: 'x'.repeat(121) }, []]) {
+    const invalid = structuredClone(board);
+    invalid.groups[0].cells[0].versionWorkIds = versions;
+    assert.equal(parseTasteBoard(serializeTasteBoard(invalid), characters).kind, 'invalid');
+  }
+});
+
 test('slot labels and appearance context survive v1 round-trip and malformed metadata is rejected', () => {
   const board = createDefaultTasteBoard();
   const group = board.groups[0];

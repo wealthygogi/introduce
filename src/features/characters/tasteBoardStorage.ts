@@ -23,6 +23,7 @@ function isTasteCell(value: unknown, characters: ReadonlySet<string>): value is 
   if (!isRecord(value) || !Array.isArray(value.characters) || value.characters.length < 1 || value.characters.length > 2 || !isText(value.label, 80)) return false;
   if ('imageId' in value && !isImageId(value.imageId)) return false;
   const ids = value.characters;
+  if ('versionWorkIds' in value && (!isRecord(value.versionWorkIds) || !Object.entries(value.versionWorkIds).every(([id, workId]) => ids.includes(id) && isText(workId, 120) && workId.length > 0))) return false;
   return ids.every(id => typeof id === 'string' && characters.has(id)) && new Set(ids).size === ids.length;
 }
 

@@ -24,6 +24,14 @@ test('default board is a sparse 3 by 3 grid and round-trips without compacting e
   if (restored.kind === 'valid') assert.deepEqual(restored.data, board);
 });
 
+test('an empty group list is a valid saved board', () => {
+  const board = createDefaultTasteBoard();
+  board.groups = [];
+  const restored = parseTasteBoard(serializeTasteBoard(board), characters);
+  assert.equal(restored.kind, 'valid');
+  if (restored.kind === 'valid') assert.deepEqual(restored.data.groups, []);
+});
+
 test('parser rejects future versions, unknown characters, and grids over the safety limit', () => {
   const board = createDefaultTasteBoard();
   assert.equal(parseTasteBoard(JSON.stringify({ version: 2, data: board }), characters).kind, 'invalid');

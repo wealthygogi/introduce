@@ -51,7 +51,7 @@ export function parseTasteBoard(raw: string, characters: ReadonlySet<string>): T
     const parsed: unknown = JSON.parse(raw);
     if (!isRecord(parsed) || parsed.version !== 1 || !isRecord(parsed.data)) return { kind: 'invalid' };
     const value = parsed.data;
-    if (!isText(value.title, 120) || !THEMES.has(value.theme as TasteTheme) || typeof value.showNames !== 'boolean' || !Array.isArray(value.groups) || value.groups.length < 1 || value.groups.length > MAX_GROUPS) return { kind: 'invalid' };
+    if (!isText(value.title, 120) || !THEMES.has(value.theme as TasteTheme) || typeof value.showNames !== 'boolean' || !Array.isArray(value.groups) || value.groups.length > MAX_GROUPS) return { kind: 'invalid' };
     if (!value.groups.every(group => isTasteGroup(group, characters))) return { kind: 'invalid' };
     const groups = value.groups as TasteGroup[];
     if (new Set(groups.map(group => group.id)).size !== groups.length || groups.reduce((total, group) => total + group.cells.length, 0) > MAX_CELLS_TOTAL) return { kind: 'invalid' };

@@ -180,6 +180,9 @@ export function saveBlob(blob: Blob, filename: string): void {
   const a = document.createElement('a');
   a.download = filename;
   a.href = url;
+  document.body.appendChild(a);
   a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  a.remove();
+  // Keep the object URL alive long enough for mobile download managers to consume it.
+  setTimeout(() => URL.revokeObjectURL(url), 30_000);
 }

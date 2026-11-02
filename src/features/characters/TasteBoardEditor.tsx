@@ -45,9 +45,9 @@ const newBoardCopy = {
   en: { action: 'Create a new board', confirm: 'Creating a new board will replace the current board. Continue?' },
 } as const;
 const downloadCopy = {
-  ko: { preparing: '이미지를 준비하고 있습니다…', started: '다운로드를 시작했습니다. 브라우저의 다운로드 목록을 확인해 주세요.', failed: '다운로드를 시작하지 못했습니다. 다시 시도해 주세요.' },
-  ja: { preparing: '画像を準備しています…', started: 'ダウンロードを開始しました。ブラウザーのダウンロード一覧をご確認ください。', failed: 'ダウンロードを開始できませんでした。もう一度お試しください。' },
-  en: { preparing: 'Preparing your image…', started: 'Download started. Check your browser’s downloads.', failed: 'Could not start the download. Please try again.' },
+  ko: { preparing: '이미지를 준비하고 있습니다…', ready: '준비됐습니다. 버튼을 다시 눌러 다운로드하세요.', started: '다운로드를 시작했습니다. 브라우저의 다운로드 목록을 확인해 주세요.', failed: '다운로드를 시작하지 못했습니다. 다시 시도해 주세요.' },
+  ja: { preparing: '画像を準備しています…', ready: '準備できました。もう一度押してダウンロードしてください。', started: 'ダウンロードを開始しました。ブラウザーのダウンロード一覧をご確認ください。', failed: 'ダウンロードを開始できませんでした。もう一度お試しください。' },
+  en: { preparing: 'Preparing your image…', ready: 'Image ready. Tap again to download.', started: 'Download started. Check your browser’s downloads.', failed: 'Could not start the download. Please try again.' },
 } as const;
 
 async function resizeImageFile(file: File): Promise<Blob> {
@@ -96,7 +96,7 @@ export default function TasteBoardEditor() {
   const [restoreWarning, setRestoreWarning] = useState(false);
   const [boardLimitError, setBoardLimitError] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const [downloadStatus, setDownloadStatus] = useState<'preparing' | 'started' | 'failed' | null>(null);
+  const [downloadStatus, setDownloadStatus] = useState<'preparing' | 'ready' | 'started' | 'failed' | null>(null);
   const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
   const [groupDialogOpen, setGroupDialogOpen] = useState(needsSetup);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -253,7 +253,7 @@ export default function TasteBoardEditor() {
               {([['oneRow', 1, 3], ['three', 3, 3], ['four', 4, 4], ['five', 5, 5]] as const).map(([key, rows, columns]) => <button type="button" key={key} aria-pressed={group.rows === rows && group.columns === columns} onClick={() => applyPreset(group, rows, columns)}>{t[key]}</button>)}
             </div>
             <details className="taste-custom-grid"><summary>{t.custom}</summary><div className="taste-custom-grid-fields"><label>{t.rows}<select aria-label={lang === 'ko' ? '행 수' : lang === 'ja' ? '行数' : 'Rows'} value={group.rows} onChange={event => applyPreset(group, Number(event.target.value), group.columns)}>{Array.from({ length: 10 }, (_, i) => i + 1).map(value => <option key={value} value={value}>{value}</option>)}</select></label><label>{t.columns}<select aria-label={lang === 'ko' ? '열 수' : lang === 'ja' ? '列数' : 'Columns'} value={group.columns} onChange={event => applyPreset(group, group.rows, Number(event.target.value))}>{Array.from({ length: 10 }, (_, i) => i + 1).map(value => <option key={value} value={value}>{value}</option>)}</select></label></div></details>
-            <div className="taste-group-actions"><button type="button" onClick={() => update(current => ({ ...current, groups: current.groups.filter(item => item.id !== group.id) }))} disabled={board.groups.length === 1} aria-label={t.remove}>×</button><button type="button" aria-label={t.up} disabled={groupIndex === 0} onClick={() => update(current => ({ ...current, groups: [current.groups[groupIndex - 1], current.groups[groupIndex], ...current.groups.filter((_, i) => i !== groupIndex && i !== groupIndex - 1)] }))}>↑</button><button type="button" aria-label={t.down} disabled={groupIndex === board.groups.length - 1} onClick={() => update(current => ({ ...current, groups: [current.groups[groupIndex], current.groups[groupIndex + 1], ...current.groups.filter((_, i) => i !== groupIndex && i !== groupIndex + 1)] }))}>↓</button></div>
+            <div className="taste-group-actions"><button type="button" onClick={() => update(current => ({ ...current, groups: current.groups.filter(item => item.id !== group.id) }))} aria-label={t.remove}>×</button><button type="button" aria-label={t.up} disabled={groupIndex === 0} onClick={() => update(current => ({ ...current, groups: [current.groups[groupIndex - 1], current.groups[groupIndex], ...current.groups.filter((_, i) => i !== groupIndex && i !== groupIndex - 1)] }))}>↑</button><button type="button" aria-label={t.down} disabled={groupIndex === board.groups.length - 1} onClick={() => update(current => ({ ...current, groups: [current.groups[groupIndex], current.groups[groupIndex + 1], ...current.groups.filter((_, i) => i !== groupIndex && i !== groupIndex + 1)] }))}>↓</button></div>
           </div>
           <div className="taste-board-grid" style={{ '--taste-columns': group.columns } as React.CSSProperties}>
             {group.cells.map((cell, index) => <button key={index} type="button" className={`taste-board-cell${group.slots?.[index] || (cell && Object.keys(cell.versionWorkIds ?? {}).length > 0) ? ' taste-board-cell--expanded' : ''}`} data-empty={!cell} aria-label={`${group.title} ${index + 1} ${group.slots?.[index]?.label ?? ''}: ${cell ? cell.characters.map(id => `${PROFILE_CHARACTER_BY_ID.get(id)?.[lang]}${cell.versionWorkIds?.[id] ? ` · ${versionLabel(cell.versionWorkIds[id])}` : ''}`).join(' + ') : t.empty}`} onClick={event => { dialogOpener.current = event.currentTarget; setQuery(''); setPickerGroup((cell?.characters.length === 1 && cell.versionWorkIds?.[cell.characters[0]]) || group.slots?.[index]?.topicId || ''); setPickerTopicTouched(false); setActiveCell({ groupId: group.id, index, adding: false }); }}>
@@ -270,7 +270,7 @@ export default function TasteBoardEditor() {
             </button>)}
           </div>
         </section>)}
-      <button type="button" className="taste-add-group" disabled={board.groups.length >= MAX_GROUPS} onClick={event => { dialogOpener.current = event.currentTarget; setGroupDialogOpen(true); }}>{t.addGroup}</button>
+      <button type="button" className={`taste-add-group${board.groups.length === 0 ? ' taste-add-group--empty' : ''}`} disabled={board.groups.length >= MAX_GROUPS} onClick={event => { dialogOpener.current = event.currentTarget; setGroupDialogOpen(true); }}>{t.addGroup}</button>
       </section>
     </div>
     <section id="taste-board-export" className={`taste-export theme-${board.theme}`} aria-hidden="true">

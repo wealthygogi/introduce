@@ -10,6 +10,7 @@
 .taste-control-block { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .taste-control-block strong { grid-column: 1 / -1; font-size: .88rem; }
 .taste-control-block button, .taste-secondary-action, .taste-add-group { min-height: 48px; padding: 8px 10px; border: 1px solid var(--taste-line); border-radius: 14px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.taste-add-group--empty { display: grid; width: 100%; min-height: 180px; place-items: center; border-style: dashed; border-color: color-mix(in srgb, var(--taste-accent) 55%, var(--taste-line)); background: color-mix(in srgb, var(--taste-accent) 5%, var(--taste-board-bg)); color: var(--taste-accent); font-weight: 750; }
 .taste-control-block button[aria-pressed="true"] { border-color: var(--taste-accent); background: color-mix(in srgb, var(--taste-accent) 12%, transparent); color: var(--taste-accent); }
 .taste-toggle { display: flex; align-items: center; gap: 10px; min-height: 48px; }
 .taste-toggle input { width: 20px; height: 20px; accent-color: var(--taste-accent); }
@@ -216,15 +217,15 @@
 .taste-group-dialog-controls button, .taste-group-selection-actions button { min-height: 42px; padding: 8px 12px; border: 1px solid #e3dfeb; border-radius: 12px; background: #fff; color: inherit; font: inherit; cursor: pointer; transition: border-color .16s, background .16s, transform .16s, box-shadow .16s; }
 .taste-group-dialog-controls button:hover, .taste-group-selection-actions button:hover { border-color: #b7a7d4; background: #fcfaff; }
 .taste-group-dialog-controls button:focus-visible, .taste-group-selection-actions button:focus-visible, .taste-group-dialog select:focus-visible, .taste-group-dialog input:focus-visible, .taste-group-dialog summary:focus-visible { outline: 3px solid color-mix(in srgb, var(--taste-accent, #6f57a5) 42%, white); outline-offset: 2px; }
-.taste-group-modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.taste-group-modes { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; margin: 0; padding: 0; border: 0; }
 .taste-group-modes legend { margin-bottom: 9px; color: #696673; font-size: .78rem; font-weight: 750; }
-.taste-group-modes button { display: grid; min-width: 0; min-height: 105px !important; grid-template-columns: 30px minmax(0, 1fr); align-content: start; align-items: center; gap: 5px 9px; padding: 13px !important; border: 1px solid #e5e1ed !important; border-radius: 17px !important; background: #fff !important; text-align: left; }
+.taste-group-modes button { display: grid; min-width: 0; min-height: 76px !important; grid-template-columns: 30px minmax(0, 1fr); grid-template-rows: auto auto; align-content: center; align-items: center; gap: 3px 11px; padding: 12px 14px !important; border: 1px solid #e5e1ed !important; border-radius: 15px !important; background: #fff !important; text-align: left; }
 .taste-group-modes button:hover { transform: translateY(-1px); box-shadow: 0 8px 22px #38266310; }
 .taste-group-modes button[aria-pressed="true"] { border-color: #8b72bd !important; background: linear-gradient(135deg, #f3effb, #fbf9ff) !important; box-shadow: inset 0 0 0 1px #a18acb, 0 7px 20px #5e438312; }
-.taste-group-mode-number { display: grid; width: 28px; height: 28px; place-items: center; border-radius: 10px; background: #f1eef6; color: #716682; font-size: .68rem; font-weight: 800; }
+.taste-group-mode-number { display: grid; width: 28px; height: 28px; grid-column: 1; grid-row: 1 / span 2; place-items: center; border-radius: 10px; background: #f1eef6; color: #716682; font-size: .68rem; font-weight: 800; }
 .taste-group-modes button[aria-pressed="true"] .taste-group-mode-number { background: #6f57a5; color: #fff; }
-.taste-group-modes button strong { min-width: 0; font-size: .87rem; line-height: 1.3; }
-.taste-group-modes button small { grid-column: 1 / -1; color: #777480; font-size: .75rem; font-weight: 450; line-height: 1.45; }
+.taste-group-modes button strong { grid-column: 2; grid-row: 1; min-width: 0; font-size: .87rem; line-height: 1.3; }
+.taste-group-modes button small { grid-column: 2; grid-row: 2; color: #777480; font-size: .75rem; font-weight: 450; line-height: 1.45; }
 .taste-group-dialog .taste-field { gap: 7px; color: #696673; font-size: .8rem; font-weight: 700; }
 .taste-group-dialog .taste-field input, .taste-group-dialog .taste-field select { min-height: 46px; border-color: #e3dfeb; border-radius: 12px; background-color: #fff; }
 .taste-group-work-options { max-height: 220px; overflow-y: auto; scrollbar-color: #c9bfd9 transparent; }
@@ -265,10 +266,10 @@
 .taste-group-dialog--configured { height: min(760px, 94dvh); }
   .taste-group-header { padding-bottom: 15px; }
   .taste-group-dialog-body { gap: 14px; padding-top: 15px; padding-bottom: 13px; }
-  .taste-group-modes { gap: 6px; }
-  .taste-group-modes button { min-height: 94px !important; grid-template-columns: 1fr; justify-items: start; gap: 5px; padding: 9px !important; border-radius: 14px !important; }
+  .taste-group-modes { gap: 7px; }
+  .taste-group-modes button { min-height: 72px !important; grid-template-columns: 24px minmax(0, 1fr); justify-items: start; gap: 3px 9px; padding: 10px !important; border-radius: 13px !important; }
   .taste-group-mode-number { width: 24px; height: 24px; }
-  .taste-group-modes button strong { font-size: .78rem; }
+  .taste-group-modes button strong { font-size: .8rem; }
   .taste-group-modes button small { font-size: .68rem; }
   .taste-group-dialog > footer { gap: 8px; padding-top: 12px; }
   .taste-group-dialog > footer button { min-height: 44px; padding: 7px 12px; }

@@ -27,8 +27,22 @@ after(async () => {
   await webkitBrowser?.close();
   await server?.close();
 });
-async function downloadPng(page, path) {
-  const [download] = await Promise.all([page.waitForEvent('download', { timeout: 120_000 }), page.locator('.download-btn').click()]);
+async function downloadPng(page, path, expectSecondTap = false) {
+  const downloadPromise = page.waitForEvent('download', { timeout: 120_000 });
+  const button = page.locator('.download-btn');
+  await button.click();
+  await page.waitForFunction(() => {
+    const button = document.querySelector('.download-btn');
+    const status = document.querySelector('.taste-download-status')?.textContent ?? '';
+    return button?.dataset.downloadReady === 'true' || status.includes('다운로드를 시작했습니다.');
+  }, null, { timeout: 120_000 });
+  const ready = await button.getAttribute('data-download-ready') === 'true';
+  if (expectSecondTap) assert.equal(ready, true, 'mobile fallback asks for a fresh user tap after image capture');
+  if (ready) {
+    assert.match(await page.locator('.taste-download-status').innerText(), /준비됐습니다/);
+    await Promise.all([downloadPromise, button.click()]);
+  }
+  const download = await downloadPromise;
   await download.saveAs(path);
   const data = await readFile(path);
   assert.equal(data.subarray(0, 8).toString('hex'), '89504e470d0a1a0a', 'download is a PNG file');
@@ -65,8 +79,24 @@ test('taste-board PNG downloads decode at fixed dimensions on desktop and mobile
   for (let index = 0; index < customImage.data.length; index += 4) customImage.data.set([0, 255, 0, 255], index);
   const customImageBase64 = PNG.sync.write(customImage).toString('base64');
   for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
-    const context = await browser.newContext({ acceptDownloads: true, locale: 'ko-KR', viewport });
+    const context = await browser.newContext({
+      acceptDownloads: true,
+      locale: 'ko-KR',
+      viewport,
+      ...(viewport.width === 390 ? {
+        isMobile: true,
+        hasTouch: true,
+        deviceScaleFactor: 3,
+        userAgent: 'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36',
+      } : {}),
+    });
     t.after(() => context.close());
+    if (viewport.width === 390) {
+      await context.addInitScript(() => Object.defineProperty(navigator, 'userActivation', {
+        configurable: true,
+        value: { isActive: false },
+      }));
+    }
     await context.addInitScript(() => localStorage.setItem('introduce:characters:taste-board:v1', JSON.stringify({
       version: 1,
       data: { title: 'PNG 검증 모음표', theme: 'album', showNames: true, groups: [
@@ -121,7 +151,7 @@ test('taste-board PNG downloads decode at fixed dimensions on desktop and mobile
     const targets = [group.locator('h2'), filledLabel, emptyLabel, portrait, version];
     const descriptions = ['last group heading', 'filled slot label', 'empty slot label', 'last group character portrait', 'selected work version'];
     const rects = await Promise.all(targets.map(exportRect));
-    const png = await downloadPng(page, join(output, `${viewport.width}.png`));
+    const png = await downloadPng(page, join(output, `${viewport.width}.png`), viewport.width === 390);
     await page.getByText('다운로드를 시작했습니다. 브라우저의 다운로드 목록을 확인해 주세요.').waitFor({ timeout: 5000 });
     assert.equal(png.width, 1200, 'export width is independent of the viewport');
     assert.ok(png.height > 0);
@@ -129,7 +159,7 @@ test('taste-board PNG downloads decode at fixed dimensions on desktop and mobile
     assert.ok(png.data.some((_, index) => index % 4 === 0 && png.data[index] < 80 && png.data[index + 1] > 200 && png.data[index + 2] < 80), 'PNG includes the custom green image pixels');
     assert.doesNotMatch(await group.innerText(), /5면 보스|중보스|출연 정보/);
     for (const locator of targets) await locator.evaluate(element => { element.style.visibility = 'hidden'; });
-    const hidden = await downloadPng(page, join(output, `${viewport.width}-hidden.png`));
+    const hidden = await downloadPng(page, join(output, `${viewport.width}-hidden.png`), viewport.width === 390);
     for (const locator of targets) await locator.evaluate(element => { element.style.visibility = ''; });
     targets.forEach((_, index) => assertRenderedPixels(png, hidden, rects[index], descriptions[index]));
     dimensions.push([png.width, png.height]);

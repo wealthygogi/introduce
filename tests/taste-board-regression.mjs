@@ -56,6 +56,31 @@ async function savedBoard(page) {
   return page.evaluate(() => JSON.parse(localStorage.getItem('introduce:characters:taste-board:v1')).data);
 }
 
+test('deleting the last group leaves an add-group action and can add a group again', async t => {
+  const page = await pageFor(t);
+  await page.getByRole('button', { name: '그룹 삭제' }).click();
+  assert.equal(await page.locator('.taste-board-group').count(), 0);
+  await page.getByRole('button', { name: '실행 취소' }).click();
+  assert.equal(await page.locator('.taste-board-group').count(), 1);
+  await page.getByRole('button', { name: '그룹 삭제' }).click();
+  assert.equal(await page.locator('.taste-board-group').count(), 0);
+  assert.deepEqual((await savedBoard(page)).groups, []);
+  const addGroup = page.locator('.taste-add-group');
+  await addGroup.waitFor();
+  await page.reload();
+  await page.locator('.taste-board').waitFor();
+  assert.equal(await page.locator('.taste-board-group').count(), 0);
+  await page.locator('.taste-add-group').waitFor();
+  assert.equal(await page.locator('.taste-add-group').isVisible(), true);
+  await page.locator('.taste-add-group').click();
+  const dialog = page.getByRole('dialog', { name: '그룹 추가' });
+  await dialog.getByRole('button', { name: '자유 그룹' }).click();
+  await dialog.getByRole('button', { name: '그룹 추가', exact: true }).click();
+  await dialog.waitFor({ state: 'detached' });
+  assert.equal(await page.locator('.taste-board-group').count(), 1);
+  assert.equal((await savedBoard(page)).groups.length, 1);
+});
+
 test('a new board starts with the selected size and restores it on reload', async t => {
   const page = await pageFor(t, '/characters/tastes', undefined, false);
   const dialog = page.getByRole('dialog', { name: '그룹 추가' });

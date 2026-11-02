@@ -15,6 +15,7 @@ export interface Messages {
   startCta: string;
   back: string;
   download: string;
+  downloadReady: string;
   reroll: string;
   saving: string;
   saved: string;
@@ -118,6 +119,7 @@ export const messages: Record<Lang, Messages> = {
     startCta: '시작하기',
     back: '목록으로',
     download: '이미지로 저장',
+    downloadReady: '다운로드하기',
     reroll: '다시 뽑기',
     saving: '저장 중...',
     saved: '저장됨',
@@ -212,6 +214,7 @@ export const messages: Record<Lang, Messages> = {
     startCta: 'はじめる',
     back: '一覧へ',
     download: '画像として保存',
+    downloadReady: 'ダウンロード',
     reroll: '引き直す',
     saving: '保存中...',
     saved: '保存しました',
@@ -306,6 +309,7 @@ export const messages: Record<Lang, Messages> = {
     startCta: 'Start',
     back: 'Back',
     download: 'Save as Image',
+    downloadReady: 'Download image',
     reroll: 'Reroll',
     saving: 'Saving...',
     saved: 'Saved',

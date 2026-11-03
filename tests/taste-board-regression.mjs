@@ -451,6 +451,7 @@ test('favorites, first-stage bosses and a free group coexist, undo and reload', 
   assert.deepEqual(beforeReload.groups[0].cells[0].characters, ['reimu']);
   await page.reload();
   assert.deepEqual(await savedBoard(page), beforeReload);
+  await page.locator('.taste-board-group').first().waitFor();
   assert.equal(await page.locator('.taste-board-group').count(), 4);
   for (const work of ['동방홍마향', '동방요요몽']) {
     assert.equal(await page.locator('.taste-board-group').nth(1).locator('.taste-board-cell').filter({ hasText: work }).getAttribute('data-empty'), 'false');

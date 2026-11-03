@@ -130,26 +130,29 @@ test('full Wide density wraps every field and exports all selected content', asy
 
 test('Korean labels and names stay together in the posted Wide card layout', async ({ page }) => {
   await page.setViewportSize({ width: 1512, height: 1100 });
-  await enterWide(page, 'paper');
+  await enterWide(page, 'album');
   await page.evaluate(() => localStorage.setItem('introduce:lang', 'ko'));
   await page.reload();
   for (const index of [1, 2, 3]) await openGroup(page, index);
 
   const basic = page.locator('details.wide-form-group').nth(0);
   for (const label of ['썰', 'RT', '마음', '탐라대화', '앓이']) await basic.locator('.chip').filter({ hasText: label }).first().click();
-  await page.locator('#wide-nickname').fill('온리');
-  await page.locator('[id="wide:handle"]').fill('@vita_c0de1ia');
-  await page.locator('[id="wide:intro"]').fill('축배를 들어라 내가 돌아왔다');
+  await page.locator('#wide-nickname').fill('Airdefence');
+  await page.locator('[id="wide:handle"]').fill('@airdefencestand');
+  await page.locator('[id="wide:intro"]').fill('도레미 스위트를 좋아하며 동방과 철도 중심의 다양한 장르를 수용하고 여러 가지를 도전해요');
+  await page.locator('[id="wide:keywords"]').fill('#도레미,#일상 방공/에어,#철도,#벨글,#여행,#도전');
+  await page.locator('[id="wide:callname"]').fill('도레미');
+  await page.locator('[id="wide:age"]').fill('20+');
 
-  for (const id of ['th6', 'th11', 'music-11cd7e63b384', 'book-22a4c5f71f5c']) {
+  for (const id of ['th9', 'th15', 'game-6cb4d8c0c3fc', 'book-perfect-memento', 'book-aeaa7b88a68d']) {
     await page.locator(`[data-work-choice="${id}"]`).click();
   }
-  await page.locator('[id="wide:workNote"]').fill('Demystify Feast가 최애곡이에요');
-  for (const id of ['koishi', 'flandre']) await page.locator(`[data-character-choice="${id}"]`).click();
-  await page.locator('[id="wide:pairing"]').fill('♥코이플랑♥ / 레미사토');
-  await page.locator('[id="wide:activities"]').fill('일상 올리기');
-  await page.locator('[id="wide:dislike"]').fill('근친을 그다지 선호하지 않아요');
-  await page.locator('[id="wide:boundaryMethod"]').fill('그래도 꾸역꾸역 먹어봄');
+  await page.locator('[id="wide:workNote"]').fill('고등학교 1학년 때 도레미가 제게 찾아왔어요\n입문 자체는 중학교 때 이슬비에 젖듯 입문했어요');
+  await page.locator('[data-character-choice="doremy"]').click();
+  await page.locator('[id="wide:pairing"]').fill('도레미 기반 커플링 전부 (최애컾은 코아도레)');
+  await page.locator('[id="wide:characterNote"]').fill('복장 에레인치 좋아합니다. 특히 캐주얼 좋아합니다');
+  await page.locator('[id="wide:otherGenre"]').fill('철도 등 교통이 가장 많고, 그 외 서브컬쳐 전반');
+  await page.locator('[id="wide:interaction"]').fill('자연스러운 교류 추구, 오프모임 좋아해요\n* 가끔씩 트친소에 반응 없으셔도 맞팔로 납치하는 경우 있습니다');
   await page.locator('details.wide-form-group').nth(3).locator('.chip-group').getByRole('button').first().click();
 
   const lineCount = (selector: string) => page.locator(selector).evaluate(element => {
@@ -160,13 +163,15 @@ test('Korean labels and names stay together in the posted Wide card layout', asy
   await expect.poll(() => lineCount('[data-choice-id="rt"] .wide-check-label')).toBe(1);
   for (const selector of [
     '[data-wide-panel="profile"] .wide-profile .wide-detail span',
-    '[data-favorite-work="th6"] > span',
-    '[data-favorite-work="th11"] > span',
-    '[data-favorite-work="music-11cd7e63b384"] > span',
-    '[data-favorite-work="book-22a4c5f71f5c"] > span',
-    '[data-ranked-character="koishi"] > span',
-    '[data-ranked-character="flandre"] > span',
+    '[data-favorite-work="th9"] > span',
+    '[data-favorite-work="th15"] > span',
+    '[data-favorite-work="game-6cb4d8c0c3fc"] > span',
+    '[data-favorite-work="book-perfect-memento"] > span',
+    '[data-favorite-work="book-aeaa7b88a68d"] > span',
+    '[data-ranked-character="doremy"] > span',
   ]) await expect.poll(() => lineCount(selector)).toBe(1);
+  const chipCount = await page.locator('.wide-chips span').count();
+  for (let index = 1; index <= chipCount; index++) await expect.poll(() => lineCount(`.wide-chips span:nth-child(${index})`)).toBe(1);
   await expect.poll(() => lineCount('.wide-check-block h4 small')).toBe(1);
 
   await page.screenshot({ path: test.info().outputPath('reported-korean-wrap-screen.png'), fullPage: true });

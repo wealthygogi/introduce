@@ -212,6 +212,86 @@ test('Japanese names and work versions stay separated in the downloaded board', 
   assert.ok(png.height > 0);
 });
 
+test('Korean work labels stay above portraits in a dense four-column PNG', async t => {
+  const output = await mkdtemp(join(tmpdir(), 'taste-board-korean-labels-'));
+  t.after(() => rm(output, { recursive: true, force: true }));
+  const context = await browser.newContext({ acceptDownloads: true, locale: 'ko-KR', viewport: { width: 1280, height: 900 } });
+  t.after(() => context.close());
+  await context.addInitScript(() => {
+    const labels = [
+      '동방홍마향', '동방요요몽', '동방영야초', '동방화영총',
+      '동방풍신록', '동방지령전', '동방성련선', '동방신령묘',
+      '동방휘침성', '동방감주전', '동방천공장', '동방귀형수',
+      '동방홍룡동', '동방수왕원', '동방비상천', '동방비상천칙',
+      '동방문화첩', '동방구문사기', '구작', '서적 원작',
+    ];
+    const ids = ['reisen', 'hina', 'tenshi', 'doremy'];
+    const cells = labels.map((_, index) => {
+      const id = ids[index % ids.length];
+      return { characters: [id], label: '', versionWorkIds: { [id]: 'th18' } };
+    });
+    localStorage.setItem('introduce:characters:taste-board:v1', JSON.stringify({
+      version: 1,
+      data: {
+        title: '내 캐릭터 취향',
+        theme: 'album',
+        showNames: true,
+        groups: [{
+          id: 'dense-korean-labels',
+          title: '작품별 최애',
+          rows: 5,
+          columns: 4,
+          cells,
+          slots: labels.map(label => ({ label, topicId: 'th6' })),
+        }],
+      },
+    }));
+  });
+  const page = await context.newPage();
+  await page.route('https://fonts.googleapis.com/**', route => route.fulfill({ body: '', contentType: 'text/css' }));
+  await page.goto(`${base}/characters/tastes?lang=ko`);
+  const cells = page.locator('#taste-board-export .taste-export-cell');
+  await cells.first().waitFor();
+  await page.locator('#taste-board-export img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
+  const layout = await cells.evaluateAll(elements => elements.map(cell => {
+    const slot = cell.querySelector('.taste-export-slot-label');
+    const characterName = cell.querySelector('.taste-export-character-name');
+    const version = cell.querySelector('.taste-export-version');
+    const avatar = cell.querySelector('.taste-character-avatar');
+    const slotRange = document.createRange();
+    slotRange.selectNodeContents(slot);
+    const slotText = slotRange.getBoundingClientRect();
+    const slotBounds = slot.getBoundingClientRect();
+    const avatarBounds = avatar.getBoundingClientRect();
+    const nameBounds = characterName.getBoundingClientRect();
+    const versionBounds = version.getBoundingClientRect();
+    const cellBounds = cell.getBoundingClientRect();
+    return {
+      label: slot.textContent,
+      labelLines: new Set(Array.from(slotRange.getClientRects(), rect => Math.round(rect.top))).size,
+      labelTextBottom: slotText.bottom,
+      labelBottom: slotBounds.bottom,
+      avatarTop: avatarBounds.top,
+      nameBottom: nameBounds.bottom,
+      versionTop: versionBounds.top,
+      versionBottom: versionBounds.bottom,
+      cellBottom: cellBounds.bottom,
+    };
+  }));
+  assert.equal(layout.length, 20);
+  for (const item of layout) {
+    assert.equal(item.labelLines, 1, `${item.label} fits on one line`);
+    assert.ok(item.labelTextBottom <= item.labelBottom + 1, `${item.label} text stays inside its label box`);
+    assert.ok(item.labelBottom + 6 <= item.avatarTop, `${item.label} does not collide with its portrait`);
+    assert.ok(item.nameBottom + 4 <= item.versionTop, `${item.label} name and version remain separate`);
+    assert.ok(item.versionBottom <= item.cellBottom - 8, `${item.label} version remains inside its card`);
+  }
+  const png = await downloadPng(page, join(output, 'dense-korean-labels.png'));
+  assert.equal(png.width, 1200);
+  assert.ok(png.height > 0);
+});
+
+
 test('WebKit mobile export produces a decodable fixed-width PNG', async t => {
   if (!webkitBrowser) { t.skip('Playwright WebKit browser binary is not installed in this environment'); return; }
   const context = await webkitBrowser.newContext({ acceptDownloads: true, locale: 'ko-KR', viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });

@@ -6,6 +6,7 @@ import TasteCharacterList from './TasteCharacterList';
 import { CHARACTER_TOPICS, CHARACTER_TOPIC_BUNDLES, EMPTY_CHARACTER_FILTER, filterGroupCharacters, type AppearanceStage, type GroupCharacterFilter, type RoleFilter } from './characterCategories';
 import { MAX_CELLS_PER_GROUP, MAX_CELLS_TOTAL, MAX_GROUPS } from './tasteBoardStorage';
 import type { TasteBoard, TasteCell, TasteGroup, TasteSlot } from './tasteBoardTypes';
+import { getTasteGroupDefaultTitle } from './tasteBoardLabels';
 
 const copy = {
   ko: { title: '그룹 추가', close: '닫기', mode: '만들기 방식', favorites: '작품별 최애', collect: '조건별 모음', empty: '자유 그룹', name: '그룹 이름', myGroup: '내 그룹', firstBossName: '1면 보스 모음', topics: '작품과 분류 선택', scope: '작품 범위', all: '전체 인물', mainline: '정규작', pc98: '구작', spinoff: '외전', books: '서적', works: '개별 작품 선택 (선택하지 않으면 범위 전체)', search: '이름 검색', role: '역할 (복수 선택 가능)', playable: '플레이어', enemy: '적', boss: '보스', midboss: '중보스', opponent: '대전 상대', support: '지원·동료', other: '기타 역할', stage: '스테이지', allStages: '모든 스테이지', final: '최종면', shortcut: '1면 보스', selectAll: '검색 결과 모두 선택', clear: '선택 해제', selected: '명 선택', note: '확인된 출연 정보를 기준으로 필터링합니다. 정보가 없는 인물은 전체 인물에서 직접 추가할 수 있습니다.', bookNote: '서적 관련 후보(언급 포함), 불완전. 최초 등장이나 서적 원작을 의미하지 않습니다.', reset: '전체 인물에서 직접 추가', settings: '그룹 설정', selection: '인물 선택', next: '인물 선택으로', back: '그룹 설정으로', create: '그룹 추가', addSelected: '선택한 인물로 그룹 추가', groupLimit: '그룹은 최대 20개까지 추가할 수 있습니다.', cellLimit: (required: number, available: number) => `필요한 칸: ${required}개 · 남은 칸: ${available}개`, requiredName: '그룹 이름을 입력해 주세요.', requiredTopics: '작품이나 분류를 선택해 주세요.', requiredCharacters: '인물을 선택해 주세요.' },
@@ -17,6 +18,11 @@ const layoutCopy = {
   ko: { size: '격자 크기', custom: '직접 선택', rows: '행 수', columns: '열 수', note: '확인된 게임 기록을 기준으로 찾습니다. 빠진 인물은 전체 인물에서 직접 추가할 수 있습니다.', stageHint: '면을 선택하려면 보스, 중보스 또는 적을 선택하세요.', intro: '원하는 방식으로 새 그룹을 구성해 모음표에 추가합니다.', modeHint: { favorites: '작품마다 최애를 하나씩 담아요.', collect: '작품·역할·면 조건으로 모아요.', empty: '크기를 정하고 직접 채워요.' } },
   ja: { size: 'グリッドのサイズ', custom: 'サイズを指定', rows: '行数', columns: '列数', note: '確認されたゲームの記録から探します。含まれない人物も全キャラクターから直接追加できます。', stageHint: 'ステージを選ぶにはボス、中ボス、敵を選択してください。', intro: 'レイアウトを選び、ボードに追加します。', modeHint: { favorites: '作品ごとにお気に入りを配置します。', collect: '作品・役割・ステージで集めます。', empty: 'サイズを選び、自分で埋めます。' } },
   en: { size: 'Grid size', custom: 'Custom size', rows: 'Rows', columns: 'Columns', note: 'Search uses confirmed game records. Missing characters can be added directly from all characters.', stageHint: 'Select boss, midboss, or enemy to choose a stage.', intro: 'Choose a layout, then add it to your board.', modeHint: { favorites: 'A favorite slot for each work.', collect: 'Build a set from works, roles, and stages.', empty: 'Choose a grid and fill it yourself.' } },
+} as const;
+const nameStatus = {
+  ko: { automatic: '자동 이름', custom: '직접 입력', restore: '기본 이름으로 복원', criteria: '조건은 인물 검색에만 적용됩니다. 버전은 칸 편집에서 지정할 수 있습니다.' },
+  ja: { automatic: '自動の名前', custom: 'カスタム名', restore: '既定の名前に戻す', criteria: '条件はキャラクターの検索だけに適用されます。バージョンはマスの編集で設定できます。' },
+  en: { automatic: 'Automatic name', custom: 'Custom name', restore: 'Restore default name', criteria: 'Criteria only filter characters. Set a version in the cell editor.' },
 } as const;
 const gridPresets = [[1, 3], [3, 3], [4, 4], [5, 5]] as const;
 const gridSizes = Array.from({ length: 10 }, (_, index) => index + 1);
@@ -44,19 +50,20 @@ export default function TasteGroupDialog({ board, opener, onClose, onCreate, ren
   const t = copy[lang];
   const [mode, setMode] = useState<Mode | null>(null);
   const [step, setStep] = useState<'settings' | 'selection'>('settings');
-  const [titles, setTitles] = useState<Record<Mode, string>>(() => ({ favorites: t.favorites, collect: t.myGroup, empty: `${t.myGroup} ${board.groups.length + 1}` }));
+  const [titles, setTitles] = useState<Partial<Record<Mode, string>>>({});
   const [freeRows, setFreeRows] = useState(3);
   const [freeColumns, setFreeColumns] = useState(3);
   const [topicIds, setTopicIds] = useState<Set<string>>(() => new Set(defaultTopics));
-  const [selected, setSelected] = useState<Map<string, string | null>>(() => new Map());
+  const [selected, setSelected] = useState<Set<string>>(() => new Set());
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<GroupCharacterFilter>(emptyFilter);
   const available = Math.max(0, MAX_CELLS_TOTAL - board.groups.reduce((sum, group) => sum + group.cells.length, 0));
   const chosenTopics = favoriteTopics.filter(topic => topicIds.has(topic.id));
   const chosenCharacters = PROFILE_CHARACTERS.filter(character => selected.has(character.id));
   const results = filterGroupCharacters(query, filter);
-  const selectedIds = new Set(selected.keys());
-  const selectedWorkId = filter.scope !== 'books' && filter.workIds.length === 1 && PROFILE_WORKS.some(work => work.id === filter.workIds[0] && work.category === 'game') ? filter.workIds[0] : null;
+  const selectedIds = selected;
+  const groupPreset = (value: Mode) => value === 'favorites' ? { kind: 'favorites' as const } : value === 'collect' ? { kind: 'collection' as const } : { kind: 'free' as const, number: board.groups.length + 1 };
+  const titleFor = (value: Mode) => titles[value] ?? getTasteGroupDefaultTitle(groupPreset(value), lang);
   const workOptions = PROFILE_WORKS.filter(work => filter.scope === 'books' ? work.category === 'book' : work.category === 'game' && (filter.scope === 'all' || (filter.scope === 'mainline' ? mainIds.has(work.id) : filter.scope === 'pc98' ? pc98Ids.has(work.id) : !mainIds.has(work.id))));
   const stageDisabled = filter.scope === 'books' || !filter.roles.some(role => stageRoles.includes(role));
   const columns = chosenTopics.length ? Math.min(10, Math.max(Math.min(4, chosenTopics.length), Math.ceil(chosenTopics.length / 10))) : 0;
@@ -67,20 +74,19 @@ export default function TasteGroupDialog({ board, opener, onClose, onCreate, ren
   const required = mode === 'favorites' ? favoriteCells : mode === 'empty' ? freeRows * freeColumns : minimumGrid ? minimumGrid.rows * minimumGrid.columns : chosenCharacters.length;
   const fits = mode === 'collect' ? !!grid : required <= Math.min(available, MAX_CELLS_PER_GROUP);
   const hasSelection = mode === 'favorites' ? chosenTopics.length > 0 : mode === 'collect' ? chosenCharacters.length > 0 : true;
-  const canCreate = !!mode && !!titles[mode].trim() && hasSelection && fits && board.groups.length < MAX_GROUPS;
+  const canCreate = !!mode && !!titleFor(mode).trim() && hasSelection && fits && board.groups.length < MAX_GROUPS;
 
   const create = () => {
     if (!mode || !canCreate) return;
-    const base = { id: crypto.randomUUID(), title: titles[mode].trim() };
+    const base = { id: crypto.randomUUID(), title: titleFor(mode).trim(), titleSource: titles[mode] === undefined ? 'auto' as const : 'custom' as const, titlePreset: groupPreset(mode) };
     if (mode === 'favorites') {
-      const slots: Array<TasteSlot | null> = chosenTopics.map(topic => ({ label: topic.label[lang], topicId: topic.id }));
+      const slots: Array<TasteSlot | null> = chosenTopics.map(topic => ({ label: topic.label[lang], topicId: topic.id, labelSource: 'topic' }));
       while (slots.length < favoriteCells) slots.push(null);
       onCreate({ ...base, rows, columns, cells: Array(favoriteCells).fill(null), slots });
     } else if (mode === 'collect' && grid) {
       const cells: Array<TasteCell | null> = Array(grid.rows * grid.columns).fill(null);
       chosenCharacters.forEach((character, index) => {
-        const workId = selected.get(character.id);
-        cells[index] = { characters: [character.id], label: '', ...(workId ? { versionWorkIds: { [character.id]: workId } } : {}) };
+        cells[index] = { characters: [character.id], label: '' };
       });
       onCreate({ ...base, ...grid, cells });
     } else if (mode === 'empty') {
@@ -94,7 +100,7 @@ export default function TasteGroupDialog({ board, opener, onClose, onCreate, ren
       {step === 'settings' ? <>
         <div className="taste-group-dialog-controls">
           <fieldset className="taste-group-modes"><legend>{t.mode}</legend>{(['favorites', 'collect', 'empty'] as Mode[]).map((value, index) => <button key={value} type="button" aria-label={t[value]} aria-describedby={`taste-group-mode-${value}-description`} aria-pressed={mode === value} onClick={() => setMode(value)}><span className="taste-group-mode-number" aria-hidden="true">0{index + 1}</span><strong>{t[value]}</strong><small id={`taste-group-mode-${value}-description`}>{layoutCopy[lang].modeHint[value]}</small></button>)}</fieldset>
-          {mode && <label className="taste-field">{t.name}<input maxLength={100} value={titles[mode]} onChange={event => setTitles(current => ({ ...current, [mode]: event.target.value }))} /></label>}
+          {mode && <div className="taste-group-name-editor"><label className="taste-field">{t.name}<input maxLength={100} value={titleFor(mode)} onChange={event => setTitles(current => ({ ...current, [mode]: event.target.value }))} /></label><span>{titles[mode] === undefined ? nameStatus[lang].automatic : nameStatus[lang].custom}</span>{titles[mode] !== undefined && <button type="button" onClick={() => setTitles(current => { const next = { ...current }; delete next[mode]; return next; })}>{nameStatus[lang].restore}</button>}</div>}
           {mode === 'empty' && <div className="taste-control-block" role="group" aria-label={layoutCopy[lang].size}>
             {gridPresets.map(([presetRows, presetColumns]) => <button key={`${presetRows}-${presetColumns}`} type="button" aria-pressed={freeRows === presetRows && freeColumns === presetColumns} onClick={() => { setFreeRows(presetRows); setFreeColumns(presetColumns); }}>{presetRows} × {presetColumns}</button>)}
             <details className="taste-group-custom-size"><summary>{layoutCopy[lang].custom}</summary><div>
@@ -115,10 +121,10 @@ export default function TasteGroupDialog({ board, opener, onClose, onCreate, ren
       </> : <div className="taste-group-results">
         <h3>{t.selection}</h3><label className="taste-field">{t.search}<input autoFocus type="search" value={query} onChange={event => setQuery(event.target.value)} /></label>
         <p>{filter.scope === 'books' ? t.bookNote : layoutCopy[lang].note}</p>
-        <div className="taste-group-selection-actions"><button type="button" onClick={() => { setFilter(emptyFilter()); setQuery(''); }}>{t.reset}</button><button type="button" onClick={() => setSelected(current => { const next = new Map(current); results.forEach(character => { if (!next.has(character.id)) next.set(character.id, selectedWorkId); }); return next; })}>{t.selectAll}</button><button type="button" onClick={() => setSelected(new Map())}>{t.clear}</button><span>{selected.size} {t.selected}</span></div>
-        <TasteCharacterList query={query} filter={EMPTY_CHARACTER_FILTER} characters={results} selectedIds={selectedIds} disabledIds={new Set()} onSelect={id => setSelected(current => { const next = new Map(current); if (next.has(id)) next.delete(id); else next.set(id, selectedWorkId); return next; })} renderAvatar={renderAvatar} />
+        <div className="taste-group-selection-actions"><button type="button" onClick={() => { setFilter(emptyFilter()); setQuery(''); }}>{t.reset}</button><button type="button" onClick={() => setSelected(current => { const next = new Set(current); results.forEach(character => next.add(character.id)); return next; })}>{t.selectAll}</button><button type="button" onClick={() => setSelected(new Set())}>{t.clear}</button><span>{selected.size} {t.selected}</span></div>
+        <TasteCharacterList query={query} filter={EMPTY_CHARACTER_FILTER} characters={results} selectedIds={selectedIds} disabledIds={new Set()} onSelect={id => setSelected(current => { const next = new Set(current); if (next.has(id)) next.delete(id); else next.add(id); return next; })} renderAvatar={renderAvatar} />
       </div>}
     </div>
-    <footer><div aria-live="polite">{mode && !titles[mode].trim() && <p>{t.requiredName}</p>}{mode && (mode !== 'collect' || step === 'selection') && !hasSelection && <p>{mode === 'favorites' ? t.requiredTopics : t.requiredCharacters}</p>}{board.groups.length >= MAX_GROUPS && <p>{t.groupLimit}</p>}{mode && hasSelection && !fits && <p>{t.cellLimit(required, Math.min(available, MAX_CELLS_PER_GROUP))}</p>}</div><button type="button" onClick={step === 'selection' ? () => setStep('settings') : onClose}>{step === 'selection' ? t.back : t.close}</button>{mode === 'collect' && step === 'settings' ? <button type="button" disabled={!titles.collect.trim() || board.groups.length >= MAX_GROUPS} onClick={() => setStep('selection')}>{t.next}</button> : <button type="button" disabled={!canCreate} onClick={create}>{mode === 'collect' ? t.addSelected : t.create}</button>}</footer>
+    <footer><div aria-live="polite">{mode && !titleFor(mode).trim() && <p>{t.requiredName}</p>}{mode && (mode !== 'collect' || step === 'selection') && !hasSelection && <p>{mode === 'favorites' ? t.requiredTopics : t.requiredCharacters}</p>}{mode === 'collect' && step === 'selection' && <p>{nameStatus[lang].criteria}</p>}{board.groups.length >= MAX_GROUPS && <p>{t.groupLimit}</p>}{mode && hasSelection && !fits && <p>{t.cellLimit(required, Math.min(available, MAX_CELLS_PER_GROUP))}</p>}</div><button type="button" onClick={step === 'selection' ? () => setStep('settings') : onClose}>{step === 'selection' ? t.back : t.close}</button>{mode === 'collect' && step === 'settings' ? <button type="button" disabled={!titleFor('collect').trim() || board.groups.length >= MAX_GROUPS} onClick={() => setStep('selection')}>{t.next}</button> : <button type="button" disabled={!canCreate} onClick={create}>{mode === 'collect' ? t.addSelected : t.create}</button>}</footer>
   </TasteDialog>;
 }

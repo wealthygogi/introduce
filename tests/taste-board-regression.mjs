@@ -49,7 +49,7 @@ async function addEmptyGroup(page) {
   await dialog.waitFor({ state: 'detached' });
 }
 
-const characterButton = (container, name) => container.getByRole('button', { name, exact: true });
+const characterButton = (container, name) => container.locator('.taste-character-list').getByRole('button', { name, exact: true });
 
 async function savedBoard(page) {
   await page.waitForFunction(() => localStorage.getItem('introduce:characters:taste-board:v1') !== null);
@@ -172,12 +172,12 @@ test('starting another board preserves the current draft until confirmed and all
 test('desktop taste picker shows large portrait cards beside its filters', async t => {
   const page = await pageFor(t);
   await page.locator('.taste-board-cell').first().click();
-  const dialog = page.getByRole('dialog', { name: '캐릭터 선택' });
-  const filter = await dialog.getByLabel('작품 / 버전').boundingBox();
+  const dialog = page.locator('.taste-cell-dialog');
+  const filter = await dialog.getByLabel('작품 / 분류').boundingBox();
   const list = await dialog.locator('.taste-character-list').boundingBox();
   const avatar = await dialog.locator('.taste-character-avatar').first().boundingBox();
-  assert.ok(filter && list && filter.x + filter.width <= list.x, 'filters sit beside character cards');
-  assert.ok(avatar && avatar.width >= 64, 'portraits are large enough to browse');
+  assert.ok(filter && list && filter.y + filter.height <= list.y, 'filters appear before character results');
+  assert.ok(avatar && avatar.width >= 32, 'character portraits remain visible');
 });
 
 test('mobile workspace presents the board before its supporting settings', async t => {
@@ -207,8 +207,8 @@ test('character selection supports group filtering, empty results and keyboard d
   const page = await pageFor(t);
   const cell = page.locator('.taste-board-cell').first();
   await cell.click();
-  const dialog = page.getByRole('dialog', { name: '캐릭터 선택' });
-  await page.getByLabel('작품 / 버전').selectOption({ label: '동방홍마향' });
+  const dialog = page.locator('.taste-cell-dialog');
+  await dialog.getByLabel('작품 / 분류').selectOption({ label: '동방홍마향' });
   assert.equal(await characterButton(dialog, '하쿠레이 레이무').count(), 1);
   await page.getByLabel('캐릭터 검색').fill('no-such-character-xyz');
   assert.equal(await dialog.getByText('검색 결과가 없습니다.').count(), 1);
@@ -416,8 +416,8 @@ test('favorites, first-stage bosses and a free group coexist, undo and reload', 
   for (const work of ['동방홍마향', '동방요요몽']) {
     const cell = favorites.locator('.taste-board-cell').filter({ hasText: work });
     await cell.click();
-    const picker = page.getByRole('dialog', { name: '캐릭터 선택' });
-    assert.equal(await picker.getByLabel('작품 / 버전').inputValue(), work === '동방홍마향' ? 'th6' : 'th7');
+    const picker = page.locator('.taste-cell-dialog');
+    assert.equal(await picker.getByLabel('작품 / 분류').inputValue(), work === '동방홍마향' ? 'th6' : 'th7');
     await characterButton(picker, '이자요이 사쿠야').click();
     assert.equal(await cell.getAttribute('data-empty'), 'false');
     assert.match(await cell.innerText(), new RegExp(`${work} 버전`));
@@ -444,7 +444,7 @@ test('favorites, first-stage bosses and a free group coexist, undo and reload', 
   const free = page.locator('.taste-board-group').nth(3);
   for (const [index, name] of ['선대 무녀', '라이카'].entries()) {
     await free.locator('.taste-board-cell').nth(index).click();
-    await characterButton(page.getByRole('dialog', { name: '캐릭터 선택' }), name).click();
+    await characterButton(page.locator('.taste-cell-dialog'), name).click();
   }
   const beforeReload = await savedBoard(page);
   assert.equal(beforeReload.groups[0].title, '내 그룹 1');
@@ -465,12 +465,12 @@ test('favorite work versions stay independent per character and survive edits an
   await cell.click();
   await characterButton(page, '하쿠레이 레이무').click();
   await cell.click();
-  let dialog = page.getByRole('dialog', { name: '캐릭터 선택' });
+  let dialog = page.locator('.taste-cell-dialog');
   await dialog.getByLabel('하쿠레이 레이무 좋아하는 버전').selectOption('th18');
   await dialog.getByRole('button', { name: '한 명 더 담기' }).click();
   await characterButton(dialog, '키리사메 마리사').click();
   await cell.click();
-  dialog = page.getByRole('dialog', { name: '캐릭터 선택' });
+  dialog = page.locator('.taste-cell-dialog');
   await dialog.getByLabel('키리사메 마리사 좋아하는 버전').selectOption('th7');
   await dialog.getByRole('button', { name: '완료', exact: true }).last().click();
   assert.match(await cell.innerText(), /하쿠레이 레이무[\s\S]*동방홍룡동 버전[\s\S]*키리사메 마리사[\s\S]*동방요요몽 버전/);
@@ -478,9 +478,10 @@ test('favorite work versions stay independent per character and survive edits an
   await cell.waitFor();
   assert.match(await cell.innerText(), /동방홍룡동 버전/);
   await cell.click();
-  dialog = page.getByRole('dialog', { name: '캐릭터 선택' });
+  dialog = page.locator('.taste-cell-dialog');
   assert.equal(await dialog.getByLabel('하쿠레이 레이무 좋아하는 버전').inputValue(), 'th18');
   assert.equal(await dialog.getByLabel('키리사메 마리사 좋아하는 버전').inputValue(), 'th7');
+  await dialog.getByRole('button', { name: '캐릭터 바꾸기' }).click();
   await characterButton(dialog, '루미아').click();
   const replaced = (await savedBoard(page)).groups[0].cells[0];
   assert.deepEqual(replaced.characters, ['rumia']);
@@ -489,26 +490,34 @@ test('favorite work versions stay independent per character and survive edits an
   assert.match(await cell.innerText(), /동방홍룡동 버전/);
   assert.match(await cell.innerText(), /동방요요몽 버전/);
 });
-
-test('choosing a work immediately assigns that version to the chosen character', async t => {
+test('search filters never mutate saved versions and free cells do not infer versions', async t => {
   const page = await pageFor(t);
   const cell = page.locator('.taste-board-cell').first();
   await cell.click();
-  let dialog = page.getByRole('dialog', { name: '캐릭터 선택' });
-  await dialog.getByLabel('작품 / 버전').selectOption('th18');
-  assert.equal(await dialog.getByText('출연 정보').count(), 0);
-  assert.equal(await dialog.locator('.taste-character-list a').count(), 0);
+  let dialog = page.locator('.taste-cell-dialog');
+  await dialog.getByLabel('작품 / 분류').selectOption('th18');
+  const beforeSelection = await savedBoard(page);
   await characterButton(dialog, '하쿠레이 레이무').click();
-  assert.match(await cell.innerText(), /하쿠레이 레이무[\s\S]*동방홍룡동 버전/);
+  const chosen = (await savedBoard(page)).groups[0].cells[0];
+  assert.deepEqual(chosen.characters, ['reimu']);
+  assert.deepEqual(chosen.versionWorkIds ?? {}, {});
   await cell.click();
-  dialog = page.getByRole('dialog', { name: '캐릭터 선택' });
-  assert.equal(await dialog.getByLabel('작품 / 버전').inputValue(), 'th18');
-  await dialog.getByLabel('작품 / 버전').selectOption('th7');
-  await dialog.getByRole('button', { name: '완료', exact: true }).last().click();
-  assert.match(await cell.innerText(), /동방요요몽 버전/);
+  dialog = page.locator('.taste-cell-dialog');
+  await dialog.getByLabel('하쿠레이 레이무 좋아하는 버전').selectOption('th7');
+  await dialog.getByRole('button', { name: '완료', exact: true }).click();
+  assert.equal((await savedBoard(page)).groups[0].cells[0].versionWorkIds.reimu, 'th7');
+
+  await cell.click();
+  dialog = page.locator('.taste-cell-dialog');
+  await dialog.getByRole('button', { name: '캐릭터 바꾸기' }).click();
+  await dialog.getByLabel('작품 / 분류').selectOption('th18');
+  assert.equal((await savedBoard(page)).groups[0].cells[0].versionWorkIds.reimu, 'th7');
+  await dialog.getByRole('button', { name: '칸 편집으로' }).click();
+  assert.equal(await dialog.getByLabel('하쿠레이 레이무 좋아하는 버전').inputValue(), 'th7');
+  await dialog.getByRole('button', { name: '완료', exact: true }).click();
   await page.reload();
-  await cell.waitFor();
-  assert.match(await cell.innerText(), /동방요요몽 버전/);
+  assert.deepEqual((await savedBoard(page)).groups[0].cells[0].versionWorkIds, { reimu: 'th7' });
+  assert.equal(beforeSelection.groups[0].cells[0], null);
 });
 
 test('labeled empty slots survive a cancelled shrink and undo', async t => {
@@ -548,7 +557,8 @@ test('group selection keeps its chosen work and pending selection across filter 
   assert.match(await dialog.locator('.taste-group-selection-actions').innerText(), /1\s*명 선택/);
   assert.deepEqual(await savedBoard(page), before);
   await dialog.getByRole('button', { name: '선택한 인물로 그룹 추가' }).click();
-  assert.match(await page.locator('.taste-board-group').nth(1).innerText(), /동방홍마향 버전/);
+  const collected = (await savedBoard(page)).groups[1];
+  assert.equal(collected.cells.find(Boolean).versionWorkIds, undefined);
   assert.equal(await page.locator('.taste-board-group').nth(1).locator('.taste-board-cell[data-empty="false"]').count(), 1);
 });
 
@@ -608,7 +618,134 @@ test('grid editing and character dialog stay usable without horizontal overflow 
     await page.locator('.taste-board-cell').last().click();
     const dialog = await page.locator('[role="dialog"]').boundingBox();
     assert.ok(dialog && dialog.x >= 0 && dialog.x + dialog.width <= width && dialog.y >= 0 && dialog.y + dialog.height <= 844, `${width}px character picker fits the viewport`);
+    const cell = page.locator('.taste-board-cell').last();
     await characterButton(page, '하쿠레이 레이무').click();
-    assert.equal(await page.locator('.taste-board-cell').last().getAttribute('data-empty'), 'false');
+    assert.equal(await cell.getAttribute('data-empty'), 'false');
+    await cell.click();
+    const editor = page.locator('.taste-cell-dialog');
+    assert.ok(await editor.isVisible());
+    await editor.getByLabel('하쿠레이 레이무 좋아하는 버전').selectOption('th18');
+    await editor.getByRole('button', { name: '하쿠레이 레이무 버전 해제' }).click();
+    await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === '하쿠레이 레이무 좋아하는 버전');
+    assert.equal(await editor.getByLabel('하쿠레이 레이무 좋아하는 버전').evaluate(element => element === document.activeElement), true);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true, `${width}px editor has no horizontal overflow`);
+    await page.keyboard.press('Escape');
+    assert.equal(await cell.evaluate(element => element === document.activeElement), true, `${width}px Escape restores opener focus`);
   }
+});
+test('automatic names translate while custom slot text remains fixed and explicit lang URLs stay synchronized', async t => {
+  const page = await pageFor(t, '/characters/tastes?lang=ko&probe=keep#board');
+  const groupDialog = await openGroupDialog(page, 'favorites');
+  while (await groupDialog.locator('.taste-group-topics input:checked').count()) await groupDialog.locator('.taste-group-topics input:checked').first().uncheck();
+  await groupDialog.getByLabel('동방홍룡동', { exact: true }).check();
+  await groupDialog.getByRole('button', { name: '그룹 추가', exact: true }).click();
+  const group = page.locator('.taste-board-group').nth(1);
+  const cell = group.locator('.taste-board-cell').first();
+  await cell.click();
+  const cellDialog = page.locator('.taste-cell-dialog');
+  await cellDialog.getByLabel('작품 / 분류').selectOption('th7');
+  await characterButton(cellDialog, '하쿠레이 레이무').click();
+  const before = await savedBoard(page);
+  assert.equal(before.groups[1].titleSource, 'auto');
+  assert.equal(before.groups[1].titlePreset.kind, 'favorites');
+  assert.equal(before.groups[1].slots[0].labelSource, 'topic');
+  assert.equal(before.groups[1].cells[0].versionWorkIds.reimu, 'th18');
+  const undoButton = page.locator('.taste-action-group').getByRole('button').nth(1);
+  const undoEnabled = await undoButton.isEnabled();
+
+  await cell.click();
+  const editor = page.locator('.taste-cell-dialog');
+  await editor.locator('.taste-cell-name-details summary').click();
+  await editor.getByLabel('칸 이름').fill('temporary custom text');
+  await editor.getByLabel('칸 이름').fill('동방홍룡동');
+  await editor.getByRole('button', { name: '완료', exact: true }).click();
+  const custom = await savedBoard(page);
+  assert.equal(custom.groups[1].slots[0].labelSource, 'custom');
+
+  await page.getByRole('button', { name: '日本語', exact: true }).click();
+  assert.equal(await page.locator('html').getAttribute('lang'), 'ja');
+  assert.match(page.url(), /lang=ja&probe=keep#board$/);
+  assert.equal(await page.title(), '東方 自己紹介 メーカー');
+  assert.equal(await page.locator('.taste-board > h2').innerText(), 'お気に入りのキャラクター');
+  assert.equal(await group.locator('.taste-group-heading input').inputValue(), '作品別の推し');
+  assert.equal(await cell.locator('.taste-slot-label').innerText(), '동방홍룡동');
+  assert.equal(await page.getByRole('button', { name: '日本語', exact: true }).getAttribute('aria-pressed'), 'true');
+  assert.deepEqual(await savedBoard(page), custom);
+  assert.equal(await undoButton.isEnabled(), undoEnabled);
+
+  await cell.click();
+  const japaneseEditor = page.locator('.taste-cell-dialog');
+  await japaneseEditor.locator('.taste-cell-name-details summary').click();
+  await japaneseEditor.getByRole('button', { name: '作品名を使う' }).click();
+  assert.equal(await cell.locator('.taste-slot-label').innerText(), '東方虹龍洞');
+  await japaneseEditor.getByRole('button', { name: '完了', exact: true }).click();
+  await page.getByRole('button', { name: 'EN', exact: true }).click();
+  assert.equal(await page.title(), 'Touhou Friend Intro Maker');
+  assert.equal(await cell.locator('.taste-slot-label').innerText(), 'Unconnected Marketeers');
+  assert.equal(await cell.locator('.taste-version-label').innerText(), 'Unconnected Marketeers version');
+  await page.getByRole('button', { name: '한국어', exact: true }).click();
+  await page.reload();
+  assert.equal(await page.locator('html').getAttribute('lang'), 'ko');
+  assert.equal(await page.title(), '동방 트친소 메이커');
+  assert.equal(await cell.locator('.taste-slot-label').innerText(), '동방홍룡동');
+  const freeGroup = page.locator('.taste-board-group').first();
+  const lastFreeCell = freeGroup.locator('.taste-board-cell').last();
+  await lastFreeCell.click();
+  await characterButton(page.locator('.taste-cell-dialog'), '카기야마 히나').click();
+  const beforeShrink = await savedBoard(page);
+  await page.getByRole('button', { name: '日本語', exact: true }).click();
+  let confirmation = '';
+  page.once('dialog', async dialog => { confirmation = dialog.message(); await dialog.dismiss(); });
+  await freeGroup.getByRole('button', { name: '横一列・3マス' }).click();
+  assert.equal(confirmation, 'グリッドを小さくすると、一部のキャラクターやマスの名前が削除されます。続けますか？');
+  assert.deepEqual(await savedBoard(page), beforeShrink);
+  page.once('dialog', dialog => dialog.accept());
+  await freeGroup.getByRole('button', { name: '横一列・3マス' }).click();
+  assert.equal((await savedBoard(page)).groups[0].cells.length, 3);
+  await undoButton.click();
+  assert.deepEqual(await savedBoard(page), beforeShrink);
+});
+
+test('language selection without a lang query persists without adding one', async t => {
+  const page = await pageFor(t, '/characters/tastes?probe=keep#board');
+  await page.getByRole('button', { name: 'EN', exact: true }).click();
+  assert.equal(new URL(page.url()).searchParams.has('lang'), false);
+  assert.equal(await page.locator('html').getAttribute('lang'), 'en');
+  await page.reload();
+  assert.equal(new URL(page.url()).searchParams.has('lang'), false);
+  assert.equal(await page.locator('html').getAttribute('lang'), 'en');
+  assert.equal(await page.title(), 'Touhou Friend Intro Maker');
+});
+test('clearing one character version preserves the other and survives search, undo, and reload', async t => {
+  const page = await pageFor(t);
+  await addEmptyGroup(page);
+  const cell = page.locator('.taste-board-group').nth(1).locator('.taste-board-cell').first();
+  await cell.click();
+  let dialog = page.locator('.taste-cell-dialog');
+  await characterButton(dialog, '하쿠레이 레이무').click();
+  await cell.click();
+  dialog = page.locator('.taste-cell-dialog');
+  await dialog.getByLabel('하쿠레이 레이무 좋아하는 버전').selectOption('th18');
+  await dialog.getByRole('button', { name: '한 명 더 담기' }).click();
+  await characterButton(dialog, '키리사메 마리사').click();
+  await cell.click();
+  dialog = page.locator('.taste-cell-dialog');
+  await dialog.getByLabel('키리사메 마리사 좋아하는 버전').selectOption('th7');
+  const beforeClear = await savedBoard(page);
+  await dialog.getByRole('button', { name: '하쿠레이 레이무 버전 해제' }).click();
+  assert.deepEqual((await savedBoard(page)).groups[1].cells[0].versionWorkIds, { marisa: 'th7' });
+  await dialog.getByRole('button', { name: '완료', exact: true }).click();
+  await page.getByRole('button', { name: '실행 취소' }).click();
+  assert.deepEqual((await savedBoard(page)).groups[1].cells[0].versionWorkIds, beforeClear.groups[1].cells[0].versionWorkIds);
+  await cell.click();
+  dialog = page.locator('.taste-cell-dialog');
+  await dialog.getByLabel('하쿠레이 레이무 좋아하는 버전').selectOption('');
+  assert.deepEqual((await savedBoard(page)).groups[1].cells[0].versionWorkIds, { marisa: 'th7' });
+  await dialog.getByRole('button', { name: '캐릭터 바꾸기' }).click();
+  await dialog.getByLabel('작품 / 분류').selectOption('th6');
+  await dialog.getByRole('button', { name: '칸 편집으로' }).click();
+  assert.equal(await dialog.getByLabel('하쿠레이 레이무 좋아하는 버전').inputValue(), '');
+  await dialog.getByRole('button', { name: '완료', exact: true }).click();
+  await page.reload();
+  assert.deepEqual((await savedBoard(page)).groups[1].cells[0].versionWorkIds, { marisa: 'th7' });
 });

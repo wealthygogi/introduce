@@ -281,3 +281,43 @@
 .taste-group-custom-size { grid-column: 1 / -1; min-width: 0; padding: 10px 12px; border: 1px solid var(--taste-line); border-radius: 14px; }
 .taste-group-custom-size summary { color: var(--taste-muted); font-size: .84rem; font-weight: 650; cursor: pointer; }
 .taste-group-custom-size > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
+.taste-group-name-editor { display: grid; min-width: 0; gap: 6px; }
+.taste-group-name-editor > span { color: var(--taste-muted); font-size: .78rem; }
+.taste-group-name-editor > button, .taste-group-heading > button { min-height: 44px; padding: 7px 10px; border: 1px solid var(--taste-line); border-radius: 10px; background: var(--taste-cell-bg); color: var(--taste-cell-ink); font: inherit; cursor: pointer; }
+.taste-character-dialog.taste-cell-dialog { width: min(620px, calc(100vw - 24px)); max-height: min(760px, 90dvh); grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; grid-auto-rows: unset; gap: 12px; overflow: hidden; padding: 16px; }
+.taste-cell-dialog > header { grid-column: 1; grid-row: 1; }
+.taste-cell-dialog > header button { min-width: 48px; min-height: 48px; }
+.taste-cell-dialog-body { display: grid; min-width: 0; min-height: 0; align-content: start; gap: 12px; grid-row: 2; overflow-y: auto; overscroll-behavior: contain; }
+.taste-cell-dialog-body > .taste-field { min-width: 0; }
+.taste-cell-dialog-body > .taste-character-list { min-height: 0; overflow: visible; }
+.taste-cell-dialog-body > p { margin: 0; color: #716f78; font-size: .82rem; line-height: 1.45; }
+.taste-cell-name-details { display: grid; gap: 8px; min-width: 0; }
+.taste-cell-name-details summary { min-height: 44px; align-content: center; color: #5c5964; font-weight: 700; cursor: pointer; }
+.taste-cell-name-details p { margin: 0; color: #716f78; font-size: .8rem; }
+.taste-cell-name-details > button, .taste-cell-edit-actions > button, .taste-cell-version-row > button { min-height: 44px; padding: 8px 12px; border: 1px solid #e3dfeb; border-radius: 12px; background: #fff; color: inherit; font: inherit; cursor: pointer; }
+.taste-cell-version-list { display: grid; min-width: 0; gap: 10px; }
+.taste-cell-version-row { display: grid; min-width: 0; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 8px; padding: 10px; border: 1px solid #e7e3ed; border-radius: 14px; }
+.taste-cell-version-row > strong { min-width: 0; overflow-wrap: anywhere; }
+.taste-cell-version-row > .taste-field { grid-column: 1 / -1; min-width: 0; }
+.taste-cell-version-row > button { grid-column: 1 / -1; }
+.taste-cell-version-row select { min-width: 0; width: 100%; }
+.taste-cell-edit-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.taste-cell-dialog > footer { grid-column: 1; grid-row: 3; flex-wrap: wrap; gap: 8px; padding-top: 10px; border-top: 1px solid #e9e3f0; }
+.taste-cell-dialog > footer > div { flex: 1 1 100%; color: #716f78; font-size: .8rem; }
+.taste-cell-dialog > footer p { margin: 4px 0 0; }
+.taste-cell-dialog > footer button { min-width: 44px; min-height: 44px; padding: 7px 10px; }
+.taste-cell-dialog .taste-character-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 761px) {
+  .taste-character-dialog.taste-cell-dialog { width: min(620px, calc(100vw - 64px)); height: min(760px, 86dvh); max-width: 620px; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; gap: 12px; padding: 20px; }
+  .taste-character-dialog.taste-cell-dialog > header { grid-column: 1; grid-row: 1; }
+  .taste-character-dialog.taste-cell-dialog > .taste-cell-dialog-body { grid-column: 1; grid-row: 2; }
+  .taste-character-dialog.taste-cell-dialog > footer { grid-column: 1; grid-row: 3; }
+  .taste-cell-dialog .taste-cell-version-row { grid-template-columns: 48px minmax(0, 1fr) auto; }
+  .taste-cell-dialog .taste-cell-version-row > .taste-field { grid-column: 2; }
+  .taste-cell-dialog .taste-cell-version-row > button { grid-column: 3; }
+  .taste-cell-dialog .taste-cell-version-row > strong { grid-column: 2; }
+}
+@media (max-width: 420px) {
+  .taste-cell-dialog { width: calc(100vw - 16px); max-height: 94dvh; padding: 12px; }
+  .taste-cell-dialog .taste-character-list { grid-template-columns: 1fr; }
+}

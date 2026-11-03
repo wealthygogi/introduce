@@ -176,14 +176,22 @@ test('Japanese names and work versions stay separated in the downloaded board', 
     version: 1,
     data: {
       title: '내 캐릭터 취향',
+      titleSource: 'auto',
       theme: 'album',
       showNames: true,
       groups: [{
         id: 'japanese-versions',
         title: '내 그룹 2',
+        titleSource: 'auto',
+        titlePreset: { kind: 'free', number: 2 },
         rows: 1,
         columns: 3,
         cells: ['sanae', 'hina', 'tenshi'].map(id => ({ characters: [id], label: '', versionWorkIds: { [id]: 'th10' } })),
+        slots: [
+          { label: '동방풍신록', topicId: 'th10', labelSource: 'topic' },
+          { label: '사용자 지정 라벨', topicId: 'th6', labelSource: 'custom' },
+          null,
+        ],
       }],
     },
   })));
@@ -192,6 +200,16 @@ test('Japanese names and work versions stay separated in the downloaded board', 
   await page.goto(`${base}/characters/tastes?lang=ja`);
   const cells = page.locator('#taste-board-export .taste-export-cell');
   await cells.first().waitFor();
+  const exportRoot = page.locator('#taste-board-export');
+  const autoTitle = exportRoot.locator('> h1');
+  const automaticGroupTitle = exportRoot.locator('.taste-export-group h2');
+  const automaticSlot = cells.nth(0).locator('.taste-export-slot-label');
+  const customSlot = cells.nth(1).locator('.taste-export-slot-label');
+  assert.equal(await autoTitle.innerText(), 'お気に入りのキャラクター');
+  assert.equal(await automaticGroupTitle.innerText(), 'マイグループ 2');
+  assert.equal(await automaticSlot.innerText(), '東方風神録');
+  assert.equal(await customSlot.innerText(), '사용자 지정 라벨');
+  const targets = [autoTitle, automaticGroupTitle, automaticSlot, customSlot];
   const layout = await cells.evaluateAll(elements => elements.map(cell => {
     const nameElement = cell.querySelector('.taste-export-character-name');
     const name = nameElement.getBoundingClientRect();
@@ -207,7 +225,12 @@ test('Japanese names and work versions stay separated in the downloaded board', 
     assert.ok(item.versionBottom <= item.cellBottom - 8, `${item.name} version label stays inside its card`);
   }
   assert.equal(await cells.first().locator('.taste-export-version').innerText(), '東方風神録 バージョン');
+  const rects = await Promise.all(targets.map(exportRect));
   const png = await downloadPng(page, join(output, 'japanese-versions.png'));
+  for (const target of targets) await target.evaluate(element => { element.style.visibility = 'hidden'; });
+  const hidden = await downloadPng(page, join(output, 'japanese-versions-hidden.png'));
+  for (const target of targets) await target.evaluate(element => { element.style.visibility = ''; });
+  targets.forEach((_, index) => assertRenderedPixels(png, hidden, rects[index], `localized export text ${index + 1}`));
   assert.equal(png.width, 1200);
   assert.ok(png.height > 0);
 });

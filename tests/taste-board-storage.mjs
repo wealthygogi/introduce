@@ -116,3 +116,38 @@ test('storage uses an independent versioned key and reports blocked storage', ()
   assert.equal(readTasteBoard({ getItem() { throw new Error('blocked'); }, setItem() {} }, characters).kind, 'unavailable');
   assert.equal(writeTasteBoard({ getItem() { return null; }, setItem() { throw new Error('blocked'); } }, board), false);
 });
+test('legacy drafts remain byte-for-byte data-equivalent and optional provenance metadata validates', () => {
+  const legacy = {
+    version: 1,
+    data: {
+      title: 'Custom board', theme: 'paper', showNames: true,
+      groups: [{
+        id: 'legacy', title: 'Custom group', rows: 1, columns: 2,
+        cells: [{ characters: ['reimu', 'marisa'], label: 'memo', imageId: 'photo-1', versionWorkIds: { reimu: 'th18' } }, null],
+        slots: [{ label: '홍마향', topicId: 'th6' }, { label: 'unknown topic label', topicId: 'removed-topic' }],
+      }],
+    },
+  };
+  const parsed = parseTasteBoard(JSON.stringify(legacy), characters);
+  assert.equal(parsed.kind, 'valid');
+  if (parsed.kind === 'valid') assert.deepEqual(parsed.data, legacy.data);
+
+  const board = createDefaultTasteBoard();
+  board.groups[0].slots = [{ label: '동방홍마향', topicId: 'th6', labelSource: 'topic' }, ...Array(8).fill(null)];
+  board.groups[0].slots[0].labelSource = 'custom';
+  const restored = parseTasteBoard(serializeTasteBoard(board), characters);
+  assert.equal(restored.kind, 'valid');
+  if (restored.kind === 'valid') assert.deepEqual(restored.data, board);
+
+  const invalid = mutate => {
+    const data = structuredClone(board);
+    mutate(data);
+    assert.equal(parseTasteBoard(JSON.stringify({ version: 1, data }), characters).kind, 'invalid');
+  };
+  invalid(data => { data.titleSource = 'unknown'; });
+  invalid(data => { data.groups[0].titleSource = 'auto'; delete data.groups[0].titlePreset; });
+  invalid(data => { data.groups[0].titlePreset = { kind: 'unknown' }; });
+  invalid(data => { data.groups[0].titlePreset = { kind: 'free', number: 0 }; });
+  invalid(data => { data.groups[0].titlePreset = { kind: 'free', number: 1.5 }; });
+  invalid(data => { data.groups[0].slots = [{ label: 'work', labelSource: 'topic' }, ...Array(8).fill(null)]; });
+});

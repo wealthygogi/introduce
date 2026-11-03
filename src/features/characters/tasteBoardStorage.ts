@@ -1,4 +1,4 @@
-import type { TasteBoard, TasteCell, TasteGroup, TasteTheme } from './tasteBoardTypes';
+import type { TasteBoard, TasteCell, TasteGroup, TasteGroupTitlePreset, TasteTheme } from './tasteBoardTypes';
 
 export const TASTE_BOARD_STORAGE_KEY = 'introduce:characters:taste-board:v1';
 export const MAX_CELLS_PER_GROUP = 100;
@@ -13,10 +13,22 @@ const isImageId = (value: unknown): value is string => typeof value === 'string'
 export function createDefaultTasteBoard(): TasteBoard {
   return {
     title: '내 캐릭터 취향',
+    titleSource: 'auto',
     theme: 'paper',
     showNames: true,
-    groups: [{ id: 'group-1', title: 'Favorites', rows: 3, columns: 3, cells: Array(9).fill(null) }],
+    groups: [{ id: 'group-1', title: '내 그룹 1', titleSource: 'auto', titlePreset: { kind: 'free', number: 1 }, rows: 3, columns: 3, cells: Array(9).fill(null) }],
   };
+}
+
+function isSource(value: unknown, allowed: readonly string[]): boolean {
+  return allowed.includes(value as string);
+}
+
+function isTitlePreset(value: unknown): value is TasteGroupTitlePreset {
+  if (!isRecord(value)) return false;
+  if (value.kind === 'favorites' || value.kind === 'collection') return Object.keys(value).length === 1;
+  return value.kind === 'free' && Object.keys(value).length === 2 &&
+    typeof value.number === 'number' && Number.isSafeInteger(value.number) && value.number > 0;
 }
 
 function isTasteCell(value: unknown, characters: ReadonlySet<string>): value is TasteCell {
@@ -29,10 +41,14 @@ function isTasteCell(value: unknown, characters: ReadonlySet<string>): value is 
 
 function isTasteGroup(value: unknown, characters: ReadonlySet<string>): value is TasteGroup {
   if (!isRecord(value) || !isText(value.id, 80) || !value.id || !isText(value.title, 100) || !Number.isInteger(value.rows) || !Number.isInteger(value.columns)) return false;
+  if ('titleSource' in value && !isSource(value.titleSource, ['auto', 'custom'])) return false;
+  if ('titlePreset' in value && !isTitlePreset(value.titlePreset)) return false;
+  if (value.titleSource === 'auto' && !isTitlePreset(value.titlePreset)) return false;
+  if (!isRecord(value) || !isText(value.id, 80) || !value.id || !isText(value.title, 100) || !Number.isInteger(value.rows) || !Number.isInteger(value.columns)) return false;
   const rows = value.rows as number;
   const columns = value.columns as number;
   if (rows < 1 || columns < 1 || rows * columns > MAX_CELLS_PER_GROUP || !Array.isArray(value.cells) || value.cells.length !== rows * columns) return false;
-  if ('slots' in value && (!Array.isArray(value.slots) || value.slots.length !== value.cells.length || !value.slots.every(slot => slot === null || (isRecord(slot) && isText(slot.label, 80) && (!('topicId' in slot) || (isText(slot.topicId, 120) && slot.topicId.length > 0)))))) return false;
+  if ('slots' in value && (!Array.isArray(value.slots) || value.slots.length !== value.cells.length || !value.slots.every(slot => slot === null || (isRecord(slot) && isText(slot.label, 80) && (!('topicId' in slot) || (isText(slot.topicId, 120) && slot.topicId.length > 0)) && (!('labelSource' in slot) || isSource(slot.labelSource, ['topic', 'custom'])) && (slot.labelSource !== 'topic' || (isText(slot.topicId, 120) && slot.topicId.length > 0)))))) return false;
   if ('showAppearances' in value && typeof value.showAppearances !== 'boolean') return false;
   if ('appearanceContext' in value) {
     const context = value.appearanceContext;
@@ -51,6 +67,7 @@ export function parseTasteBoard(raw: string, characters: ReadonlySet<string>): T
     const parsed: unknown = JSON.parse(raw);
     if (!isRecord(parsed) || parsed.version !== 1 || !isRecord(parsed.data)) return { kind: 'invalid' };
     const value = parsed.data;
+    if ('titleSource' in value && !isSource(value.titleSource, ['auto', 'custom'])) return { kind: 'invalid' };
     if (!isText(value.title, 120) || !THEMES.has(value.theme as TasteTheme) || typeof value.showNames !== 'boolean' || !Array.isArray(value.groups) || value.groups.length > MAX_GROUPS) return { kind: 'invalid' };
     if (!value.groups.every(group => isTasteGroup(group, characters))) return { kind: 'invalid' };
     const groups = value.groups as TasteGroup[];

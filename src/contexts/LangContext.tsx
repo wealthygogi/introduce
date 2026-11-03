@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { messages, type Lang, type Messages } from '../data/i18n';
 
 const STORAGE_KEY = 'introduce:lang';
@@ -17,6 +18,8 @@ const LangContext = createContext<LangContextValue>({
 });
 
 export function LangProvider({ children }: { children: ReactNode }) {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [lang, setLangState] = useState<Lang>(() => {
     if (typeof window === 'undefined') return DEFAULT_LANG;
     const sharedLang = new URLSearchParams(window.location.search).get('lang');
@@ -31,10 +34,18 @@ export function LangProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = lang;
+    document.title = messages[lang].heroTitle;
     window.localStorage.setItem(STORAGE_KEY, lang);
   }, [lang]);
 
-  const setLang = (l: Lang) => setLangState(l);
+  const setLang = (l: Lang) => {
+    setLangState(l);
+    const params = new URLSearchParams(location.search);
+    if (params.has('lang')) {
+      params.set('lang', l);
+      navigate({ pathname: location.pathname, search: `?${params.toString()}`, hash: location.hash }, { replace: true });
+    }
+  };
   const t = messages[lang];
 
   return <LangContext.Provider value={{ lang, setLang, t }}>{children}</LangContext.Provider>;

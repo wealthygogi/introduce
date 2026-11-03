@@ -118,6 +118,12 @@ a {
   gap: 8px;
   flex-wrap: wrap;
 }
+.mode-nav { display:flex; align-items:center; gap:4px; flex-shrink:0; }
+.mode-nav .btn { min-height:44px; padding:7px 9px; font-size:13px; white-space:nowrap; }
+.mode-nav .btn.active { background:var(--accent-soft); color:var(--accent-strong); border-color:var(--accent); font-weight:600; }
+.section-subnav { flex-basis:100%; min-width:0; max-width:100%; display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; }
+.top-nav a:focus-visible, .top-nav button:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+.top-nav .nav-row > .btn.ghost { height:44px; min-height:44px; }
 
 /* generic button */
 .btn {
@@ -670,21 +676,8 @@ a {
     padding: 8px 16px;
     gap: 8px;
   }
-  /* 2줄로 압축: [브랜드 … 언어] / [목록으로 … 테마 스와치] */
-  .nav-row {
-    display: contents;
-  }
-  .top-nav .lang-switcher {
-    order: 1;
-  }
-  .top-nav .nav-row > .btn.ghost {
-    order: 2;
-  }
-  .top-nav .theme-switcher {
-    order: 3;
-    margin-left: auto;
-    flex: 0 1 auto;
-  }
+  .top-nav .nav-row { display:flex; flex-wrap:wrap; min-width:0; flex-basis:100%; align-items:center; gap:8px; }
+  .top-nav .theme-switcher { margin-left:0; min-width:0; flex:1 1 160px; }
   .theme-switcher .switcher-label {
     display: none;
   }
@@ -849,4 +842,11 @@ a {
 }
 .modal-close:hover {
   color: var(--fg-strong);
+}
+@media (max-width: 560px) {
+  .top-nav { align-items:flex-start; }
+  .top-nav > .brand,
+  .top-nav > .primary-mode-nav,
+  .top-nav > .nav-row,
+  .top-nav > .section-subnav { flex-basis:100%; }
 }

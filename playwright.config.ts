@@ -19,8 +19,8 @@ export default defineConfig({
   projects: [
     { name: 'chromium', use: { browserName: 'chromium' } },
     // Safari(iPhone 포함)는 SVG foreignObject 캡처 동작이 달라 PNG 가 비거나 fallback 폰트로 나온 이력이 있다
-    // → 다운로드 · 모바일 경로는 WebKit 에서도 검사한다.
-    { name: 'webkit', use: { browserName: 'webkit' }, testMatch: /(download|mobile)\.spec\.ts/ },
+    // → 다운로드 · 모바일 · 내비게이션 경로는 WebKit 에서도 검사한다.
+    { name: 'webkit', use: { browserName: 'webkit' }, testMatch: /(download|mobile|navigation)\.spec\.ts/ },
   ],
   webServer: {
     // CI 는 빌드 산출물(dist)을 검사, 로컬은 dev 서버로 빠른 반복

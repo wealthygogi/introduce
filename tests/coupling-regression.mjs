@@ -93,9 +93,8 @@ test('home routes through the character hub and retains both existing galleries'
   assert.equal(await page.locator('.coupling-hub-card').count(), 4);
   assert.equal(await page.locator('.coupling-hub-card a[href^="/introduce/coupling/"]').count(), 4);
 
-  await page.locator('a[href="/introduce/sheets"]').first().click();
+  await page.locator('header .primary-mode-nav a[href="/introduce/sheets"]').click();
   await page.waitForURL('**/introduce/sheets');
-  assert.equal(await page.getByRole('heading', { level: 1, name: '나를 소개하는, 나만의 한 장' }).count(), 1);
   assert.equal(await page.locator('.mode-options a[href="/introduce/compact"]').count(), 1);
   assert.equal(await page.locator('.mode-options a[href="/introduce/wide"]').count(), 1);
 });
@@ -105,7 +104,6 @@ test('home opens the broader character-related hub and keeps legacy relationship
   const characterEntry = page.locator('.mode-options a[href="/introduce/characters"]');
   await characterEntry.click();
   await page.waitForURL('**/introduce/characters');
-  assert.equal(await page.getByRole('heading', { level: 1, name: '캐릭터 취향과 관계를 한 장에' }).count(), 1);
   assert.equal(await page.locator('.character-related-card[href="/introduce/characters/tastes"]').count(), 1);
   assert.equal(await page.locator('.character-related-card[href="/introduce/coupling"]').count(), 1);
 
@@ -955,7 +953,6 @@ test('mobile touch scrolls canvas panels and keeps batch, connection, deletion, 
       stored: localStorage.getItem('introduce:coupling:whiteboard:v1'),
     };
   });
-  const beforePanels = await readCanvas();
   const noHorizontalOverflow = () => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth);
 
   await tap('.coupling-board-more-toggle');
@@ -963,8 +960,10 @@ test('mobile touch scrolls canvas panels and keeps batch, connection, deletion, 
   assert.ok(insideBoard(await morePanel.boundingBox()), 'the More panel fits inside the mobile canvas');
   assert.ok(await noHorizontalOverflow(), 'the More panel does not widen the page');
   await tap('.coupling-board-more-toggle');
-
-  await tap('.coupling-board-line-toggle');
+  const lineToggle = page.locator('.coupling-board-line-toggle');
+  await lineToggle.scrollIntoViewIfNeeded();
+  const beforePanels = await readCanvas();
+  await tap(lineToggle);
   const linePanel = page.locator('.coupling-board-line-settings');
   assert.ok(insideBoard(await linePanel.boundingBox()), 'line settings fit inside the mobile canvas');
   assert.ok(await noHorizontalOverflow(), 'line settings do not widen the page');

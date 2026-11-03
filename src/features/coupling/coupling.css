@@ -20,8 +20,8 @@
 .coupling-root select:focus-visible,
 .coupling-root textarea:focus-visible { outline: 3px solid #5c82c4; outline-offset: 2px; }
 .coupling-root .coupling-layout { width: min(1440px, 100%); margin-inline: auto; padding: 20px clamp(12px, 2.4vw, 32px) 40px; }
-.coupling-root .coupling-tabs { display: flex; gap: 6px; overflow-x: auto; overscroll-behavior-x: contain; padding: 2px 0 12px; margin-bottom: 12px; border-bottom: 1px solid var(--coupling-line); scrollbar-width: thin; }
-.coupling-root .coupling-tabs a { flex: 0 0 auto; border: 1px solid var(--coupling-line); border-radius: 999px; padding: 7px 13px; color: var(--coupling-muted); font-size: 13px; }
+.coupling-root .coupling-tabs { display: flex; gap: 6px; overflow-x: auto; overscroll-behavior-x: contain; padding: 5px 0 12px; margin-bottom: 12px; border-bottom: 1px solid var(--coupling-line); scrollbar-width: thin; }
+.coupling-root .coupling-tabs a { display: inline-flex; align-items: center; min-height: 44px; flex: 0 0 auto; border: 1px solid var(--coupling-line); border-radius: 999px; padding: 7px 13px; color: var(--coupling-muted); font-size: 13px; }
 .coupling-root .coupling-tabs a[aria-current='page'] { border-color: #28313b; background: #28313b; color: #fff; }
 .coupling-root .coupling-panel { border: 1px solid var(--coupling-line); border-radius: 14px; background: var(--coupling-surface); padding: 16px; }
 .coupling-root .coupling-toolbar,

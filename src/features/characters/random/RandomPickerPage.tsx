@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLang } from '../../../contexts/LangContext';
 import { PROFILE_CHARACTER_BY_ID, type ProfileCharacter } from '../../../data/profileCatalog';
 import { captureCardBlob, saveBlob } from '../../../lib/captureCard';
@@ -10,6 +9,7 @@ import {
   appendHistory,
   createDefaultRandomPicker,
   createDrawId,
+  MAX_RANDOM_HISTORY,
   readRandomPicker,
   writeRandomPicker,
 } from './randomPickerStorage';
@@ -19,13 +19,16 @@ import type {
   RandomDrawRecord,
   RandomSettings,
 } from './types';
+import { createRandomRevealPlan, type RandomRevealPlan } from './revealEffects';
 import RandomDrawStage from './components/RandomDrawStage';
 import RandomExport, { RANDOM_EXPORT_ID } from './components/RandomExport';
 import RandomFilterSheet from './components/RandomFilterSheet';
 import RandomFilterPanel from './components/RandomFilterPanel';
 import RandomHistory from './components/RandomHistory';
 import RandomResultCard from './components/RandomResultCard';
+import RandomReveal from './components/RandomReveal';
 import './random-picker.css';
+import './random-reveal.css';
 
 function charactersForRecord(record: RandomDrawRecord): ProfileCharacter[] {
   return record.characterIds
@@ -41,7 +44,6 @@ function recordFilename(count: number): string {
 export default function RandomPickerPage() {
   const { lang } = useLang();
   const t = copy[lang];
-  const navigate = useNavigate();
   const [boot] = useState(() => {
     const read = readRandomPicker(window.localStorage);
     if (read.kind === 'valid') return { data: read.data, warning: null as 'restore' | null };
@@ -55,7 +57,8 @@ export default function RandomPickerPage() {
   const [result, setResult] = useState<ProfileCharacter[] | null>(null);
   const [lastOutcome, setLastOutcome] = useState<DrawOutcome | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [phase, setPhase] = useState<'idle' | 'drawing'>('idle');
+  const [phase, setPhase] = useState<'idle' | 'drawing' | 'revealing'>('idle');
+  const [revealPlan, setRevealPlan] = useState<RandomRevealPlan | null>(null);
   const [signals, setSignals] = useState<PreferenceSignals | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [writeWarning, setWriteWarning] = useState(false);
@@ -65,6 +68,7 @@ export default function RandomPickerPage() {
   const timerRef = useRef<number | null>(null);
   const pendingBlobRef = useRef<Blob | null>(null);
   const liveRef = useRef<HTMLParagraphElement>(null);
+  const drawButtonRef = useRef<HTMLButtonElement>(null);
 
   const recent = useMemo(() => recentCharacterIds(history), [history]);
   const pool = useMemo(() => buildPool(settings, signals, recent), [settings, signals, recent]);
@@ -105,8 +109,7 @@ export default function RandomPickerPage() {
     });
   };
 
-  const finishDraw = () => {
-    const outcome = drawCharacters(pool, settings.count, settings.mode);
+  const finishDraw = (outcome: DrawOutcome, plan: RandomRevealPlan, reducedMotion: boolean) => {
     const record: RandomDrawRecord = {
       id: createDrawId(),
       at: Date.now(),
@@ -119,15 +122,15 @@ export default function RandomPickerPage() {
     setLastOutcome(outcome);
     setActiveId(record.id);
     setHistory(current => appendHistory(current, record));
-    setPhase('idle');
+    setRevealPlan(plan);
+    setPhase(reducedMotion ? 'idle' : 'revealing');
     setCopyState('idle');
     setSaveState('idle');
     pendingBlobRef.current = null;
-    window.requestAnimationFrame(() => liveRef.current?.focus?.());
   };
 
   const draw = () => {
-    if (phase === 'drawing') return;
+    if (phase !== 'idle') return;
     if (pool.entries.length === 0) {
       setResult([]);
       setLastOutcome(null);
@@ -137,18 +140,30 @@ export default function RandomPickerPage() {
       return;
     }
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const outcome = drawCharacters(pool, settings.count, settings.mode);
+    const plan = createRandomRevealPlan();
     if (reduced) {
-      finishDraw();
+      finishDraw(outcome, plan, true);
       return;
     }
     setPhase('drawing');
-    timerRef.current = window.setTimeout(finishDraw, 620);
+    timerRef.current = window.setTimeout(() => finishDraw(outcome, plan, false), 480);
   };
 
+  const finishReveal = useCallback(() => {
+    const focusRevealButton = document.activeElement instanceof HTMLElement
+      && document.activeElement.closest('.random-reveal') !== null;
+    setPhase('idle');
+    if (focusRevealButton) window.requestAnimationFrame(() => drawButtonRef.current?.focus());
+  }, []);
+
   const openRecord = (record: RandomDrawRecord) => {
+    if (timerRef.current !== null) window.clearTimeout(timerRef.current);
     setResult(charactersForRecord(record));
     setLastOutcome(null);
     setActiveId(record.id);
+    setRevealPlan(null);
+    setPhase('idle');
     setCopyState('idle');
     setSaveState('idle');
     pendingBlobRef.current = null;
@@ -161,7 +176,12 @@ export default function RandomPickerPage() {
   };
 
   const undoClear = () => {
-    if (undoSnapshot) setHistory(undoSnapshot);
+    if (undoSnapshot) {
+      setHistory(current => {
+        const merged = new Map([...current, ...undoSnapshot].map(record => [record.id, record]));
+        return [...merged.values()].sort((a, b) => b.at - a.at).slice(0, MAX_RANDOM_HISTORY);
+      });
+    }
     setUndoSnapshot(null);
   };
 
@@ -206,12 +226,6 @@ export default function RandomPickerPage() {
     }
   };
 
-  const openPair = () => {
-    if (result?.length !== 2) return;
-    const [a, b] = result;
-    navigate(`/coupling/pairs?a=${encodeURIComponent(a.id)}&b=${encodeURIComponent(b.id)}`);
-  };
-
   const empty = result !== null && result.length === 0;
   const preferenceEmpty = empty && settings.reflectPreferences && pool.totalCandidates > 0;
   const notice = lastOutcome
@@ -229,7 +243,12 @@ export default function RandomPickerPage() {
     t.modes[settings.mode],
     settings.reflectPreferences ? t.personalization : null,
   ].filter((chip): chip is string => Boolean(chip));
-  const announce = result?.length ? t.resultAnnounce(result.map(character => character[lang]).join(', ')) : '';
+  const announce = phase === 'idle' && result?.length
+    ? t.resultAnnounce(result.map(character => character[lang]).join(', '))
+    : '';
+  const visibleHistory = phase === 'revealing' && activeId
+    ? history.filter(record => record.id !== activeId)
+    : history;
 
   const filterProps = {
     settings,
@@ -266,7 +285,16 @@ export default function RandomPickerPage() {
         {writeWarning && <p className="random-notice" role="status">{t.storageWarning}</p>}
         {notice && <p className="random-notice" role="status">{notice}</p>}
 
-        <RandomDrawStage phase={phase} result={result} copy={t} poolEmpty={pool.entries.length === 0} onDraw={draw} />
+        <RandomDrawStage phase={phase} result={result} copy={t} poolEmpty={pool.entries.length === 0} onDraw={draw} drawButtonRef={drawButtonRef} />
+
+        {phase === 'revealing' && result?.length && revealPlan && <RandomReveal
+          key={activeId}
+          characters={result}
+          plan={revealPlan}
+          copy={t}
+          onComplete={finishReveal}
+          onSkip={finishReveal}
+        />}
 
         {empty && <section className="random-empty" role="status">
           <h2>{preferenceEmpty ? t.emptyPreferenceTitle : t.emptyTitle}</h2>
@@ -277,18 +305,17 @@ export default function RandomPickerPage() {
           </div>
         </section>}
 
-        {result && result.length > 0 && <RandomResultCard
+        {phase === 'idle' && result && result.length > 0 && <RandomResultCard
           characters={result}
           copy={t}
           onCopy={copyResultText}
           onSave={saveResult}
-          onOpenPair={result.length === 2 ? openPair : undefined}
           copyState={copyState}
           saveState={saveState}
         />}
 
         <RandomHistory
-          records={history}
+          records={visibleHistory}
           copy={t}
           activeId={activeId}
           onOpen={openRecord}

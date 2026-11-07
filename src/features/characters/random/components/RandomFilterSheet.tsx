@@ -9,12 +9,21 @@ type Props = FilterProps & {
 
 export default function RandomFilterSheet({ open, onClose, ...panel }: Props) {
   const ref = useRef<HTMLDialogElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
-    else if (!open && dialog.open) dialog.close();
+    if (open && !dialog.open) {
+      const active = document.activeElement;
+      returnFocusRef.current = active instanceof HTMLElement ? active : null;
+      dialog.showModal();
+      dialog.querySelector<HTMLElement>('button, input, select, summary, [tabindex]:not([tabindex="-1"])')?.focus();
+    } else if (!open && dialog.open) {
+      dialog.close();
+      returnFocusRef.current?.focus();
+      returnFocusRef.current = null;
+    }
   }, [open]);
 
   return <dialog

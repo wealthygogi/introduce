@@ -2,7 +2,7 @@ import type { ProfileCharacter } from '../../../data/profileCatalog';
 import type { AppearanceStage, RoleFilter } from '../characterCategories';
 
 export type RandomScope = 'all' | 'mainline' | 'pc98' | 'spinoff' | 'books';
-export type DrawCount = 1 | 2 | 3 | 5 | 10;
+export type DrawCount = 1 | 3 | 5 | 10;
 export type DrawMode = 'pool' | 'balanced';
 
 export type RandomFilter = {

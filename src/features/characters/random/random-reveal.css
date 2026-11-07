@@ -1,0 +1,104 @@
+.random-reveal { --reveal-accent: #c0a8f8; --reveal-glow: #7d5ab3; --reveal-soft: #f6cfe2; position: relative; display: grid; gap: 10px; min-width: 0; overflow: hidden; padding: 14px; border: 1px solid var(--random-line); border-radius: 24px; background: var(--random-surface); }
+.random-reveal[data-motif="scarlet"] { --reveal-accent: #ff9d9d; --reveal-glow: #a23955; --reveal-soft: #ffe2c7; }
+.random-reveal[data-motif="blossom"] { --reveal-accent: #ffc5e2; --reveal-glow: #9c578e; --reveal-soft: #fff2d9; }
+.random-reveal[data-motif="moon"] { --reveal-accent: #f4db9d; --reveal-glow: #76679e; --reveal-soft: #e8f2ff; }
+.random-reveal[data-motif="flower"] { --reveal-accent: #ffb3c5; --reveal-glow: #aa546b; --reveal-soft: #ffe9b1; }
+.random-reveal[data-motif="autumn"] { --reveal-accent: #ffd08b; --reveal-glow: #9d5633; --reveal-soft: #eff3ba; }
+.random-reveal[data-motif="embers"] { --reveal-accent: #ffb47c; --reveal-glow: #a44435; --reveal-soft: #ffe58d; }
+.random-reveal[data-motif="rainbow"] { --reveal-accent: #9fe9ed; --reveal-glow: #5c69a3; --reveal-soft: #ffd4f1; }
+.random-reveal[data-motif="spirits"] { --reveal-accent: #b9e9e4; --reveal-glow: #477d85; --reveal-soft: #edddff; }
+.random-reveal[data-motif="boundary"] { --reveal-accent: #e3b7ff; --reveal-glow: #7950a1; --reveal-soft: #ffc6d4; }
+.random-reveal[data-motif="starlight"] { --reveal-accent: #b5d4ff; --reveal-glow: #536da9; --reveal-soft: #fff0bb; }
+.random-reveal[data-motif="seasons"] { --reveal-accent: #f2c0e8; --reveal-glow: #687c83; --reveal-soft: #d5f0c1; }
+.random-reveal[data-motif="beasts"] { --reveal-accent: #c5df9b; --reveal-glow: #507d4a; --reveal-soft: #ffd38c; }
+.random-reveal[data-motif="market"] { --reveal-accent: #a7e5df; --reveal-glow: #437c91; --reveal-soft: #ffdf9d; }
+.random-reveal[data-motif="dream"] { --reveal-accent: #c8c0ff; --reveal-glow: #625ca6; --reveal-soft: #ffcbdb; }
+.random-reveal[data-motif="pyramid"] { --reveal-accent: #f1d28e; --reveal-glow: #8b604a; --reveal-soft: #b9e5f1; }
+.random-reveal-scene { position: relative; display: grid; min-height: clamp(235px, 30vw, 390px); place-items: center; overflow: hidden; isolation: isolate; border-radius: 17px; background: radial-gradient(ellipse at 50% 46%, color-mix(in srgb, var(--reveal-glow) 58%, #171321), #100e18 70%); }
+.random-reveal-scene::before { position: absolute; z-index: -2; inset: 0; background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--reveal-accent) 20%, transparent), transparent 62%); content: ''; }
+.random-reveal-scene::after { position: absolute; z-index: -1; top: 50%; left: 50%; width: min(55vw, 330px); aspect-ratio: 1; border: 1px solid color-mix(in srgb, var(--reveal-accent) 56%, transparent); border-radius: 50%; box-shadow: 0 0 28px color-mix(in srgb, var(--reveal-accent) 18%, transparent), inset 0 0 20px color-mix(in srgb, var(--reveal-accent) 12%, transparent); content: ''; transform: translate(-50%, -50%) scale(.2); animation: random-reveal-ring 1.2s ease-out both; }
+.random-reveal[data-opening="sakura"] .random-reveal-scene::after { border-radius: 48% 52% 42% 58%; transform: translate(-50%, -50%) rotate(28deg) scale(.2); }
+.random-reveal[data-opening="moon"] .random-reveal-scene::after { width: min(30vw, 190px); border: 0; background: radial-gradient(circle at 35% 35%, #fff8db, var(--reveal-accent) 70%, transparent); box-shadow: 0 0 48px color-mix(in srgb, var(--reveal-accent) 44%, transparent); }
+.random-reveal[data-opening="danmaku"] .random-reveal-scene::after { border-style: dashed; transform: translate(-50%, -50%) rotate(38deg) scale(.2, .72); }
+.random-reveal[data-opening="cards"] .random-reveal-scene::after { border-radius: 22px; transform: translate(-50%, -50%) rotate(15deg) scale(.2); box-shadow: 14px 9px 0 -4px color-mix(in srgb, var(--reveal-soft) 55%, transparent), -14px -9px 0 -4px color-mix(in srgb, var(--reveal-accent) 48%, transparent); }
+.random-reveal[data-motif="scarlet"] .random-reveal-scene::before { background: radial-gradient(ellipse at 50% 34%, #d7434b40, transparent 46%), linear-gradient(transparent 68%, #481f3a70); }
+.random-reveal[data-motif="blossom"] .random-reveal-scene::before { background: radial-gradient(circle at 18% 24%, #f6aac732 0 2px, transparent 3px), radial-gradient(circle at 78% 35%, #f6aac732 0 2px, transparent 3px), radial-gradient(ellipse, #b166a330, transparent 60%); }
+.random-reveal[data-motif="moon"] .random-reveal-scene::before { background: radial-gradient(circle at 50% 17%, #fff1c733, transparent 27%), linear-gradient(100deg, transparent 40%, #bad3ff15 50%, transparent 60%); }
+.random-reveal[data-motif="flower"] .random-reveal-scene::before { background: repeating-radial-gradient(ellipse at 50% 50%, transparent 0 28px, #ffb3c51c 29px 30px); }
+.random-reveal[data-motif="autumn"] .random-reveal-scene::before { background: linear-gradient(140deg, transparent 37%, #ed963a22 38% 40%, transparent 41%), linear-gradient(40deg, transparent 55%, #f3d27d18 56% 58%, transparent 59%); }
+.random-reveal[data-motif="embers"] .random-reveal-scene::before { background: radial-gradient(ellipse at 50% 100%, #f05d362a, transparent 58%); }
+.random-reveal[data-motif="rainbow"] .random-reveal-scene::before { background: conic-gradient(from 210deg at 50% 65%, #ea74851b, #f4d2771b, #64d9c51b, #778ff51b, transparent 70%); }
+.random-reveal[data-motif="spirits"] .random-reveal-scene::before { background: radial-gradient(ellipse at 24% 85%, #9ff6e827, transparent 35%), radial-gradient(ellipse at 80% 70%, #d5aaff25, transparent 35%); }
+.random-reveal[data-motif="boundary"] .random-reveal-scene::before { background: linear-gradient(90deg, #f1b9d01c 0 1px, transparent 1px calc(100% - 1px), #f1b9d01c calc(100% - 1px)), radial-gradient(ellipse, #b487e328, transparent 55%); }
+.random-reveal[data-motif="starlight"] .random-reveal-scene::before { background: radial-gradient(circle at 22% 24%, #fff 0 1px, transparent 2px), radial-gradient(circle at 76% 31%, #fff 0 1px, transparent 2px), radial-gradient(circle at 67% 76%, #fff 0 1px, transparent 2px), radial-gradient(ellipse, #7d9fe523, transparent 65%); }
+.random-reveal[data-motif="seasons"] .random-reveal-scene::before { background: conic-gradient(from 45deg at 50% 50%, #ffaec21b, #a3d99b1b, #a1d6f01b, #e8cc851b, #ffaec21b); }
+.random-reveal[data-motif="beasts"] .random-reveal-scene::before { background: radial-gradient(ellipse at 25% 60%, #99cf6324, transparent 28%), radial-gradient(ellipse at 75% 42%, #e59b4b21, transparent 28%); }
+.random-reveal[data-motif="market"] .random-reveal-scene::before { background: repeating-linear-gradient(130deg, transparent 0 26px, #8bdad523 27px 28px, transparent 29px 50px); }
+.random-reveal[data-motif="dream"] .random-reveal-scene::before { background: radial-gradient(ellipse at 50% 100%, #958be833, transparent 65%), linear-gradient(0deg, #28203c66, transparent 75%); }
+.random-reveal[data-motif="pyramid"] .random-reveal-scene::before { background: conic-gradient(from 150deg at 50% 20%, transparent 0 30%, #f4d68e1c 31% 32%, transparent 33% 70%, #b3e2ee16 71% 72%, transparent 73%); }
+.random-reveal-grid { display: grid; width: min(92%, 760px); grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; justify-content: center; gap: clamp(6px, 1.3vw, 16px); margin: 0; padding: 0; list-style: none; perspective: 1000px; }
+.random-reveal-grid--1 { width: min(44%, 230px); grid-template-columns: minmax(0, 1fr); }
+.random-reveal-grid--1 .random-reveal-portrait { max-width: 96px; }
+.random-reveal-grid--3 { width: min(70%, 530px); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.random-reveal-grid--5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.random-reveal-card { min-width: 0; aspect-ratio: 3 / 4; animation: random-reveal-arrive .4s ease-out both; animation-delay: calc(var(--reveal-index) * 35ms); }
+.random-reveal-card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; animation: random-reveal-flip .72s cubic-bezier(.2,.78,.22,1) both; animation-delay: calc(.28s + var(--reveal-index) * 105ms); }
+.random-reveal[data-motion="fan"] .random-reveal-card-inner { animation-name: random-reveal-fan; }
+.random-reveal[data-motion="doors"] .random-reveal-card-inner { animation-name: random-reveal-doors; }
+.random-reveal[data-motion="cascade"] .random-reveal-card-inner { animation-name: random-reveal-cascade; }
+.random-reveal[data-motion="flare"] .random-reveal-card-inner { animation-name: random-reveal-flare; }
+.random-reveal-card-back, .random-reveal-card-face { position: absolute; inset: 0; display: grid; place-items: center; overflow: hidden; border: 1px solid color-mix(in srgb, var(--reveal-accent) 72%, white); border-radius: 14px; backface-visibility: hidden; box-shadow: 0 12px 28px #08060d99, 0 0 18px color-mix(in srgb, var(--reveal-accent) 28%, transparent); }
+.random-reveal-card-back { background: radial-gradient(circle, color-mix(in srgb, var(--reveal-glow) 88%, #242033), #181420 72%); }
+.random-reveal-card-back::before, .random-reveal-card-back::after { position: absolute; inset: 12%; border: 1px solid color-mix(in srgb, var(--reveal-accent) 64%, transparent); border-radius: 50%; content: ''; }
+.random-reveal-card-back::after { inset: 22%; border-style: dashed; transform: rotate(30deg); }
+.random-reveal-card-back span { z-index: 1; color: #fff7e8; font-family: serif; font-size: clamp(1.3rem, 4vw, 2.6rem); text-shadow: 0 0 18px var(--reveal-accent); }
+.random-reveal-card-face { grid-template-rows: 1fr auto; gap: 4px; padding: 6px; background: linear-gradient(155deg, #fffaf5, color-mix(in srgb, var(--reveal-soft) 40%, #eee8f5)); color: #211a2e; transform: rotateY(180deg); }
+.random-reveal-portrait { width: 100%; max-width: 146px; border-radius: 11px; }
+.random-reveal-card-face strong { max-width: 100%; overflow: hidden; font-size: clamp(.65rem, 1.2vw, .88rem); line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+.random-reveal-particles { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.random-reveal-particles i { position: absolute; top: 50%; left: 50%; width: 5px; height: 5px; border-radius: 50%; background: var(--reveal-soft); box-shadow: 0 0 12px 3px var(--reveal-accent); opacity: 0; animation: random-reveal-spark .95s ease-out both; animation-delay: calc(.48s + var(--reveal-index, 0) * 8ms); }
+.random-reveal-particles i:nth-child(1) { --reveal-index: 1; --spark-x: -42vw; --spark-y: -20vh; }
+.random-reveal-particles i:nth-child(2) { --reveal-index: 2; --spark-x: -32vw; --spark-y: 26vh; }
+.random-reveal-particles i:nth-child(3) { --reveal-index: 3; --spark-x: -25vw; --spark-y: -33vh; }
+.random-reveal-particles i:nth-child(4) { --reveal-index: 4; --spark-x: -12vw; --spark-y: 32vh; }
+.random-reveal-particles i:nth-child(5) { --reveal-index: 5; --spark-x: 8vw; --spark-y: -35vh; }
+.random-reveal-particles i:nth-child(6) { --reveal-index: 6; --spark-x: 18vw; --spark-y: 30vh; }
+.random-reveal-particles i:nth-child(7) { --reveal-index: 7; --spark-x: 32vw; --spark-y: -22vh; }
+.random-reveal-particles i:nth-child(8) { --reveal-index: 8; --spark-x: 42vw; --spark-y: 16vh; }
+.random-reveal-particles i:nth-child(9) { --reveal-index: 9; --spark-x: -40vw; --spark-y: 2vh; }
+.random-reveal-particles i:nth-child(10) { --reveal-index: 10; --spark-x: 40vw; --spark-y: -3vh; }
+.random-reveal-particles i:nth-child(11) { --reveal-index: 11; --spark-x: 3vw; --spark-y: 35vh; }
+.random-reveal-particles i:nth-child(12) { --reveal-index: 12; --spark-x: -4vw; --spark-y: -38vh; }
+.random-reveal[data-finish="petals"] .random-reveal-particles i { border-radius: 100% 0 100% 0; }
+.random-reveal[data-finish="ring"] .random-reveal-particles i { width: 9px; height: 9px; border: 1px solid var(--reveal-accent); background: transparent; box-shadow: none; }
+.random-reveal[data-finish="spirits"] .random-reveal-particles i { width: 8px; height: 8px; filter: blur(1px); }
+.random-reveal[data-finish="rays"] .random-reveal-particles i { width: 2px; height: 20px; border-radius: 99px; }
+.random-reveal-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.random-reveal-footer p { margin: 0; color: var(--random-muted); font-size: .8rem; font-weight: 700; }
+.random-reveal-footer .random-secondary-action { min-height: 42px; padding: 7px 13px; font-size: .8rem; }
+
+@keyframes random-reveal-ring { to { opacity: .25; transform: translate(-50%, -50%) scale(1) rotate(35deg); } }
+@keyframes random-reveal-arrive { from { opacity: 0; transform: translateY(16px) scale(.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes random-reveal-flip { from { transform: rotateY(0); } to { transform: rotateY(180deg); } }
+@keyframes random-reveal-fan { 0% { transform: rotateY(0) translateY(20px) rotate(-3deg); } 55% { transform: rotateY(85deg) translateY(-6px) rotate(2deg); } 100% { transform: rotateY(180deg) translateY(0) rotate(0); } }
+@keyframes random-reveal-doors { 0% { transform: rotateY(0) scale(.94); } 50% { transform: rotateY(90deg) scale(1.04); } 100% { transform: rotateY(180deg) scale(1); } }
+@keyframes random-reveal-cascade { 0% { transform: translateY(-24px) rotate(-5deg) rotateY(0); } 45% { transform: translateY(7px) rotate(3deg) rotateY(30deg); } 100% { transform: translateY(0) rotate(0) rotateY(180deg); } }
+@keyframes random-reveal-flare { 0% { transform: scale(.82) rotateY(0); filter: brightness(.72); } 58% { transform: scale(1.04) rotateY(95deg); filter: brightness(1.5); } 100% { transform: scale(1) rotateY(180deg); filter: brightness(1); } }
+@keyframes random-reveal-spark { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.3); } 32% { opacity: .85; } 100% { opacity: 0; transform: translate(var(--spark-x), var(--spark-y)) scale(1.4) rotate(180deg); } }
+
+@media (max-width: 640px) {
+  .random-reveal { padding: 10px; border-radius: 20px; }
+  .random-reveal-scene { min-height: 265px; }
+  .random-reveal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(80%, 350px); gap: 8px; }
+  .random-reveal-grid--1 { width: min(45%, 180px); grid-template-columns: minmax(0, 1fr); }
+  .random-reveal-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); width: 92%; gap: 5px; }
+  .random-reveal-grid--5, .random-reveal-grid--10 { grid-template-columns: repeat(3, minmax(0, 1fr)); width: 92%; gap: 6px; }
+  .random-reveal-card-face { padding: 4px; border-radius: 9px; }
+  .random-reveal-card-back, .random-reveal-card-face { border-radius: 9px; }
+  .random-reveal-card-face strong { font-size: clamp(.52rem, 2.15vw, .68rem); }
+  .random-reveal-portrait { border-radius: 7px; }
+  .random-reveal-footer .random-secondary-action { min-height: 40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .random-reveal *, .random-reveal *::before, .random-reveal *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; }
+}

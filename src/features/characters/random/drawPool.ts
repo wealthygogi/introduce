@@ -1,4 +1,5 @@
 import { PROFILE_WORKS } from '../../../data/profileCatalog';
+import { getCharacterPortrait } from '../../../data/characterPortraits';
 import { filterGroupCharacters } from '../characterCategories';
 import type {
   DrawCount,
@@ -13,7 +14,7 @@ import type {
   RandomScope,
 } from './types';
 
-export const DRAW_COUNTS: readonly DrawCount[] = [1, 2, 3, 5, 10];
+export const DRAW_COUNTS: readonly DrawCount[] = [1, 3, 5, 10];
 export const RECENT_EXCLUSION_LIMIT = 10;
 
 const mainlineIds = new Set(Array.from({ length: 15 }, (_, index) => `th${index + 6}`));
@@ -86,7 +87,7 @@ export function buildPool(
     workIds: filter.workIds,
     roles: filter.roles,
     stage: filter.stage,
-  });
+  }).filter(character => getCharacterPortrait(character).src !== null);
   const reflect = settings.reflectPreferences;
   const recent = new Set(recentIds.slice(0, RECENT_EXCLUSION_LIMIT));
   const excludedByPreference = reflect
@@ -117,7 +118,7 @@ export function buildPool(
     totalCandidates: candidates.length,
     excludedByPreference,
     relaxedRecent,
-    warning: Boolean(signals?.warning),
+    warning: reflect && Boolean(signals?.warning),
   };
 }
 
@@ -205,6 +206,7 @@ export function resolveDraw(
 
 /** Flatten recent history into unique character IDs, newest first. */
 export function recentCharacterIds(history: ReadonlyArray<{ characterIds: readonly string[] }>, limit = RECENT_EXCLUSION_LIMIT): string[] {
+  if (limit <= 0) return [];
   const seen = new Set<string>();
   const result: string[] = [];
   for (const record of history) {

@@ -50,6 +50,30 @@ select {
   color: inherit;
 }
 
+/* Native select indicators vary between browsers and can look off-center next
+   to the shared control borders. Use one centered chevron across the app. */
+select:not([multiple]) {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-inline-end: 28px !important;
+  background-image:
+    linear-gradient(45deg, transparent 48%, currentColor 49%, currentColor 59%, transparent 60%),
+    linear-gradient(135deg, transparent 48%, currentColor 49%, currentColor 59%, transparent 60%) !important;
+  background-position:
+    right 15px center,
+    right 10px center !important;
+  background-repeat: no-repeat !important;
+  background-size: 5px 5px, 5px 5px !important;
+}
+
+@media (forced-colors: active) {
+  select:not([multiple]) {
+    -webkit-appearance: auto;
+    appearance: auto;
+    background-image: none !important;
+  }
+}
+
 a {
   color: inherit;
   text-decoration: none;

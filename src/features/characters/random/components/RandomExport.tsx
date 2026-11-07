@@ -13,7 +13,6 @@ type Props = {
 
 function columnsFor(count: number): number {
   if (count <= 1) return 1;
-  if (count === 2) return 2;
   if (count === 3) return 3;
   if (count <= 4) return 2;
   if (count <= 6) return 3;
@@ -30,7 +29,7 @@ export default function RandomExport({ characters, copy }: Props) {
   const date = new Intl.DateTimeFormat(lang, { dateStyle: 'long' }).format(new Date());
   return <section
     id={RANDOM_EXPORT_ID}
-    className={`random-export${single ? ' random-export--single' : ''}`}
+    className={`random-export random-export--${characters.length}${single ? ' random-export--single' : ''}`}
     style={{ '--random-export-columns': columnsFor(characters.length) } as React.CSSProperties}
     aria-hidden="true"
   >

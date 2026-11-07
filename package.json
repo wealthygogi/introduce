@@ -10,12 +10,14 @@
     "qa:visual": "node tests/visual/capture.mjs",
     "qa:modes": "node tests/visual/modes.mjs",
     "test:e2e": "playwright test",
+    "test:e2e:fast": "playwright test tests/e2e/random-picker.spec.ts --project=chromium",
     "build:site": "npm run build && sh scripts/build-v1.sh",
     "test:share": "node --test tests/share-regression.mjs",
     "test:profile": "node tests/profile-selection-regression.mjs",
     "test:coupling": "node --test tests/coupling-regression.mjs",
     "test:taste-board": "node --experimental-strip-types --test tests/taste-board-storage.mjs tests/taste-board-image-storage.mjs tests/taste-board-regression.mjs tests/taste-board-export.mjs",
-    "test:coupling-export": "node --test tests/coupling-export-regression.mjs"
+    "test:coupling-export": "node --test tests/coupling-export-regression.mjs",
+    "test:random": "node --test tests/random-picker-logic.mjs tests/random-picker-export.mjs tests/random-picker-nav.mjs"
   },
   "dependencies": {
     "modern-screenshot": "^4.7.0",

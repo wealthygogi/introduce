@@ -33,8 +33,8 @@ function parseStage(value: unknown): RandomSettings['stage'] | undefined {
   return undefined;
 }
 
-function parseCount(value: unknown): DrawCount | undefined {
-  return typeof value === 'number' && COUNTS.has(value) ? value as DrawCount : undefined;
+function parseStoredCount(value: unknown): DrawCount | 2 | undefined {
+  return typeof value === 'number' && (COUNTS.has(value) || value === 2) ? value as DrawCount | 2 : undefined;
 }
 
 function parseSettings(value: unknown): RandomSettings | null {
@@ -46,8 +46,8 @@ function parseSettings(value: unknown): RandomSettings | null {
   if (!isUnique(value.roles)) return null;
   const stage = parseStage(value.stage);
   if (stage === undefined) return null;
-  const count = parseCount(value.count);
-  if (count === undefined) return null;
+  const storedCount = parseStoredCount(value.count);
+  if (storedCount === undefined) return null;
   if (typeof value.mode !== 'string' || !MODES.has(value.mode as DrawMode)) return null;
   if (typeof value.reflectPreferences !== 'boolean' || typeof value.excludeRecent !== 'boolean') return null;
   return {
@@ -55,7 +55,7 @@ function parseSettings(value: unknown): RandomSettings | null {
     workIds: [...value.workIds] as string[],
     roles: [...value.roles] as RandomSettings['roles'],
     stage,
-    count,
+    count: storedCount === 2 ? 3 : storedCount,
     mode: value.mode as DrawMode,
     reflectPreferences: value.reflectPreferences,
     excludeRecent: value.excludeRecent,
@@ -65,15 +65,18 @@ function parseSettings(value: unknown): RandomSettings | null {
 function parseHistory(value: unknown): RandomDrawRecord[] | null {
   if (!Array.isArray(value) || value.length > MAX_RANDOM_HISTORY) return null;
   const records: RandomDrawRecord[] = [];
+  const recordIds = new Set<string>();
   for (const item of value) {
     if (!isRecord(item)) return null;
     if (!isText(item.id, 120) || !isFiniteNumber(item.at) || item.at < 0) return null;
+    if (recordIds.has(item.id)) return null;
+    recordIds.add(item.id);
     if (!Array.isArray(item.characterIds) || item.characterIds.length < 1 || item.characterIds.length > 10) return null;
     if (!isFiniteNumber(item.count) || !Number.isInteger(item.count) || item.count !== item.characterIds.length) return null;
     if (typeof item.mode !== 'string' || !MODES.has(item.mode as DrawMode)) return null;
     if (!item.characterIds.every(id => typeof id === 'string' && PROFILE_CHARACTER_BY_ID.has(id))) return null;
     if (!isUnique(item.characterIds)) return null;
-    const requested = item.requested === undefined ? undefined : parseCount(item.requested);
+    const requested = item.requested === undefined ? undefined : parseStoredCount(item.requested);
     if (item.requested !== undefined && requested === undefined) return null;
     records.push({
       id: item.id,

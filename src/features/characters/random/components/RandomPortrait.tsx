@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ProfileCharacter } from '../../../../data/profileCatalog';
 import { getCharacterPortrait } from '../../../../data/characterPortraits';
 import { useLang } from '../../../../contexts/LangContext';
@@ -15,6 +15,7 @@ type Props = {
 export default function RandomPortrait({ character, size, className = '', loading = 'lazy', decorative = false }: Props) {
   const { lang } = useLang();
   const [failed, setFailed] = useState(false);
+  useEffect(() => setFailed(false), [character.id]);
   const portrait = getCharacterPortrait(character);
   const src = failed ? null : portrait.src;
   return (

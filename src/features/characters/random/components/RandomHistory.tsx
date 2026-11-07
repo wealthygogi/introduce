@@ -17,15 +17,16 @@ type Props = {
 export default function RandomHistory({ records, copy, activeId, onOpen, onClear, canUndo, onUndo }: Props) {
   const { lang } = useLang();
   const formatter = new Intl.DateTimeFormat(lang, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const newestFirst = [...records].sort((a, b) => b.at - a.at);
   return <section className="random-history" aria-label={copy.history}>
     <header className="random-history-header">
       <h2>{copy.history}</h2>
       {records.length > 0 && <button type="button" className="random-text-button" onClick={onClear}>{copy.historyClear}</button>}
     </header>
-    {records.length === 0
+    {newestFirst.length === 0
       ? <p className="random-hint" role="status">{copy.historyEmpty}</p>
       : <ul className="random-history-list">
-        {records.map(record => {
+        {newestFirst.map(record => {
           const characters = record.characterIds
             .map(id => PROFILE_CHARACTER_BY_ID.get(id))
             .filter((character): character is NonNullable<typeof character> => Boolean(character));

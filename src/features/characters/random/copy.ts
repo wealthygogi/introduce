@@ -9,6 +9,7 @@ export type RandomCopy = {
   draw: string;
   drawAgain: string;
   drawing: string;
+  revealing: string;
   count: string;
   counts: Record<DrawCount, string>;
   filters: string;
@@ -21,6 +22,8 @@ export type RandomCopy = {
   roles: string;
   roleLabels: Record<RoleFilter, string>;
   stage: string;
+  stageHint: string;
+  stageUnavailable: string;
   allStages: string;
   stageLabels: Record<'final' | 'extra' | 'phantasm', string>;
   stageNumber: (stage: number) => string;
@@ -45,8 +48,8 @@ export type RandomCopy = {
   copyText: string;
   copied: string;
   copyFailed: string;
-  pairAction: string;
-  pairHint: string;
+  skipReveal: string;
+  revealSeries: (series: string) => string;
   history: string;
   historyEmpty: string;
   historyClear: string;
@@ -71,15 +74,16 @@ export type RandomCopy = {
 
 const copy: Record<Lang, RandomCopy> = {
   ko: {
-    eyebrow: 'GENSOKYO · RANDOM DRAW',
-    heading: '환상향 랜덤 뽑기',
-    intro: '필터로 풀을 고르고, 오늘의 인연을 한 명 또는 여러 명 뽑아보세요.',
+    eyebrow: 'GENSOKYO · LUCKY DRAW',
+    heading: '환상향 럭키 드로우',
+    intro: '필터로 풀을 고르고, 오늘의 인연을 1·3·5·10명 뽑아보세요.',
     draw: '뽑기',
     drawAgain: '다시 뽑기',
     drawing: '뽑는 중…',
+    revealing: '인연을 공개하는 중…',
     count: '인원',
-    counts: { 1: '1인', 2: '커플 2인', 3: '3연', 5: '5연', 10: '10연' },
-    filters: '뽑기 설정',
+    counts: { 1: '1인', 3: '3연', 5: '5연', 10: '10연' },
+    filters: '환상향 럭키 드로우 설정',
     scope: '작품 범위',
     scopes: { all: '전체', mainline: '정규작', pc98: '구작', spinoff: '외전', books: '서적' },
     works: '개별 작품',
@@ -92,6 +96,8 @@ const copy: Record<Lang, RandomCopy> = {
       opponent: '대전 상대', support: '지원·동료', other: '기타 역할',
     },
     stage: '스테이지',
+    stageHint: '선택한 작품의 출연 기록 기준으로 필터링합니다.',
+    stageUnavailable: '서적에는 스테이지 필터가 없습니다.',
     allStages: '모든 스테이지',
     stageLabels: { final: '최종면', extra: 'Extra', phantasm: 'Phantasm' },
     stageNumber: (stage: number) => `${stage}면`,
@@ -116,8 +122,8 @@ const copy: Record<Lang, RandomCopy> = {
     copyText: '문구 복사',
     copied: '결과 문구를 복사했습니다.',
     copyFailed: '결과 문구를 복사하지 못했습니다.',
-    pairAction: '커플 카드로',
-    pairHint: '정해진 관계는 아니에요. 두 사람을 골라 카드로 이어가세요.',
+    skipReveal: '연출 건너뛰기',
+    revealSeries: (series: string) => `${series} 테마 연출`,
     history: '최근 기록',
     historyEmpty: '아직 기록이 없습니다.',
     historyClear: '기록 지우기',
@@ -133,22 +139,23 @@ const copy: Record<Lang, RandomCopy> = {
     storageWarning: '이 브라우저에서는 기록을 저장할 수 없습니다. 현재 탭에서만 유지됩니다.',
     restoreWarning: '저장된 기록을 읽지 못해 새 설정으로 시작합니다.',
     preferenceWarning: '일부 취향 기록을 읽지 못했습니다.',
-    exportTitle: '환상향 랜덤 뽑기',
+    exportTitle: '환상향 럭키 드로우',
     exportDate: (value: string) => `뽑은 날 · ${value}`,
-    exportFooter: 'GENSOKYO · RANDOM DRAW',
+    exportFooter: 'GENSOKYO · LUCKY DRAW',
     resultAnnounce: (names: string) => `결과: ${names}`,
-    filterDialog: '뽑기 설정',
+    filterDialog: '환상향 럭키 드로우 설정',
   },
   ja: {
-    eyebrow: 'GENSOKYO · RANDOM DRAW',
-    heading: '幻想郷ランダム抽選',
-    intro: 'フィルターで候補を選び、今日の縁を一人または複数人で引いてみましょう。',
+    eyebrow: 'GENSOKYO · LUCKY DRAW',
+    heading: '幻想郷ラッキードロー',
+    intro: 'フィルターで候補を選び、1・3・5・10人を引いてみましょう。',
     draw: '引く',
     drawAgain: 'もう一度引く',
     drawing: '抽選中…',
+    revealing: '縁を公開しています…',
     count: '人数',
-    counts: { 1: '1人', 2: 'カップル2人', 3: '3連', 5: '5連', 10: '10連' },
-    filters: '抽選設定',
+    counts: { 1: '1人', 3: '3連', 5: '5連', 10: '10連' },
+    filters: '幻想郷ラッキードロー設定',
     scope: '作品範囲',
     scopes: { all: 'すべて', mainline: '整数作品', pc98: '旧作', spinoff: '外伝', books: '書籍' },
     works: '個別作品',
@@ -161,6 +168,8 @@ const copy: Record<Lang, RandomCopy> = {
       opponent: '対戦相手', support: '支援・仲間', other: 'その他の役割',
     },
     stage: 'ステージ',
+    stageHint: '選択した作品の出演記録を基準に絞り込みます。',
+    stageUnavailable: '書籍にはステージフィルターがありません。',
     allStages: 'すべてのステージ',
     stageLabels: { final: '最終面', extra: 'Extra', phantasm: 'Phantasm' },
     stageNumber: (stage: number) => `${stage}面`,
@@ -185,8 +194,8 @@ const copy: Record<Lang, RandomCopy> = {
     copyText: '文面をコピー',
     copied: '結果の文面をコピーしました。',
     copyFailed: '結果の文面をコピーできませんでした。',
-    pairAction: 'カップルカードへ',
-    pairHint: '決まった関係ではありません。二人を選んでカードにつなげましょう。',
+    skipReveal: '演出をスキップ',
+    revealSeries: (series: string) => `${series}テーマの演出`,
     history: '最近の記録',
     historyEmpty: 'まだ記録がありません。',
     historyClear: '記録を消す',
@@ -202,22 +211,23 @@ const copy: Record<Lang, RandomCopy> = {
     storageWarning: 'このブラウザーでは記録を保存できません。現在のタブでのみ保持します。',
     restoreWarning: '保存された記録を読めなかったため、新しい設定で始めます。',
     preferenceWarning: '一部の好みの記録を読めませんでした。',
-    exportTitle: '幻想郷ランダム抽選',
+    exportTitle: '幻想郷ラッキードロー',
     exportDate: (value: string) => `引いた日 · ${value}`,
-    exportFooter: 'GENSOKYO · RANDOM DRAW',
+    exportFooter: 'GENSOKYO · LUCKY DRAW',
     resultAnnounce: (names: string) => `結果: ${names}`,
-    filterDialog: '抽選設定',
+    filterDialog: '幻想郷ラッキードロー設定',
   },
   en: {
-    eyebrow: 'GENSOKYO · RANDOM DRAW',
-    heading: 'Gensokyo random draw',
-    intro: 'Choose a pool with filters, then draw one character or a whole set.',
+    eyebrow: 'GENSOKYO · LUCKY DRAW',
+    heading: 'Gensokyo Lucky Draw',
+    intro: 'Choose a pool with filters, then draw 1, 3, 5, or 10 characters.',
     draw: 'Draw',
     drawAgain: 'Draw again',
     drawing: 'Drawing…',
+    revealing: 'Revealing your draw…',
     count: 'Count',
-    counts: { 1: '1', 2: 'Pair of 2', 3: '3', 5: '5', 10: '10' },
-    filters: 'Draw settings',
+    counts: { 1: '1', 3: '3', 5: '5', 10: '10' },
+    filters: 'Gensokyo Lucky Draw settings',
     scope: 'Work scope',
     scopes: { all: 'All', mainline: 'Mainline', pc98: 'PC-98', spinoff: 'Spin-offs', books: 'Books' },
     works: 'Individual works',
@@ -230,6 +240,8 @@ const copy: Record<Lang, RandomCopy> = {
       opponent: 'Opponent', support: 'Support', other: 'Other role',
     },
     stage: 'Stage',
+    stageHint: 'Filters by appearance in the selected works.',
+    stageUnavailable: 'Stage filters are not available for books.',
     allStages: 'All stages',
     stageLabels: { final: 'Final stage', extra: 'Extra', phantasm: 'Phantasm' },
     stageNumber: (stage: number) => `Stage ${stage}`,
@@ -254,8 +266,8 @@ const copy: Record<Lang, RandomCopy> = {
     copyText: 'Copy text',
     copied: 'Copied the result text.',
     copyFailed: 'Could not copy the result text.',
-    pairAction: 'Open pair card',
-    pairHint: 'This is not a canon relationship. Carry the two into a pair card.',
+    skipReveal: 'Skip animation',
+    revealSeries: (series: string) => `${series} themed reveal`,
     history: 'Recent draws',
     historyEmpty: 'No draws yet.',
     historyClear: 'Clear history',
@@ -271,11 +283,11 @@ const copy: Record<Lang, RandomCopy> = {
     storageWarning: 'This browser cannot save history. It stays in this tab only.',
     restoreWarning: 'Saved history could not be read. Starting with fresh settings.',
     preferenceWarning: 'Some preference records could not be read.',
-    exportTitle: 'Gensokyo random draw',
+    exportTitle: 'Gensokyo Lucky Draw',
     exportDate: (value: string) => `Drawn on · ${value}`,
-    exportFooter: 'GENSOKYO · RANDOM DRAW',
+    exportFooter: 'GENSOKYO · LUCKY DRAW',
     resultAnnounce: (names: string) => `Result: ${names}`,
-    filterDialog: 'Draw settings',
+    filterDialog: 'Gensokyo Lucky Draw settings',
   },
 };
 

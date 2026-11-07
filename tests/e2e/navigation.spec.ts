@@ -11,6 +11,7 @@ const routes = [
   ...WIDE_THEMES.map(({ id }) => ({ path: `/wide/${id}`, marker: '#wide-export', primary: '/sheets', section: '/wide', parent: '/wide' })),
   { path: '/characters', marker: '.character-related-page', primary: '/characters', section: null, parent: '/' },
   { path: '/characters/tastes', marker: '.taste-board-group', primary: '/characters', section: '/characters/tastes', parent: '/characters' },
+  { path: '/characters/random', marker: '.random-page', primary: '/characters', section: '/characters/random', parent: '/characters' },
   { path: '/coupling', marker: '.coupling-hub', primary: '/characters', section: '/coupling', parent: '/characters', editor: '/coupling' },
   ...(['whiteboard', 'keyboard', 'pairs', 'matrix'] as const).map(name => ({ path: `/coupling/${name}`, marker: `.coupling-${name === 'matrix' ? 'matrix-editor' : name}`, primary: '/characters', section: '/coupling', parent: '/coupling', editor: `/coupling/${name}` })),
 ];
@@ -86,7 +87,7 @@ test.describe('navigation route and current-location matrix', () => {
         if (route.section) await expect(currentSection).toHaveAttribute('href', `/introduce${route.section}`);
       }
       if (route.path.startsWith('/characters') || route.path.startsWith('/coupling')) {
-        await expect(characterNav.locator('a')).toHaveCount(2);
+        await expect(characterNav.locator('a')).toHaveCount(3);
         await expect(characterNav.locator('[aria-current]')).toHaveCount(route.section ? 1 : 0);
       }
       const parent = header.locator('.nav-row > a.btn.ghost');
@@ -271,6 +272,7 @@ test('keyboard focus follows visible header order in every language and editor a
         ...Array.from({ length: 3 }, (_, index) => header.locator('.lang-switcher button').nth(index)),
         header.locator('.section-subnav a').nth(0),
         header.locator('.section-subnav a').nth(1),
+        ...(path.includes('coupling') ? [header.locator('.section-subnav a').nth(2)] : []),
         ...(path.includes('coupling') ? Array.from({ length: 5 }, (_, index) => page.locator('main nav.coupling-tabs a').nth(index)) : []),
       ];
       for (const target of order) {

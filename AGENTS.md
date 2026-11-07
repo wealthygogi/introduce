@@ -41,6 +41,6 @@ The WebKit E2E project covers the download and mobile specs. Chromium runs the f
 
 ## GitHub Actions coverage
 
-- Pushes to `main` run the site build and focused regression suites before deployment.
+- Pushes to `main` run the site build and deploy it; run the full verification locally before pushing.
 - Full Chromium E2E plus visual mode downloads, and WebKit download/mobile E2E, run on pull requests to `main`, weekly, or by `workflow_dispatch`.
-- Actions do not replace the local pre-push checks above; they run only after a push or through their configured PR/scheduled/manual triggers.
+- Browser-check Actions do not replace the local pre-push checks above; they run only through their configured PR, scheduled, or manual triggers.

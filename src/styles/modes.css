@@ -75,3 +75,20 @@
 .wide-theme-copy .mode-link { margin-top:15px; }
 @media(max-width:760px) { .modes-page{padding:24px 17px 40px}.modes-hero{padding:35px 0 32px}.mode-options{gap:14px}.mode-art{min-height:205px}.mode-card-copy{padding:19px 17px}.gallery-heading{align-items:flex-start;flex-direction:column;padding:14px 0 25px}.gallery-nav{flex-wrap:wrap}.wide-theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media(max-width:520px) { .mode-options{grid-template-columns:1fr}.mode-art{min-height:220px}.mode-miniature.is-wide{width:230px}.wide-theme-grid{grid-template-columns:1fr}.wide-theme-art{height:190px}.gallery-heading h1{font-size:31px}.gallery-nav a{font-size:10px}.mode-card-copy p{min-height:0} }
+
+/* Character hub: wide random-draw teaser */
+.random-teaser-card { display: grid; grid-column: 1 / -1; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); }
+.random-teaser-card .mode-art { min-height: 210px; }
+.random-teaser-art { background: linear-gradient(145deg, #241d36, #4a3a6b 58%, #6f57a5); }
+.random-teaser-art::before { border-color: #f4eefc26; }
+.random-teaser-deck { position: relative; display: grid; width: 120px; height: 150px; place-items: center; }
+.random-teaser-deck i { position: absolute; width: 100px; height: 140px; border: 1px solid #f4eefc55; border-radius: 12px; background: #ffffff0f; }
+.random-teaser-deck i:nth-child(1) { transform: rotate(-12deg) translateX(-22px); }
+.random-teaser-deck i:nth-child(2) { transform: rotate(-2deg); }
+.random-teaser-deck i:nth-child(3) { transform: rotate(9deg) translateX(22px); }
+.random-teaser-deck b { position: relative; color: #f4eefc; font-size: 2rem; font-weight: 700; }
+.random-teaser-card .mode-index { color: #f4eefccc; }
+@media (max-width: 520px) {
+  .random-teaser-card { grid-template-columns: 1fr; }
+  .random-teaser-card .mode-art { min-height: 190px; }
+}

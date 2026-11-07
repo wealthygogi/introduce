@@ -8,6 +8,7 @@ const copy = {
     intro: '좋아하는 캐릭터를 모으거나 캐릭터 사이의 관계를 정리해 보세요.',
     tastes: '캐릭터 취향 모음표', tastesDesc: '격자와 그룹을 정하고 좋아하는 캐릭터를 배치해 이미지로 저장합니다.',
     relationships: '커플링·관계', relationshipsDesc: '자유 캔버스, 릴레이, 커플 카드, 관계 매트릭스로 관계를 기록합니다.',
+    random: '환상향 랜덤 뽑기', randomDesc: '작품과 역할로 풀을 고르고 오늘의 캐릭터를 뽑아 결과 카드로 저장합니다.',
     start: '만들기', explore: '둘러보기',
   },
   ja: {
@@ -15,6 +16,7 @@ const copy = {
     intro: '好きなキャラクターを集めたり、キャラクター同士の関係を整理したりできます。',
     tastes: 'キャラクターのお気に入り表', tastesDesc: 'グリッドとグループを決めて好きなキャラクターを配置し、画像で保存します。',
     relationships: 'カップリング・関係', relationshipsDesc: 'フリーボード、リレー、カード、関係マトリクスで関係を記録します。',
+    random: '幻想郷ランダム抽選', randomDesc: '作品と役割で候補を選び、今日のキャラクターを引いて結果カードに保存します。',
     start: '作成する', explore: '見る',
   },
   en: {
@@ -22,6 +24,7 @@ const copy = {
     intro: 'Make a board of characters you like or organize how characters relate.',
     tastes: 'Character taste board', tastesDesc: 'Choose grids and groups, place favorite characters, and save an image.',
     relationships: 'Couplings & relationships', relationshipsDesc: 'Record connections with a free canvas, relay, pair cards, or matrix.',
+    random: 'Gensokyo random draw', randomDesc: 'Choose a pool by work and role, then draw today’s characters and save the result card.',
     start: 'Create', explore: 'Explore',
   },
 } as const;
@@ -39,6 +42,13 @@ export default function CharacterRelated() {
       <Link to="/coupling" className="mode-card wide-mode character-related-card">
         <div className="mode-art"><div className="landing-coupling-art" aria-hidden="true"><svg viewBox="0 0 240 150"><path d="M48 44 118 30 185 56 165 112 90 124 48 44M48 44 90 124M118 30 90 124M118 30 165 112" /></svg><i /><i /><i /><i /><i /></div><span className="mode-index">02 / RELATIONSHIPS</span></div>
         <div className="mode-card-copy"><span className="mode-kicker">GENSOKYO · COUPLINGS</span><h2>{t.relationships}</h2><p>{t.relationshipsDesc}</p><span className="mode-link">{t.explore} <b>↗</b></span></div>
+      </Link>
+      <Link to="/characters/random" className="mode-card random-teaser-card">
+        <div className="mode-art random-teaser-art" aria-hidden="true">
+          <div className="random-teaser-deck"><i /><i /><i /><b>東</b></div>
+          <span className="mode-index">03 / RANDOM DRAW</span>
+        </div>
+        <div className="mode-card-copy"><span className="mode-kicker">GENSOKYO · RANDOM DRAW</span><h2>{t.random}</h2><p>{t.randomDesc}</p><span className="mode-link">{t.explore} <b>↗</b></span></div>
       </Link>
     </section>
   </div>;

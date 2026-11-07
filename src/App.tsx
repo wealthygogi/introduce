@@ -19,6 +19,7 @@ const KeyboardEditor = lazy(() => import('./features/coupling/editors/KeyboardEd
 const PairsEditor = lazy(() => import('./features/coupling/editors/PairsEditor'));
 const MatrixEditor = lazy(() => import('./features/coupling/editors/MatrixEditor'));
 const TasteBoardEditor = lazy(() => import('./features/characters/TasteBoardEditor'));
+const RandomPickerPage = lazy(() => import('./features/characters/random/RandomPickerPage'));
 function CouplingLoading() {
   const { lang } = useLang();
   return <p role="status">{copy[lang].loading}</p>;
@@ -36,6 +37,7 @@ export default function App() {
           <Route path="/wide/:theme" element={<WidePage />} />
           <Route path="/characters" element={<CharacterRelated />} />
           <Route path="/characters/tastes" element={<Suspense fallback={<CouplingLoading />}><TasteBoardEditor /></Suspense>} />
+          <Route path="/characters/random" element={<Suspense fallback={<CouplingLoading />}><RandomPickerPage /></Suspense>} />
           <Route path="/concept/:id" element={<ConceptPage />} />
           <Route path="/coupling" element={<CouplingLayout />}>
             <Route index element={<CouplingHub />} />

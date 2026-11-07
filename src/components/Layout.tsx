@@ -7,19 +7,19 @@ import Footer from './Footer';
 
 const copy = {
   ko: {
-    sheets: '자기소개표', characters: '캐릭터 관련', tastes: '캐릭터 취향표', coupling: '커플링·관계',
+    sheets: '자기소개표', characters: '캐릭터 관련', tastes: '캐릭터 취향표', random: '랜덤 뽑기', coupling: '커플링·관계',
     primary: '주요 메뉴', sheetNav: '자기소개표 방식', characterNav: '캐릭터 도구',
     home: '홈으로', sheetsBack: '자기소개표 목록', compactBack: 'Compact 갤러리',
     wideBack: 'Wide 갤러리', charactersBack: '캐릭터 도구 목록', couplingBack: '관계 도구 목록',
   },
   ja: {
-    sheets: 'プロフィールシート', characters: 'キャラクター関連', tastes: 'キャラクターのお気に入り表', coupling: 'カップリング・関係',
+    sheets: 'プロフィールシート', characters: 'キャラクター関連', tastes: 'キャラクターのお気に入り表', random: 'ランダム抽選', coupling: 'カップリング・関係',
     primary: 'メインメニュー', sheetNav: 'プロフィール形式', characterNav: 'キャラクターツール',
     home: 'ホームへ', sheetsBack: 'プロフィール形式一覧', compactBack: 'Compact ギャラリー',
     wideBack: 'Wide ギャラリー', charactersBack: 'キャラクターツール一覧', couplingBack: '関係ツール一覧',
   },
   en: {
-    sheets: 'Profile sheets', characters: 'Characters', tastes: 'Character taste board', coupling: 'Couplings & relationships',
+    sheets: 'Profile sheets', characters: 'Characters', tastes: 'Character taste board', random: 'Random draw', coupling: 'Couplings & relationships',
     primary: 'Main menu', sheetNav: 'Profile sheet editors', characterNav: 'Character tools',
     home: 'Home', sheetsBack: 'Profile sheet modes', compactBack: 'Compact gallery',
     wideBack: 'Wide gallery', charactersBack: 'Character tools', couplingBack: 'Relationship tools',
@@ -40,7 +40,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       ? path === '/compact' ? { to: '/sheets', label: c.sheetsBack } : { to: '/compact', label: c.compactBack }
       : path === '/wide' ? { to: '/sheets', label: c.sheetsBack }
         : path.startsWith('/wide/') ? { to: '/wide', label: c.wideBack }
-          : path === '/characters/tastes' ? { to: '/characters', label: c.charactersBack }
+          : path === '/characters/tastes' || path === '/characters/random' ? { to: '/characters', label: c.charactersBack }
             : path === '/coupling' ? { to: '/characters', label: c.charactersBack }
               : path.startsWith('/coupling/') ? { to: '/coupling', label: c.couplingBack } : { to: '/', label: c.home };
   const current = (target: string, descendants = false) => path === target ? 'page' : descendants && path.startsWith(`${target}/`) ? 'location' : undefined;
@@ -67,6 +67,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         </nav>}
         {onCharacters && <nav className="mode-nav section-subnav" aria-label={c.characterNav}>
           <Link to="/characters/tastes" className={linkClass(current('/characters/tastes'))} aria-current={current('/characters/tastes', true)}>{c.tastes}</Link>
+          <Link to="/characters/random" className={linkClass(current('/characters/random'))} aria-current={current('/characters/random')}>{c.random}</Link>
           <Link to="/coupling" className={linkClass(current('/coupling', true))} aria-current={current('/coupling', true)}>{c.coupling}</Link>
         </nav>}
       </header>

@@ -28,6 +28,7 @@
   칸에 담은 인물마다 좋아하는 작품 버전을 바꾸거나 지울 수 있습니다. 버전은 이름으로 표시되며 일러스트를 자동으로 바꾸지는 않습니다.
   자동 제목·작품 칸 이름은 현재 언어로 표시하고, 직접 입력한 이름은 언어 전환 뒤에도 보존합니다. 캐릭터 검색 필터는 결과만 바꾸며 저장 버전을 변경하지 않습니다. 작품 칸에서 새 캐릭터를 고를 때만 해당 게임 버전을 처음 지정하며, 버전은 인물별로 변경하거나 해제할 수 있습니다. 편집은 즉시 저장되고 실행 취소할 수 있으며 대화상자를 닫아도 저장은 취소되지 않습니다.
   화면이 좁아 많은 열을 한 번에 표시하기 어려우면 격자만 가로로 스크롤해 이름을 읽을 수 있습니다.
+- **환상향 캘린더**: 오늘·주간·월간·캐릭터별로 팬덤 기념일을 둘러봅니다. 기존 캐릭터 얼굴을 표시하고 각 태그의 pixiv 일러스트 검색, X 검색, 원문 링크를 제공합니다. 공식 생일이 아닌 2차 창작 이벤트 태그라는 안내를 포함합니다. 화면의 스냅샷 데이터는 [pixiv 백과사전 「東方キャラの日」](https://dic.pixiv.net/a/%E6%9D%B1%E6%96%B9%E3%82%AD%E3%83%A3%E3%83%A9%E3%81%AE%E6%97%A5)를 기반으로 한 v1.0.0 ICS(2026-05-25 확인)입니다.
 - **반응형 편집**: 좁은 화면에서는 저장·공유 버튼을 여러 줄로 배치합니다.
   화면 크기·언어·QR 표시 변경 시 미리보기 높이를 다시 계산합니다.
 - **와이드 프로필**: 4개 테마(paper / album / terminal / hifuu), 2×2 또는 1×4 배치, 캐릭터 최대 7명·통합 작품 최대 5개. 비어 있는 작품·캐릭터·교류 구역은 PNG에서 생략되고, 입력량에 따라 높이가 달라지며, 한국어 이름은 가능한 한 단어 단위로 줄바꿈합니다.
@@ -89,7 +90,9 @@ npm run test:taste-board # 취향표 저장·그룹·출연 필터·PNG 회귀 �
 - `download.spec.ts` — 다운로드 PNG 1080×1620, 화면 스크린샷과 픽셀 차이 ≤ 1%(Chromium) · 2%(WebKit) (diff: `tests/e2e/output/{project}-{id}-{scenario}-diff.png`)
 - `download.spec.ts` · `mobile.spec.ts`는 Chromium과 WebKit(Safari) 두 엔진에서 돌고, 나머지는 Chromium만 돕니다. CI는 Chromium을 ubuntu, WebKit을 macOS 러너에서 돌리고 둘 다 통과해야 배포합니다. 로컬 첫 실행 전 `npx playwright install chromium webkit`
 - `limits.spec.ts` — 입력·공유 링크·커스텀 필드 글자 수 상한
-- `landing.spec.ts` · `mobile.spec.ts` — 랜딩 노출·v1 리다이렉트, 모바일 탭(입력 탭에서 미리보기 숨김·미리보기 탭에서 카드 전체 노출)·390/320px 다운로드
+- `landing.spec.ts` · `calendar.spec.ts` · `mobile.spec.ts` — 랜딩 노출·v1 리다이렉트, 캘린더 탐색·태그 검색 링크·모바일 오버플로, 모바일 탭(입력 탭에서 미리보기 숨김·미리보기 탭에서 카드 전체 노출)·390/320px 다운로드
+
+캘린더 스냅샷을 갱신하려면 새 ICS를 준비한 뒤 `node scripts/import_character_days.mjs <ics-path>`를 실행합니다. 이 변환기는 기존 프로필 카탈로그 이름으로 캐릭터 ID를 연결하고 `src/data/characterDays.json`을 생성합니다. 현재 공개 v1.0.0 ICS에는 607개 VEVENT가 있으며, 릴리스 설명의 595개 표기와 차이가 있어 갱신 전 원본 레코드 수와 미연결 캐릭터를 검토해야 합니다.
 
 ## 포토카드 작성 규칙
 
@@ -131,7 +134,7 @@ src/
   concepts/    # 포토카드 ConceptP~Y + photocard/ 공통 셸 + registry
   components/  # CharacterPicker, PhotoUpload, DownloadButton, ThemeSwitcher 등
   contexts/    # FormState, Lang, Theme 컨텍스트
-  data/        # characters.ts (75명), series.ts, i18n.ts, limits.ts (글자 수 상한)
+  data/        # 캐릭터/작품 카탈로그, characterDays.json/ts (기념일 캘린더), i18n.ts, limits.ts
   hooks/       # useDerived (폼 → 표시값 파생), useCardScale
   pages/       # Landing, ConceptPage
   styles/      # themes.css, global.css

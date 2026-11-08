@@ -10,6 +10,7 @@ const routes = [
   { path: '/wide', marker: '.wide-gallery', primary: '/sheets', section: '/wide', parent: '/sheets' },
   ...WIDE_THEMES.map(({ id }) => ({ path: `/wide/${id}`, marker: '#wide-export', primary: '/sheets', section: '/wide', parent: '/wide' })),
   { path: '/characters', marker: '.character-related-page', primary: '/characters', section: null, parent: '/' },
+  { path: '/calendar', marker: '.calendar-page', primary: '/calendar', section: null, parent: '/' },
   { path: '/characters/tastes', marker: '.taste-board-group', primary: '/characters', section: '/characters/tastes', parent: '/characters' },
   { path: '/characters/random', marker: '.random-page', primary: '/characters', section: '/characters/random', parent: '/characters' },
   { path: '/coupling', marker: '.coupling-hub', primary: '/characters', section: '/coupling', parent: '/characters', editor: '/coupling' },
@@ -75,11 +76,11 @@ test.describe('navigation route and current-location matrix', () => {
       const sheetNav = header.getByRole('navigation', { name: lang === 'ko' ? '자기소개표 방식' : lang === 'ja' ? 'プロフィール形式' : 'Profile sheet editors' });
       const characterNav = header.getByRole('navigation', { name: lang === 'ko' ? '캐릭터 도구' : lang === 'ja' ? 'キャラクターツール' : 'Character tools' });
       const primaryLinks = primary.locator('a');
-      await expect(primaryLinks).toHaveCount(2);
+       await expect(primaryLinks).toHaveCount(3);
       const currentPrimary = primary.locator('[aria-current]');
       await expect(currentPrimary).toHaveCount(route.primary ? 1 : 0);
       if (route.primary) await expect(currentPrimary).toHaveAttribute('href', `/introduce${route.primary}`);
-      if (route.path === '/' || route.path.startsWith('/characters') || route.path.startsWith('/coupling')) await expect(sheetNav).toHaveCount(0);
+       if (route.path === '/' || route.path === '/calendar' || route.path.startsWith('/characters') || route.path.startsWith('/coupling')) await expect(sheetNav).toHaveCount(0);
       else {
         await expect(sheetNav.locator('a')).toHaveCount(2);
         const currentSection = sheetNav.locator('[aria-current]');
@@ -267,6 +268,7 @@ test('keyboard focus follows visible header order in every language and editor a
       const order = [
         header.locator('.primary-mode-nav a').nth(0),
         header.locator('.primary-mode-nav a').nth(1),
+        header.locator('.primary-mode-nav a').nth(2),
         header.locator('.nav-row > a'),
         ...Array.from({ length: 6 }, (_, index) => header.locator('.theme-switcher button').nth(index)),
         ...Array.from({ length: 3 }, (_, index) => header.locator('.lang-switcher button').nth(index)),
@@ -296,6 +298,7 @@ const parentTransitions = [
   { from: '/wide', fromMarker: '.wide-gallery', to: '/sheets', marker: '.landing-modes.gallery-page' },
   { from: '/wide/paper', fromMarker: '#wide-export', to: '/wide', marker: '.wide-gallery' },
   { from: '/characters', fromMarker: '.character-related-page', to: '/', marker: '.landing-modes:not(.gallery-page)' },
+  { from: '/calendar', fromMarker: '.calendar-page', to: '/', marker: '.landing-modes:not(.gallery-page)' },
   { from: '/characters/tastes', fromMarker: '.taste-board-group', to: '/characters', marker: '.character-related-page' },
   { from: '/coupling', fromMarker: '.coupling-hub', to: '/characters', marker: '.character-related-page' },
   { from: '/coupling/matrix', fromMarker: '.coupling-matrix-editor', to: '/coupling', marker: '.coupling-hub' },

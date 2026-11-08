@@ -21,6 +21,7 @@ const MatrixEditor = lazy(() => import('./features/coupling/editors/MatrixEditor
 const TasteBoardEditor = lazy(() => import('./features/characters/TasteBoardEditor'));
 const RandomPickerPage = lazy(() => import('./features/characters/random/RandomPickerPage'));
 const RandomEffectsPrototype = lazy(() => import('./features/characters/random/RandomEffectsPrototype'));
+const CharacterCalendar = lazy(() => import('./pages/CharacterCalendar'));
 function CouplingLoading() {
   const { lang } = useLang();
   return <p role="status">{copy[lang].loading}</p>;
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="/wide" element={<WideGallery />} />
           <Route path="/wide/:theme" element={<WidePage />} />
           <Route path="/characters" element={<CharacterRelated />} />
+          <Route path="/calendar" element={<Suspense fallback={<CouplingLoading />}><CharacterCalendar /></Suspense>} />
           <Route path="/characters/tastes" element={<Suspense fallback={<CouplingLoading />}><TasteBoardEditor /></Suspense>} />
           <Route path="/characters/random" element={<Suspense fallback={<CouplingLoading />}><RandomPickerPage /></Suspense>} />
           {import.meta.env.DEV && <Route path="/characters/random/prototype" element={<Suspense fallback={<CouplingLoading />}><RandomEffectsPrototype /></Suspense>} />}

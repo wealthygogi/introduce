@@ -1,6 +1,11 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLang } from '../contexts/LangContext';
+import { getCharacterPortrait } from '../data/characterPortraits';
+import { PROFILE_CHARACTER_BY_ID } from '../data/profileCatalog';
+import type { CharacterDay } from '../data/characterDays';
 import '../styles/modes.css';
+import '../styles/character-calendar.css';
 
 const copy = {
   ko: { eyebrow: 'GENSOKYO · CREATIVE STUDIO', title: '소개와 관계를 만드는 도구', desc: '나를 소개하는 한 장을 만들거나, 좋아하는 캐릭터와 관계를 정리해 보세요.', sheets: '자기소개표 만들기', sheetsDesc: '15가지 세로형 디자인과 여러 와이드 테마로 나만의 소개장을 만듭니다.', characters: '캐릭터 관련', charactersDesc: '캐릭터 취향 모음표를 만들거나 커플링과 관계를 정리합니다.', open: '둘러보기' },
@@ -8,9 +13,28 @@ const copy = {
   en: { eyebrow: 'GENSOKYO · CREATIVE STUDIO', title: 'Tools for stories and relationships', desc: 'Create a sheet about yourself or collect favorite characters and their relationships.', sheets: 'Make an introduction sheet', sheetsDesc: 'Build a personal sheet with 15 portrait designs and several wide themes.', characters: 'Characters', charactersDesc: 'Make a character taste board or organize couplings and relationships.', open: 'Explore' },
 };
 
+const calendarCopy = {
+  ko: { label: 'TODAY IN GENSOKYO', title: '오늘의 캐릭터의 날', empty: '오늘의 기념일과 다가오는 날을 살펴보세요.', open: '캘린더 열기' },
+  ja: { label: 'TODAY IN GENSOKYO', title: '今日のキャラクターの日', empty: '今日や近日の記念日をチェックしましょう。', open: 'カレンダーを見る' },
+  en: { label: 'TODAY IN GENSOKYO', title: 'Character days today', empty: 'Explore today’s and upcoming celebration days.', open: 'Open calendar' },
+};
+
 export default function Landing() {
   const { lang } = useLang();
   const t = copy[lang];
+  const calendar = calendarCopy[lang];
+  const [featuredEvents, setFeaturedEvents] = useState<CharacterDay[]>([]);
+  useEffect(() => {
+    let active = true;
+    void import('../data/characterDays').then(({ addDays, getCharacterDaysForDate, todayInSeoul }) => {
+      if (!active) return;
+      const today = todayInSeoul();
+      const todayEvents = getCharacterDaysForDate(today);
+      const upcomingDate = todayEvents.length ? today : Array.from({ length: 14 }, (_, index) => addDays(today, index + 1)).find(date => getCharacterDaysForDate(date).length) ?? today;
+      setFeaturedEvents((todayEvents.length ? todayEvents : getCharacterDaysForDate(upcomingDate)).slice(0, 3));
+    });
+    return () => { active = false; };
+  }, []);
   return <div className="modes-page landing-modes">
     <section className="modes-hero"><span className="modes-eyebrow">{t.eyebrow}</span><h1>{t.title}</h1><p>{t.desc}</p><span className="hero-rule"/></section>
     <section className="mode-options landing-entry-options" aria-label={t.eyebrow}>
@@ -23,6 +47,15 @@ export default function Landing() {
         <div className="mode-card-copy"><span className="mode-kicker">GENSOKYO · CHARACTERS</span><h2>{t.characters}</h2><p>{t.charactersDesc}</p><span className="mode-link">{t.open} <b>↗</b></span></div>
       </Link>
     </section>
+    <Link to="/calendar" className="calendar-home-teaser">
+      <div className="calendar-home-copy"><span className="mode-kicker">{calendar.label}</span><h2>{calendar.title}</h2><p>{featuredEvents.length ? featuredEvents.map(event => event.label).join(' · ') : calendar.empty}</p></div>
+      <div className="calendar-home-faces">{featuredEvents.length ? featuredEvents.map(event => <span className="calendar-home-event" key={event.id}>{event.characterIds.slice(0, 2).map(id => {
+        const character = PROFILE_CHARACTER_BY_ID.get(id);
+        const portrait = character ? getCharacterPortrait(character) : null;
+        return <span className="calendar-home-face" key={id}>{portrait?.src ? <img src={portrait.src} alt="" loading="lazy" /> : character?.ko.slice(0, 1) ?? '東'}</span>;
+      })}<small>{event.tag}</small></span>) : <span className="calendar-home-empty">✳</span>}</div>
+      <span className="calendar-home-link">{calendar.open} <b>↗</b></span>
+    </Link>
     <footer className="modes-note">東方Project fan-made creative tools <span>✳</span></footer>
   </div>;
 }

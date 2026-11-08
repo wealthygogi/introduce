@@ -536,7 +536,7 @@ test('keyboard relay displays Alice face portrait, not a pixel sprite', async t 
   const image = avatar.locator('img');
   await image.waitFor({ state: 'visible' });
   assert.equal(await avatar.getAttribute('data-portrait-kind'), 'face');
-  assert.match(await image.getAttribute('src') ?? '', /\/coupling\/faces\/alice\.png$/);
+  assert.match(await image.getAttribute('src') ?? '', /\/coupling\/faces\/alice\.webp$/);
   await page.waitForFunction(image => image.complete && image.naturalWidth === 512, await image.elementHandle());
 });
 

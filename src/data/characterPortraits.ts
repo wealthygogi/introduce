@@ -8,7 +8,7 @@ const FACE_IDS = new Set<string>(portraitIds);
  * Face-less characters deliberately fall back to an initial in the UI.
  */
 export function getCharacterPortrait(character: ProfileCharacter): { src: string | null; kind: 'face' | 'initial' } {
-  if (FACE_IDS.has(character.id)) return { src: `${import.meta.env.BASE_URL}coupling/faces/${character.id}.png`, kind: 'face' };
+  if (FACE_IDS.has(character.id)) return { src: `${import.meta.env.BASE_URL}coupling/faces/${character.id}.webp`, kind: 'face' };
   return { src: null, kind: 'initial' };
 }
 

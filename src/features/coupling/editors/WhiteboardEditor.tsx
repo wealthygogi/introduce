@@ -1,5 +1,5 @@
 import { createPortal } from 'react-dom';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type React from 'react';
 import { useLang } from '../../../contexts/LangContext';
 import { useCouplingDraft } from '../CouplingDraftProvider';
@@ -15,6 +15,7 @@ import copy from '../copy';
 import type { PreferenceId, RelationId, WhiteboardDraft } from '../types';
 import { getEdgeGeometry, worldPoint, zoomAround, clampZoom } from '../whiteboard/geometry';
 import { closestNode } from '../whiteboard/gestures';
+import { getCurvedEdgeIds } from '../curvedEdges';
 import '../whiteboard/whiteboard.css';
 
 type Node = WhiteboardDraft['nodes'][number];
@@ -61,7 +62,7 @@ export default function WhiteboardEditor() {
   const selectedEdgeData=edges.find(edge=>edge.id===selectedEdge);
   const nodeMap=useMemo(()=>new Map(nodes.map(node=>[node.id,node])),[nodes]);
   const incidentEdges=useMemo(()=>{const lookup=new Map<string,Edge[]>();for(const edge of edges){for(const id of [edge.from,edge.to]){const list=lookup.get(id)??[];list.push(edge);lookup.set(id,list);}}return lookup;},[edges]);
-  const curvedEdges=useMemo(()=>new Set(edges.filter(edge=>edge.direction==='forward'&&edges.some(other=>other.id!==edge.id&&other.from===edge.to&&other.to===edge.from&&other.direction==='forward')).map(edge=>edge.id)),[edges]);
+  const curvedEdges=useMemo(()=>getCurvedEdgeIds(edges),[edges]);
   const commit=useCallback((nextNodes:Node[],nextEdges=documentRef.current.edges,nextView=viewRef.current)=>{const next={nodes:nextNodes,edges:nextEdges,view:nextView};documentRef.current=next;setDocument(next);setDraft(next);},[setDraft]);
   const remember=useCallback((snapshot:Snapshot={nodes:documentRef.current.nodes,edges:documentRef.current.edges,view:viewRef.current})=>{undoStack.current.push({nodes:snapshot.nodes.map(n=>({...n})),edges:snapshot.edges.map(e=>({...e})),view:{...snapshot.view}});if(undoStack.current.length>100)undoStack.current.shift();redoStack.current=[];setHistoryVersion(v=>v+1);},[]);
   const nodePosition=useCallback((id:string,position:Node)=>{const el=nodeElements.current.get(id);if(el){el.style.left=`${position.x}px`;el.style.top=`${position.y}px`;}for(const edge of incidentEdges.get(id)??[]){const pair=edgePaths.current.get(edge.id);if(!pair)continue;const a=edge.from===id?position:nodeMap.get(edge.from),b=edge.to===id?position:nodeMap.get(edge.to);if(!a||!b)continue;const path=getEdgeGeometry(a,b,curvedEdges.has(edge.id)).path;pair.hit?.setAttribute('d',path);pair.line?.setAttribute('d',path);}},[curvedEdges,incidentEdges,nodeMap]);
@@ -70,7 +71,26 @@ export default function WhiteboardEditor() {
   const fit=useCallback((items:Node[]=documentRef.current.nodes,persist=true)=>{const pane=viewportRef.current?.getBoundingClientRect(),rect=getUsableBoardRect();if(!pane||!rect)return null;const minX=items.length?Math.min(...items.map(n=>n.x))-38:-38,minY=items.length?Math.min(...items.map(n=>n.y))-38:-38,maxX=items.length?Math.max(...items.map(n=>n.x))+38:38,maxY=items.length?Math.max(...items.map(n=>n.y))+38:38;const width=maxX-minX,height=maxY-minY,zoom=Math.max(.04,Math.min(1,rect.width/width,rect.height/height));const next={zoom,x:rect.x+(rect.width-width*zoom)/2-minX*zoom,y:rect.y+(rect.height-height*zoom)/2-minY*zoom};viewRef.current=next;setView(next);if(persist){const d=documentRef.current;commit(d.nodes,d.edges,next);}return next;},[commit,getUsableBoardRect]);
   useEffect(()=>{serial.current=Math.max(1,...draft.edges.map(e=>Number(e.id.match(/^edge-(\d+)$/)?.[1]??0)+1));if(!hasDraft){const id=requestAnimationFrame(()=>fit(documentRef.current.nodes,false));return()=>cancelAnimationFrame(id);}},[]);
   useEffect(()=>{const el=viewportRef.current;if(!el)return;let prior=getUsableBoardRect();if(!prior)return;const observer=new ResizeObserver(()=>{const rect=getUsableBoardRect();if(!rect||rect.width===prior!.width&&rect.height===prior!.height)return;const v=viewRef.current,cx=(prior!.x+prior!.width/2-v.x)/v.zoom,cy=(prior!.y+prior!.height/2-v.y)/v.zoom;prior=rect;saveView({...v,x:rect.x+rect.width/2-cx*v.zoom,y:rect.y+rect.height/2-cy*v.zoom});});observer.observe(el);return()=>observer.disconnect();},[getUsableBoardRect,saveView]);
-  useEffect(()=>()=>{if(frame.current!==null)cancelAnimationFrame(frame.current);if(viewTimer.current!==null){window.clearTimeout(viewTimer.current);const d=documentRef.current;setDraft({...d,view:viewRef.current});}for(const id of pointers.current.keys())if(viewportRef.current?.hasPointerCapture(id))viewportRef.current.releasePointerCapture(id);},[setDraft]);
+  useLayoutEffect(() => {
+    const flushView = () => {
+      if (viewTimer.current === null) return;
+      window.clearTimeout(viewTimer.current);
+      viewTimer.current = null;
+      const d = documentRef.current;
+      setDraft({ ...d, view: viewRef.current });
+    };
+    // Register before the provider's passive pagehide listener; teardown likewise
+    // publishes the pending view before the provider serializes its final draft.
+    window.addEventListener('pagehide', flushView);
+    return () => {
+      window.removeEventListener('pagehide', flushView);
+      if (frame.current !== null) cancelAnimationFrame(frame.current);
+      flushView();
+      for (const id of pointers.current.keys()) {
+        if (viewportRef.current?.hasPointerCapture(id)) viewportRef.current.releasePointerCapture(id);
+      }
+    };
+  }, [setDraft]);
   const completeConnection=useCallback((from:string,to:string)=>{if(from===to){setNotice(t.distinctCharacters);setPending(null);return;}const d=documentRef.current,existing=d.edges.find(e=>(e.from===from&&e.to===to)||(direction==='both'&&e.direction==='both'&&e.from===to&&e.to===from));remember();const id=existing?.id??`edge-${serial.current++}`;const next=existing?d.edges.map(e=>e.id===id?{...e,type:relation,preference,direction}:e):[...d.edges,{id,from,to,type:relation,preference,direction}];commit(d.nodes,next);setSelectedEdge(id);setSelected(null);setPending(null);},[commit,direction,preference,relation,remember,t.distinctCharacters]);
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     const pointerTarget=event.target as HTMLElement;

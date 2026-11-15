@@ -17,7 +17,10 @@
     "test:coupling": "node --test tests/coupling-regression.mjs",
     "test:taste-board": "node --experimental-strip-types --test tests/taste-board-storage.mjs tests/taste-board-image-storage.mjs tests/taste-board-regression.mjs tests/taste-board-export.mjs",
     "test:coupling-export": "node --test tests/coupling-export-regression.mjs",
-    "test:random": "node --test tests/random-picker-logic.mjs tests/random-picker-export.mjs tests/random-picker-nav.mjs"
+    "test:random": "node --test tests/random-picker-logic.mjs tests/random-picker-export.mjs tests/random-picker-nav.mjs",
+    "predev": "node scripts/build_home_calendar.mjs",
+    "prebuild": "node scripts/build_home_calendar.mjs",
+    "test:performance": "node --test tests/performance/*.mjs"
   },
   "dependencies": {
     "modern-screenshot": "^4.7.0",

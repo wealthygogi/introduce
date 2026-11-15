@@ -1,3 +1,4 @@
+import { CouplingDraftProvider } from './CouplingDraftProvider';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useLang } from '../../contexts/LangContext';
 import copy from './copy';
@@ -22,11 +23,11 @@ export default function CouplingLayout() {
   const path = pathname.replace(/\/+$/, '') || '/';
   const t = copy[lang];
   const labels = navCopy[lang];
-  return <div className="coupling-root"><div className="coupling-layout">
+  return <CouplingDraftProvider><div className="coupling-root"><div className="coupling-layout">
     <nav className="coupling-tabs" aria-label={labels.editors}>
       <Link to="/coupling" aria-current={path === '/coupling' ? 'page' : undefined}>{labels.hub}</Link>
       {editors.map(editor => <Link key={editor.id} to={`/coupling/${editor.path}`} aria-current={path === `/coupling/${editor.path}` ? 'page' : undefined}>{t[editor.id]}</Link>)}
     </nav>
     <Outlet />
-  </div></div>;
+  </div></div></CouplingDraftProvider>;
 }

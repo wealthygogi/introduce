@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useLang } from '../contexts/LangContext';
 import { getCharacterPortrait } from '../data/characterPortraits';
 import { PROFILE_CHARACTER_BY_ID } from '../data/profileCatalog';
-import type { CharacterDay } from '../data/characterDays';
+import type { HomeCalendarEvent } from '../data/homeCalendar';
 import '../styles/modes.css';
 import '../styles/character-calendar.css';
 
@@ -23,15 +23,11 @@ export default function Landing() {
   const { lang } = useLang();
   const t = copy[lang];
   const calendar = calendarCopy[lang];
-  const [featuredEvents, setFeaturedEvents] = useState<CharacterDay[]>([]);
+  const [featuredEvents, setFeaturedEvents] = useState<HomeCalendarEvent[]>([]);
   useEffect(() => {
     let active = true;
-    void import('../data/characterDays').then(({ addDays, getCharacterDaysForDate, todayInSeoul }) => {
-      if (!active) return;
-      const today = todayInSeoul();
-      const todayEvents = getCharacterDaysForDate(today);
-      const upcomingDate = todayEvents.length ? today : Array.from({ length: 14 }, (_, index) => addDays(today, index + 1)).find(date => getCharacterDaysForDate(date).length) ?? today;
-      setFeaturedEvents((todayEvents.length ? todayEvents : getCharacterDaysForDate(upcomingDate)).slice(0, 3));
+    void import('../data/homeCalendar').then(({ getFeaturedEvents, todayInSeoul }) => {
+      if (active) setFeaturedEvents(getFeaturedEvents(todayInSeoul()));
     });
     return () => { active = false; };
   }, []);

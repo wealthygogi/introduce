@@ -44,6 +44,7 @@ test('ranked characters enforce cap, prevent duplicates, and maintain contiguous
   const ranks = await page.locator('#wide-export [data-ranked-character]').evaluateAll(nodes => nodes.map(n => [n.dataset.rankedCharacter, n.dataset.rank]));
   assert.deepEqual(ranks, [['marisa','1'],['reimu','2'],['aya','3'],['reisen','4'],['youmu','5'],['sakuya','6']]);
   await page.reload();
+  await page.locator('#wide-export').waitFor();
   assert.deepEqual(await page.locator('#wide-export [data-ranked-character]').evaluateAll(nodes => nodes.map(n => n.dataset.rankedCharacter)), ['marisa','reimu','aya','reisen','youmu','sakuya']);
 });
 
@@ -64,6 +65,7 @@ test('empty selections survive reload and theme/layout navigation', async t => {
   await page.goto(new URL('/introduce/wide/paper', base).toString());
   await page.locator('[data-wide-layout="row"]').click();
   await page.reload();
+  await page.locator('#wide-export').waitFor();
   assert.equal(await page.locator('#wide-export [data-ranked-character]').count(), 0);
   assert.equal(await page.locator('#wide-export [data-favorite-work]').count(), 0);
 });
@@ -93,6 +95,7 @@ test('Wide profile fields survive coupling navigation and reload without changin
   assert.equal(await page.locator('#wide-nickname').inputValue(), nickname);
   assert.equal(await page.locator('[id="wide:freeText"]').inputValue(), freeText);
   await page.reload();
+  await page.locator('#wide-export').waitFor();
   await page.waitForSelector('#wide-nickname');
   assert.equal(await page.locator('#wide-nickname').inputValue(), nickname);
   assert.equal(await page.locator('[id="wide:freeText"]').inputValue(), freeText);
@@ -108,6 +111,7 @@ test('normalizes malformed persisted selections without navigation races', async
     localStorage.setItem('introduce:form:v2', JSON.stringify(draft));
   });
   await page.reload();
+  await page.locator('#wide-export').waitFor();
   assert.deepEqual(await page.locator('#wide-export [data-ranked-character]').evaluateAll(nodes => nodes.map(n => n.dataset.rankedCharacter)), ['reimu','marisa','sanae','aya','reisen','youmu','sakuya']);
   assert.deepEqual(await page.locator('#wide-export [data-favorite-work]').evaluateAll(nodes => nodes.map(n => n.dataset.favoriteWork)), ['th10','th12','book-b036981ba92d','music-352e4ada578a','music-11cd7e63b384']);
 });
@@ -155,6 +159,7 @@ test('legacy choices migrate while preserving raw Compact choices and custom not
     localStorage.setItem('introduce:form', JSON.stringify(draft));
   });
   await page.reload();
+  await page.locator('#wide-export').waitFor();
 
   const migrated = await page.evaluate(() => JSON.parse(localStorage.getItem('introduce:form:v2')));
   assert.equal(await page.evaluate(() => localStorage.getItem('introduce:form:v1')), JSON.stringify({ marker: 'v1-only' }));
@@ -171,6 +176,7 @@ test('legacy choices migrate while preserving raw Compact choices and custom not
     return current;
   });
   await page.reload();
+  await page.locator('#wide-export').waitFor();
   assert.deepEqual(
     await page.evaluate(() => JSON.parse(localStorage.getItem('introduce:form:v2'))),
     JSON.parse(savedBeforeLegacyWrite),
@@ -184,6 +190,7 @@ test('legacy choices migrate while preserving raw Compact choices and custom not
     localStorage.setItem('introduce:form:v2', JSON.stringify(draft));
   });
   await page.reload();
+  await page.locator('#wide-export').waitFor();
   const overLimit = await page.evaluate(() => JSON.parse(localStorage.getItem('introduce:form:v2')));
   assert.equal(overLimit.custom['wide:selectionReview'], '1');
   await page.evaluate(() => {
@@ -193,6 +200,7 @@ test('legacy choices migrate while preserving raw Compact choices and custom not
     localStorage.setItem('introduce:form:v2', JSON.stringify(draft));
   });
   await page.reload();
+  await page.locator('#wide-export').waitFor();
   const ambiguous = await page.evaluate(() => JSON.parse(localStorage.getItem('introduce:form:v2')));
   assert.equal(ambiguous.custom['wide:selectionReview'], '1');
 });
@@ -232,6 +240,7 @@ test('legacy shared notes migrate once into independent Wide fields and preserve
     localStorage.setItem('introduce:form:v2', JSON.stringify(draft));
   }, { legacyText, longFreeText });
   await page.reload();
+  await page.locator('#wide-export').waitFor();
   const migrated = await page.evaluate(() => JSON.parse(localStorage.getItem('introduce:form:v2')));
   assert.equal(migrated.custom['wide:dislike'], legacyText);
   assert.equal(migrated.custom['wide:pairing'], legacyText);
@@ -246,6 +255,7 @@ test('legacy shared notes migrate once into independent Wide fields and preserve
     localStorage.setItem('introduce:form:v2', JSON.stringify(draft));
   });
   await page.reload();
+  await page.locator('#wide-export').waitFor();
   const cleared = await page.evaluate(() => JSON.parse(localStorage.getItem('introduce:form:v2')));
   assert.equal(cleared.custom['wide:dislike'], '');
   assert.equal(cleared.custom['wide:pairing'], '');

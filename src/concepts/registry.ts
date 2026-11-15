@@ -1,15 +1,4 @@
-import type { ComponentType } from 'react';
 import type { Messages, Lang } from '../data/i18n';
-import ConceptP from './ConceptP';
-import ConceptQ from './ConceptQ';
-import ConceptR from './ConceptR';
-import ConceptS from './ConceptS';
-import ConceptT from './ConceptT';
-import ConceptU from './ConceptU';
-import ConceptV from './ConceptV';
-import ConceptW from './ConceptW';
-import ConceptX from './ConceptX';
-import ConceptY from './ConceptY';
 
 /**
  * 컨셉 전용 커스텀 입력 필드 정의.
@@ -35,7 +24,6 @@ export interface ConceptDef {
   sprite: string;
   /** preview thumbnail label (short Latin/decorative tag) */
   tag: string;
-  Component: ComponentType;
   /** 이 컨셉 전용 커스텀 입력 필드(선택). FormPanel 이 렌더한다. */
   customFields?: CustomFieldDef[];
   /** 랜덤 스탯(닉네임 시드 + 다시뽑기)을 쓰는 컨셉이면 true → 프리뷰 툴바에 🎲 버튼 표시 */
@@ -50,7 +38,6 @@ export const CONCEPTS: ConceptDef[] = [
     slug: 'spell-photocard',
     sprite: '1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Flandre Scarlet.png',
     tag: 'SPELL',
-    Component: ConceptP,
     hasRandomStats: true,
   },
   {
@@ -60,7 +47,6 @@ export const CONCEPTS: ConceptDef[] = [
     slug: 'ofuda',
     sprite: '4. Other/[1] Main Characters/Reimu Hakurei.png',
     tag: 'OFUDA',
-    Component: ConceptQ,
   },
   {
     id: 'r',
@@ -69,7 +55,6 @@ export const CONCEPTS: ConceptDef[] = [
     slug: 'ticket',
     sprite: '4. Other/[1] Main Characters/Marisa Kirisame.png',
     tag: 'TICKET',
-    Component: ConceptR,
     hasRandomStats: true,
   },
   {
@@ -79,7 +64,6 @@ export const CONCEPTS: ConceptDef[] = [
     slug: 'scarlet-invitation',
     sprite: '1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Remilia Scarlet.png',
     tag: 'INVITE',
-    Component: ConceptS,
   },
   {
     id: 't',
@@ -88,7 +72,6 @@ export const CONCEPTS: ConceptDef[] = [
     slug: 'sns-profile',
     sprite: '1. Mainline Games/[9] Kaeizuka ~ Phantasmagoria of Flower View/Aya Shameimaru.png',
     tag: 'PROFILE',
-    Component: ConceptT,
     customFields: [
       { key: 'handle', label: { ko: '아이디', ja: 'ID', en: 'Handle' }, placeholder: '@gensokyo', maxLength: 20 },
     ],
@@ -100,7 +83,6 @@ export const CONCEPTS: ConceptDef[] = [
     slug: 'polaroid',
     sprite: '1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Sakuya Izayoi.png',
     tag: 'POLAROID',
-    Component: ConceptU,
   },
   {
     id: 'v',
@@ -109,7 +91,6 @@ export const CONCEPTS: ConceptDef[] = [
     slug: 'save-slot',
     sprite: '1. Mainline Games/[6] Koumakyou ~ Embodiment of Scarlet Devil/Cirno.png',
     tag: 'SAVE',
-    Component: ConceptV,
     hasRandomStats: true,
   },
   {
@@ -119,7 +100,6 @@ export const CONCEPTS: ConceptDef[] = [
     slug: 'eientei-flyer',
     sprite: '1. Mainline Games/[8] Eiyashou ~ Imperishable Night/Reisen Udonge Inaba.png',
     tag: 'FLYER',
-    Component: ConceptW,
   },
   {
     id: 'x',
@@ -128,7 +108,6 @@ export const CONCEPTS: ConceptDef[] = [
     slug: 'sealing-club-file',
     sprite: '4. Other/[2] Hifuu Club/Renko Usami.png',
     tag: 'DOSSIER',
-    Component: ConceptX,
   },
   {
     id: 'y',
@@ -137,7 +116,6 @@ export const CONCEPTS: ConceptDef[] = [
     slug: 'sticker-diary',
     sprite: '1. Mainline Games/[11] Chireiden ~ Subterranean Animism/Koishi Komeiji.png',
     tag: 'DIARY',
-    Component: ConceptY,
   },
 ];
 

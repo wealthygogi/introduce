@@ -47,7 +47,12 @@ function loadEntries(): Entries {
 export function CouplingDraftProvider({ children }: { children: ReactNode }) {
   const [entries, setEntries] = useState<Entries>(loadEntries);
   const entriesRef = useRef(entries);
-  entriesRef.current = entries;
+  // Keep pending drafts available to teardown flushes before React commits another render.
+  const updateEntries = useCallback((action: (previous: Entries) => Entries) => {
+    const next = action(entriesRef.current);
+    entriesRef.current = next;
+    setEntries(next);
+  }, []);
 
   const flush = useCallback(() => {
     for (const id of ids) {
@@ -55,20 +60,20 @@ export function CouplingDraftProvider({ children }: { children: ReactNode }) {
       if (!entry.dirty) continue;
       try {
         window.localStorage.setItem(DRAFT_KEYS[id], serializeDraft(entry.draft));
-        setEntries(previous => ({ ...previous, [id]: { ...previous[id], dirty: false, saveStatus: 'saved', storageError: false } } as Entries));
+        updateEntries(previous => ({ ...previous, [id]: { ...previous[id], dirty: false, saveStatus: 'saved', storageError: false } } as Entries));
       } catch {
-        setEntries(previous => ({ ...previous, [id]: { ...previous[id], dirty: true, saveStatus: 'memory-only', storageError: true } } as Entries));
+        updateEntries(previous => ({ ...previous, [id]: { ...previous[id], dirty: true, saveStatus: 'memory-only', storageError: true } } as Entries));
       }
     }
-  }, []);
+  }, [updateEntries]);
 
   const setDraft = useCallback(<K extends EditorId,>(id: K, action: SetStateAction<Drafts[K]>) => {
-    setEntries(previous => {
+    updateEntries(previous => {
       const entry = previous[id];
       const next = typeof action === 'function' ? (action as (value: Drafts[K]) => Drafts[K])(entry.draft) : action;
       return { ...previous, [id]: { ...entry, draft: next, hasDraft: true, dirty: true, saveStatus: 'saving', restoreError: false } } as Entries;
     });
-  }, []);
+  }, [updateEntries]);
   const resetDraft = useCallback(<K extends EditorId,>(id: K): Drafts[K] => {
     const initial = createDefaultDrafts()[id];
     let storageError = false;
@@ -77,7 +82,7 @@ export function CouplingDraftProvider({ children }: { children: ReactNode }) {
     } catch {
       storageError = true;
     }
-    setEntries(previous => ({
+    updateEntries(previous => ({
       ...previous,
       [id]: {
         draft: initial, hasDraft: false, dirty: false,
@@ -85,7 +90,7 @@ export function CouplingDraftProvider({ children }: { children: ReactNode }) {
       },
     } as Entries));
     return initial;
-  }, []);
+  }, [updateEntries]);
 
 
   useEffect(() => {

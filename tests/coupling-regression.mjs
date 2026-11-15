@@ -88,13 +88,16 @@ test('home routes through the character hub and retains both existing galleries'
   const page = await pageFor(t, '/');
   await page.locator('.mode-options a[href="/introduce/characters"]').click();
   await page.waitForURL('**/introduce/characters');
+  await page.locator('.character-related-card').first().waitFor();
   await page.locator('.character-related-card[href="/introduce/coupling"]').click();
   await page.waitForURL('**/introduce/coupling');
+  await page.locator('.coupling-hub-card').first().waitFor();
   assert.equal(await page.locator('.coupling-hub-card').count(), 4);
   assert.equal(await page.locator('.coupling-hub-card a[href^="/introduce/coupling/"]').count(), 4);
 
   await page.locator('header .primary-mode-nav a[href="/introduce/sheets"]').click();
   await page.waitForURL('**/introduce/sheets');
+  await page.locator('.mode-options').waitFor();
   assert.equal(await page.locator('.mode-options a[href="/introduce/compact"]').count(), 1);
   assert.equal(await page.locator('.mode-options a[href="/introduce/wide"]').count(), 1);
 });
@@ -104,6 +107,7 @@ test('home opens the broader character-related hub and keeps legacy relationship
   const characterEntry = page.locator('.mode-options a[href="/introduce/characters"]');
   await characterEntry.click();
   await page.waitForURL('**/introduce/characters');
+  await page.locator('.character-related-card').first().waitFor();
   assert.equal(await page.locator('.character-related-card[href="/introduce/characters/tastes"]').count(), 1);
   assert.equal(await page.locator('.character-related-card[href="/introduce/coupling"]').count(), 1);
 

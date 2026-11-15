@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { loadInitialState, saveToStorage, stripShareParam } from '../lib/formStateCodec';
 import type { SocialPlatform } from '../lib/socialAccount';
 import { normalizeProfileSelection, PROFILE_CHARACTER_BY_ID, PROFILE_WORK_BY_ID, MAX_RANKED_CHARACTERS, MAX_FAVORITE_WORKS } from '../data/profileCatalog';
@@ -78,9 +78,47 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
     stripShareParam();
   }, []);
 
-  // 상태가 바뀔 때마다 localStorage 에 저장 → 새로고침해도 입력 유지.
+  const latestState = useRef(state);
+  const savedState = useRef<FormState | null>(null);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  latestState.current = state;
+
   useEffect(() => {
-    saveToStorage(state);
+    const flush = () => {
+      if (saveTimer.current !== null) {
+        clearTimeout(saveTimer.current);
+        saveTimer.current = null;
+      }
+      if (savedState.current === latestState.current) return;
+      saveToStorage(latestState.current);
+      savedState.current = latestState.current;
+    };
+    // Persist imported share links immediately; subsequent edits are debounced.
+    flush();
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') flush();
+    };
+    window.addEventListener('pagehide', flush);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => {
+      window.removeEventListener('pagehide', flush);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      flush();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (savedState.current === state) return;
+    saveTimer.current = setTimeout(() => {
+      saveTimer.current = null;
+      if (savedState.current === latestState.current) return;
+      saveToStorage(latestState.current);
+      savedState.current = latestState.current;
+    }, 300);
+    return () => {
+      if (saveTimer.current !== null) clearTimeout(saveTimer.current);
+      saveTimer.current = null;
+    };
   }, [state]);
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) => {

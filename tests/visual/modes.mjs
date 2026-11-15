@@ -85,6 +85,7 @@ try {
   await page.waitForURL('**/sheets');
   await page.locator('main a[href$="/compact"]').first().click();
   await page.waitForURL('**/compact');
+  await page.locator('main a[href*="/concept/"]').first().waitFor();
   assert.equal(await page.locator('main a[href*="/concept/"]').count(), 10);
   assert.equal(await page.locator('main a[href$="/v1/"]').isVisible(), true);
   await page.locator('main a[href*="/concept/"]').first().click();

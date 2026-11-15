@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
+import { CONCEPT_COMPONENTS } from '../concepts/components';
 import { findConcept } from '../concepts/registry';
 import { useLang } from '../contexts/LangContext';
 import { useFormState } from '../contexts/FormStateContext';
@@ -9,17 +10,6 @@ import ShareButton from '../components/ShareButton';
 import TweetButton from '../components/TweetButton';
 import { useCardScale } from '../hooks/useCardScale';
 import SocialQrFooter from '../components/SocialQrFooter';
-
-/** v1(가로형 컨셉 A~O)은 git 태그 v1-final 을 빌드한 정적 사본이 /introduce/v1/ 에 있다. */
-const V1_CONCEPT_ID = /^[a-o]$/;
-
-function V1Redirect({ id }: { id: string }) {
-  useEffect(() => {
-    // 예전 공유 링크(?c=)를 그대로 v1 사본으로 넘긴다.
-    window.location.replace(`${import.meta.env.BASE_URL}v1/concept/${id}${window.location.search}${window.location.hash}`);
-  }, [id]);
-  return null;
-}
 
 type Mode = 'edit' | 'preview';
 
@@ -35,10 +25,9 @@ export default function ConceptPage() {
   const [mode, setMode] = useState<Mode>('edit');
   useCardScale(wrapRef, scalerRef);
 
-  if (id && V1_CONCEPT_ID.test(id)) return <V1Redirect id={id} />;
   if (!concept) return <Navigate to="/" replace />;
 
-  const ConceptComponent = concept.Component;
+  const ConceptComponent = CONCEPT_COMPONENTS[concept.id as keyof typeof CONCEPT_COMPONENTS];
   const switchTo = (next: Mode) => {
     setMode(next);
     // 탭 바가 화면 맨 위에 오게 → 미리보기 탭에서는 도구 + 카드 전체가 한 화면에 들어온다
